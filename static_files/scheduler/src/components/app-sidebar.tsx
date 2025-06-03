@@ -8,12 +8,13 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
+  // SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { useEffect, useState } from "react"
 
+import { AssetNames } from "../../../../crates/ordinator-contracts/bindings/AssetNames.ts";
 // Menu items.
 const items = [
   {
@@ -53,7 +54,28 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [workspace, setWorkspace] = useState<string | null>(null);
+  const [assets, setAssets] = useState<AssetNames[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const { asset } = useParams<{ asset: string}>();
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetch("/api/v1/assets")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP: ${res.status}`)
+        return res.json()
+      })
+      .then((data: AssetNames[])=> {
+        setAssets(data)
+        setIsLoading(false)
+      })
+      .catch((err) => {
+        console.error("failed to load assets", err)
+        setError("Could not load assets")
+        setIsLoading(false)
+      })
+  }, [])
 
   useEffect(() => {
     if (asset) {
@@ -75,14 +97,14 @@ export function AppSidebar() {
     setWorkspace(ws);
   }
 
-  const handleNavigation = (url: string) => {
-    if (!asset) {
-      // If no asset is selected, show a message or handle it appropriately
-      alert('Please select a workspace first');
-      return;
-    }
-    navigate(url.replace(':asset', asset));
-  }
+  // const handleNavigation = (url: string) => {
+  //   if (!asset) {
+  //     // If no asset is selected, show a message or handle it appropriately
+  //     alert('Please select a workspace first');
+  //     return;
+  //   }
+  //   navigate(url.replace(':asset', asset));
+  // }
 
   return (
     <Sidebar collapsible="icon">
@@ -96,14 +118,39 @@ export function AppSidebar() {
                   <ChevronDown className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w[--radix-popper-anchor-width]">
-                <DropdownMenuItem onClick={() => handleSelectAsset("DF")}>
-                  <span>DF</span>
+
+
+            <DropdownMenuContent className="w[-radix--popper-anchor-width]">
+              {isLoading && (
+                <DropdownMenuItem disabled>
+                  <span>Loading...</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleSelectAsset("TL")}>
-                  <span>TL</span>
+              )}
+              {error && (
+                <DropdownMenuItem disabled>
+                  <span>{error}</span>
                 </DropdownMenuItem>
+              )}
+              {!error &&
+               !isLoading &&
+               assets.map((a) => (
+                 <DropdownMenuItem key={a.value} onClick={() => handleSelectAsset(a.value)}>
+                   <span>{a.label}</span>
+                 </DropdownMenuItem>
+               ))}
+
+              {
+              !error &&
+              !isLoading &&
+              assets.length === 0 && (
+              
+                <DropdownMenuItem disabled>
+                  <span>"No workspaces found"</span>
+                </DropdownMenuItem>
+            )
+            }
               </DropdownMenuContent>
+            
             </DropdownMenu>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -113,9 +160,11 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton onClick={() => handleNavigation(item.url)}>
-                    <item.icon />
-                    <span>{item.title}</span>
+                  <SidebarMenuButton asChild>
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
