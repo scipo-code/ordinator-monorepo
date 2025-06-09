@@ -14,6 +14,7 @@ use serde::Serialize;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 use time_environment::TimeEnvironmentBuilder;
+use ts_rs::TS;
 use work_order::WorkOrders;
 use work_order::WorkOrdersBuilder;
 
@@ -173,7 +174,7 @@ pub enum Asset
     Test,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
 pub struct AssetNames
 {
     value: String,
