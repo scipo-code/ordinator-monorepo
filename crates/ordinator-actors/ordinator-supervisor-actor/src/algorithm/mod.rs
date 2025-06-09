@@ -6,6 +6,7 @@ pub mod supervisor_solution;
 use std::collections::HashSet;
 use std::ops::Deref;
 use std::ops::DerefMut;
+use std::panic::Location;
 use std::sync::Arc;
 
 use anyhow::Context;
@@ -35,6 +36,7 @@ use tracing::Level;
 #[allow(unused_imports)]
 use tracing::event;
 
+#[derive(Debug)]
 pub struct SupervisorAlgorithm<Ss>(Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>)
 where
     Ss: SystemSolutions;
@@ -140,6 +142,30 @@ where
     fn schedule(&mut self) -> Result<()>
     {
         // What is the criteria for handling this in practice?
+
+        // FIX [ ]
+        // We should first make sure that the `Supervisor` is actually working with the
+        // correct state.
+        //
+        //
+        //
+        ensure!(
+            self.solution.get_work_order_activities().is_empty(),
+            "{} activities in the Supervisor Solution\n\
+            {} `WorkOrder`s in the Supervisor parameters\n\
+            {} `Activity`s in the SupervisorParameters\n\
+            Location: {}",
+            self.solution.get_work_order_activities().len(),
+            self.parameters.supervisor_work_orders.len(),
+            self.parameters
+                .supervisor_work_orders
+                .iter()
+                .fold(0, |acc, count_activities| {
+                    acc + count_activities.1.len()
+                }),
+            Location::caller(),
+        );
+
         for work_order_activity in &self.solution.get_work_order_activities() {
             let number = self
                 .parameters
@@ -149,11 +175,10 @@ where
                 .expect("The SupervisorParameter should always be available")
                 .number;
 
-            // And this comes in as a close second.
             let mut operational_status_by_work_order_activity =
                 self.solution.operational_status_by_work_order_activity(
                     work_order_activity,
-                    &self.loaded_shared_solution,
+                    &self.loaded_system_solution,
                 )?;
 
             operational_status_by_work_order_activity
@@ -243,7 +268,7 @@ where
         // `SupervisorAlgorithm.parameters.strategic_periods`. This can be made
         // cleaner! Much cleaner,
         let strategic_activities_in_supervisor_period = self
-            .loaded_shared_solution
+            .loaded_system_solution
             .strategic()?
             .supervisor_tasks(&self.parameters.supervisor_periods);
 
@@ -261,7 +286,7 @@ where
         // TODO [ ]
         // determine exactly how to fix this.
         let work_order_parameters = self.parameters.supervisor_work_orders.clone();
-        let all_operational_actors = self.loaded_shared_solution.all_operational().clone();
+        let all_operational_actors = self.loaded_system_solution.all_operational().clone();
 
         for (work_order_number, _) in incoming_activities {
             let activity_number = work_order_parameters

@@ -1,6 +1,7 @@
 pub mod algorithm;
 mod assert_functions;
 pub mod messages;
+use std::fmt::Debug;
 use std::ops::Deref;
 use std::ops::DerefMut;
 use std::sync::Arc;
@@ -21,14 +22,14 @@ use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_configuration::SystemConfigurations;
 use ordinator_orchestrator_actor_traits::ActorFactory;
-use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::CommandHandler;
+use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::OrchestratorNotifier;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 
-pub struct SupervisorActor<Ss>(
+pub struct SupervisorActor<Ss: Debug>(
     Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>,
 )
 where
@@ -37,7 +38,7 @@ where
 
 impl<Ss> Deref for SupervisorActor<Ss>
 where
-    Ss: SystemSolutions<Supervisor = SupervisorSolution>,
+    Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
 {
     type Target =
         Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>;
@@ -50,7 +51,7 @@ where
 
 impl<Ss> DerefMut for SupervisorActor<Ss>
 where
-    Ss: SystemSolutions<Supervisor = SupervisorSolution>,
+    Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
 {
     fn deref_mut(&mut self) -> &mut Self::Target
     {
@@ -67,7 +68,7 @@ pub struct SupervisorApi {}
 // working again.
 impl<Ss> ActorFactory<Ss> for SupervisorApi
 where
-    Ss: SystemSolutions<Supervisor = SupervisorSolution> + Send + Sync + 'static,
+    Ss: SystemSolutions<Supervisor = SupervisorSolution> + Send + Sync + 'static + Debug,
     SupervisorAlgorithm<Ss>: ActorBasedLargeNeighborhoodSearch
         + Send
         + Sync
@@ -95,7 +96,7 @@ where
                 .parameters_and_solution(
                     &scheduling_environment_guard.lock().unwrap(),
                 )?
-                .arc_swap_shared_solution(shared_solution_arc_swap)
+                .system_solution_arc_swap(shared_solution_arc_swap)
         })?
         .communication(error_channel)
         .configurations(system_configurations)

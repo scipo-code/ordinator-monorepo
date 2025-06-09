@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use serde::Deserialize;
@@ -70,7 +72,7 @@ pub struct StrategicResponseStatus
 
 impl<Ss> From<&mut StrategicActor<Ss>> for StrategicResponseStatus
 where
-    Ss: SystemSolutions<Strategic = StrategicSolution>,
+    Ss: SystemSolutions<Strategic = StrategicSolution> + Debug,
 {
     fn from(value: &mut StrategicActor<Ss>) -> Self
     {

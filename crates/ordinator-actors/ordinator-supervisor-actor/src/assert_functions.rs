@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::fmt::Debug;
 
 use anyhow::Result;
 use anyhow::bail;
@@ -26,7 +27,7 @@ pub trait SupervisorAssertions
 impl<MessageRequest, MessageResponse, Ss> SupervisorAssertions
     for Actor<MessageRequest, MessageResponse, SupervisorAlgorithm<Ss>>
 where
-    Ss: SystemSolutions<Supervisor = SupervisorSolution>,
+    Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
 {
     fn test_symmetric_difference_between_tactical_operations_and_operational_state_machine(
         &self,
@@ -34,7 +35,7 @@ where
     {
         let tactical_operation_woas: HashSet<WorkOrderNumber> = self
             .algorithm
-            .loaded_shared_solution
+            .loaded_system_solution
             .strategic()?
             .supervisor_tasks(&self.algorithm.parameters.supervisor_periods)
             .iter()
@@ -73,7 +74,7 @@ where
     {
         let strategic_work_orders: HashSet<WorkOrderNumber> = self
             .algorithm
-            .loaded_shared_solution
+            .loaded_system_solution
             .strategic()?
             .supervisor_tasks(&self.algorithm.parameters.supervisor_periods)
             .iter()

@@ -13,6 +13,7 @@ use anyhow::anyhow;
 use arc_swap::ArcSwap;
 use chrono::DateTime;
 use chrono::Utc;
+use colored::Colorize;
 use delegate::Delegate;
 use flume::Receiver;
 use flume::Sender;
@@ -104,7 +105,7 @@ impl<RequestMessage, Res> Communication<RequestMessage, Res>
     }
 }
 
-#[derive(PartialEq, Eq, Debug, Clone)]
+#[derive(PartialEq, Eq, Clone)]
 pub struct SystemSolution<S, T, U, V>
 where
     S: StrategicInterface,
@@ -118,6 +119,59 @@ where
     pub tactical: Option<T>,
     pub supervisor: Option<U>,
     pub operational: HashMap<Id, V>,
+}
+
+// ISSUE TODO [ ]
+//
+// This whole [`SystemSolution`] should be reworked. It should be trait-based.
+//
+// It is what it is trying to tell us.
+impl<S, T, U, V> std::fmt::Debug for SystemSolution<S, T, U, V>
+where
+    S: StrategicInterface,
+    T: TacticalInterface,
+    U: SupervisorInterface,
+    // FIX [ ]
+    // This `Solution` should be removed.
+    V: OperationalInterface + Solution,
+{
+    // What you are doing here is so important! That you decided to make this is
+    // one of the best idea that you have had in a long time!
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        if f.alternate() {
+            let number_of_operational_actors = self.operational.len().to_string();
+            write!(
+                f,
+                "StrategicSolution:   {}\n\
+                TacticalSolution:     {}\n\
+                SupervisorSolution:   {}\n\
+                OperationalSolutions: {}",
+                if self.strategic.is_some() {
+                    "present".green()
+                } else {
+                    "absent".red()
+                },
+                if self.tactical.is_some() {
+                    "present".green()
+                } else {
+                    "absent".red()
+                },
+                if self.supervisor.is_some() {
+                    "present".green()
+                } else {
+                    "absent".red()
+                },
+                if !self.operational.is_empty() {
+                    number_of_operational_actors.as_str().green()
+                } else {
+                    "absent".red()
+                },
+            )
+        } else {
+            panic!();
+        }
+    }
 }
 
 // This is made completely wrong. I am not sure what the

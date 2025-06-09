@@ -25,6 +25,12 @@ pub struct SupervisorParameters
     pub options: SupervisorOptions,
 }
 
+// ISSUE START HERE
+impl std::fmt::Debug for SupervisorParameters
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {}
+}
+
 impl Parameters for SupervisorParameters
 {
     type Key = WorkOrderActivity;
@@ -157,7 +163,7 @@ impl SupervisorParameters
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct SupervisorParameter
 {
     pub resource: Resources,

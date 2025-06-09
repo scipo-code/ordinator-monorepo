@@ -25,6 +25,7 @@ use serde::Serialize;
 
 use super::tactical_resources::TacticalResources;
 
+#[derive(Debug)]
 pub struct TacticalParameters
 {
     pub tactical_work_orders: HashMap<WorkOrderNumber, TacticalParameter>,
@@ -126,7 +127,7 @@ pub fn create_tactical_parameter(
     TacticalParameter::new(work_order, work_order_configuration, operation_parameters)
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct TacticalParameter
 {
     pub main_work_center: Resources,

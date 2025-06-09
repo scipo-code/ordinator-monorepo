@@ -18,11 +18,32 @@ use super::supervisor_parameters::SupervisorParameters;
 
 pub type SupervisorObjectiveValue = u64;
 
-#[derive(PartialEq, Eq, Debug, Default, Clone)]
+#[derive(PartialEq, Eq, Default, Clone)]
 pub struct SupervisorSolution
 {
     pub(crate) objective_value: SupervisorObjectiveValue,
     pub(crate) operational_state_machine: HashMap<(Id, WorkOrderActivity), Delegate>,
+}
+
+impl std::fmt::Debug for SupervisorSolution
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        if f.alternate() {
+            write!(
+                f,
+                "SupervisorSolution\
+                {{\
+                objective_value: {:#?}\n\
+                operational_state_machine: {}\n\
+                }}",
+                self.objective_value,
+                self.operational_state_machine.len(),
+            )
+        } else {
+            panic!()
+        }
+    }
 }
 
 impl Solution for SupervisorSolution

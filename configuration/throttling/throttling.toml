@@ -1,8 +1,8 @@
 # Throttling in milliseconds (ms)
-strategic_throttling   = 100
-tactical_throttling    = 100
-supervisor_throttling  = 100
-operational_throttling = 100
+strategic_throttling   = 500
+tactical_throttling    = 500
+supervisor_throttling  = 500
+operational_throttling = 500
 
 # If you did not fix it, it aint fixed. I think that this is the
 # best approach that we could have towards this.l
