@@ -11,19 +11,19 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { useEffect, useState } from "react"
 
 // Menu items.
 const items = [
   {
     title: "Overview",
-    url: "#",
+    url: "/dashboard/:asset",
     icon: Home,
   },
   {
     title: "Resources",
-    url: "#",
+    url: "/dashboard/:asset/resources",
     icon: Inbox,
   },
   {
@@ -46,6 +46,7 @@ const items = [
 // TODO: The assets available should reflect only what the user has access to.
 export function AppSidebar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [workspace, setWorkspace] = useState<string | null>(null);
   const { asset } = useParams<{ asset: string}>();
 
@@ -55,13 +56,29 @@ export function AppSidebar() {
     } else {
       setWorkspace("Select Workspace");
     }
-    
   }, [asset])
 
   const handleSelectAsset = (ws: string) => {
-    navigate(`/dashboard/${ws}`)
+    // If we're already on a dashboard page, keep the current view
+    const currentPath = location.pathname;
+    if (currentPath.includes('/dashboard/')) {
+      const newPath = currentPath.replace(/\/dashboard\/[^/]+/, `/dashboard/${ws}`);
+      navigate(newPath);
+    } else {
+      navigate(`/dashboard/${ws}`);
+    }
     setWorkspace(ws);
   }
+
+  const handleNavigation = (url: string) => {
+    if (!asset) {
+      // If no asset is selected, default to DF
+      navigate('/dashboard/DF');
+      return;
+    }
+    navigate(url.replace(':asset', asset));
+  }
+
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
@@ -91,11 +108,9 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
+                  <SidebarMenuButton onClick={() => handleNavigation(item.url)}>
+                    <item.icon />
+                    <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
