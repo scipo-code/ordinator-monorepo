@@ -17,10 +17,8 @@ impl std::fmt::Display for AppError
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
-        let value = match self {
-            AppError::Anyhow(e) => e,
-        };
-        write!(f, "{}", value)
+        let AppError::Anyhow(value) = self;
+        write!(f, "{value}")
     }
 }
 

@@ -48,7 +48,7 @@ impl From<SupervisorResponseStatus> for SupervisorResponseStatusDto
             supervisor_resource: value
                 .supervisor_resource
                 .into_iter()
-                .map(|e| IdDto::from(e))
+                .map(IdDto::from)
                 .collect(),
             delegated_work_order_activities: value.delegated_work_order_activities,
             objective: value.objective,
