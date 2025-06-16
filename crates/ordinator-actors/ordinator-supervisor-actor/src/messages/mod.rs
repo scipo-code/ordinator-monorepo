@@ -30,6 +30,9 @@ pub enum SupervisorType
     Other,
 }
 
+// You cannot have this one here. You have to do something else instead. I think
+// that the best approach is to make a `From` implementation.
+//
 #[derive(Serialize)]
 pub enum SupervisorResponseMessage
 {

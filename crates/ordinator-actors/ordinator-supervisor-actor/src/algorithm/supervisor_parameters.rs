@@ -25,10 +25,31 @@ pub struct SupervisorParameters
     pub options: SupervisorOptions,
 }
 
+// ASSERT on elements in the Vec. That is a really good point.
 // ISSUE START HERE
 impl std::fmt::Debug for SupervisorParameters
 {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {}
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        if f.alternate() {
+            write!(
+                f,
+                "Number of WorkOrderActivities: {}\n\
+                Number of responsible operational Actors: {}\n\
+                Supervisor periods: {:#?}",
+                self.supervisor_work_orders.len(),
+                self.operational_ids.len(),
+                self.supervisor_periods,
+            )
+        } else {
+            // You should really use the
+            // NOTE [ ] CRUCIAL LESSON
+            // You should use a debugger. I think that you should
+            // You head is a faulty interpreter! Good point! I think that
+            // we should.
+            panic!("Use the alternate version of the Debug formatter")
+        }
+    }
 }
 
 impl Parameters for SupervisorParameters

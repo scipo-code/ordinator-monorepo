@@ -24,6 +24,9 @@ use crate::traits::AbLNSUtils;
 // You have to split the algorithm into a set of different traits.
 // with each one controlling access to the underlying code. That
 // is important that we do it that way.
+//
+// You have to tell the specific `Algorithm` how to handle the
+// error that you saw previously.
 #[derive(Debug)]
 pub struct Algorithm<S, P, I, Ss>
 where

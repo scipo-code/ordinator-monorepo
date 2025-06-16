@@ -123,7 +123,11 @@ pub trait ActorBasedLargeNeighborhoodSearch
         let state_change = self.incorporate_system_solution()?;
 
         if state_change {
-            self.schedule().unwrap();
+            // You are beginning to see the many ways that you have been wrong.
+            // FIX. This should not be here! This is clearly wrong.
+            // This is causing a lot of stress. You simply have to
+            // remove it from the code.
+            // self.schedule().unwrap();
             // We have to determine where the error is located. If this fails we have to go
             // into the crate and start unit testing.
             self.calculate_objective_value().with_context(|| format!("Could not calculate the objective value after a incorporating state from the system solution\nLocation: {}:{}", file!(), line!()))?;

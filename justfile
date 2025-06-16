@@ -14,6 +14,10 @@ build-windows:
 build-linux:
     cargo build --release
 
+bs:
+    #!/usr/bin/env nu
+    cargo build --release | ~/.cargo/bin/bs target/release/ordinator-api-server
+
 tr REGEX:
     tail -F logging/logs/ordinator.operational.log | rg {{ REGEX }} | jq
     

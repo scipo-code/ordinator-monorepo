@@ -36,7 +36,6 @@ use tracing::Level;
 #[allow(unused_imports)]
 use tracing::event;
 
-#[derive(Debug)]
 pub struct SupervisorAlgorithm<Ss>(Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>)
 where
     Ss: SystemSolutions;
@@ -53,6 +52,42 @@ where
         self.solution
             .turn_work_order_into_delegate_assess(work_order_number);
         Ok(())
+    }
+}
+
+impl<Ss: SystemSolutions + std::fmt::Debug> std::fmt::Debug for SupervisorAlgorithm<Ss>
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        let supervisor_periods = &self.parameters.supervisor_periods;
+        let supervisor_tasks = self
+            .0
+            .loaded_system_solution
+            .strategic()
+            .expect("The StrategicSolution should be present")
+            .supervisor_tasks(supervisor_periods);
+
+        write!(
+            f,
+            "{:#?}\n\
+            Strategic scheduled work orders in each period:\n\
+            \tFirst : {}\n\
+            \tSecond: {}\n\
+            \tThird : {}",
+            self.0,
+            supervisor_tasks
+                .iter()
+                .filter(|(_wo, per)| **per == supervisor_periods[0])
+                .count(),
+            supervisor_tasks
+                .iter()
+                .filter(|(_wo, per)| **per == supervisor_periods[1])
+                .count(),
+            supervisor_tasks
+                .iter()
+                .filter(|(_wo, per)| **per == supervisor_periods[2])
+                .count(),
+        )
     }
 }
 
@@ -139,6 +174,16 @@ where
         }
     }
 
+    // Because you pulled the `schedule` out it means that you cannot create a
+    // supervisor specific error code. Is this an issue? I do not think that it
+    // is actually. I simply means that you have to think carefully about how
+    // you structure your error messages.
+    //
+    // Good you are ready to move on now.
+    // ISSUE Start here [ ]
+    // You have to fix the initialization.
+    // TODO [ ]
+    // FIX the supervisor initialization.
     fn schedule(&mut self) -> Result<()>
     {
         // What is the criteria for handling this in practice?
@@ -147,14 +192,57 @@ where
         // We should first make sure that the `Supervisor` is actually working with the
         // correct state.
         //
+        // TODO [ ]
+        // We want to know how the `StrategicSolution` looks like when an error occurs
         //
+        // in the
+        // This will always fail as you do not have the correct... You want the
+        // supervisor to see these, but you do not want to have them in the
+        // solution. I am not sure what the best approach is here.
         //
+        // Where should the discrepancy be handled? I think that the best place is in
+        // the I think that the Supervisor should be able to see what is
+        // suggested to him and The issue is where to put the information. I am
+        // not really sure what the best place is to do this! The question is if
+        // we want to incorporate this into the state of the supervisor... I
+        // actually do not think that is something that we want. A key insight
+        // of the architecture is that the state of the other algorithms are
+        // always available. And that we should use this as much as possible.
+        //
+        // How to tackle this problem then? Okay now we need to make sure that
+        // the code runs correctly with
+        // TODO [ ]
+        // Debug the SupervisorActor.
         ensure!(
-            self.solution.get_work_order_activities().is_empty(),
-            "{} activities in the Supervisor Solution\n\
+            self.loaded_system_solution
+                .strategic()
+                .unwrap()
+                .supervisor_tasks(&self.parameters.supervisor_periods)
+                .len()
+                >= self
+                    .solution
+                    .get_work_order_activities()
+                    .iter()
+                    .map(|e| e.0)
+                    .collect::<HashSet<_>>()
+                    .len(),
+            "{} Strategic workorders in supervisor interval\n\
+            {} Supervisor workorders in supervisor interval\n\
+            {} activities in the Supervisor Solution\n\
             {} `WorkOrder`s in the Supervisor parameters\n\
             {} `Activity`s in the SupervisorParameters\n\
             Location: {}",
+            self.loaded_system_solution
+                .strategic()
+                .unwrap()
+                .supervisor_tasks(&self.parameters.supervisor_periods)
+                .len(),
+            self.solution
+                .get_work_order_activities()
+                .iter()
+                .map(|e| e.0)
+                .collect::<HashSet<_>>()
+                .len(),
             self.solution.get_work_order_activities().len(),
             self.parameters.supervisor_work_orders.len(),
             self.parameters
@@ -285,9 +373,13 @@ where
         //
         // TODO [ ]
         // determine exactly how to fix this.
+        //
         let work_order_parameters = self.parameters.supervisor_work_orders.clone();
         let all_operational_actors = self.loaded_system_solution.all_operational().clone();
 
+        // Infeasible [`WorkOrder`]s
+
+        let mut non_incorporated_work_orders: HashSet<WorkOrderNumber> = HashSet::new();
         for (work_order_number, _) in incoming_activities {
             let activity_number = work_order_parameters
                 .get(work_order_number)
@@ -295,6 +387,10 @@ where
                 .keys()
                 .cloned();
 
+            // IMPORTANT. The supervisor and strategic state does not necessarily
+            // have to be the same... As there are cases where the strategic
+            // work order cannot be accepted into the supervisor state. This means
+            // that it is crucial. That the work is added no matter what.
             for activity_number in activity_number {
                 for operational_id in &all_operational_actors {
                     let supervisor_parameter = self
@@ -308,6 +404,7 @@ where
                     let supervisor_parameter_resource = &supervisor_parameter.resource;
 
                     if supervisor_parameter.work == Work::from(0.0) {
+                        non_incorporated_work_orders.insert(*work_order_number);
                         continue;
                     };
 
@@ -318,12 +415,14 @@ where
                         self.solution
                             .operational_state_machine
                             .insert(operational_state, Delegate::default());
+                    } else {
+                        non_incorporated_work_orders.insert(*work_order_number);
                     }
                 }
             }
         }
 
-        let strategic_activities_hash_set = strategic_activities_in_supervisor_period
+        let strategic_activities = strategic_activities_in_supervisor_period
             .iter()
             .map(|e| e.0)
             .cloned()
@@ -331,24 +430,77 @@ where
 
         self.solution
             .operational_state_machine
-            .retain(|id_woa, _| strategic_activities_hash_set.contains(&id_woa.1.0));
+            .retain(|id_woa, _| strategic_activities.contains(&id_woa.1.0));
 
-        let value = self
+        let supervisor_work_orders = self
             .solution
             .operational_state_machine
             .iter()
             .map(|e| e.0.1.0)
             .collect::<HashSet<_>>();
+        // Okay now we want to run this based on the state of the `Supervisor`
+        //
+        // If we get an `Error` here we should expand the code to incorporate the
+        // missing link here. That means that you should focus on understanding
+        // the root cause if this new change errors.
+        //
+        // What does it mean that this is not in the correct place?
+        // There are more
+        // So the sets should be part of the of the sets that is the smallest.
+        //
+        // That means that we should take the `union` between the two
+        // difference.
+        // You should find a more trivial way of storing all.
+        // Good. You logic works. But what should be done about the
+        // difference?
+
+        // So there are two different issues here.
+        // * Either the work is zero in which case the activities will be excluded
+        // * There is no underlying resource available to fix the issue.
+        // I think that we should clearly understand what should be done here.
+        //
+        // I think that there is a fundamental issue here where
+        // the [`SchedulingEnvironment`] does not have any way
+        // of incorporating the state of the supervisor in the
+        // [`WorkOrder`]s.
+        //
+        // ESSAY [ ]
+        // You should think about how you incorporate the state
+        // here. It is unreliable to rely on the solution as the
+        // solutions can change easily. I am not sure where to
+        // put this.
+        // What should happen to the work orders that does
+        // not fit well into the model.
+        //
+        // The fundamental issue is how to give the work orders to. I think that
+        // they should stay in the [`SupervisorActor`] so that he can work on the
+        // with them and send them where they need to be, and maybe even manually
+        // assign the activity to a technician.
+        //
+        // I believe that including it into the Supervisor is the best approach for now.
         ensure!(
-            strategic_activities_hash_set == value,
+            strategic_activities
+                == supervisor_work_orders
+                    .union(&non_incorporated_work_orders)
+                    .cloned()
+                    .collect(),
             "Strategic activities: {:#?}\n\
              Supervisor solution: {:#?}\n\
-             difference between the first and the second: {:#?}\n\
-             difference between the second and the first: {:#?}",
-            strategic_activities_hash_set,
-            value,
-            strategic_activities_hash_set.difference(&value),
-            value.difference(&strategic_activities_hash_set),
+             difference between strategic / supervisor: {:#?}\n\
+             difference between supervisor / strategic: {:#?}",
+            strategic_activities,
+            supervisor_work_orders.union(&non_incorporated_work_orders),
+            strategic_activities.difference(
+                &supervisor_work_orders
+                    .union(&non_incorporated_work_orders)
+                    .cloned()
+                    .collect::<HashSet<_>>()
+            ),
+            supervisor_work_orders
+                .union(&non_incorporated_work_orders)
+                .cloned()
+                .collect::<HashSet<_>>()
+                .difference(&strategic_activities),
         );
 
         Ok(true)

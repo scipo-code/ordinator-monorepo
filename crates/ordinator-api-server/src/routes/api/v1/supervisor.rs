@@ -1,18 +1,20 @@
 use std::sync::Arc;
 
-use axum::Router;
-use axum::routing::get;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::TotalSystemSolution;
-
-use crate::handlers::supervisor_handlers::status;
+use utoipa_axum::router::OpenApiRouter;
+use utoipa_axum::routes;
 
 pub async fn supervisor_routes(
     state: Arc<Orchestrator<TotalSystemSolution>>,
-) -> Router<Arc<Orchestrator<TotalSystemSolution>>>
+) -> OpenApiRouter<Arc<Orchestrator<TotalSystemSolution>>>
 {
-    Router::new()
-        .route("/{asset}/{supervisor_id}", get(status))
+    OpenApiRouter::new()
+        .routes(routes!(
+            crate::handlers::supervisor_handlers::status,
+            crate::handlers::supervisor_handlers::all_available_technicians
+        ))
+        // .route("/{asset}/{supervisor_id}", get(status))
         .with_state(state)
 
     // TODO [ ] Put these into the handler

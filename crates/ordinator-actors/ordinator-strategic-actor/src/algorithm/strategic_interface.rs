@@ -15,14 +15,14 @@ impl StrategicInterface for StrategicSolution
 
     fn supervisor_tasks(
         &self,
-        periods: &[Period],
+        supervisor_periods: &[Period],
     ) -> std::collections::HashMap<WorkOrderNumber, Period>
     {
         self.strategic_scheduled_work_orders
             .clone()
             .into_iter()
             .filter_map(|(won, opt_str_per)| {
-                opt_str_per.and_then(|per| periods.contains(&per).then_some((won, per)))
+                opt_str_per.and_then(|per| supervisor_periods.contains(&per).then_some((won, per)))
             })
             .collect()
     }

@@ -1,9 +1,9 @@
 use std::collections::HashMap;
-use std::error::Error;
 
+// You cannot know what the right thing is here as you do not know the state of the
+// program. You have to continuously have to work on
 use anyhow::Context;
 use anyhow::Result;
-use anyhow::bail;
 use anyhow::ensure;
 use chrono::DateTime;
 use chrono::Utc;

@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
-use axum::Router;
 use axum::routing::get;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::TotalSystemSolution;
+use utoipa_axum::router::OpenApiRouter;
 
 use crate::handlers::strategic_handlers::get_scheduler_work_orders;
 
@@ -11,10 +11,9 @@ use crate::handlers::strategic_handlers::get_scheduler_work_orders;
 // The main idea is to replace all the.
 pub async fn scheduler_nest(
     state: Arc<Orchestrator<TotalSystemSolution>>,
-) -> Router<Arc<Orchestrator<TotalSystemSolution>>>
+) -> OpenApiRouter<Arc<Orchestrator<TotalSystemSolution>>>
 {
-    Router::new()
-        .without_v07_checks()
+    OpenApiRouter::new()
         .route("/work_orders/{id}", get(get_scheduler_work_orders))
         .with_state(state)
 }

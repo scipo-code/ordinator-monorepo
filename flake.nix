@@ -36,6 +36,7 @@
             pkgs.libunwind
             pkgs.libxlsxwriter
             pkgs.linuxKernel.packages.linux_zen.perf
+            pkgs.bugstalker
             pkgs.nushell
             pkgs.openssl_3
             pkgs.pkg-config
