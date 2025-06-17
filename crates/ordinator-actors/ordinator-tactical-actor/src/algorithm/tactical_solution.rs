@@ -58,6 +58,7 @@ pub struct TacticalSolution
     pub(crate) tactical_work_orders: TacticalScheduledWorkOrders,
     pub(crate) tactical_loadings: TacticalResources,
 }
+
 // This should be put into the `algorithm.rs` file
 impl Solution for TacticalSolution
 {

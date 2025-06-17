@@ -6,6 +6,7 @@ edition = "2024"
 
 [dependencies]
 ordinator-orchestrator = { path = "../ordinator-orchestrator" }
+ordinator-contracts = { path = "../ordinator-contracts" }
 
 axum = {version = "*", features = ["macros", "tokio"]}
 axum-server = "*"
@@ -20,6 +21,9 @@ dotenvy = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 serde_json = {workspace = true}
+utoipa = {version = "*", features = ["yaml", "axum_extras"]}
+utoipa-axum = "*" 
+utoipa-swagger-ui = {version = "*", features = ["axum"]}
 
 # [target.'cfg(not(target_env = "msvc"))'.dependencies]
 # tikv-jemallocator = {version = "0.6"}

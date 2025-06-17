@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+// You cannot know what the right thing is here as you do not know the state of the
+// program. You have to continuously have to work on
 use anyhow::Context;
 use anyhow::Result;
 use anyhow::ensure;
@@ -40,12 +42,38 @@ impl From<u64> for OperationalObjectiveValue
     }
 }
 
-#[derive(PartialEq, Eq, Debug, Default, Clone)]
+#[derive(PartialEq, Eq, Default, Clone)]
 pub struct OperationalSolution
 {
     pub objective_value: OperationalObjectiveValue,
     pub scheduled_work_order_activities: Vec<(WorkOrderActivity, OperationalAssignment)>,
 }
+
+// NOTE [ ]
+// You know that here you will have to make the system so that the code will
+// work correctly with the `Debug` implementation. Foresight is the only gift
+// that you can you to speed up development.
+impl Debug for OperationalSolution
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        if f.alternate() {
+            write!(
+                f,
+                "OperationalSolution\
+                {{\
+                objective_value: {:#?}\n\
+                scheduled_activities: {}\n\
+                }}",
+                self.objective_value,
+                self.scheduled_work_order_activities.len(),
+            )
+        } else {
+            Ok(())
+        }
+    }
+}
+use std::fmt::Debug;
 
 impl Solution for OperationalSolution
 {

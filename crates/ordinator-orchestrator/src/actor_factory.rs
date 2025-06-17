@@ -1,3 +1,4 @@
+use std::fmt::Debug;
 use std::sync::Arc;
 use std::sync::Mutex;
 
@@ -44,9 +45,11 @@ where
             Tactical = TacticalSolution,
             Supervisor = SupervisorSolution,
             Operational = OperationalSolution,
-        > + Send
+        >
+        + Send
         + Sync
-        + 'static,
+        + 'static
+        + Debug,
 {
     // This is a helper function. This is where the problem becomes appearant
     // It should be removed from the function.

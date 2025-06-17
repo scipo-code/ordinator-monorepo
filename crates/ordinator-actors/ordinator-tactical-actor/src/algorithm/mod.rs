@@ -45,6 +45,7 @@ use self::tactical_parameters::TacticalParameters;
 use self::tactical_solution::OperationSolution;
 
 // If you had a single crate you should simply call thie
+#[derive(Debug)]
 pub struct TacticalAlgorithm<Ss>(
     Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>,
 )
@@ -159,7 +160,7 @@ where
             // The goal here is to make the code function without the use of the
             //
             let strategic_period = &self
-                .loaded_shared_solution
+                .loaded_system_solution
                 // This should be an option instead
                 .strategic()
                 .ok();

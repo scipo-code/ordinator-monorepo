@@ -4,6 +4,7 @@ pub mod strategic_parameters;
 pub mod strategic_resources;
 pub mod strategic_solution;
 
+use std::fmt::Debug;
 use std::any::type_name;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -64,6 +65,7 @@ use crate::messages::responses::StrategicResponseScheduling;
 // important thing here.
 
 
+#[derive(Debug)]
 pub struct StrategicAlgorithm<Ss>(
     pub Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>,
 )
@@ -137,7 +139,7 @@ where
             // If this value is some. It means that the Tactical Algorithm has scheduled the
             // work order.
             let tactical_scheduled_period = self
-                .loaded_shared_solution
+                .loaded_system_solution
                 .tactical_actor_solution()
                 .ok()
                 .and_then(|solution| solution.tactical_period(work_order_number, &self.parameters.strategic_periods));
@@ -565,6 +567,7 @@ where
         Ok(())
     }
 }
+
 
 // This should be in a different place as well. I think that the best approach
 // will be to consolidate this together with the other models.

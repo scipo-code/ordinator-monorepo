@@ -1,5 +1,6 @@
 #[test]
-fn test_determine_first_available_start_time() -> Result<()> {
+fn test_determine_first_available_start_time() -> Result<()>
+{
     let mut scheduling_environment = SchedulingEnvironment::builder().build();
 
     let id = Id::new("TEST_OPERATIONAL", vec![], vec![]);
@@ -69,7 +70,8 @@ fn test_determine_first_available_start_time() -> Result<()> {
     Ok(())
 }
 #[test]
-fn test_determine_next_event_3() -> Result<()> {
+fn test_determine_next_event_3() -> Result<()>
+{
     let mut scheduling_environment = SchedulingEnvironment::builder().build();
 
     let id = Id::new("TEST_OPERATIONAL", vec![], vec![]);
@@ -96,7 +98,8 @@ fn test_determine_next_event_3() -> Result<()> {
     Ok(())
 }
 #[test]
-fn test_determine_next_event_2() -> Result<()> {
+fn test_determine_next_event_2() -> Result<()>
+{
     // let mut scheduling_environment = SchedulingEnvironment::default();
 
     // let id = &Id::new("TEST_OPERATIONAL", vec![], vec![]);
@@ -105,9 +108,10 @@ fn test_determine_next_event_2() -> Result<()> {
     // // Having the data available is also a good idea. I think that injecting
     // // time as a dependency is really the most important architectual thing here
     // // for making all of this work. It will also allow us to live in the past and
-    // // test on old data. You need to work like this if you want to make this work.
-    // let operational_configuration_all =
-    //     OperationalConfigurationAll::new(id.clone(), 6.0, operational_configuration);
+    // // test on old data. You need to work like this if you want to make this
+    // work. let operational_configuration_all =
+    //     OperationalConfigurationAll::new(id.clone(), 6.0,
+    // operational_configuration);
 
     // scheduling_environment
     //     .worker_environment
@@ -143,7 +147,8 @@ fn test_determine_next_event_2() -> Result<()> {
     Ok(())
 }
 #[test]
-fn test_determine_next_event_1() -> Result<()> {
+fn test_determine_next_event_1() -> Result<()>
+{
     let system_configurations = SystemConfigurations::read_all_configs()?;
 
     let mut scheduling_environment = SchedulingEnvironment::builder().build();

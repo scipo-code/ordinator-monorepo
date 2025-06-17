@@ -46,6 +46,7 @@ use rand::seq::IndexedRandom;
 use tracing::Level;
 use tracing::event;
 
+#[derive(Debug)]
 pub struct OperationalAlgorithm<Ss>(
     Algorithm<OperationalSolution, OperationalParameters, FillinOperationalEvents, Ss>,
 )
@@ -269,7 +270,7 @@ where
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
         let operational_shared_solution = self
-            .loaded_shared_solution
+            .loaded_system_solution
             .supervisor_actor_solutions()
             .with_context(|| {
                 format!(
@@ -281,15 +282,21 @@ where
             // delay and significant redirections.
             .delegates_for_agent(&self.id);
 
+        // Should the supervisor necessarily be in here? I do not think so
+        // the best approach is probably
         self.solution
             .scheduled_work_order_activities
-            // We remain all `OperationalSolution` which are not `Delegate::Drop` where
-            // the `Delegate` variant is decided by the
+            // We retain all `OperationalSolution`s which are not `Delegate::Drop` where
+            // the `Delegate` variant is decided by the the `SupervisorActor`.
             .retain(|(woa, _)| {
                 !operational_shared_solution
                     .get(woa)
-                    .unwrap_or_else(|| {
-                        assert!(*woa == (WorkOrderNumber(0), 0));
+                    .unwrap_or({
+                        // NOTE [ ]
+                        // The main issue here is that the `ensure` here is not
+                        // correct. There could actually be [`WorkOrder`]s in the
+                        // OperationalActor that are not present in the [`SupervisorActor`]
+                        // This means that we should remove this
                         &Delegate::Assign
                     })
                     .is_drop()
@@ -482,7 +489,7 @@ where
         // `Delegate::Assign`
         // it should be named: `task`?
         let work_order_activities = &self
-            .loaded_shared_solution
+            .loaded_system_solution
             .supervisor_actor_solutions()
             .with_context(|| "SupervisorSolution is not initialized for the OperationalActor")?
             .delegated_tasks(&self.id);
@@ -953,7 +960,7 @@ where
         // Remember a master programmer builds programs that cannot fail.
         // What exactly is this function trying to do?
         let tactical_days_option = self
-            .loaded_shared_solution
+            .loaded_system_solution
             // Swap the solution in the `ArcSwap`
             .tactical_actor_solution()?
             // FIX [ ]
@@ -965,7 +972,7 @@ where
         // initialization. The implementation is that the tactical and strategic
         // algorithm always provide a key for each WorkOrderNumber");
         let strategic_period_option = self
-            .loaded_shared_solution
+            .loaded_system_solution
             .strategic()?
             .scheduled_task(&work_order_activity.0);
 

@@ -1,6 +1,7 @@
 pub mod algorithm;
 pub mod messages;
 
+use std::fmt::Debug;
 use std::ops::Deref;
 use std::ops::DerefMut;
 use std::sync::Arc;
@@ -19,8 +20,8 @@ use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_configuration::SystemConfigurations;
 use ordinator_orchestrator_actor_traits::ActorFactory;
-use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::CommandHandler;
+use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::OrchestratorNotifier;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
@@ -28,7 +29,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use priority_queue::PriorityQueue;
 
-pub struct TacticalActor<Ss>(
+pub struct TacticalActor<Ss: Debug>(
     Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>,
 )
 where
@@ -37,7 +38,7 @@ where
 
 impl<Ss> Deref for TacticalActor<Ss>
 where
-    Ss: SystemSolutions<Tactical = TacticalSolution>,
+    Ss: SystemSolutions<Tactical = TacticalSolution> + Debug,
 {
     type Target = Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>;
 
@@ -47,7 +48,7 @@ where
     }
 }
 
-impl<Ss> DerefMut for TacticalActor<Ss>
+impl<Ss: Debug> DerefMut for TacticalActor<Ss>
 where
     Ss: SystemSolutions<Tactical = TacticalSolution>,
 {
@@ -61,7 +62,7 @@ pub struct TacticalApi {}
 
 impl<Ss> ActorFactory<Ss> for TacticalApi
 where
-    Ss: SystemSolutions<Tactical = TacticalSolution> + Send + Sync + 'static,
+    Ss: SystemSolutions<Tactical = TacticalSolution> + Send + Sync + 'static + Debug,
     TacticalAlgorithm<Ss>: ActorBasedLargeNeighborhoodSearch
         + Send
         + Sync
@@ -99,7 +100,7 @@ where
                 ab.id(id)
                     // So this function returns a `Result`
                     .parameters_and_solution(&scheduling_environment_guard.lock().unwrap())?
-                    .arc_swap_shared_solution(shared_solution_arc_swap)
+                    .system_solution_arc_swap(shared_solution_arc_swap)
             })?
             // TODO [x]
             // These should be created in a single step

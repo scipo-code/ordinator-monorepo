@@ -543,6 +543,11 @@ impl FromStr for WorkOrderNumber
     }
 }
 
+// TODO [ ]
+//
+// You should really consider making this into a struct so that
+// you can define custom behavior on it. I do not think that there
+// is a better way of defining the code here.
 pub type WorkOrderActivity = (WorkOrderNumber, ActivityNumber);
 
 impl From<u64> for WorkOrderNumber

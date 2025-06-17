@@ -1,1 +1,78 @@
+use ordinator_scheduling_environment::Asset;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::worker_environment::resources::Id;
+use serde::Serialize;
+use strum::IntoEnumIterator;
+use utoipa::ToSchema;
+
 pub mod orchestrator;
+pub mod supervisor;
+// This is a DTO object, it should be moved out of the
+// `scheduling-environment`
+#[derive(PartialEq, Eq, PartialOrd, Ord, Serialize, ToSchema)]
+pub struct AssetNames
+{
+    value: String,
+    label: String,
+}
+
+impl AssetNames
+{
+    pub fn convert_to_asset_names() -> Vec<AssetNames>
+    {
+        let mut vec = Vec::new();
+        for asset in Asset::iter() {
+            let asset_name = AssetNames {
+                value: asset.to_string(),
+                label: asset.to_string(),
+            };
+            vec.push(asset_name);
+        }
+        vec
+    }
+}
+
+#[derive(PartialEq, Eq, PartialOrd, Ord, ToSchema, Serialize)]
+pub struct IdDto
+{
+    id: String,
+    resources: Vec<String>,
+    asset: Vec<AssetNames>,
+}
+
+impl From<Id> for IdDto
+{
+    fn from(value: Id) -> Self
+    {
+        Self {
+            id: value.0,
+            resources: value.1.iter().map(|e| e.to_string()).collect(),
+            asset: value
+                .2
+                .iter()
+                .map(|e| AssetNames {
+                    value: e.to_string(),
+                    label: e.to_string(),
+                })
+                .collect(),
+        }
+    }
+}
+#[derive(ToSchema, Serialize)]
+struct WorkOrderActivityDto
+{
+    work_order: u64,
+    activity: u64,
+}
+
+impl From<(WorkOrderNumber, ActivityNumber)> for WorkOrderActivityDto
+{
+    fn from(value: (WorkOrderNumber, ActivityNumber)) -> Self
+    {
+        Self {
+            work_order: value.0.0,
+            activity: value.1,
+        }
+    }
+}

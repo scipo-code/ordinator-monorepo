@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use anyhow::Result;
 use anyhow::bail;
 use ordinator_orchestrator_actor_traits::ActorSpecific;
@@ -14,12 +16,11 @@ use super::requests::OperationalSchedulingRequest;
 use super::responses::OperationalResponseStatus;
 use crate::OperationalActor;
 use crate::algorithm::operational_solution::OperationalSolution;
-
 // Was this actually needed? I am not really sure here I believe that
 // the best approach is to make something.
 impl<Ss> CommandHandler for OperationalActor<Ss>
 where
-    Ss: SystemSolutions<Operational = OperationalSolution>,
+    Ss: SystemSolutions<Operational = OperationalSolution> + Debug,
 {
     type Req = OperationalRequestMessage;
     type Res = OperationalResponseMessage;
@@ -69,7 +70,7 @@ where
                 // }
                 let (assign, assess, unassign): (u64, u64, u64) = self
                     .algorithm
-                    .loaded_shared_solution
+                    .loaded_system_solution
                     .supervisor_actor_solutions()?
                     .count_delegate_types(&self.actor_id);
 
