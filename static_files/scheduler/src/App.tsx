@@ -1,6 +1,7 @@
 import { HashRouter, Route, Routes, useParams } from "react-router-dom";
 import AssetDashboard from "./pages/AssetDashboard"; 
-import WorkOrders from "./pages/dashboard/WorkOrders";
+import Scheduler from "./pages/dashboard/Scheduler";
+import WorkorderOverview from "./pages/dashboard/WorkorderOverview";
 import ResourceOverview from "./pages/dashboard/ResourceOverview";
 import { ResourceChart } from "./pages/dashboard/ResourceChart";
 import "./App.css";
@@ -27,13 +28,14 @@ function Resources() {
 
 function App() {
   return (
-    <HashRouter basename="/">
-      <Layout>
+    <HashRouter>
         <Routes>
-          <Route path="/dashboard/:asset" element={<WorkOrders />} />
-          <Route path="/dashboard/:asset/resources" element={<Resources />} />
+          <Route path="/" element={<Layout />}>
+            <Route path="/dashboard/:asset" element={<Scheduler />} />
+            <Route path="/dashboard/:asset/workorders" element={<WorkorderOverview />} />
+            <Route path="/dashboard/:asset/resources" element={<Resources />} />
+          </Route>
         </Routes>
-      </Layout>
     </HashRouter>
   );
 }

@@ -17,9 +17,14 @@ import { useEffect, useState } from "react"
 // Menu items.
 const items = [
   {
-    title: "Overview",
+    title: "Scheduler",
     url: "/dashboard/:asset",
     icon: Home,
+  },
+  {
+    title: "Workorders",
+    url: "/dashboard/:asset/workorders",
+    icon: Search,
   },
   {
     title: "Resources",
@@ -72,8 +77,8 @@ export function AppSidebar() {
 
   const handleNavigation = (url: string) => {
     if (!asset) {
-      // If no asset is selected, default to DF
-      navigate('/dashboard/DF');
+      // If no asset is selected, show a message or handle it appropriately
+      alert('Please select a workspace first');
       return;
     }
     navigate(url.replace(':asset', asset));

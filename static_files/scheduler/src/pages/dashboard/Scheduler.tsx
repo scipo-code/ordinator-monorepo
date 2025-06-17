@@ -64,7 +64,7 @@ const mockWorkOrders: Record<string, WorkOrder[]> = {
   ]
 };
 
-const WorkOrders: React.FC = () => {
+const Scheduler: React.FC = () => {
   const { asset } = useParams<{ asset: string }>();
   const navigate = useNavigate();
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
@@ -199,4 +199,4 @@ const WorkOrders: React.FC = () => {
   );
 };
 
-export default WorkOrders;
+export default Scheduler;
