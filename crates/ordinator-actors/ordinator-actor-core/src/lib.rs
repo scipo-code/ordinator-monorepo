@@ -114,16 +114,7 @@ where
                 .throttling
                 .get_throttling(&self.actor_id.0)
             {
-<<<<<<< HEAD
-                Ok(throttle) => throttle,
-||||||| ce3fc6a
-                Ok(id) => {
-                    println!("{id}");
-                    id
-                }
-=======
                 Ok(throttling) => throttling,
->>>>>>> 2025-05-29-frontend-mvps
                 Err(err) => {
                     self.error_channel
                         .send(err)

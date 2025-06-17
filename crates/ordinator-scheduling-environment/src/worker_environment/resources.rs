@@ -2,6 +2,7 @@ use std::fmt::Display;
 use std::str::FromStr;
 
 use chrono::NaiveTime;
+use colored::*;
 use rust_xlsxwriter::IntoExcelData;
 use serde::Deserialize;
 use serde::Serialize;

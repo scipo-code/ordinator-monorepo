@@ -25,12 +25,6 @@ use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
 use crate::NotifyOrchestrator;
 use crate::Orchestrator;
 
-// This is not a good practice. You know that you will end up here again at some
-// point
-//
-pub type TotalSystemSolution =
-    SystemSolution<StrategicSolution, TacticalSolution, SupervisorSolution, OperationalSolution>;
-
 type ActorFactoryDependencies<Ss> = (
     Arc<Mutex<SchedulingEnvironment>>,
     Arc<ArcSwap<Ss>>,

@@ -14,7 +14,7 @@ use ordinator_orchestrator::WorkOrderNumber;
 pub async fn get_scheduler_work_orders(
     State(_orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     Path(i): Path<u64>,
-) -> Result<Json<WorkOrderNumber>>
+) -> Result<Json<SchedulerWorkOrderDto>>
 {
     // This should go into the handler, directory. There is no other way around it
     // REMEMBER: You should only wrap method calls that the Orchestrator exposes.

@@ -6,6 +6,12 @@ edition = "2024"
 [dependencies]
 ordinator-scheduling-environment = { path = "../ordinator-scheduling-environment"}
 ordinator-supervisor-actor = {path = "../ordinator-actors/ordinator-supervisor-actor"}
+ordinator-strategic-actor = {path = "../ordinator-actors/ordinator-strategic-actor"}
+ordinator-tactical-actor = {path = "../ordinator-actors/ordinator-tactical-actor"}
+ordinator-operational-actor = {path = "../ordinator-actors/ordinator-operational-actor"}
+ordinator-orchestrator-actor-traits = { path = "../ordinator-orchestrator-actor-traits"}
+
+
 
 anyhow={ workspace = true}
 chrono = { workspace = true}
