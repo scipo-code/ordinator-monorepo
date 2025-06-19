@@ -8,12 +8,12 @@ use axum::extract::Path;
 use axum::extract::State;
 use axum::response::Result;
 use ordinator_contracts::AssetNames;
+use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::supervisor::SupervisorResponseMessageDto;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::SupervisorRequestMessage;
 use ordinator_orchestrator::SupervisorStatusMessage::General;
-use ordinator_orchestrator::TotalSystemSolution;
 
 use crate::routes::api::AppError;
 

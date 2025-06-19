@@ -5,13 +5,13 @@ use anyhow::Result;
 use axum::Json;
 use axum::extract::Path;
 use axum::extract::State;
+use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Id;
 use ordinator_orchestrator::OperationalRequestMessage;
 use ordinator_orchestrator::OperationalResponseMessage;
 use ordinator_orchestrator::OperationalStatusRequest;
 use ordinator_orchestrator::Orchestrator;
-use ordinator_orchestrator::TotalSystemSolution;
 
 // CRUCIAL INSIGHT: Making enums for handlers and routes is a horrible idea. It
 // becomes difficult to change things and everything becomes coupled.

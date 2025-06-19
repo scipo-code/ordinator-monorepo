@@ -11,7 +11,6 @@ use std::io::Read;
 use std::sync::Arc;
 use std::sync::Weak;
 
-pub use actor_factory::TotalSystemSolution;
 use anyhow::Context;
 use anyhow::Result;
 use anyhow::anyhow;

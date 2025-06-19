@@ -63,6 +63,14 @@ impl std::fmt::Debug for WorkOrderNumber
         )
     }
 }
+
+impl std::fmt::Display for WorkOrderNumber
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        write!(f, "{}", self.0)
+    }
+}
 // Everything in the `SchedulingEnvironment` should implement
 // `Serialize` it has to, to be able to go into the database.
 #[derive(Serialize, Deserialize, Debug, Clone)]

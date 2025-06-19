@@ -7,6 +7,7 @@ use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
 use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
+use serde::Deserialize;
 use serde::Serialize;
 use strum::IntoEnumIterator;
 use utoipa::ToSchema;
@@ -16,7 +17,7 @@ pub mod scheduler;
 pub mod supervisor;
 // This is a DTO object, it should be moved out of the
 // `scheduling-environment`
-#[derive(PartialEq, Eq, PartialOrd, Ord, Serialize, ToSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema)]
 pub struct AssetNames
 {
     value: String,
@@ -36,6 +37,26 @@ impl AssetNames
             vec.push(asset_name);
         }
         vec
+    }
+}
+
+impl From<Asset> for AssetNames
+{
+    fn from(value: Asset) -> Self
+    {
+        let value = value.to_string();
+
+        Self {
+            value: value.clone(),
+            label: value,
+        }
+    }
+}
+impl From<AssetNames> for Asset
+{
+    fn from(value: AssetNames) -> Self
+    {
+        Asset::new_from_string(&value.value).expect("This operation should never fail")
     }
 }
 

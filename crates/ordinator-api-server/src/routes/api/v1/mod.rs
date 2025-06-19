@@ -8,8 +8,8 @@ use std::sync::Arc;
 
 use orchestrator::export_xlsx;
 use orchestrator::orchestrator_api_scope;
+use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Orchestrator;
-use ordinator_orchestrator::TotalSystemSolution;
 use strategic::scheduler_nest;
 use supervisor::supervisor_routes;
 use tactical::tactical_route;

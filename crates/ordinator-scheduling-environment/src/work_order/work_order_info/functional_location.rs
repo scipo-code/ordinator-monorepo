@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use rust_xlsxwriter::IntoExcelData;
 use serde::Deserialize;
 use serde::Serialize;
@@ -5,13 +7,16 @@ use serde::Serialize;
 use crate::Asset;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct FunctionalLocation {
+pub struct FunctionalLocation
+{
     pub string: String,
     pub asset: Asset,
 }
 
-impl FunctionalLocation {
-    pub fn new(functional_location: &str) -> Self {
+impl FunctionalLocation
+{
+    pub fn new(functional_location: &str) -> Self
+    {
         let asset_string = functional_location
             .split(' ')
             .next()
@@ -23,25 +28,31 @@ impl FunctionalLocation {
         }
     }
 
-    pub fn sector(&self) -> Option<&str> {
+    pub fn sector(&self) -> Option<&str>
+    {
         self.string.split('/').nth(1)
     }
 
-    pub fn system(&self) -> Option<char> {
+    pub fn system(&self) -> Option<char>
+    {
         self.string.split('/').nth(2)?.chars().nth(1)
     }
 
-    pub fn subsystem(&self) -> Option<char> {
+    pub fn subsystem(&self) -> Option<char>
+    {
         self.string.split('/').nth(2)?.chars().nth(1)
     }
 
-    pub fn equipment_tag(&self) -> Option<&str> {
+    pub fn equipment_tag(&self) -> Option<&str>
+    {
         self.string.split('/').nth(3)
     }
 }
 
-impl Default for FunctionalLocation {
-    fn default() -> Self {
+impl Default for FunctionalLocation
+{
+    fn default() -> Self
+    {
         FunctionalLocation {
             string: "Unknown".to_string(),
             asset: Asset::Unknown,
@@ -49,13 +60,23 @@ impl Default for FunctionalLocation {
     }
 }
 
-impl IntoExcelData for FunctionalLocation {
+impl Display for FunctionalLocation
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        write!(f, "{}", self.string)
+    }
+}
+
+impl IntoExcelData for FunctionalLocation
+{
     fn write(
         self,
         worksheet: &mut rust_xlsxwriter::Worksheet,
         row: rust_xlsxwriter::RowNum,
         col: rust_xlsxwriter::ColNum,
-    ) -> Result<&mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError> {
+    ) -> Result<&mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError>
+    {
         let value = self.string;
         worksheet.write_string(row, col, value)
     }
@@ -66,7 +87,8 @@ impl IntoExcelData for FunctionalLocation {
         row: rust_xlsxwriter::RowNum,
         col: rust_xlsxwriter::ColNum,
         format: &rust_xlsxwriter::Format,
-    ) -> Result<&'a mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError> {
+    ) -> Result<&'a mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError>
+    {
         let value = self.string;
         worksheet.write_string_with_format(row, col, value, format)
     }

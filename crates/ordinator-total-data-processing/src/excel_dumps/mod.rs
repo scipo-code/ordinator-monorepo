@@ -413,6 +413,9 @@ fn make_header_row(worksheet: &mut Worksheet)
     worksheet.write(0, 32, "room").unwrap();
 }
 
+// Core domain models only does domain things. `IntoExcelData` is not a domain
+// thing. The best approach here would be to
+// This should be in the `scheduling_environment_crate`
 #[derive(Debug, Clone)]
 pub enum ReasonForNotScheduling
 {

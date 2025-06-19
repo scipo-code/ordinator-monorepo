@@ -12,10 +12,10 @@ use axum::response::IntoResponse;
 use axum::response::Response;
 use axum::response::Result;
 use ordinator_contracts::AssetNames;
+use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::OrchestratorRequest;
-use ordinator_orchestrator::TotalSystemSolution;
 
 // This should be deleted and replaced with the other handler. I do not
 // see a different way around it.
