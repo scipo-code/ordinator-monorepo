@@ -9,6 +9,7 @@ use axum::response::Result;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::scheduler::SchedulerWorkOrderDto;
+use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 
 use crate::routes::api::AppError;
@@ -17,7 +18,7 @@ use crate::routes::api::AppError;
 #[debug_handler]
 #[utoipa::path(
     get,
-    path = "/scheduler/work_orders_with_scheduling/{value}/{label}",
+    path = "/scheduler/work_orders_with_scheduling/{asset}",
     params (
         ("asset" = AssetNames, Path),
     ),
@@ -37,18 +38,19 @@ pub async fn get_scheduler_work_orders(
     //
     // WARN: You are beginning to feel drained again. You should grap something to
     // eat again.
+    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
     let system_solution = _orchestrator
         .system_solutions
         .lock()
         .unwrap()
-        .get(&asset.clone().into())
+        .get(&asset.clone())
         .with_context(|| format!("Asset {:?} is not present in the ActorRegistry", &asset))
         .map_err(|e| AppError::Anyhow(e.to_string()))?
         .load();
 
     let scheduling_environment = _orchestrator.scheduling_environment.lock().unwrap();
     Ok(Json(
-        SchedulerWorkOrderDto::try_from((asset.into(), scheduling_environment, system_solution))
+        SchedulerWorkOrderDto::try_from((asset.clone(), scheduling_environment, system_solution))
             .expect("This should never fail"),
     ))
     // TODO [ ] M

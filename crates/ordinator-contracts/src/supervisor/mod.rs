@@ -11,7 +11,7 @@ use crate::IdDto;
 use crate::WorkOrderActivityDto;
 
 #[derive(ToSchema, Serialize)]
-struct SupervisorResources
+pub struct SupervisorResources
 {
     // TODO [x] Make DTO for `Id`
     // TODO [x] Make DTO for 'WorkOrderActivity`

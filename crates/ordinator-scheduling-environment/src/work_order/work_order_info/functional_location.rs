@@ -21,6 +21,7 @@ impl FunctionalLocation
             .split(' ')
             .next()
             .expect("All work orders need to have an Asset");
+
         let asset = Asset::new_from_string(asset_string).unwrap_or(Asset::Unknown);
         Self {
             string: functional_location.to_string(),

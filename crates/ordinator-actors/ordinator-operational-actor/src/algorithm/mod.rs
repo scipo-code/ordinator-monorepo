@@ -494,6 +494,7 @@ where
             .with_context(|| "SupervisorSolution is not initialized for the OperationalActor")?
             .delegated_tasks(&self.id);
 
+        dbg!(&work_order_activities.len());
         for work_order_activity in work_order_activities {
             let operational_parameter = match self
                 .parameters
@@ -505,6 +506,7 @@ where
             };
             ensure!(!operational_parameter.work.is_zero());
 
+            dbg!(&operational_parameter);
             let start_time = self
                 .determine_first_available_start_time(work_order_activity, operational_parameter)
                 .with_context(|| format!("{work_order_activity:#?}"))?;

@@ -1,3 +1,4 @@
+use anyhow::Context;
 use ordinator_operational_actor::algorithm::operational_solution::OperationalSolution;
 use ordinator_orchestrator_actor_traits::SystemSolution;
 use ordinator_scheduling_environment::Asset;
@@ -18,11 +19,7 @@ pub mod supervisor;
 // This is a DTO object, it should be moved out of the
 // `scheduling-environment`
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema)]
-pub struct AssetNames
-{
-    value: String,
-    label: String,
-}
+pub struct AssetNames(String);
 
 impl AssetNames
 {
@@ -30,10 +27,7 @@ impl AssetNames
     {
         let mut vec = Vec::new();
         for asset in Asset::iter() {
-            let asset_name = AssetNames {
-                value: asset.to_string(),
-                label: asset.to_string(),
-            };
+            let asset_name = AssetNames(asset.to_string());
             vec.push(asset_name);
         }
         vec
@@ -46,17 +40,17 @@ impl From<Asset> for AssetNames
     {
         let value = value.to_string();
 
-        Self {
-            value: value.clone(),
-            label: value,
-        }
+        Self(value)
     }
 }
-impl From<AssetNames> for Asset
+impl TryFrom<AssetNames> for Asset
 {
-    fn from(value: AssetNames) -> Self
+    type Error = anyhow::Error;
+
+    fn try_from(value: AssetNames) -> anyhow::Result<Self>
     {
-        Asset::new_from_string(&value.value).expect("This operation should never fail")
+        Asset::new_from_string(&value.0)
+            .with_context(|| format!("This operation should never fail\nAssetNames: {value:#?}"))
     }
 }
 
@@ -80,14 +74,7 @@ impl From<Id> for IdDto
         Self {
             id: value.0,
             resources: value.1.iter().map(|e| e.to_string()).collect(),
-            asset: value
-                .2
-                .iter()
-                .map(|e| AssetNames {
-                    value: e.to_string(),
-                    label: e.to_string(),
-                })
-                .collect(),
+            asset: value.2.iter().map(|e| AssetNames(e.to_string())).collect(),
         }
     }
 }
