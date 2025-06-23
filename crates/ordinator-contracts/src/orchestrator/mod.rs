@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-use ordinator_scheduling_environment::AssetNames;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
@@ -12,6 +11,8 @@ use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfo
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Serialize;
 use ts_rs::TS;
+
+use crate::AssetNames;
 
 // best to simply comment all of this out
 // Where should these be found? I think that the
