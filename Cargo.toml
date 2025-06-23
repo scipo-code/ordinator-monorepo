@@ -26,6 +26,8 @@ debug = true
 
 [profile.release]
 panic = 'abort'
+debug = true
+strip = "none"
 
 [workspace.dependencies]
 anyhow = "*"
@@ -47,7 +49,7 @@ serde = { version = "*", features = ["derive"] }
 serde_json = "*"
 strum = "*"
 strum_macros = "*"
-tokio = {version ="*", features = [ "macros", "rt-multi-thread"]}
+tokio = { version ="*", features = [ "macros", "rt-multi-thread"] }
 toml = "*"
 tracing = "*"
 tracing-appender = "*"

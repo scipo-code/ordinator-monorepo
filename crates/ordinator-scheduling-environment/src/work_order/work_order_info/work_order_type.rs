@@ -47,6 +47,21 @@ impl WorkOrderType
     }
 }
 
+impl std::fmt::Display for WorkOrderType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        let value = match self {
+            WorkOrderType::Wdf(priority) => priority.to_string(),
+            WorkOrderType::Wgn(priority) => priority.to_string(),
+            WorkOrderType::Wpm(priority) => priority.to_string(),
+            WorkOrderType::Wro(priority) => priority.to_string(),
+            WorkOrderType::Other => "WorkOrder is missing a priority".to_string(),
+        };
+        write!(f, "{value}")
+    }
+}
+
 impl IntoExcelData for WorkOrderType
 {
     fn write(

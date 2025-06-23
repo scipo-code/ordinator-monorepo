@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
 use axum::routing::get;
+use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Orchestrator;
-use ordinator_orchestrator::TotalSystemSolution;
 use utoipa_axum::router::OpenApiRouter;
 
 use crate::handlers::tactical_handlers::status;

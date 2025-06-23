@@ -1,0 +1,3 @@
+command script import .lldb/chrono.py
+type summary add -F chrono.DateTimeSummary chrono::datetime::DateTime<chrono::offset::utc::Utc>
+

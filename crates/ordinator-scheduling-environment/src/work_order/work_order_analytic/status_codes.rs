@@ -28,7 +28,8 @@ use crate::work_order::WorkOrderNumber;
 // TODO unloading_point
 
 #[derive(Default, Args, Clone, Serialize, Deserialize, Debug)]
-pub struct SystemStatusCodes {
+pub struct SystemStatusCodes
+{
     #[arg(long)]
     pub rel: bool,
     #[arg(long)]
@@ -74,8 +75,10 @@ pub struct SystemStatusCodes {
     #[arg(long)]
     pub gmco: bool,
 }
-impl SystemStatusCodes {
-    pub(crate) fn builder() -> SystemStatusCodesBuilder {
+impl SystemStatusCodes
+{
+    pub(crate) fn builder() -> SystemStatusCodesBuilder
+    {
         // QUESTION
         // How to handle this?
         // You should use the `Default` trait and then rely on
@@ -88,8 +91,11 @@ impl SystemStatusCodes {
     }
 }
 
+// This is the kind of thing that we need to avoid when doing
+// DDD crucial insight.
 #[derive(Default, Args, Clone, Serialize, Deserialize, Debug)]
-pub struct UserStatusCodes {
+pub struct UserStatusCodes
+{
     #[arg(long)]
     pub appr: bool,
     #[arg(long)]
@@ -177,16 +183,20 @@ pub struct UserStatusCodes {
     #[arg(long)]
     pub awpr: bool,
 }
-impl UserStatusCodes {
-    pub(crate) fn builder() -> UserStatusCodesBuilder {
+impl UserStatusCodes
+{
+    pub(crate) fn builder() -> UserStatusCodesBuilder
+    {
         UserStatusCodesBuilder(UserStatusCodes::default())
     }
 }
 
 pub struct UserStatusCodesBuilder(UserStatusCodes);
 
-impl UserStatusCodesBuilder {
-    pub fn build(self) -> UserStatusCodes {
+impl UserStatusCodesBuilder
+{
+    pub fn build(self) -> UserStatusCodes
+    {
         UserStatusCodes {
             appr: self.0.appr,
             smat: self.0.smat,
@@ -235,12 +245,14 @@ impl UserStatusCodesBuilder {
     }
 
     // These functions will be crucial for testing! I do not
-    pub fn smat(mut self, smat: bool) -> Self {
+    pub fn smat(mut self, smat: bool) -> Self
+    {
         self.0.smat = smat;
         self
     }
 
-    pub fn from_str(self, user_status_string: &str) -> Self {
+    pub fn from_str(self, user_status_string: &str) -> Self
+    {
         let appr_pattern = regex::Regex::new(r"APPR").unwrap();
         let smat_pattern = regex::Regex::new(r"SMAT").unwrap();
         let init_pattern = regex::Regex::new(r"INIT").unwrap();
@@ -343,8 +355,10 @@ pub struct SystemStatusCodesBuilder(SystemStatusCodes);
 // there is needed something else.
 //
 // A builder would primarily be for testing.
-impl SystemStatusCodesBuilder {
-    pub fn build(self) -> SystemStatusCodes {
+impl SystemStatusCodesBuilder
+{
+    pub fn build(self) -> SystemStatusCodes
+    {
         SystemStatusCodes {
             rel: self.0.rel,
             prc: self.0.prc,
@@ -371,12 +385,14 @@ impl SystemStatusCodesBuilder {
         }
     }
 
-    pub fn rel(mut self, rel: bool) -> Self {
+    pub fn rel(mut self, rel: bool) -> Self
+    {
         self.0.rel = rel;
         self
     }
 
-    pub fn from_str(self, system_status_string: &str) -> Self {
+    pub fn from_str(self, system_status_string: &str) -> Self
+    {
         // Patterns
         //
         let rel_pattern = regex::Regex::new(r"REL").unwrap();
@@ -430,7 +446,8 @@ impl SystemStatusCodesBuilder {
 }
 
 #[derive(Args, Clone, Serialize, Deserialize, Debug)]
-pub struct StrategicUserStatusCodes {
+pub struct StrategicUserStatusCodes
+{
     /// Provide the work order number for the work order that you want to
     /// change.
     pub work_order_numbers: Vec<WorkOrderNumber>,
@@ -442,8 +459,10 @@ pub struct StrategicUserStatusCodes {
     pub sece: Option<bool>,
 }
 
-impl From<UserStatusCodes> for MaterialStatus {
-    fn from(value: UserStatusCodes) -> Self {
+impl From<UserStatusCodes> for MaterialStatus
+{
+    fn from(value: UserStatusCodes) -> Self
+    {
         assert!(value.smat as u8 + value.pmat as u8 + value.wmat as u8 + value.cmat as u8 <= 1);
 
         if value.smat {
@@ -461,7 +480,8 @@ impl From<UserStatusCodes> for MaterialStatus {
 }
 
 #[derive(ValueEnum, Clone, Serialize, Deserialize, PartialEq, Debug)]
-pub enum MaterialStatus {
+pub enum MaterialStatus
+{
     Smat,
     Nmat,
     Cmat,
@@ -470,8 +490,10 @@ pub enum MaterialStatus {
     Unknown,
 }
 
-impl MaterialStatus {
-    pub fn from_status_code_string(status_codes_string: &str) -> Self {
+impl MaterialStatus
+{
+    pub fn from_status_code_string(status_codes_string: &str) -> Self
+    {
         // Define individual patterns for clarity and precise matching
         let patterns = vec![
             ("SMAT", MaterialStatus::Smat),
@@ -492,7 +514,8 @@ impl MaterialStatus {
         // If no patterns match, return the Unknown variant
     }
 
-    pub fn period_delay(&self, periods: &[Period]) -> Option<Period> {
+    pub fn period_delay(&self, periods: &[Period]) -> Option<Period>
+    {
         match self {
             Self::Smat => None,
             Self::Nmat => None,
@@ -504,8 +527,10 @@ impl MaterialStatus {
     }
 }
 
-impl Display for MaterialStatus {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl Display for MaterialStatus
+{
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result
+    {
         match self {
             MaterialStatus::Smat => write!(f, "SMAT"),
             MaterialStatus::Nmat => write!(f, "NMAT"),
@@ -517,13 +542,15 @@ impl Display for MaterialStatus {
     }
 }
 
-impl IntoExcelData for SystemStatusCodes {
+impl IntoExcelData for SystemStatusCodes
+{
     fn write(
         self,
         worksheet: &mut rust_xlsxwriter::Worksheet,
         row: rust_xlsxwriter::RowNum,
         col: rust_xlsxwriter::ColNum,
-    ) -> Result<&mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError> {
+    ) -> Result<&mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError>
+    {
         let rel = if self.rel { "REL " } else { "" };
         let prc = if self.prc { "PRC " } else { "" };
         let setc = if self.setc { "SETC " } else { "" };
@@ -582,7 +609,8 @@ impl IntoExcelData for SystemStatusCodes {
         row: rust_xlsxwriter::RowNum,
         col: rust_xlsxwriter::ColNum,
         format: &rust_xlsxwriter::Format,
-    ) -> Result<&'a mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError> {
+    ) -> Result<&'a mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError>
+    {
         let rel = if self.rel { "REL " } else { "" };
         let prc = if self.prc { "PRC " } else { "" };
         let setc = if self.setc { "SETC " } else { "" };
@@ -635,13 +663,15 @@ impl IntoExcelData for SystemStatusCodes {
         worksheet.write_string_with_format(row, col, value, format)
     }
 }
-impl IntoExcelData for UserStatusCodes {
+impl IntoExcelData for UserStatusCodes
+{
     fn write(
         self,
         worksheet: &mut rust_xlsxwriter::Worksheet,
         row: rust_xlsxwriter::RowNum,
         col: rust_xlsxwriter::ColNum,
-    ) -> Result<&mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError> {
+    ) -> Result<&mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError>
+    {
         let appr = if self.appr { "APPR " } else { "" };
         let smat = if self.smat { "SMAT " } else { "" };
         let init = if self.init { "INIT " } else { "" };
@@ -742,7 +772,8 @@ impl IntoExcelData for UserStatusCodes {
         row: rust_xlsxwriter::RowNum,
         col: rust_xlsxwriter::ColNum,
         format: &rust_xlsxwriter::Format,
-    ) -> Result<&'a mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError> {
+    ) -> Result<&'a mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError>
+    {
         let appr = if self.appr { "APPR " } else { "" };
         let smat = if self.smat { "SMAT " } else { "" };
         let init = if self.init { "INIT " } else { "" };
@@ -838,13 +869,172 @@ impl IntoExcelData for UserStatusCodes {
     }
 }
 
-impl IntoExcelData for MaterialStatus {
+impl std::fmt::Display for SystemStatusCodes
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+    {
+        let rel = if self.rel { "REL " } else { "" };
+        let prc = if self.prc { "PRC " } else { "" };
+        let setc = if self.setc { "SETC " } else { "" };
+        let ssap = if self.ssap { "SSAP " } else { "" };
+        let gmps = if self.gmps { "GMPS " } else { "" };
+        let manc = if self.manc { "MANC " } else { "" };
+        let crtd = if self.crtd { "CRTD " } else { "" };
+        let nmat = if self.nmat { "NMAT " } else { "" };
+        let teco = if self.teco { "TECO " } else { "" };
+        let macm = if self.macm { "MACM " } else { "" };
+        let mspt = if self.mspt { "MSPT " } else { "" };
+        let pprt = if self.pprt { "PPRT " } else { "" };
+        let ncmp = if self.ncmp { "NCMP " } else { "" };
+        let clsd = if self.clsd { "CLSD " } else { "" };
+        let pcnf = if self.pcnf { "PCNF " } else { "" };
+        let cser = if self.cser { "CSER " } else { "" };
+        let prt = if self.prt { "PRT " } else { "" };
+        let cnf = if self.cnf { "CNF " } else { "" };
+        let ntup = if self.ntup { "NTUP " } else { "" };
+        let estc = if self.estc { "ESTC " } else { "" };
+        let relr = if self.relr { "RELR " } else { "" };
+        let gmco = if self.gmco { "GMCO " } else { "" };
+
+        let string = String::new();
+
+        let value = string
+            + rel
+            + prc
+            + setc
+            + ssap
+            + gmps
+            + manc
+            + crtd
+            + nmat
+            + teco
+            + macm
+            + mspt
+            + pprt
+            + ncmp
+            + clsd
+            + pcnf
+            + cser
+            + prt
+            + cnf
+            + ntup
+            + estc
+            + relr
+            + gmco;
+
+        write!(f, "{value}")
+    }
+}
+
+impl std::fmt::Display for UserStatusCodes
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+    {
+        {
+            let appr = if self.appr { "APPR " } else { "" };
+            let smat = if self.smat { "SMAT " } else { "" };
+            let init = if self.init { "INIT " } else { "" };
+            let rdbl = if self.rdbl { "RDBL " } else { "" };
+            let qcap = if self.qcap { "QCAP " } else { "" };
+            let rfrz = if self.rfrz { "RFRZ " } else { "" };
+            let wmat = if self.wmat { "WMAT " } else { "" };
+            let cmat = if self.cmat { "CMAT " } else { "" };
+            let pmat = if self.pmat { "PMAT " } else { "" };
+            let apog = if self.apog { "APOG " } else { "" };
+            let prok = if self.prok { "PROK " } else { "" };
+            let wrea = if self.wrea { "WREA " } else { "" };
+            let exdo = if self.exdo { "EXDO " } else { "" };
+            let swe = if self.swe { "SWE " } else { "" };
+            let awdo = if self.awdo { "AWDO " } else { "" };
+            let rout = if self.rout { "ROUT " } else { "" };
+            let wta = if self.wta { "WTA " } else { "" };
+            let sch = if self.sch { "SCH " } else { "" };
+            let sece = if self.sece { "SECE " } else { "" };
+            let rel = if self.rel { "REL " } else { "" };
+            let rees = if self.rees { "REES " } else { "" };
+            let reap = if self.reap { "REAP " } else { "" };
+            let wrel = if self.wrel { "WREL " } else { "" };
+            let awsd = if self.awsd { "AWSD " } else { "" };
+            let sraa = if self.sraa { "SRAA " } else { "" };
+            let qcrj = if self.qcrj { "QCRJ " } else { "" };
+            let awsc = if self.awsc { "AWSC " } else { "" };
+            let lprq = if self.lprq { "LPRQ " } else { "" };
+            let rrev = if self.rrev { "RREV " } else { "" };
+            let awca = if self.awca { "AWCA " } else { "" };
+            let rreq = if self.rreq { "RREQ " } else { "" };
+            let vfal = if self.vfal { "VFAL " } else { "" };
+            let sreq = if self.sreq { "SREQ " } else { "" };
+            let amcr = if self.amcr { "AMCR " } else { "" };
+            let dfrj = if self.dfrj { "DFRJ " } else { "" };
+            let vpas = if self.vpas { "VPAS " } else { "" };
+            let dfcr = if self.dfcr { "DFCR " } else { "" };
+            let ireq = if self.ireq { "IREQ " } else { "" };
+            let atvd = if self.atvd { "ATVD " } else { "" };
+            let awmd = if self.awmd { "AWMD " } else { "" };
+            let dfex = if self.dfex { "DFEX " } else { "" };
+            let dfap = if self.dfap { "DFAP " } else { "" };
+            let awpr = if self.awpr { "AWPR " } else { "" };
+
+            let string = String::new();
+
+            let value = string
+                + appr
+                + smat
+                + init
+                + rdbl
+                + qcap
+                + rfrz
+                + wmat
+                + cmat
+                + pmat
+                + apog
+                + prok
+                + wrea
+                + exdo
+                + swe
+                + awdo
+                + rout
+                + wta
+                + sch
+                + sece
+                + rel
+                + rees
+                + reap
+                + wrel
+                + awsd
+                + sraa
+                + qcrj
+                + awsc
+                + lprq
+                + rrev
+                + awca
+                + rreq
+                + vfal
+                + sreq
+                + amcr
+                + dfrj
+                + vpas
+                + dfcr
+                + ireq
+                + atvd
+                + awmd
+                + dfex
+                + dfap
+                + awpr;
+
+            write!(f, "{value}")
+        }
+    }
+}
+impl IntoExcelData for MaterialStatus
+{
     fn write(
         self,
         worksheet: &mut rust_xlsxwriter::Worksheet,
         row: rust_xlsxwriter::RowNum,
         col: rust_xlsxwriter::ColNum,
-    ) -> Result<&mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError> {
+    ) -> Result<&mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError>
+    {
         worksheet.write_string(row, col, self.to_string())
     }
 
@@ -854,7 +1044,8 @@ impl IntoExcelData for MaterialStatus {
         row: rust_xlsxwriter::RowNum,
         col: rust_xlsxwriter::ColNum,
         format: &rust_xlsxwriter::Format,
-    ) -> Result<&'a mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError> {
+    ) -> Result<&'a mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError>
+    {
         worksheet.write_string_with_format(row, col, self.to_string(), format)
     }
 }
