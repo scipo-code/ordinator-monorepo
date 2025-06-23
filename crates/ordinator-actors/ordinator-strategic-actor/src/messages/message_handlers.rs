@@ -23,10 +23,11 @@ use crate::algorithm::strategic_resources::StrategicResources;
 use crate::algorithm::strategic_solution::StrategicSolution;
 use crate::messages::StrategicRequestScheduling;
 use crate::messages::StrategicResponseScheduling;
+use std::fmt::Debug;
 
 impl<Ss> CommandHandler for StrategicActor<Ss>
 where
-    Ss: SystemSolutions<Strategic = StrategicSolution>,
+    Ss: SystemSolutions<Strategic = StrategicSolution> + Debug,
 {
     type Req = StrategicRequestMessage;
     type Res = StrategicResponseMessage;

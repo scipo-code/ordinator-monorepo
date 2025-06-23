@@ -5,10 +5,20 @@ edition = "2024"
 
 [dependencies]
 ordinator-scheduling-environment = { path = "../ordinator-scheduling-environment"}
+ordinator-supervisor-actor = {path = "../ordinator-actors/ordinator-supervisor-actor"}
+ordinator-strategic-actor = {path = "../ordinator-actors/ordinator-strategic-actor"}
+ordinator-tactical-actor = {path = "../ordinator-actors/ordinator-tactical-actor"}
+ordinator-operational-actor = {path = "../ordinator-actors/ordinator-operational-actor"}
+ordinator-orchestrator-actor-traits = { path = "../ordinator-orchestrator-actor-traits"}
+
+
 
 anyhow={ workspace = true}
+arc-swap.workspace = true
 chrono = { workspace = true}
 clap = {workspace =true}
 serde = {workspace=true}
+strum.workspace = true
+strum_macros.workspace = true
 toml = {workspace=true}
-ts-rs = "*"
+utoipa = "*"

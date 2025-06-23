@@ -7,20 +7,35 @@ use axum::debug_handler;
 use axum::extract::Path;
 use axum::extract::State;
 use axum::response::Result;
+use ordinator_contracts::AssetNames;
+use ordinator_contracts::TotalSystemSolution;
+use ordinator_contracts::supervisor::SupervisorResources;
+use ordinator_contracts::supervisor::SupervisorResponseMessageDto;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::SupervisorRequestMessage;
-use ordinator_orchestrator::SupervisorResponseMessage;
 use ordinator_orchestrator::SupervisorStatusMessage::General;
-use ordinator_orchestrator::TotalSystemSolution;
 
 use crate::routes::api::AppError;
 
 #[debug_handler]
+#[utoipa::path(
+    get,
+    path = "/{asset}/{supervisor_id}",
+    params (
+        ("asset" = AssetNames, Path),
+        ("supervisor_id" = String, Path),
+    ),
+    responses(
+        (status = 200, body = SupervisorResponseMessageDto),
+        (status = 404, body = AppError),
+        (status = 500, body = AppError),
+    )
+)]
 pub async fn status(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     Path((asset, supervisor_id)): Path<(Asset, String)>,
-) -> Result<Json<SupervisorResponseMessage>, AppError>
+) -> Result<Json<SupervisorResponseMessageDto>, AppError>
 {
     let lock = orchestrator.actor_registries.lock().unwrap();
     let supervisor_agent_senders = &lock
@@ -32,21 +47,93 @@ pub async fn status(
     let supervisor_id = supervisor_agent_senders
         .keys()
         .find(|e| e.0 == supervisor_id)
-        .ok_or(AppError::Anyhow(anyhow!("Supervisor Not found")))?;
+        .ok_or(AppError::Anyhow(
+            anyhow!("Supervisor Not found").to_string(),
+        ))?;
 
     let communication = supervisor_agent_senders
         .get(supervisor_id)
-        .with_context(|| {
-            format!(
-                "Supervisor {supervisor_id} on Asset {asset} is not present in the ActorRegistry"
-            )
-        })?;
+        .ok_or(AppError::Anyhow(
+            anyhow!("Supervisor not found").to_string(),
+        ))?;
 
     communication
         .from_agent(SupervisorRequestMessage::Status(General))
         .unwrap();
 
-    Ok(Json(communication.from_actor()))
+    Ok(Json(communication.from_actor().into()))
+}
+
+#[debug_handler]
+#[utoipa::path(
+    get,
+    path = "/all_technicians/{asset}/{supervisor_id}",
+    params (
+        ("asset" = AssetNames, Path),
+        ("supervisor_id" = String, Path),
+    ),
+    responses(
+        (status = 200, body = SupervisorResponseMessageDto),
+        (status = 404, body = AppError),
+        (status = 500, body = AppError),
+    )
+)]
+pub async fn all_available_technicians(
+    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    // TODO [ ]
+    // The `_supervisor_id` should be used in the future when we have additional
+    Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
+) -> Result<Json<SupervisorResources>, AppError>
+{
+    // let lock = orchestrator.actor_registries.lock().unwrap();
+    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
+    let supervisor_resources: SupervisorResources = orchestrator
+        .system_solutions
+        .lock()
+        .expect("SystemSolution locks unavailable")
+        .get(&asset)
+        .ok_or(anyhow!(
+            "SystemSolution for Asset: {} not available",
+            &asset
+        ))
+        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .load()
+        .supervisor
+        .as_ref()
+        .ok_or(AppError::Anyhow(
+            "SupervisorSolution not available. Likely due to the Supervisor not being instantiated"
+                .to_string(),
+        ))?
+        .clone()
+        .into();
+
+    // ISSUE #000
+    // This code should be used for the Command part of the CQRS pattern
+    // let supervisor_agent_senders = &lock
+    //     .get(&asset.clone())
+    //     .with_context(|| format!("Asset {asset:?} is not present in the
+    // ActorRegistry"))     .unwrap()
+    //     .supervisor_agent_senders;
+
+    // let supervisor_id = supervisor_agent_senders
+    //     .keys()
+    //     .find(|e| e.0 == supervisor_id)
+    //     .ok_or(AppError::Anyhow(
+    //         anyhow!("Supervisor Not found").to_string(),
+    //     ))?;
+
+    // let communication = supervisor_agent_senders
+    //     .get(supervisor_id)
+    //     .ok_or(AppError::Anyhow(
+    //         anyhow!("Supervisor not found").to_string(),
+    //     ))?;
+
+    // communication
+    //     .from_agent(SupervisorRequestMessage::Status(General))
+    //     .unwrap();
+
+    Ok(Json(supervisor_resources))
 }
 
 // _ISSUE_ #000 means unassigned

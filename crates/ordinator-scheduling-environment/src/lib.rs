@@ -11,10 +11,8 @@ use std::sync::Mutex;
 use anyhow::Result;
 use serde::Deserialize;
 use serde::Serialize;
-use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 use time_environment::TimeEnvironmentBuilder;
-use ts_rs::TS;
 use work_order::WorkOrders;
 use work_order::WorkOrdersBuilder;
 
@@ -150,7 +148,7 @@ impl fmt::Display for SchedulingEnvironment
 
 // TODO [ ]
 // Move to configuration files
-#[derive(PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone, EnumIter)]
+#[derive(PartialEq, PartialOrd, Ord, Eq, Hash, Serialize, Deserialize, Debug, Clone, EnumIter)]
 pub enum Asset
 {
     DF,
@@ -172,13 +170,6 @@ pub enum Asset
     VB,
     Unknown,
     Test,
-}
-
-#[derive(Serialize, TS)]
-pub struct AssetNames
-{
-    value: String,
-    label: String,
 }
 
 impl Display for Asset
@@ -233,18 +224,5 @@ impl Asset
             "VB" => Some(Asset::VB),
             _ => None,
         }
-    }
-
-    pub fn convert_to_asset_names() -> Vec<AssetNames>
-    {
-        let mut vec = Vec::new();
-        for asset in Asset::iter() {
-            let asset_name = AssetNames {
-                value: asset.to_string(),
-                label: asset.to_string(),
-            };
-            vec.push(asset_name);
-        }
-        vec
     }
 }

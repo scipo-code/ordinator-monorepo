@@ -1,3 +1,4 @@
+use std::fmt::Debug;
 use std::sync::Arc;
 use std::sync::Mutex;
 
@@ -9,7 +10,6 @@ use ordinator_operational_actor::OperationalApi;
 use ordinator_operational_actor::algorithm::operational_solution::OperationalSolution;
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::OrchestratorNotifier;
-use ordinator_orchestrator_actor_traits::SystemSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
@@ -23,12 +23,6 @@ use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
 
 use crate::NotifyOrchestrator;
 use crate::Orchestrator;
-
-// This is not a good practice. You know that you will end up here again at some
-// point
-//
-pub type TotalSystemSolution =
-    SystemSolution<StrategicSolution, TacticalSolution, SupervisorSolution, OperationalSolution>;
 
 type ActorFactoryDependencies<Ss> = (
     Arc<Mutex<SchedulingEnvironment>>,
@@ -44,9 +38,11 @@ where
             Tactical = TacticalSolution,
             Supervisor = SupervisorSolution,
             Operational = OperationalSolution,
-        > + Send
+        >
+        + Send
         + Sync
-        + 'static,
+        + 'static
+        + Debug,
 {
     // This is a helper function. This is where the problem becomes appearant
     // It should be removed from the function.

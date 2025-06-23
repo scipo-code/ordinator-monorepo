@@ -63,6 +63,14 @@ impl std::fmt::Debug for WorkOrderNumber
         )
     }
 }
+
+impl std::fmt::Display for WorkOrderNumber
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        write!(f, "{}", self.0)
+    }
+}
 // Everything in the `SchedulingEnvironment` should implement
 // `Serialize` it has to, to be able to go into the database.
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -543,6 +551,11 @@ impl FromStr for WorkOrderNumber
     }
 }
 
+// TODO [ ]
+//
+// You should really consider making this into a struct so that
+// you can define custom behavior on it. I do not think that there
+// is a better way of defining the code here.
 pub type WorkOrderActivity = (WorkOrderNumber, ActivityNumber);
 
 impl From<u64> for WorkOrderNumber

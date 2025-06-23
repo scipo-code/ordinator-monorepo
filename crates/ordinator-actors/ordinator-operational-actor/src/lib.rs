@@ -2,6 +2,7 @@ pub mod algorithm;
 mod assert_functions;
 pub mod messages;
 
+use std::fmt::Debug;
 use std::ops::Deref;
 use std::ops::DerefMut;
 use std::sync::Arc;
@@ -21,8 +22,8 @@ use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_configuration::SystemConfigurations;
 use ordinator_orchestrator_actor_traits::ActorFactory;
-use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::CommandHandler;
+use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::OrchestratorNotifier;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
@@ -30,7 +31,7 @@ use ordinator_scheduling_environment::worker_environment::resources::Id;
 
 // You are beginning to see the truth. That there are no shortcuts
 // to be made here and no.
-pub struct OperationalActor<Ss>(
+pub struct OperationalActor<Ss: Debug>(
     Actor<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>,
 )
 where
@@ -39,7 +40,7 @@ where
 
 impl<Ss> Deref for OperationalActor<Ss>
 where
-    Ss: SystemSolutions<Operational = OperationalSolution>,
+    Ss: SystemSolutions<Operational = OperationalSolution> + Debug,
 {
     type Target =
         Actor<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>;
@@ -50,7 +51,7 @@ where
     }
 }
 
-impl<Ss> DerefMut for OperationalActor<Ss>
+impl<Ss: Debug> DerefMut for OperationalActor<Ss>
 where
     Ss: SystemSolutions<Operational = OperationalSolution>,
 {
@@ -64,7 +65,7 @@ pub struct OperationalApi {}
 
 impl<Ss> ActorFactory<Ss> for OperationalApi
 where
-    Ss: SystemSolutions<Operational = OperationalSolution> + Send + Sync + 'static,
+    Ss: SystemSolutions<Operational = OperationalSolution> + Send + Sync + 'static + Debug,
 {
     type Communication = Communication<OperationalRequestMessage, OperationalResponseMessage>;
 
@@ -92,7 +93,7 @@ where
                 .parameters_and_solution(
                     &scheduling_environment_guard.lock().unwrap(),
                 )?
-                .arc_swap_shared_solution(shared_solution_arc_swap)
+                .system_solution_arc_swap(shared_solution_arc_swap)
         })?
         .communication(error_channel)
         .configurations(system_configurations)

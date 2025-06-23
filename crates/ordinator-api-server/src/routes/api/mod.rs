@@ -5,12 +5,21 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use serde_json::json;
 use thiserror::Error;
+use utoipa::ToSchema;
 
-#[derive(Debug, Error)]
+#[derive(ToSchema, Debug, Error)]
 pub enum AppError
 {
-    #[error(transparent)]
-    Anyhow(#[from] anyhow::Error),
+    Anyhow(String),
+}
+
+impl std::fmt::Display for AppError
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        let AppError::Anyhow(value) = self;
+        write!(f, "{value}")
+    }
 }
 
 impl IntoResponse for AppError

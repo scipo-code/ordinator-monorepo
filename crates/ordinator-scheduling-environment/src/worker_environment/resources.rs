@@ -2,6 +2,7 @@ use std::fmt::Display;
 use std::str::FromStr;
 
 use chrono::NaiveTime;
+use colored::*;
 use rust_xlsxwriter::IntoExcelData;
 use serde::Deserialize;
 use serde::Serialize;
@@ -313,8 +314,26 @@ impl Display for Resources
 
 // TODO
 // You should add a function here to make the code work with the.
-#[derive(Eq, Hash, PartialEq, Serialize, Deserialize, Clone, Debug, Default)]
+#[derive(Eq, Hash, Ord, PartialOrd, PartialEq, Serialize, Deserialize, Clone, Default)]
 pub struct Id(pub String, pub Vec<Resources>, pub Vec<Asset>);
+
+// You have to learn to use the debugger in the code there is simply no other
+// way and you have to make the code work with
+impl std::fmt::Debug for Id
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        write!(
+            f,
+            "{}",
+            format!(
+                "Id: Id({}, resources: {:?}, assets: {:?})",
+                self.0, self.1, self.2
+            )
+            .blue(),
+        )
+    }
+}
 
 impl Id
 {

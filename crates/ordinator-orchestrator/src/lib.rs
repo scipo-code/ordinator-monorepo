@@ -5,12 +5,12 @@ pub mod logging;
 pub mod model_initializers;
 
 use std::collections::HashMap;
+use std::fmt::Debug;
 use std::fs::File;
 use std::io::Read;
 use std::sync::Arc;
 use std::sync::Weak;
 
-pub use actor_factory::TotalSystemSolution;
 use anyhow::Context;
 use anyhow::Result;
 use anyhow::anyhow;
@@ -530,9 +530,11 @@ where
             Tactical = TacticalSolution,
             Supervisor = SupervisorSolution,
             Operational = OperationalSolution,
-        > + Send
+        >
+        + Send
         + Sync
-        + 'static,
+        + 'static
+        + Debug,
 {
     pub fn new() -> Result<(Arc<Self>, JoinHandle<Result<()>>)>
     {

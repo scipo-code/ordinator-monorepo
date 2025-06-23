@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::fmt::Debug;
 
 use anyhow::Context;
 use anyhow::Result;
@@ -21,7 +22,7 @@ use crate::messages::responses::SupervisorResponseStatus;
 
 impl<Ss> CommandHandler for SupervisorActor<Ss>
 where
-    Ss: SystemSolutions<Supervisor = SupervisorSolution>,
+    Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
 {
     type Req = SupervisorRequestMessage;
     type Res = SupervisorResponseMessage;
@@ -87,7 +88,7 @@ where
                     Level::ERROR,
                     does_state_ids_and_addr_ids_match = self
                         .algorithm
-                        .loaded_shared_solution
+                        .loaded_system_solution
                         .all_operational()
                         .iter()
                         .eq(operational_agents.iter().copied()),

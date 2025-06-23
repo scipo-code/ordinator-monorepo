@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+use std::collections::BTreeSet;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::sync::Arc;
@@ -18,11 +20,32 @@ use super::supervisor_parameters::SupervisorParameters;
 
 pub type SupervisorObjectiveValue = u64;
 
-#[derive(PartialEq, Eq, Debug, Default, Clone)]
+#[derive(PartialEq, Eq, Default, Clone)]
 pub struct SupervisorSolution
 {
     pub(crate) objective_value: SupervisorObjectiveValue,
     pub(crate) operational_state_machine: HashMap<(Id, WorkOrderActivity), Delegate>,
+}
+
+impl std::fmt::Debug for SupervisorSolution
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        if f.alternate() {
+            write!(
+                f,
+                "SupervisorSolution \
+                {{\n\
+                \tobjective_value: {:#?}\n\
+                \toperational_state_machine: {}\n\
+                }}",
+                self.objective_value,
+                self.operational_state_machine.len(),
+            )
+        } else {
+            panic!()
+        }
+    }
 }
 
 impl Solution for SupervisorSolution
@@ -30,33 +53,42 @@ impl Solution for SupervisorSolution
     type ObjectiveValue = SupervisorObjectiveValue;
     type Parameters = SupervisorParameters;
 
-    fn new(parameters: &Self::Parameters) -> Result<Self>
+    // Here the solution should not be created based on the
+    // state of the parameters but on the state in the strategic
+    // actor. That is what you want to do here.
+    fn new(_parameters: &Self::Parameters) -> Result<Self>
     {
         // The SupervisorParameters should have knowledge of the agents.
+        // Does that mean that you simply have to instantiate a single
+        // empty `HashMap`.
+        // That means that you should comment this out and then work on the
+        // This should maybe be moved to the `incorporate_system_solution`
 
-        let operational_state_machine: HashMap<(Id, WorkOrderActivity), Delegate> = parameters
-            .supervisor_work_orders
-            .iter()
-            .flat_map(|(won, inner)| {
-                inner.iter().flat_map(|(acn, sp)| {
-                    // So here is the fundamental issue in the code. We have
-                    // a parameters that is initialized first and synchronously. This
-                    // means that we should work on the best way to make the code.
-                    //
-                    // We should make sure that this works in the best way possible.
-                    //
-                    // The flow is `SchedulingEnvironment` -> `Parameters` -> `Solution`
-                    //
-                    // This flow means that the if the `Solution` is inconsistent with the
-                    // `Parameters` that is okay, but not the other way around.
-                    parameters
-                        .operational_ids
-                        .iter()
-                        .filter(|e| e.1.contains(&sp.resource))
-                        .map(|e| ((e.clone(), (*won, *acn)), Delegate::Assess))
-                })
-            })
-            .collect();
+        let operational_state_machine = HashMap::new();
+        // ISSUE #000
+        // let operational_state_machine: HashMap<(Id, WorkOrderActivity), Delegate> =
+        // parameters     .supervisor_work_orders
+        //     .iter()
+        //     .flat_map(|(won, inner)| {
+        //         inner.iter().flat_map(|(acn, sp)| {
+        //             // So here is the fundamental issue in the code. We have
+        //             // a parameters that is initialized first and synchronously. This
+        //             // means that we should work on the best way to make the code.
+        //             //
+        //             // We should make sure that this works in the best way possible.
+        //             //
+        //             // The flow is `SchedulingEnvironment` -> `Parameters` ->
+        // `Solution`             //
+        //             // This flow means that the if the `Solution` is inconsistent
+        // with the             // `Parameters` that is okay, but not the other
+        // way around.             parameters
+        //                 .operational_ids
+        //                 .iter()
+        //                 .filter(|e| e.1.contains(&sp.resource))
+        //                 .map(|e| ((e.clone(), (*won, *acn)), Delegate::Assess))
+        //         })
+        //     })
+        //     .collect();
 
         let objective_value = Self::ObjectiveValue::default();
 
@@ -88,6 +120,23 @@ where
 /// We should be careful about how we implement this system.
 impl SupervisorSolution
 {
+    pub fn all_technicians(&self) -> BTreeSet<Id>
+    {
+        self.operational_state_machine
+            .keys()
+            .map(|e| e.0.clone())
+            .collect()
+    }
+
+    pub fn assigned_activities(&self) -> BTreeMap<Id, WorkOrderActivity>
+    {
+        self.operational_state_machine
+            .iter()
+            .filter(|e| e.1.is_assign())
+            .map(|(e, _)| (e.0.clone(), e.1))
+            .collect()
+    }
+
     pub fn turn_work_order_into_delegate_assess(&mut self, work_order_number: WorkOrderNumber)
     {
         self.operational_state_machine

@@ -11,10 +11,11 @@ use axum::http::header;
 use axum::response::IntoResponse;
 use axum::response::Response;
 use axum::response::Result;
+use ordinator_contracts::AssetNames;
+use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::OrchestratorRequest;
-use ordinator_orchestrator::TotalSystemSolution;
 
 // This should be deleted and replaced with the other handler. I do not
 // see a different way around it.
@@ -58,9 +59,14 @@ pub async fn scheduler_excel_export(
     Ok((StatusCode::OK, headers, Bytes::from(buffer)).into_response())
 }
 
+#[utoipa::path(
+    get,
+    path = "/assets",
+    responses((status = 200, body = [AssetNames]))
+)]
 pub async fn scheduler_asset_names() -> Response
 {
-    let asset_names = Asset::convert_to_asset_names();
+    let asset_names = AssetNames::convert_to_asset_names();
 
     Json(asset_names).into_response()
 }

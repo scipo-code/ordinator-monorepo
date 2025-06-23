@@ -1,18 +1,18 @@
 use std::sync::Arc;
 
-use axum::Router;
 use axum::routing::get;
+use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Orchestrator;
-use ordinator_orchestrator::TotalSystemSolution;
+use utoipa_axum::router::OpenApiRouter;
 
 use crate::handlers::tactical_handlers::status;
 
 // Making a `status` for each actor is probably a really good idea.
 pub async fn tactical_route(
     state: Arc<Orchestrator<TotalSystemSolution>>,
-) -> Router<Arc<Orchestrator<TotalSystemSolution>>>
+) -> OpenApiRouter<Arc<Orchestrator<TotalSystemSolution>>>
 {
-    Router::new()
+    OpenApiRouter::new()
         .route("/", get(status::<TotalSystemSolution>))
         .with_state(state)
 }

@@ -36,6 +36,7 @@
             pkgs.libunwind
             pkgs.libxlsxwriter
             pkgs.linuxKernel.packages.linux_zen.perf
+            pkgs.bugstalker
             pkgs.nushell
             pkgs.openssl_3
             pkgs.pkg-config
@@ -47,7 +48,9 @@
             pythonEnv
 
           ];
-        };
+	 shellHook = ''
+	    export RUST_LLDB_PRINTERS="$(rustc --print sysroot)/lib/rustlib/etc/lldb_lookup.py"
+	 '';       };
         packages.default = pkgs.buildRustPackage {
           pname = "ordinator";
           version = "1.0.0";

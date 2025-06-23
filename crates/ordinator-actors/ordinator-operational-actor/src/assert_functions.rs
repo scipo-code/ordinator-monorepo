@@ -31,7 +31,7 @@ where
     fn assert_operational_solutions_does_not_have_delegate_unassign(&self) -> Result<()>
     {
         for delegate in self
-            .loaded_shared_solution
+            .loaded_system_solution
             .supervisor_actor_solutions()?
             .delegates_for_agent(&self.id)
             .values()

@@ -24,6 +24,10 @@ use crate::traits::AbLNSUtils;
 // You have to split the algorithm into a set of different traits.
 // with each one controlling access to the underlying code. That
 // is important that we do it that way.
+//
+// You have to tell the specific `Algorithm` how to handle the
+// error that you saw previously.
+#[derive(Debug)]
 pub struct Algorithm<S, P, I, Ss>
 where
     S: Solution,
@@ -35,7 +39,7 @@ where
     pub solution: S,
     pub parameters: P,
     pub arc_swap_shared_solution: Arc<ArcSwap<Ss>>,
-    pub loaded_shared_solution: Guard<Arc<Ss>>,
+    pub loaded_system_solution: Guard<Arc<Ss>>,
 }
 
 // You are designing these all wrong. You have to spend the time that it takes
@@ -91,7 +95,7 @@ where
 
     fn load_shared_solution(&mut self)
     {
-        self.loaded_shared_solution = self.arc_swap_shared_solution.load();
+        self.loaded_system_solution = self.arc_swap_shared_solution.load();
     }
 
     fn swap_solution(&mut self, solution: S)
@@ -138,7 +142,7 @@ where
             solution: self.solution.unwrap(),
             parameters: self.parameters.unwrap(),
             arc_swap_shared_solution: self.arc_swap_shared_solution.unwrap(),
-            loaded_shared_solution: self.loaded_shared_solution.unwrap(),
+            loaded_system_solution: self.loaded_shared_solution.unwrap(),
         };
 
         Ok(algorithm_inner.into())
@@ -147,7 +151,7 @@ where
     pub fn id(mut self, id: Id) -> Self
     {
         self.id = Some(id);
-        
+
         self
     }
 
@@ -163,25 +167,23 @@ where
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>
     {
-        
         let parameters = P::from_source(
             self.id.as_ref().expect("Call `id()` build method first"),
             scheduling_environment,
         )?;
 
-        
         // Okay so the issue here is that the code is not working correctly. So the
         // reason that you. Ahh CRUCIAL INSIGHT... The S is the actual concrete type
         // here and `Solution` was simply the trait... This is a crucial insight here.
         // There is so many
         self.solution = Some(S::new(&parameters)?);
-        
+
         self.parameters = Some(parameters);
-        
+
         Ok(self)
     }
 
-    pub fn arc_swap_shared_solution(
+    pub fn system_solution_arc_swap(
         mut self,
         shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
     ) -> Result<Self>
@@ -212,7 +214,7 @@ where
                 .expect("Set the `arc_swap` field first")
                 .load(),
         );
-        
+
         Ok(self)
     }
 }

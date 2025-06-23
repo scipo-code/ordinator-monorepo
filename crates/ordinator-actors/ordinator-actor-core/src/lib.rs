@@ -48,7 +48,7 @@ where
     // blanket implementation that simply makes the
     // Actor implementations provide functions.
     Self: CommandHandler<Req = ActorRequest, Res = ActorResponse>,
-    Algorithm: ActorBasedLargeNeighborhoodSearch,
+    Algorithm: ActorBasedLargeNeighborhoodSearch + Debug,
 {
     pub actor_id: Id,
     pub scheduling_environment: Arc<Mutex<SchedulingEnvironment>>,
@@ -67,7 +67,7 @@ where
 impl<ActorRequest, ActorResponse, Algorithm> Actor<ActorRequest, ActorResponse, Algorithm>
 where
     Self: CommandHandler<Req = ActorRequest, Res = ActorResponse>,
-    Algorithm: ActorBasedLargeNeighborhoodSearch,
+    Algorithm: ActorBasedLargeNeighborhoodSearch + Debug,
     ActorRequest: Send + Sync + 'static,
     ActorResponse: Send + Sync + 'static,
 {
@@ -82,8 +82,12 @@ where
 
         if let Err(actor_error) = self.algorithm.schedule().with_context(|| {
             format!(
-                "{schedule_iteration:#?}\nActor: {}\nLocation: {}",
+                "{schedule_iteration:#?}\n\
+                Actor    : {:#?}\n\
+                Algorithm: {:#?}\n\
+                Location : {}",
                 self.actor_id,
+                self.algorithm,
                 Location::caller(),
             )
         }) {
@@ -166,7 +170,7 @@ where
 impl<ActorRequest, ActorResponse, Algorithm> CommandHandler
     for Actor<ActorRequest, ActorResponse, Algorithm>
 where
-    Algorithm: ActorBasedLargeNeighborhoodSearch,
+    Algorithm: ActorBasedLargeNeighborhoodSearch + Debug,
 {
     type Req = ActorRequest;
     type Res = ActorResponse;
@@ -210,7 +214,7 @@ impl<ActorRequest, ActorResponse, SpecificAlgorithm>
 where
     Actor<ActorRequest, ActorResponse, SpecificAlgorithm>:
         CommandHandler<Req = ActorRequest, Res = ActorResponse>,
-    SpecificAlgorithm: ActorBasedLargeNeighborhoodSearch + Send + 'static,
+    SpecificAlgorithm: ActorBasedLargeNeighborhoodSearch + Send + 'static + Debug,
     ActorRequest: Send + Sync + 'static,
     ActorResponse: Send + Sync + 'static,
 {

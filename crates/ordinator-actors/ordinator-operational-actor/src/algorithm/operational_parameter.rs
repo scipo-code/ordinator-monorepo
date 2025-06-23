@@ -1,10 +1,24 @@
 use std::collections::HashMap;
+// TODO [ ]
+// I think that I myself want to control how this type should be displayed. That
+// will make the most sense.
+//
+// NOTE [ ] Should only make it yourself or simply derive it now? I think that
+// deriving it now is the best decision that you can make and then simply be
+// ready to make a better one when it is needed
+//
+// NOTE [ ]
+// Remember that what you generally want is to have the code put out the
+// [`SystemSolution`] that is currently loaded into the program. Not the current
+// one.
+use std::fmt::Debug;
 use std::sync::MutexGuard;
 
 use anyhow::Context;
 use anyhow::Result;
 use anyhow::ensure;
 use chrono::TimeDelta;
+use colored::Colorize;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
@@ -22,6 +36,67 @@ pub struct OperationalParameters
     pub break_interval: TimeInterval,
     pub toolbox_interval: TimeInterval,
     pub options: OperationalOptions,
+}
+
+impl Debug for OperationalParameters
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        if !f.alternate() {
+            return write!(
+                f,
+                "OperationalParameters{{activities: {}, availability: {:?}, \
+                 off_shift: {:?}, break: {:?}, toolbox: {:?}, options: {:?}}}",
+                self.work_order_parameters.len(),
+                self.availability,
+                self.off_shift_interval,
+                self.break_interval,
+                self.toolbox_interval,
+                self.options,
+            );
+        }
+
+        writeln!(f, "{} {{", "OperationalParameters".yellow())?;
+
+        writeln!(
+            f,
+            "    {}: {:#?},",
+            "work_order_parameters".yellow(),
+            self.work_order_parameters
+        )?;
+
+        writeln!(
+            f,
+            "    {}: {:#?},",
+            "availability".green(),
+            self.availability
+        )?;
+
+        writeln!(
+            f,
+            "    {}: {:#?},",
+            "off_shift_interval".green(),
+            &self.off_shift_interval,
+        )?;
+
+        writeln!(
+            f,
+            "    {}: {:#?},",
+            "break_interval".green(),
+            self.break_interval,
+        )?;
+
+        writeln!(
+            f,
+            "    {}: {:#?},",
+            "toolbox_interval".green(),
+            self.toolbox_interval,
+        )?;
+
+        writeln!(f, "    options: {:#?},", self.options,)?;
+
+        write!(f, "}}")
+    }
 }
 
 // There is something rotten about this function.

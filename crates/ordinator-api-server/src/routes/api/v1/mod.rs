@@ -6,29 +6,30 @@ mod technician;
 
 use std::sync::Arc;
 
-use axum::Router;
-use axum::routing::get;
 use orchestrator::export_xlsx;
 use orchestrator::orchestrator_api_scope;
+use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Orchestrator;
-use ordinator_orchestrator::TotalSystemSolution;
 use strategic::scheduler_nest;
 use supervisor::supervisor_routes;
 use tactical::tactical_route;
-
-use crate::handlers::orchestrator_handlers::scheduler_asset_names;
+use utoipa_axum::router::OpenApiRouter;
+use utoipa_axum::routes;
 
 pub async fn api_scope(
     state: Arc<Orchestrator<TotalSystemSolution>>,
-) -> Router<Arc<Orchestrator<TotalSystemSolution>>>
+) -> OpenApiRouter<Arc<Orchestrator<TotalSystemSolution>>>
 {
-    Router::new()
+    OpenApiRouter::new()
         .nest("/scheduler/", scheduler_nest(state.clone()).await)
         .nest("/export", export_xlsx(state.clone()).await)
         .nest("/orchestrator", orchestrator_api_scope(state.clone()).await)
         .nest("/tactical", tactical_route(state.clone()).await)
         .nest("/supervisor", supervisor_routes(state.clone()).await)
-        .route("/assets", get(scheduler_asset_names))
+        // .route("/assets", get(scheduler_asset_names))
+        .routes(routes!(
+            crate::handlers::orchestrator_handlers::scheduler_asset_names
+        ))
     // .nest("/supervisor", router)
 }
 // pub fn api_scope() -> actix_web::Scope

@@ -45,6 +45,7 @@ use self::tactical_parameters::TacticalParameters;
 use self::tactical_solution::OperationSolution;
 
 // If you had a single crate you should simply call thie
+#[derive(Debug)]
 pub struct TacticalAlgorithm<Ss>(
     Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>,
 )
@@ -159,7 +160,7 @@ where
             // The goal here is to make the code function without the use of the
             //
             let strategic_period = &self
-                .loaded_shared_solution
+                .loaded_system_solution
                 // This should be an option instead
                 .strategic()
                 .ok();
@@ -265,6 +266,12 @@ where
 
     fn schedule(&mut self) -> Result<()>
     {
+        // The code here is all wrong. It is not as performant as it should be
+        // and it is not as maintainable as it could be. It has been
+        // designed for being understandable and that is also good.
+        //
+        // Just be aware of the issue.
+
         self.asset_that_loading_matches_scheduled()
             .with_context(|| format!("TESTING_ASSERTION\nfile: {}\nline: {}", file!(), line!()))?;
 
