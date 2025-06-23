@@ -1,183 +1,145 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef, ICellRendererParams } from 'ag-grid-community';
+import { ColDef, ValueFormatterParams,  } from 'ag-grid-community';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery } from "@tanstack/react-query";
+
+import { SchedulerWorkOrderDto } from "../../../../../crates/ordinator-contracts/bindings/SchedulerWorkOrderDto.ts";
+import { SingleRowDto } from "../../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
+
+
 // import { agGridThemeLight } from "./theme";
 // https://www.youtube.com/watch?v=TrKlKF5au6c&ab_channel=m6io
-interface WorkOrder
- {
-  id: string;
-  title: string;
-  description: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
-  priority: 'low' | 'medium' | 'high';
-  startDate?: Date;
-  endDate?: Date;
-  assignedTo?: string;
-}
+/** snake_case → "Title Case" */
+const toTitle = (s: string): string =>
+  s.replace(/_/g, " ").replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1));
 
-// Mock data - in real app this would be fetched based on asset
-const mockWorkOrders: Record<string, WorkOrder[]> = {
-  'DF': [
-    {
-      id: 'WO-001',
-      title: 'Annual Maintenance',
-      description: 'Regular maintenance of production line A',
-      status: 'in_progress',
-      priority: 'high',
-      startDate: new Date('2024-03-15'),
-      endDate: new Date('2024-03-20'),
-      assignedTo: 'John Doe',
-    },
-    {
-      id: 'WO-002',
-      title: 'Equipment Calibration',
-      description: 'Calibrate measuring instruments',
-      status: 'pending',
-      priority: 'medium',
-      startDate: new Date('2024-03-25'),
-      assignedTo: 'Jane Smith',
-    }
-  ],
-  'TL': [
-    {
-      id: 'WO-003',
-      title: 'Safety Inspection',
-      description: 'Quarterly safety equipment inspection',
-      status: 'completed',
-      priority: 'high',
-      startDate: new Date('2024-03-01'),
-      endDate: new Date('2024-03-02'),
-      assignedTo: 'Mike Johnson',
-    },
-    {
-      id: 'WO-004',
-      title: 'Software Update',
-      description: 'Update control system software',
-      status: 'pending',
-      priority: 'low',
-      startDate: new Date('2024-04-01'),
-      assignedTo: 'Sarah Wilson',
-    }
-  ]
+/** Detect "YYYY-MM-DD…" and pretty-print, otherwise echo. */
+const tryFmtDate = (v: unknown): string => {
+  if (typeof v !== "string" || v.length < 8) return String(v ?? "");
+  const match = v.match(/^(\d{4})[-/](\d{2})[-/](\d{2})/);
+  if (!match) return v;
+  const d = new Date(match[0]);
+  return isNaN(d.getTime()) ? v : d.toLocaleDateString();
+};
+
+export const useSchedulerColumns = () =>
+  useMemo<ColDef<SingleRowDto>[]>(() => {
+    const fields: (keyof SingleRowDto)[] = [
+      "scheduled_period",
+      "scheduled_start_date",
+      "priority",
+      "revision",
+      "work_order_type",
+      "main_work_ctr",
+      "operation_work_center",
+      "work_order_number",
+      "description_work_order",
+      "operation_short_text",
+      "material_status",
+      "system_status",
+      "user_status",
+      "work",
+      "actual_work",
+      "unloading_point",
+      "basic_start_date",
+      "basic_finish_date",
+      "earliest_start_date",
+      "earliest_finish_date",
+      "earliest_allowed_start_date",
+      "latest_allowed_finish_date",
+      "activity",
+      "functional_location",
+      "description_operation",
+      "subnetwork_of",
+      "system_condition",
+      "maintenance_plan",
+      "planner_group",
+      "maintenance_plant",
+      "pm_collective",
+      "room",
+    ];
+    return fields.map<ColDef<SingleRowDto>>(field => ({
+      field,
+      headerName: toTitle(field),
+      pinned: ["scheduled_period", "work_order_number"].includes(field)
+        ? "left"
+        : undefined,
+      width: 150,
+      valueFormatter: (
+        p: ValueFormatterParams<SingleRowDto, string> /* value is string */
+      ) => tryFmtDate(p.value),
+    }));
+  }, []);
+  
+const fetchWorkOrders = async (
+  asset: string,
+): Promise<SingleRowDto[]> => {
+  const res = await fetch(
+    `/api/v1/scheduler/scheduler/work_orders_with_scheduling/${asset}`,
+  );
+
+  if (!res.ok) {
+    // propagate a rejected promise so React Query sets "error"
+    const body = await res.text();
+    throw new Error(`(${res.status}) ${body}`);
+  }
+
+  // The Rust DTO is `Vec<SingleRowDto>` => serialises to a bare JSON array
+  return (await res.json()) as SchedulerWorkOrderDto;
 };
 
 const Scheduler: React.FC = () => {
   const { asset } = useParams<{ asset: string }>();
   const navigate = useNavigate();
-  const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
-
-  useEffect(() => {
-    if (!asset) {
-      navigate('/dashboard/DF'); // Default to DF if no asset selected
-      return;
-    }
-    setWorkOrders(mockWorkOrders[asset] || []);
+  
+  /* Safeguard against missing /asset */
+  React.useEffect(() => {
+    if (!asset) navigate("/dashboard/DF");
   }, [asset, navigate]);
 
-  const columnDefs = useMemo<ColDef[]>(() => [
-    {
-       field: 'id',
-       headerName: 'ID',
-       sortable: true,
-       filter: true,
-       width: 120,
-       pinned: 'left' as const,
-    },
-    { field: 'title', headerName: 'Title', sortable: true, filter: true },
-    { field: 'description', headerName: 'Description', sortable: true, filter: true },
-    { 
-      field: 'status', 
-      headerName: 'Status', 
-      sortable: true, 
-      filter: true,
-      cellStyle: params => {
-        const status = params.value as WorkOrder['status'];
-        const colors: Record<WorkOrder['status'], string> = {
-          pending: '#ffd700',
-          in_progress: '#87ceeb',
-          completed: '#90ee90',
-          cancelled: '#ff6b6b'
-        };
-        return { backgroundColor: colors[status] ?? 'white' };
-      }
-    },
-    { 
-      field: 'priority', 
-      headerName: 'Priority', 
-      sortable: true, 
-      filter: true,
-      cellStyle: params => {
-        const priority = params.value as WorkOrder['priority'];
-        const colors: Record<WorkOrder['priority'], string> = {
-          low: '#90ee90',
-          medium: '#ffd700',
-          high: '#ff6b6b'
-        };
-        return { backgroundColor: colors[priority] ?? 'white' };
-      }
-    },
-    { 
-      field: 'startDate', 
-      headerName: 'Start Date', 
-      sortable: true, 
-      filter: true,
-      valueFormatter: params => params.value ? new Date(params.value).toLocaleDateString() : 'Not set'
-    },
-    { 
-      field: 'endDate', 
-      headerName: 'End Date', 
-      sortable: true, 
-      filter: true,
-      valueFormatter: params => params.value ? new Date(params.value).toLocaleDateString() : 'Not set'
-    },
-    { field: 'assignedTo', headerName: 'Assigned To', sortable: true, filter: true },
-    {
-      headerName: 'Actions',
-      field: 'actions',
-      sortable: false,
-      filter: false,
-      cellRenderer: (params: ICellRendererParams<WorkOrder>) => {
-        if (!params.data) return null;          // or use params.data!.id below
-        const { id } = params.data;
-        return (
-          <div>
-            <button onClick={() => handleEdit(id)} style={{ marginRight: '8px' }}>
-              Edit
-            </button>
-            <button onClick={() => handleDelete(id)} style={{ color: 'red' }}>
-              Delete
-            </button>
-          </div>
-        );
-      }
-    }
-  ], []);
+  const columnDefs = useSchedulerColumns();
+  /* Fetch with React Query */
+  const {
+    data: workOrders = [],          // default ↠ empty array
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["workOrders", asset],
+    // don’t run until we have a real asset
+    enabled: !!asset,
+    queryFn: () => fetchWorkOrders(asset!),
+    retry: 2,                       // exponential-backoff retries
+    staleTime: 60_000,              // cache 1 min
+  });
 
+  if (!asset) return null;
 
-  const handleEdit = (id: string) => {
-    // This would typically trigger a modal or navigation to edit form
-    console.log('Edit work order:', id);
-  };
+  if (isLoading)
+    return (
+      <div className="p-4">
+        <h2 className="text-2xl font-bold mb-4">Work Orders – {asset}</h2>
+        <p className="text-gray-700">Loading…</p>
+      </div>
+    );
 
-  const handleDelete = (id: string) => {
-    // This would typically send a delete request to the backend
-    console.log('Delete work order:', id);
-  };
-
-  // const onGridReady = (params: GridReadyEvent) => {
-  //   params.api.sizeColumnsToFit();
-  // };
-
-  if (!asset) {
-    return null;
-  }
-
+  if (isError)
+    return (
+      <div className="p-4">
+        <h2 className="text-2xl font-bold mb-4">Work Orders – {asset}</h2>
+        <p className="text-red-600">
+          Couldn’t fetch work orders.<br />
+          <code>{(error as Error).message}</code>
+        </p>
+      </div>
+    );
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Work Orders - {asset}</h2>
-      <div className="w-full h-[600px]">
+    <div className="p-4 flex flex-col h-screen">
+      <h2 className="text-2xl font-bold mb-4 shrink-0">Work Orders - {asset}</h2>
+      <div className="flex-1">
         <AgGridReact
+          className='h-full w-full'
           rowData={workOrders}
           // theme={agGridThemeLight}
           columnDefs={columnDefs}
@@ -187,8 +149,7 @@ const Scheduler: React.FC = () => {
             filter: true,
             flex: 1,
             minWidth: 100
-          }}
-        />
+          }}        />
       </div>
     </div>
   );

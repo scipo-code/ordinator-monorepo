@@ -134,8 +134,8 @@ export function AppSidebar() {
               {!error &&
                !isLoading &&
                assets.map((a) => (
-                 <DropdownMenuItem key={a.value} onClick={() => handleSelectAsset(a.value)}>
-                   <span>{a.label}</span>
+                 <DropdownMenuItem key={a} onClick={() => handleSelectAsset(a)}>
+                   <span>{a}</span>
                  </DropdownMenuItem>
                ))}
 
