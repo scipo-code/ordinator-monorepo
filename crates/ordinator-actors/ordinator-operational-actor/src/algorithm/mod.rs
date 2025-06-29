@@ -267,6 +267,9 @@ where
         Algorithm<OperationalSolution, OperationalParameters, FillinOperationalEvents, Ss>;
     type Options = OperationalOptions;
 
+    // NOTE 2025-06-28
+    // [`Solution`]s should not be created in here. The `schedule` function should
+    // construct them directly to avoid state duplictions.
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
         let operational_shared_solution = self
@@ -282,8 +285,6 @@ where
             // delay and significant redirections.
             .delegates_for_agent(&self.id);
 
-        // Should the supervisor necessarily be in here? I do not think so
-        // the best approach is probably
         self.solution
             .scheduled_work_order_activities
             // We retain all `OperationalSolution`s which are not `Delegate::Drop` where

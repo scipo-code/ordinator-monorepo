@@ -16,6 +16,8 @@ use anyhow::Result;
 use anyhow::anyhow;
 use anyhow::bail;
 use arc_swap::ArcSwap;
+use chrono::DateTime;
+use chrono::Utc;
 use flume::Receiver;
 use flume::Sender;
 use ordinator_configuration::SystemConfigurations;
@@ -72,6 +74,8 @@ pub struct Orchestrator<Ss>
     pub system_configurations: Arc<ArcSwap<SystemConfigurations>>,
     pub database_connections: DataBaseConnection,
     pub actor_notify: Option<Weak<Orchestrator<Ss>>>,
+    pub system_clock_tick_receiver: Receiver<DateTime<Utc>>,
+    pub system_clock_time_commands_sender: Option<Sender<TimeCommand>>,
     pub log_handles: LogHandles,
 }
 
@@ -523,6 +527,12 @@ impl ActorRegistry
     }
 }
 
+type OrchestratorBuildOutput<Ss> = Result<(
+    Arc<Orchestrator<Ss>>,
+    JoinHandle<Result<()>>,
+    JoinHandle<()>,
+)>;
+
 impl<Ss> Orchestrator<Ss>
 where
     Ss: SystemSolutions<
@@ -536,8 +546,15 @@ where
         + 'static
         + Debug,
 {
-    pub fn new() -> Result<(Arc<Self>, JoinHandle<Result<()>>)>
+    pub fn new(test_or_prod: Option<DateTime<Utc>>) -> OrchestratorBuildOutput<Ss>
     {
+        // You should change all the dates to `DateTime<Copenhagen>` and then when you
+        // need something different. Then you should do that.
+        //
+        //
+        // What should you do here? I think that the best approach is to make the
+        // system run with the
+
         let configurations = SystemConfigurations::read_all_configs().unwrap();
 
         let log_handles = logging::setup_logging();
@@ -560,6 +577,44 @@ where
         let error_task_handle: JoinHandle<Result<()>> =
             tokio::spawn(Self::actor_error_handler(error_channels.1.clone()));
 
+        // WARN THIS SHOULD BE CHANGED
+        // The primary issue here is that the code is not made for testing. That is a
+        // huge issue, you should ideally inject a test time only to test the
+        // components that need this. You are making something that is not the best
+        // approach. Also, you should refactor all
+
+        let (system_clock_handle, system_clock_tick_receiver, system_clock_time_commands_sender) =
+            match test_or_prod {
+                Some(current_time) => {
+                    let (system_clock_time_commands_sender, system_clock_time_commands_receiver) =
+                        flume::unbounded();
+                    let (system_clock_tick_sender, system_clock_tick_receiver) = flume::unbounded();
+
+                    let system_clock_handle = TestSystemClock::new(
+                        current_time,
+                        system_clock_time_commands_receiver,
+                        system_clock_tick_sender,
+                    )
+                    .start_system_clock();
+
+                    (
+                        system_clock_handle,
+                        system_clock_tick_receiver,
+                        Some(system_clock_time_commands_sender),
+                    )
+                }
+                None => {
+                    let (system_clock_tick_sender, system_clock_tick_receiver) = flume::unbounded();
+
+                    let system_clock_handle =
+                        ProductionSystemClock::new(system_clock_tick_sender).start_system_clock();
+
+                    (system_clock_handle, system_clock_tick_receiver, None)
+                }
+            };
+
+        // WARN THIS SHOULD BE CHANGED
+
         let orchestrator: Arc<Orchestrator<Ss>> = Arc::new_cyclic(|weak_self| Orchestrator {
             scheduling_environment,
             system_solutions: std::sync::Mutex::new(HashMap::new()),
@@ -569,8 +624,10 @@ where
             system_configurations: configurations,
             database_connections,
             error_channels,
+            system_clock_tick_receiver,
+            system_clock_time_commands_sender,
         });
-        Ok((orchestrator, error_task_handle))
+        Ok((orchestrator, error_task_handle, system_clock_handle))
     }
 
     async fn actor_error_handler(error_receiver: Receiver<anyhow::Error>) -> Result<()>
@@ -776,5 +833,104 @@ where
         let http_header = format!("attachment; filename={filename}");
 
         Ok((buffer, http_header))
+    }
+}
+
+// We should start the system clock and then have it send messages to the
+// Orchestrator. That means that the Orchestrator should have a future the
+// same as the `error_channel`. Yes that is the best approach here. I do
+//
+pub enum TimeCommand
+{
+    Advance(chrono::Duration),
+    SetTime(chrono::DateTime<Utc>),
+}
+pub struct TestSystemClock
+{
+    current_time: chrono::DateTime<chrono::Utc>,
+    system_clock_time_commands: flume::Receiver<TimeCommand>,
+    system_clock_tick: flume::Sender<DateTime<Utc>>,
+}
+
+impl TestSystemClock
+{
+    pub fn new(
+        current_time: chrono::DateTime<chrono::Utc>,
+        system_clock_time_commands: flume::Receiver<TimeCommand>,
+        system_clock_tick: flume::Sender<DateTime<Utc>>,
+    ) -> Self
+    {
+        Self {
+            current_time,
+            system_clock_time_commands,
+            system_clock_tick,
+        }
+    }
+}
+
+pub trait SystemClock
+{
+    fn now(&self) -> chrono::DateTime<Utc>;
+    fn start_system_clock(self) -> JoinHandle<()>;
+}
+
+pub struct ProductionSystemClock
+{
+    system_clock_tick: flume::Sender<DateTime<Utc>>,
+}
+
+impl ProductionSystemClock
+{
+    pub fn new(system_clock_tick: flume::Sender<DateTime<Utc>>) -> Self
+    {
+        Self { system_clock_tick }
+    }
+}
+
+// Okay, just quickly get this working. I think that the best approach here
+// is to make the system work quickly first, and then know that you have a
+// place for all time related logic in here.
+impl SystemClock for TestSystemClock
+{
+    fn now(&self) -> chrono::DateTime<Utc>
+    {
+        self.current_time
+    }
+
+    fn start_system_clock(mut self) -> JoinHandle<()>
+    {
+        tokio::spawn(async move {
+            loop {
+                let current_datetime = self.current_time;
+                self.system_clock_tick.send(current_datetime).unwrap();
+
+                while let Ok(command) = self.system_clock_time_commands.try_recv() {
+                    match command {
+                        TimeCommand::Advance(time_delta) => self.current_time += time_delta,
+                        TimeCommand::SetTime(date_time) => self.current_time = date_time,
+                    }
+                }
+            }
+        })
+    }
+}
+// The ProductionClock should only have the ticker. You are not allowed to
+// modify the timer. Is this correct? Yes I think so. You are making good
+// progress here.
+impl SystemClock for ProductionSystemClock
+{
+    fn now(&self) -> chrono::DateTime<Utc>
+    {
+        chrono::Utc::now()
+    }
+
+    fn start_system_clock(self) -> JoinHandle<()>
+    {
+        tokio::spawn(async move {
+            loop {
+                let current_datetime = Utc::now();
+                self.system_clock_tick.send(current_datetime).unwrap();
+            }
+        })
     }
 }

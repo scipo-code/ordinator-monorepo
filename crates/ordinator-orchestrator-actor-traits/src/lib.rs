@@ -47,6 +47,9 @@ pub enum ActorError
     },
 }
 
+/// Trait for the clock that manages the whole system. This is a trait to
+/// differentiate between the [`ProductionSystemClock`] and the
+/// [`TestSystemClock`].
 use std::fmt::Debug;
 #[derive(Debug)]
 pub struct ErrorInfo
