@@ -9,6 +9,8 @@ use std::sync::Mutex;
 
 use anyhow::Context;
 use anyhow::Result;
+use chrono::DateTime;
+use chrono::Utc;
 use ordinator_configuration::SystemConfigurations;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::IntoSchedulingEnvironment;
@@ -52,6 +54,7 @@ impl IntoSchedulingEnvironment for TotalSap
 
     fn into_scheduling_environment(
         self,
+        current_time: DateTime<Utc>,
         system_configuration: &Self::S,
     ) -> Result<Arc<Mutex<SchedulingEnvironment>>>
     {
@@ -72,7 +75,7 @@ impl IntoSchedulingEnvironment for TotalSap
                     .actor_environment(Asset::DF)?
                     .build(), // Add more assets here.
             )
-            .time_environment(create_time_environment(&time_input))
+            .time_environment(create_time_environment(current_time, &time_input))
             .work_orders(
                 load_csv_data(&system_configuration.data_locations)
                     .with_context(|| {

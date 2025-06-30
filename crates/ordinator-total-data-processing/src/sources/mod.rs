@@ -1,6 +1,7 @@
 pub mod baptiste_csv_reader;
 pub mod baptiste_csv_reader_merges;
 
+use chrono::DateTime;
 use chrono::Datelike;
 use chrono::Days;
 use chrono::Duration;
@@ -13,9 +14,12 @@ use ordinator_scheduling_environment::worker_environment::TimeInput;
 
 // This should be abstracted out be the. All this should be moved to the
 // builder. You are
-pub fn create_time_environment(time_input: &TimeInput) -> TimeEnvironment
+pub fn create_time_environment(
+    current_time: DateTime<Utc>,
+    time_input: &TimeInput,
+) -> TimeEnvironment
 {
-    let strategic_periods: Vec<Period> = create_periods(time_input.number_of_periods);
+    let strategic_periods: Vec<Period> = create_periods(current_time, time_input.number_of_periods);
 
     let first_period = strategic_periods.first().unwrap().clone();
 
@@ -78,45 +82,46 @@ pub fn create_time_environment(time_input: &TimeInput) -> TimeEnvironment
 //   aspects of the system as you would simply have that every component of the
 //   system acts on the [`SystemClock`] and this means that the whole system
 //   naturally converges to what it should.
-// Okay so I think that the best approach here is to make a trait for the [`SystemClock`] 
-// and then have the Orchestrator handle this. I think that the clock should send 
-// a messages for the [`Orchestrator`] every second. I think that much of 
-// the internal logic of the application should actually be in here. Meaning 
-// that when we start the system, we should make sure that the system 
-// initializes all the different periods until the required state
+// Okay so I think that the best approach here is to make a trait for the
+// [`SystemClock`] and then have the Orchestrator handle this. I think that the
+// clock should send a messages for the [`Orchestrator`] every second. I think
+// that much of the internal logic of the application should actually be in
+// here. Meaning that when we start the system, we should make sure that the
+// system initializes all the different periods until the required state
 // is achieved. This will generalize the whole system to take
-// care of how the system should handle time specific things. As 
-// we will naturally get rid of the "Start and initialize now" issue. 
-// 
-// QUESTION [ ] 2025-06-29
-// * What should the plan be for fixing this?
-//   So this issue becomes now what we should do to fix the issue with the 
-//   implementing this. There are so many different component that requires 
-//   this setup to work properbly. 
-//   You have 4 different types of events, I think that you should start with the correct 
-//   events here that is the best way of doing this. There is no need for a big refactor 
-//   here so you should not even start it? 
-//   [ ] Adding the [`SystemClock`] 
-//   [ ] Have it send a message to the [`Orchestrator`]
-//   [ ] The Orchestrator sends the message to the [`Actor`]s
-//   [ ] Make a `TestSystemClock` and a `ProductionSystemClock`
+// care of how the system should handle time specific things. As
+// we will naturally get rid of the "Start and initialize now" issue.
 //
-// * Is there an iterative approach of doing this?
-//   Yes there is! Do not over do this! Handle the issues when they occur. The big issue is the 
-//   change of the [`SchedulingEnvironment`] I think that we need to make the system work 
-//   correctly with events here. Meaning that data comes from the outside and then the required
-//   parts of the [`SchedulingEnvironment`] changes, yes. And initially this might be most of the 
-//   [`WorkOrders`] but that is also okay.
+// QUESTION [ ] 2025-06-29
+// * What should the plan be for fixing this? So this issue becomes now what we
+//   should do to fix the issue with the implementing this. There are so many
+//   different component that requires this setup to work properbly. You have 4
+//   different types of events, I think that you should start with the correct
+//   events here that is the best way of doing this. There is no need for a big
+//   refactor here so you should not even start it? [ ] Adding the
+//   [`SystemClock`] [ ] Have it send a message to the [`Orchestrator`] [ ] The
+//   Orchestrator sends the message to the [`Actor`]s [ ] Make a
+//   `TestSystemClock` and a `ProductionSystemClock`
+//
+// * Is there an iterative approach of doing this? Yes there is! Do not over do
+//   this! Handle the issues when they occur. The big issue is the change of the
+//   [`SchedulingEnvironment`] I think that we need to make the system work
+//   correctly with events here. Meaning that data comes from the outside and
+//   then the required parts of the [`SchedulingEnvironment`] changes, yes. And
+//   initially this might be most of the [`WorkOrders`] but that is also okay.
 //
 //
 // This is a huge refactoring of the whole system.
-fn create_periods(number_of_periods: u64) -> Vec<Period>
+fn create_periods(current_time: DateTime<Utc>, number_of_periods: u64) -> Vec<Period>
 {
     let mut periods: Vec<Period> = Vec::<Period>::new();
-    let mut start_date = Utc::now();
+    // TODO
+    // This needs to go. Where should we move it to?
+    //
+    let mut start_time = current_time;
 
     // Get the ISO week number
-    let week_number = start_date.iso_week().week();
+    let week_number = start_time.iso_week().week();
     // Determine target week number: If current is even, target is the previous odd
     let target_week = if week_number % 2 == 0 {
         week_number - 1
@@ -125,19 +130,19 @@ fn create_periods(number_of_periods: u64) -> Vec<Period>
     };
 
     // Compute the offset in days to reach Monday of the target week
-    let days_to_offset = (start_date.weekday().num_days_from_monday() as i64)
+    let days_to_offset = (start_time.weekday().num_days_from_monday() as i64)
         + (7 * (week_number - target_week) as i64);
 
-    start_date -= Duration::days(days_to_offset);
+    start_time -= Duration::days(days_to_offset);
 
-    start_date = start_date
+    start_time = start_time
         .with_hour(0)
         .and_then(|d| d.with_minute(0))
         .and_then(|d| d.with_second(0))
         .and_then(|d| d.with_nanosecond(0))
         .unwrap();
 
-    let mut end_date = start_date + Duration::weeks(2);
+    let mut end_date = start_time + Duration::weeks(2);
 
     end_date -= Duration::days(1);
 
@@ -148,7 +153,7 @@ fn create_periods(number_of_periods: u64) -> Vec<Period>
         .and_then(|d| d.with_nanosecond(0))
         .unwrap();
 
-    let mut period = Period::new(0, start_date, end_date);
+    let mut period = Period::new(0, start_time, end_date);
     periods.push(period.clone());
     for _ in 1..number_of_periods {
         period = period + Duration::weeks(2);

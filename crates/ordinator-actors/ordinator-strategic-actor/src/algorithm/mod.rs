@@ -1306,6 +1306,7 @@ fn determine_unschedule_work_resource_loadings(
 
 /// This function determines the resource load for when a work order should be
 /// forced into the schedule.
+#[allow(unused_assignments)]
 fn determine_forced_work_order_resource_loadings(
     period: &Period,
     best_total_excess: &mut Work,

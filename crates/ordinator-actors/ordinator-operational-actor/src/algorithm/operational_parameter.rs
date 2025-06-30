@@ -62,7 +62,7 @@ impl Debug for OperationalParameters
             f,
             "    {}: {:#?},",
             "work_order_parameters".yellow(),
-            self.work_order_parameters
+            self.work_order_parameters.len()
         )?;
 
         writeln!(

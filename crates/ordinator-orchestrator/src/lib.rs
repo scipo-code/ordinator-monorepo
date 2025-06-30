@@ -559,10 +559,6 @@ where
 
         let log_handles = logging::setup_logging();
 
-        let scheduling_environment =
-            DataBaseConnection::scheduling_environment(configurations.clone())
-                .context("Could not build SchedulingEnvironment")?;
-
         let database_connections = DataBaseConnection::new();
 
         // The configurations are already in place, you should strive to make the system
@@ -582,7 +578,6 @@ where
         // huge issue, you should ideally inject a test time only to test the
         // components that need this. You are making something that is not the best
         // approach. Also, you should refactor all
-
         let (system_clock_handle, system_clock_tick_receiver, system_clock_time_commands_sender) =
             match test_or_prod {
                 Some(current_time) => {
@@ -612,6 +607,11 @@ where
                     (system_clock_handle, system_clock_tick_receiver, None)
                 }
             };
+
+        let current_time = system_clock_tick_receiver.recv()?;
+        let scheduling_environment =
+            DataBaseConnection::scheduling_environment(current_time, configurations.clone())
+                .context("Could not build SchedulingEnvironment")?;
 
         // WARN THIS SHOULD BE CHANGED
 
@@ -901,15 +901,15 @@ impl SystemClock for TestSystemClock
     {
         tokio::spawn(async move {
             loop {
-                let current_datetime = self.current_time;
-                self.system_clock_tick.send(current_datetime).unwrap();
-
                 while let Ok(command) = self.system_clock_time_commands.try_recv() {
                     match command {
                         TimeCommand::Advance(time_delta) => self.current_time += time_delta,
                         TimeCommand::SetTime(date_time) => self.current_time = date_time,
                     }
                 }
+                let current_datetime = self.current_time;
+                self.system_clock_tick.send(current_datetime).unwrap();
+                tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
             }
         })
     }
@@ -930,6 +930,7 @@ impl SystemClock for ProductionSystemClock
             loop {
                 let current_datetime = Utc::now();
                 self.system_clock_tick.send(current_datetime).unwrap();
+                tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
             }
         })
     }
