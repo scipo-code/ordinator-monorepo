@@ -1,10 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { ColDef, GridReadyEvent } from 'ag-grid-community';
+import { ColDef, ICellRendererParams } from 'ag-grid-community';
 import { useParams, useNavigate } from 'react-router-dom';
-import { agGridThemeLight } from "./theme";
+// import { agGridThemeLight } from "./theme";
 // https://www.youtube.com/watch?v=TrKlKF5au6c&ab_channel=m6io
 interface WorkOrder
  {
@@ -94,14 +92,14 @@ const WorkorderOverview: React.FC = () => {
       sortable: true, 
       filter: true,
       cellStyle: params => {
-        const status = params.value;
-        const colors = {
+        const status = params.value as WorkOrder['status'];
+        const colors: Record<WorkOrder['status'], string> = {
           pending: '#ffd700',
           in_progress: '#87ceeb',
           completed: '#90ee90',
           cancelled: '#ff6b6b'
         };
-        return { backgroundColor: colors[status] || 'white' };
+        return { backgroundColor: colors[status] ?? 'white' };
       }
     },
     { 
@@ -110,13 +108,13 @@ const WorkorderOverview: React.FC = () => {
       sortable: true, 
       filter: true,
       cellStyle: params => {
-        const priority = params.value;
-        const colors = {
+        const priority = params.value as WorkOrder['priority'];
+        const colors: Record<WorkOrder['priority'], string> = {
           low: '#90ee90',
           medium: '#ffd700',
           high: '#ff6b6b'
         };
-        return { backgroundColor: colors[priority] || 'white' };
+        return { backgroundColor: colors[priority] ?? 'white' };
       }
     },
     { 
@@ -139,19 +137,15 @@ const WorkorderOverview: React.FC = () => {
       field: 'actions',
       sortable: false,
       filter: false,
-      cellRenderer: params => {
+      cellRenderer: (params: ICellRendererParams<WorkOrder>) => {
+        if (!params.data) return null;          // or use params.data!.id below
+        const { id } = params.data;
         return (
           <div>
-            <button
-              onClick={() => handleEdit(params.data.id)}
-              style={{ marginRight: '8px' }}
-            >
+            <button onClick={() => handleEdit(id)} style={{ marginRight: '8px' }}>
               Edit
             </button>
-            <button
-              onClick={() => handleDelete(params.data.id)}
-              style={{ color: 'red' }}
-            >
+            <button onClick={() => handleDelete(id)} style={{ color: 'red' }}>
               Delete
             </button>
           </div>
@@ -170,9 +164,6 @@ const WorkorderOverview: React.FC = () => {
     console.log('Delete work order:', id);
   };
 
-  const onGridReady = (params: GridReadyEvent) => {
-    params.api.sizeColumnsToFit();
-  };
 
   if (!asset) {
     return null;
@@ -181,10 +172,10 @@ const WorkorderOverview: React.FC = () => {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Work Orders - {asset}</h2>
-      <div className="ag-theme-alpine w-full h-[600px]">
+      <div className="w-full h-[600px]">
         <AgGridReact
           rowData={workOrders}
-          theme={agGridThemeLight}
+          // theme={agGridThemeLight}
           columnDefs={columnDefs}
           defaultColDef={{
             resizable: true,

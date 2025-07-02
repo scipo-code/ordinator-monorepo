@@ -9,21 +9,21 @@ use ordinator_orchestrator_actor_traits::TacticalInterface;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::work_order::WorkOrder;
-
 use ordinator_scheduling_environment::work_order::operation::Operation;
-
 use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::MaterialStatus;
 use serde::Serialize;
+use ts_rs::TS;
 use utoipa::ToSchema;
 
 use crate::TotalSystemSolution;
 
-#[derive(Serialize, ToSchema)]
+#[derive(Serialize, ToSchema, TS)]
+#[ts(export)]
 pub struct SchedulerWorkOrderDto(Vec<SingleRowDto>);
 
 // This should all be strings. You should reuse the logic from the other
 // component. I do not see what other aspect that we have.
-#[derive(Serialize, ToSchema)]
+#[derive(Serialize, ToSchema, TS)]
 pub struct SingleRowDto
 {
     scheduled_period: String,
@@ -297,4 +297,3 @@ impl From<Operation> for OperationDto
         }
     }
 }
-
