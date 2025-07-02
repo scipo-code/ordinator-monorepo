@@ -60,6 +60,7 @@
 	    export RUST_LLDB_PRINTERS="$(rustc --print sysroot)/lib/rustlib/etc/lldb_lookup.py"
 	 '';       
 	};
+
         packages.default = pkgs.buildRustPackage {
           pname = "ordinator";
           version = "1.0.0";
