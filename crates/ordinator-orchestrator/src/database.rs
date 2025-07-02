@@ -49,6 +49,8 @@ impl DataBaseConnection
     }
 }
 
+// TODO 2025-07-02 [ ] This logic is completely wrong. You should move the
+// deserialization code out of the [`SchedulingEnvironment`].
 fn initialize_from_database(path: &Path) -> Result<Arc<Mutex<SchedulingEnvironment>>>
 {
     let mut file = File::open(path)?;
@@ -58,7 +60,7 @@ fn initialize_from_database(path: &Path) -> Result<Arc<Mutex<SchedulingEnvironme
 
     Ok(Arc::new(Mutex::new(serde_json::from_str::<
         SchedulingEnvironment,
-    >(&data)?)))
+    >(&data).context("Could not build the SchedulingEnvironment from the JSON file\n1. Did you modify the schema (SchedulingEnvironment)?\n2. Is the data corrupted?")?)))
 }
 
 fn initialize_from_source_data_and_initialize_database(

@@ -179,7 +179,7 @@ where
 
 // This is made completely wrong. I am not sure what the
 // best approach of solving it will be.
-pub trait SystemSolutions: Clone
+pub trait SystemSolutions: Clone + Sized
 {
     type Strategic: StrategicInterface;
     type Tactical: TacticalInterface;

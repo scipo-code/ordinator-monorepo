@@ -3,6 +3,7 @@ pub mod actor_registry;
 pub mod database;
 pub mod logging;
 pub mod model_initializers;
+pub(crate) mod system_solution_tester;
 
 use std::collections::HashMap;
 use std::fmt::Debug;
@@ -33,6 +34,9 @@ use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::OrchestratorNotifier;
 use ordinator_orchestrator_actor_traits::StateLink;
 pub use ordinator_orchestrator_actor_traits::SystemSolutions;
+// TODO [ ] 2025-07-02 add the other `<Actor>Interface`s here
+pub use ordinator_orchestrator_actor_traits::TacticalInterface;
+// TODO END
 pub use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 pub use ordinator_scheduling_environment::time_environment::day::Day;

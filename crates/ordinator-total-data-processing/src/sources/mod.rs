@@ -19,13 +19,11 @@ pub fn create_time_environment(
     time_input: &TimeInput,
 ) -> TimeEnvironment
 {
-    let strategic_periods: Vec<Period> = create_periods(current_time, time_input.number_of_periods);
+    let first_day = current_time;
 
-    let first_period = strategic_periods.first().unwrap().clone();
-
-    let tactical_days = |number_of_days: u64| -> Vec<Day> {
+    let days = |number_of_days: u64| -> Vec<Day> {
         let mut days: Vec<Day> = Vec::new();
-        let mut date = first_period.start_date().to_owned();
+        let mut date = first_day.to_owned();
         for day_index in 0..number_of_days {
             days.push(Day::new(day_index as usize, date.to_owned()));
             date = date.checked_add_days(Days::new(1)).unwrap();
@@ -33,7 +31,10 @@ pub fn create_time_environment(
         days
     };
 
-    TimeEnvironment::new(strategic_periods, tactical_days(time_input.number_of_days))
+    let days = days(time_input.number_of_days);
+    let strategic_periods: Vec<Period> =
+        create_periods(current_time, time_input.number_of_periods, &days);
+    TimeEnvironment::new(strategic_periods, days)
 }
 
 // This should be moved to the `scheduling-environment`
@@ -112,7 +113,8 @@ pub fn create_time_environment(
 //
 //
 // This is a huge refactoring of the whole system.
-fn create_periods(current_time: DateTime<Utc>, number_of_periods: u64) -> Vec<Period>
+fn create_periods(current_time: DateTime<Utc>, number_of_periods: u64, days: &[Day])
+-> Vec<Period>
 {
     let mut periods: Vec<Period> = Vec::<Period>::new();
     // TODO
@@ -153,7 +155,15 @@ fn create_periods(current_time: DateTime<Utc>, number_of_periods: u64) -> Vec<Pe
         .and_then(|d| d.with_nanosecond(0))
         .unwrap();
 
-    let mut period = Period::new(0, start_time, end_date);
+    let day_indices = days
+        .iter()
+        .filter(|day| {
+            start_time.date_naive() <= day.date.date_naive()
+                && day.date.date_naive() <= end_date.date_naive()
+        })
+        .map(|day| day.day_index as u64)
+        .collect::<Vec<_>>();
+    let mut period = Period::new(start_time, end_date, day_indices);
     periods.push(period.clone());
     for _ in 1..number_of_periods {
         period = period + Duration::weeks(2);

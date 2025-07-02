@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use anyhow::Context;
 use axum::Json;
 use axum::body::Bytes;
 use axum::debug_handler;
@@ -13,9 +14,13 @@ use axum::response::Response;
 use axum::response::Result;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::TotalSystemSolution;
+use ordinator_contracts::scheduler::WorkOrderSingleRowSimpleDto;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::OrchestratorRequest;
+use ordinator_orchestrator::WorkOrderNumber;
+
+use crate::routes::api::AppError;
 
 // This should be deleted and replaced with the other handler. I do not
 // see a different way around it.
@@ -61,6 +66,7 @@ pub async fn scheduler_excel_export(
 
 #[utoipa::path(
     get,
+    tag = "General",
     path = "/assets",
     responses((status = 200, body = [AssetNames]))
 )]
@@ -69,6 +75,78 @@ pub async fn scheduler_asset_names() -> Response
     let asset_names = AssetNames::convert_to_asset_names();
 
     Json(asset_names).into_response()
+}
+
+#[utoipa::path(
+    get,
+    tag = "General",
+    path = "/periods",
+    responses((status = 200, body = [Vec<String>]))
+)]
+pub async fn periods(State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>)
+-> Response
+{
+    let periods: Vec<_> = orchestrator
+        .scheduling_environment
+        .lock()
+        .expect("Should ever happen")
+        .time_environment
+        .periods
+        .iter()
+        .map(|e| e.period_string())
+        .collect();
+
+    Json(periods).into_response()
+}
+
+#[utoipa::path(
+    get,
+    tag = "General",
+    path = "/days",
+    responses((status = 200, body = [Vec<String>]))
+)]
+pub async fn days(State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>) -> Response
+{
+    let days: Vec<_> = orchestrator
+        .scheduling_environment
+        .lock()
+        .expect("Should ever happen")
+        .time_environment
+        .days
+        .iter()
+        .map(|e| e.date.to_rfc3339())
+        .collect();
+
+    Json(days).into_response()
+}
+
+#[utoipa::path(
+    get,
+    tag = "General",
+    path = "/work_order_info/{work_order_number}",
+
+    params (
+      ("work_order_number" = u64, Path)  
+    ),
+    responses((status = 200, body = [WorkOrderSingleRowSimpleDto]))
+)]
+pub async fn work_order_info(
+    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    Path(work_order_number): Path<u64>,
+) -> Result<Response, AppError>
+{
+    let lock = orchestrator
+        .scheduling_environment
+        .lock()
+        .expect("Should ever happen");
+    let work_order = lock
+        .work_orders
+        .inner
+        .get(&WorkOrderNumber(work_order_number))
+        .with_context(||format!("{work_order_number} does not exist. Either:\n1. Typo in the WO number\n2. Wrong or old data\n3. Bug in the system: Call 004528433974")).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
+    let work_order_dto = WorkOrderSingleRowSimpleDto::from(work_order.clone());
+    Ok(Json(work_order_dto).into_response())
 }
 
 // This should I think that the best thing to do here is to make the

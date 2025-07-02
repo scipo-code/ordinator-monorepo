@@ -46,11 +46,7 @@ pub struct TotalSap {}
 // You should make a new type to hold the data here.
 impl IntoSchedulingEnvironment for TotalSap
 {
-    // FIX [ ]
-    // This is not allowed in the code .
     type S = SystemConfigurations;
-
-    // You would have connections here as well?
 
     fn into_scheduling_environment(
         self,
@@ -58,9 +54,6 @@ impl IntoSchedulingEnvironment for TotalSap
         system_configuration: &Self::S,
     ) -> Result<Arc<Mutex<SchedulingEnvironment>>>
     {
-        // TODO [ ]
-        // You need to pass the configs
-        //
         let time_input_string = fs::read_to_string(
             "./temp_scheduling_environment_database/time_environment/time_input.toml",
         )
