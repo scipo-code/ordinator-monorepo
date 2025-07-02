@@ -9,9 +9,7 @@ use axum::response::Result;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::scheduler::SchedulerWorkOrderDto;
-
 use ordinator_contracts::scheduler::WorkOrderSingleRowSimpleDto;
-
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 
@@ -24,8 +22,6 @@ use crate::routes::api::AppError;
     path = "/scheduler/work_orders_with_scheduling/{asset}",
 
     tag = "Scheduler",
-=======
-
     params (
         ("asset" = AssetNames, Path),
     ),
