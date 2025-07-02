@@ -10,6 +10,9 @@ use ordinator_scheduling_environment::work_order::work_order_analytic::status_co
 use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfo;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Serialize;
+use ts_rs::TS;
+
+use crate::AssetNames;
 
 // best to simply comment all of this out
 // Where should these be found? I think that the
@@ -148,4 +151,11 @@ impl<T> OrchestratorMessage<T>
             message_from_orchestrator,
         }
     }
+}
+
+#[derive(TS)]
+#[ts(export)]
+pub struct AvailableAssets
+{
+    pub assets: Vec<AssetNames>,
 }

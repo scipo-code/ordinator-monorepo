@@ -11,6 +11,7 @@ use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
 use serde::Deserialize;
 use serde::Serialize;
 use strum::IntoEnumIterator;
+use ts_rs::TS;
 use utoipa::ToSchema;
 
 pub mod orchestrator;
@@ -19,7 +20,7 @@ pub mod supervisor;
 pub mod technician;
 // This is a DTO object, it should be moved out of the
 // `scheduling-environment`
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
 pub struct AssetNames(String);
 
 impl AssetNames
