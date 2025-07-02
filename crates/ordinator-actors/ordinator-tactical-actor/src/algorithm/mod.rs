@@ -322,17 +322,12 @@ where
 
     fn schedule(&mut self) -> Result<()>
     {
-<<<<<<< HEAD
         // The code here is all wrong. It is not as performant as it should be
         // and it is not as maintainable as it could be. It has been
         // designed for being understandable and that is also good.
         //
         // Just be aware of the issue.
 
-||||||| ce3fc6a
-        return Ok(());
-=======
->>>>>>> 2025-05-29-frontend-mvps
         self.asset_that_loading_matches_scheduled()
             .with_context(|| format!("TESTING_ASSERTION\nfile: {}\nline: {}", file!(), line!()))?;
 
