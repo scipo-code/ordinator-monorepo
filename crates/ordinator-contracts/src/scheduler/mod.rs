@@ -9,6 +9,9 @@ use ordinator_orchestrator_actor_traits::TacticalInterface;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::work_order::WorkOrder;
+
+use ordinator_scheduling_environment::work_order::operation::Operation;
+
 use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::MaterialStatus;
 use serde::Serialize;
 use utoipa::ToSchema;
@@ -21,7 +24,7 @@ pub struct SchedulerWorkOrderDto(Vec<SingleRowDto>);
 // This should all be strings. You should reuse the logic from the other
 // component. I do not see what other aspect that we have.
 #[derive(Serialize, ToSchema)]
-struct SingleRowDto
+pub struct SingleRowDto
 {
     scheduled_period: String,
     scheduled_start_date: String,
@@ -245,3 +248,53 @@ impl
         Ok(SchedulerWorkOrderDto(all_rows))
     }
 }
+
+type ResourcesDto = String;
+
+#[derive(Serialize, ToSchema)]
+pub struct WorkOrderSingleRowSimpleDto
+{
+    work_order_number: u64,
+    main_work_center: ResourcesDto,
+    operations: Vec<OperationDto>,
+    functional_location: String,
+}
+
+#[derive(Serialize, ToSchema)]
+struct OperationDto
+{
+    activity: u64,
+    work_remaining: f64,
+    work_center: ResourcesDto,
+}
+
+impl From<WorkOrder> for WorkOrderSingleRowSimpleDto
+{
+    fn from(value: WorkOrder) -> Self
+    {
+        Self {
+            work_order_number: value.work_order_number.0,
+            main_work_center: value.main_work_center.to_string(),
+            operations: value
+                .operations
+                .0
+                .iter()
+                .map(|e| OperationDto::from(e.1.clone()))
+                .collect(),
+            functional_location: value.functional_location().to_string(),
+        }
+    }
+}
+
+impl From<Operation> for OperationDto
+{
+    fn from(value: Operation) -> Self
+    {
+        Self {
+            activity: value.activity,
+            work_remaining: value.operation_info.work_remaining.to_f64(),
+            work_center: value.resource.to_string(),
+        }
+    }
+}
+

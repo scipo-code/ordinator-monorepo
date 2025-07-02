@@ -47,6 +47,7 @@ pub struct OperationalSolution
 {
     pub objective_value: OperationalObjectiveValue,
     pub scheduled_work_order_activities: Vec<(WorkOrderActivity, OperationalAssignment)>,
+    pub non_productive: Vec<Assignment>,
 }
 
 // NOTE [ ]
@@ -103,6 +104,7 @@ impl Solution for OperationalSolution
         Ok(Self {
             objective_value: OperationalObjectiveValue(0),
             scheduled_work_order_activities,
+            non_productive: vec![],
         })
     }
 

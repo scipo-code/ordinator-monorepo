@@ -4,12 +4,15 @@ use std::sync::Mutex;
 use anyhow::Context;
 use anyhow::Result;
 use arc_swap::Guard;
+use chrono::DateTime;
+use chrono::Utc;
 use ordinator_configuration::SystemConfigurations;
 use ordinator_scheduling_environment::IntoSchedulingEnvironment;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_total_data_processing::sources::baptiste_csv_reader::TotalSap;
 
 pub fn initialize_scheduling_environment(
+    current_time: DateTime<Utc>,
     system_configurations: Guard<Arc<SystemConfigurations>>,
 ) -> Result<Arc<Mutex<SchedulingEnvironment>>>
 {
@@ -23,6 +26,6 @@ pub fn initialize_scheduling_environment(
     // crate. QUESTION [ ]
     // How should you structure this to make it work in a correct way?
 
-    TotalSap::into_scheduling_environment(total_sap, &system_configurations)
+    TotalSap::into_scheduling_environment(total_sap, current_time, &system_configurations)
         .context("Could not load the data from the data file")
 }

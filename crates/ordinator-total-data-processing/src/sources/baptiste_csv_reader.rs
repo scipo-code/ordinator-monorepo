@@ -9,6 +9,8 @@ use std::sync::Mutex;
 
 use anyhow::Context;
 use anyhow::Result;
+use chrono::DateTime;
+use chrono::Utc;
 use ordinator_configuration::SystemConfigurations;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::IntoSchedulingEnvironment;
@@ -44,20 +46,14 @@ pub struct TotalSap {}
 // You should make a new type to hold the data here.
 impl IntoSchedulingEnvironment for TotalSap
 {
-    // FIX [ ]
-    // This is not allowed in the code .
     type S = SystemConfigurations;
-
-    // You would have connections here as well?
 
     fn into_scheduling_environment(
         self,
+        current_time: DateTime<Utc>,
         system_configuration: &Self::S,
     ) -> Result<Arc<Mutex<SchedulingEnvironment>>>
     {
-        // TODO [ ]
-        // You need to pass the configs
-        //
         let time_input_string = fs::read_to_string(
             "./temp_scheduling_environment_database/time_environment/time_input.toml",
         )
@@ -72,7 +68,7 @@ impl IntoSchedulingEnvironment for TotalSap
                     .actor_environment(Asset::DF)?
                     .build(), // Add more assets here.
             )
-            .time_environment(create_time_environment(&time_input))
+            .time_environment(create_time_environment(current_time, &time_input))
             .work_orders(
                 load_csv_data(&system_configuration.data_locations)
                     .with_context(|| {

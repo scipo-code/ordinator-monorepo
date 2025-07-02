@@ -5,11 +5,14 @@ use anyhow::Result;
 use ordinator_actor_core::traits::ActorLinkToSchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
+use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Deserialize;
 use serde::Serialize;
+
+use super::DayIndex;
 
 #[derive(Eq, PartialEq, Default, Serialize, Deserialize, Debug, Clone)]
 pub struct TacticalResources
@@ -24,7 +27,7 @@ impl TacticalResources
     }
 
     // This is a horrible data structure,
-    pub fn get_resource(&self, resource: &Resources, day: &Day) -> Result<&Work>
+    pub fn get_resource(&self, resource: &Resources, day: DayIndex) -> Result<&Work>
     {
         self.resources
             .get(resource)
@@ -34,40 +37,39 @@ impl TacticalResources
             .with_context(|| format!("Day not present {day}"))
     }
 
+    // This is a horrible data structure,
+    pub fn get_resource_mut(&mut self, resource: &Resources, day: DayIndex) -> Result<&mut Work>
+    {
+        self.resources
+            .get_mut(resource)
+            .with_context(|| format!("Resource not present {resource}"))?
+            .days
+            .get_mut(day)
+            .with_context(|| format!("Day not present {day}"))
+    }
+
     pub fn new_from_data(resources: Vec<Resources>, tactical_days: Vec<Day>, load: Work) -> Self
     {
-        let mut resource_capacity: HashMap<Resources, Days> = HashMap::new();
-        for resource in resources {
-            let mut days = HashMap::new();
-            for day in tactical_days.iter() {
-                days.insert(day.clone(), load);
-            }
+        let days_template = vec![load; tactical_days.len()];
+        let resource_capacity = resources
+            .into_iter()
+            .map(|resource| {
+                let days = days_template.clone();
+                (resource, Days { days })
+            })
+            .collect::<HashMap<_, _>>();
 
-            resource_capacity.insert(resource, Days { days });
-        }
         TacticalResources::new(resource_capacity)
     }
 
     pub fn update_resources(&mut self, resources: Self)
     {
         for resource in resources.resources {
-            for day in resource.1.days {
-                *self
-                    .resources
-                    .get_mut(&resource.0)
-                    .unwrap()
-                    .days
-                    .get_mut(&day.0)
-                    .unwrap() = day.1;
-            }
+            self.resources.get_mut(&resource.0).unwrap().days = resource.1.days.to_vec();
         }
     }
 
-    pub fn determine_period_load(
-        &self,
-        resource: &Resources,
-        period: &ordinator_scheduling_environment::time_environment::period::Period,
-    ) -> Result<Work>
+    pub fn determine_period_load(&self, resource: &Resources, period: &Period) -> Result<Work>
     {
         let days = &self
             .resources
@@ -77,7 +79,11 @@ impl TacticalResources
 
         Ok(days
             .iter()
-            .filter(|(day, _)| period.contains_date(day.date().date_naive()))
+            .enumerate()
+            // How should we handle this? The goal is to connect a given period to a set of daily
+            // indices. You should do this first I think? Yes?
+            .filter(|(index, _)| period.day_indices.contains(&(*index as u64)))
+            // This is where you have to think about the architecture of the code.
             .map(|(_, work)| work)
             .fold(Work::from(0.0), |acc, work| &acc + work))
     }
@@ -116,21 +122,30 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &Id)> for TacticalResource
             .operational
             .iter()
         {
-            // This should not be defined for the `tactical_days`.
-            // ISSUE #000
-            for (i, day) in value.0.time_environment.days.iter().enumerate() {
+            // There is an error here! You are moving slow on this. You should take a small
+            // break and then fix this. After that I think that you should start
+            // thinking about what we should do next.
+            for (i, _) in value.0.time_environment.days.iter().enumerate() {
                 let resource_periods = tactical_resources_inner
                     // FIX
                     // WARN
                     // There is a logic error here. If we want to compare with the
                     // `StrategicAgent`.
                     .entry(operational_configuration_all.id.1.first().cloned().unwrap())
-                    .or_default();
+                    .or_insert_with(|| {
+                        Days::zero_from_existing(&Days {
+                            days: value
+                                .0
+                                .time_environment
+                                .days
+                                .clone()
+                                .into_iter()
+                                .map(|_| Work::from(0.0))
+                                .collect(),
+                        })
+                    });
 
-                *resource_periods
-                    .days
-                    .entry(day.clone())
-                    .or_insert_with(|| Work::from(0.0)) +=
+                resource_periods.days[i] +=
                     Work::from(operational_configuration_all.hours_per_day * gradual_reduction(i));
             }
         }

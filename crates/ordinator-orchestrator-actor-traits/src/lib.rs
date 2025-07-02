@@ -47,6 +47,9 @@ pub enum ActorError
     },
 }
 
+/// Trait for the clock that manages the whole system. This is a trait to
+/// differentiate between the [`ProductionSystemClock`] and the
+/// [`TestSystemClock`].
 use std::fmt::Debug;
 #[derive(Debug)]
 pub struct ErrorInfo
@@ -176,7 +179,7 @@ where
 
 // This is made completely wrong. I am not sure what the
 // best approach of solving it will be.
-pub trait SystemSolutions: Clone
+pub trait SystemSolutions: Clone + Sized
 {
     type Strategic: StrategicInterface;
     type Tactical: TacticalInterface;

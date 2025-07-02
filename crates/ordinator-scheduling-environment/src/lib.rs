@@ -9,6 +9,8 @@ use std::sync::Arc;
 use std::sync::Mutex;
 
 use anyhow::Result;
+use chrono::DateTime;
+use chrono::Utc;
 use serde::Deserialize;
 use serde::Serialize;
 use strum_macros::EnumIter;
@@ -52,6 +54,7 @@ pub trait IntoSchedulingEnvironment
 
     fn into_scheduling_environment(
         self,
+        current_time: DateTime<Utc>,
         system_configuration: &Self::S,
     ) -> Result<Arc<Mutex<SchedulingEnvironment>>>;
 }

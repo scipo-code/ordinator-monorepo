@@ -13,6 +13,7 @@ use ordinator_orchestrator::Orchestrator;
 use strategic::scheduler_nest;
 use supervisor::supervisor_routes;
 use tactical::tactical_route;
+use technician::technician_routes;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
@@ -26,9 +27,15 @@ pub async fn api_scope(
         .nest("/orchestrator", orchestrator_api_scope(state.clone()).await)
         .nest("/tactical", tactical_route(state.clone()).await)
         .nest("/supervisor", supervisor_routes(state.clone()).await)
+        .nest("/technician", technician_routes(state.clone()).await)
         // .route("/assets", get(scheduler_asset_names))
         .routes(routes!(
             crate::handlers::orchestrator_handlers::scheduler_asset_names
+        ))
+        .routes(routes!(crate::handlers::orchestrator_handlers::days))
+        .routes(routes!(crate::handlers::orchestrator_handlers::periods))
+        .routes(routes!(
+            crate::handlers::orchestrator_handlers::work_order_info
         ))
     // .nest("/supervisor", router)
 }

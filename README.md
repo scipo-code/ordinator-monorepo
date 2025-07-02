@@ -1,3 +1,9 @@
+<!-- T
+TODO [ ] codelldb 
+
+TODO [ ] resize the nvim-dapui
+TODO [ ] Add two different terminals
+-->
 # Ordinator
 Ordinator is a multi-actor scheduling system. The system is based on actors
 that each schedule a specific part of the scheduling process in real-time and then communicates 

@@ -1,11 +1,13 @@
 use std::sync::Arc;
 
+use anyhow::Context;
 use axum::Json;
 use axum::extract::Path;
 use axum::extract::State;
 use axum::response::IntoResponse;
 use axum::response::Response;
 use axum::response::Result;
+use ordinator_contracts::AssetNames;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::SystemSolutions;
@@ -21,6 +23,12 @@ use ordinator_orchestrator::TacticalStatusMessage;
 // put the data inside of the messages into a JSON but that the handlers should
 // only take a single RequestMessage and a corresponding `<Actor>StatusMessage`.
 // That means that the handler here should only construct a single message
+#[utoipa::path(
+    get,
+    tag = "Scheduler",
+    path = "/tactical_algorithm_status",
+    responses((status = 200, body = [Vec<String>]))
+)]
 pub async fn status<Ss>(
     State(orchestrator): State<Arc<Orchestrator<Ss>>>,
     Path(asset): Path<Asset>,
@@ -37,12 +45,6 @@ where
         // .with_context(|| format!("Asset {} not initialized", &asset))?
         .tactical_agent_sender;
 
-    // We should use the
-    // ESSAY: How to handle the string here? I think that the best approach is to
-    // avoid the `ActorMessage`, the idea with the enum was that we should provide
-    // an interface to the `Actor` that makes it so that only the
-    // `ActorMessage::Request` can be chosen. That means that what really has to
-    // change is the way that `Communication is implemented`
     actor_registry_for_asset.from_agent(message).unwrap();
 
     let response = actor_registry_for_asset
@@ -53,3 +55,53 @@ where
 
     Ok(Json(response).into_response())
 }
+
+// #[debug_handler]
+// #[utoipa::path(
+//     get,
+//     tag = "Supervisor",
+//     path = "/{asset}/{supervisor_id}",
+//     params (
+//         ("asset" = AssetNames, Path),
+//         ("supervisor_id" = String, Path),
+//     ),
+//     responses(
+//         (status = 200, body = SupervisorResponseMessageDto),
+//         (status = 404, body = AppError),
+//         (status = 500, body = AppError),
+//     )
+// )]
+#[utoipa::path(
+    get,
+    tag = "Scheduler",
+    path = "/start_days_for_activities/{asset}",
+    params (
+        ("asset" = AssetNames, Path),
+    ),
+    responses((status = 200, body = [Vec<String>]))
+)]
+pub async fn start_days_for_activities<Ss>(
+    State(orchestrator): State<Arc<Orchestrator<Ss>>>,
+    Path(asset): Path<Asset>,
+) -> Result<Response, AppError>
+where
+    Ss: SystemSolutions,
+{
+    let tactical_days = orchestrator
+        .system_solutions
+        .lock()
+        .unwrap_or_else(|_| panic!("Could not lock the SystemSolution for Asset: {}", &asset))
+        .get(&asset)
+        .with_context(|| format!("SystemSolution for Asset: {} does not exist", &asset))
+        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .load()
+        .tactical_actor_solution()
+        .map_err(|_| AppError::Anyhow(format!("No TacticalSolution exists for Asset: {}", &asset)))?
+        .all_scheduled_tasks();
+
+    Ok(Json(tactical_days).into_response())
+}
+
+use ordinator_orchestrator::TacticalInterface;
+
+use crate::routes::api::AppError;
