@@ -135,9 +135,9 @@ const Scheduler: React.FC = () => {
       </div>
     );
   return (
-    <div className="p-4 flex flex-col h-screen">
+    <div className="p-4 flex flex-col flex-1 min-h-0 overflow-hidden">
       <h2 className="text-2xl font-bold mb-4 shrink-0">Work Orders - {asset}</h2>
-      <div className="flex-1">
+      <div className="flex-1 min-h-0">
         <AgGridReact
           className='h-full w-full'
           rowData={workOrders}
@@ -149,7 +149,8 @@ const Scheduler: React.FC = () => {
             filter: true,
             flex: 1,
             minWidth: 100
-          }}        />
+          }}
+        />
       </div>
     </div>
   );
