@@ -5,6 +5,7 @@ pub mod tactical_resources;
 pub mod tactical_solution;
 
 use std::cmp::Ordering;
+use std::collections::HashSet;
 use std::ops::Deref;
 use std::ops::DerefMut;
 use std::panic::Location;
@@ -26,6 +27,7 @@ use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::time_environment::day::Day;
+use ordinator_scheduling_environment::time_environment::day::Days;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
@@ -54,6 +56,12 @@ where
     TacticalParameters: Parameters,
     Ss: SystemSolutions;
 
+// TODO [ ] 2025-07-02
+// The first thing to do is understand what the code is currently doing. What
+// does that mean?
+// * What are the loadings?
+// * What is the objective value?
+// * A function for each of the constraints of the problem.
 // FIX
 // Move the `tactical_days` into the parameters.
 // QUESTION
@@ -64,71 +72,49 @@ where
 // representation.
 // TODO [ ]
 // You have to make this thing work.
+type DayIndex = usize;
 impl<Ss> TacticalAlgorithm<Ss>
 where
     TacticalSolution: Solution,
     TacticalParameters: Parameters,
     Ss: SystemSolutions,
 {
-    pub fn capacity(&self, resource: &Resources, day: &Day) -> Result<&Work>
+    pub fn capacity(&self, resource: &Resources, day: DayIndex) -> Result<&Work>
     {
-        self.parameters
+        Ok(&self
+            .parameters
             .tactical_capacity
             .resources
             .get(resource)
             .with_context(|| format!("No entry for resource{resource}"))?
-            .days
-            .get(day)
-            .with_context(|| format!("No entry for resource{resource}\nOn day: {day}"))
-    }
-
-    pub fn capacity_mut(&mut self, resource: &Resources, day: &Day) -> &mut Work
-    {
-        self.parameters
-            .tactical_capacity
-            .resources
-            .get_mut(resource)
-            .unwrap()
-            .days
-            .get_mut(day)
-            .unwrap()
-    }
-
-    // This is a horrible way of working with the data. What should be done instead?
-    pub fn loading(&self, resource: &Resources, day: &Day) -> &Work
-    {
-        self.solution
-            .tactical_loadings
-            .resources
-            .get(resource)
-            .unwrap()
-            .days
-            .get(day)
-            .unwrap()
-    }
-
-    pub fn loading_mut(&mut self, resource: &Resources, day: &Day) -> &mut Work
-    {
-        self.solution
-            .tactical_loadings
-            .resources
-            .get_mut(resource)
-            .unwrap()
-            .days
-            .get_mut(day)
-            .unwrap()
+            .days[day])
     }
 
     fn determine_aggregate_excess(&self, tactical_objective_value: &mut TacticalObjectiveValue)
     {
         let mut objective_value_from_excess = 0;
-        for resource in self.parameters.tactical_capacity.resources.keys() {
-            for day in self.parameters.tactical_days.clone() {
-                let excess_capacity = self.loading(resource, &day)
-                    - self
-                        .capacity(resource, &day)
-                        .expect("Resource should be available");
+        for (resources, days) in self.parameters.tactical_capacity.resources.iter() {
+            // You do not want to use the `Day` here. Remember that the `Day` is a core
+            // domain model. And it should be treated as such. There are many additions
+            // coming up into the [`SchedulingEnvironement`].
+            let loadings = self
+                .solution
+                .tactical_loadings
+                .resources
+                .get(resources)
+                .cloned()
+                .unwrap_or(Days::zero_from_existing(days));
 
+            let capacity = self
+                .parameters
+                .tactical_capacity
+                .resources
+                .get(resources)
+                .cloned()
+                .unwrap_or(Days::zero_from_existing(days));
+
+            for (capacity, loading) in capacity.days.iter().zip(loadings.days.iter()) {
+                let excess_capacity = loading - capacity;
                 if excess_capacity > Work::from(0.0) {
                     objective_value_from_excess += excess_capacity.to_f64() as u64;
                 }
@@ -189,7 +175,7 @@ where
                 .last()
                 .unwrap()
                 .0
-                .date()
+                .date
                 .date_naive();
 
             let day_difference = (last_day - period_start_date).max(TimeDelta::zero());
@@ -198,6 +184,50 @@ where
                 tactical_parameter.weight * day_difference.num_days() as u64;
         }
         tactical_objective_value.urgency.1 = objective_value_from_tardiness;
+    }
+
+    // ISSUE #000 TODO [ ] 2025-07-02 Turn the [`Days`] into a `Vec` as it is always
+    // given by the [`TimeEnvironment`] and always contiguous.
+    fn determine_loading(&self) -> f64
+    where
+        Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
+            AbLNSUtils<SolutionType = TacticalSolution>,
+        Ss: SystemSolutions<Tactical = TacticalSolution>,
+    {
+        let length = self.parameters.tactical_days.len();
+        let mut total_capacity = Work::from(0.0);
+        let mut total_loading = Work::from(0.0);
+
+        let loadings = &self.solution.tactical_loadings;
+        let capacity = &self.parameters.tactical_capacity;
+
+        // Combine the keys
+        let loading_keys = loadings.resources.keys();
+
+        let capacity_keys = capacity.resources.keys();
+
+        let all_keys = loading_keys.chain(capacity_keys).collect::<HashSet<_>>();
+        let zero_days = Days::new(vec![Work::from(0.0); length]);
+        for key in all_keys {
+            total_loading += loadings
+                .resources
+                .get(key)
+                .unwrap_or(&zero_days)
+                .days
+                .clone()
+                .into_iter()
+                .sum::<Work>();
+            total_capacity += capacity
+                .resources
+                .get(key)
+                .unwrap_or(&zero_days)
+                .days
+                .clone()
+                .into_iter()
+                .sum::<Work>();
+        }
+
+        total_loading.to_f64() / total_capacity.to_f64()
     }
 }
 
@@ -253,6 +283,32 @@ where
         self.determine_aggregate_excess(&mut tactical_objective_value);
 
         tactical_objective_value.aggregate_objectives();
+
+        // What is it that you actually want to test here? I am not sure, you need to
+        // get an understanding of what the system is doing. That is the most
+        // crucial. Remember
+        // 1. Knowledge
+        // 2. Tools
+        // 3. Harness and tests
+        // 4. Source code
+        // 5. Runtime
+        // You are currently lacking the knowledge of why this system is not performing
+        // as it should. And that is the major problem here. You have several
+        // options here and it is crucial that you know which one to use:
+        // 1. tracing
+        // 2. debugger
+        // 3. error, assertion, and constraint handling
+        // 4. tester thread
+        // 5. Swagger pinging
+        //
+        // Take your time here. It is crucial that you spend your time getting this
+        // correct What other tools do you have available here?
+
+        event!(
+            Level::INFO,
+            target = "optimization",
+            aggregate_load = self.determine_loading()
+        );
 
         if tactical_objective_value.objective_value < self.solution.objective_value.objective_value
         {
@@ -372,7 +428,7 @@ where
                 .tactical_days
                 .iter()
                 .filter(|day| {
-                    tactical_parameter.earliest_allowed_start_date <= day.date().date_naive()
+                    tactical_parameter.earliest_allowed_start_date <= day.date.date_naive()
                 })
                 .collect();
 
@@ -386,7 +442,7 @@ where
 
             let allowed_days: Vec<_> = all_days
                 .iter_mut()
-                .filter(|date| start_day.date() <= date.date())
+                .filter(|date| start_day.date <= date.date)
                 .collect();
 
             let mut current_day = allowed_days.into_iter().peekable();
@@ -576,13 +632,21 @@ where
             for loadings in &operation.scheduled {
                 let day = &loadings.0;
                 let load = &loadings.1;
-                let resource_loading = self.loading(resource, day);
+                let resource_loading = self
+                    .solution
+                    .tactical_loadings
+                    .get_resource(resource, day.day_index)?;
 
                 let new_load = match load_operation {
                     LoadOperation::Add => resource_loading + load,
                     LoadOperation::Sub => resource_loading - load,
                 };
-                *self.loading_mut(resource, day) = new_load;
+                *self
+                    .solution
+                    .tactical_loadings
+                    // WARN [ ] 2025-07-02 It is crucial that the index is always at the right place
+                    // in the code.
+                    .get_resource_mut(resource, day.day_index)? = new_load;
             }
         }
         Ok(())
@@ -614,7 +678,16 @@ where
 
     fn remaining_capacity(&self, resource: &Resources, day: &Day) -> Option<Work>
     {
-        let remaining_capacity = self.capacity(resource, day).ok()? - self.loading(resource, day);
+        let remaining_capacity = self
+            .parameters
+            .tactical_capacity
+            .get_resource(resource, day.day_index)
+            .ok()?
+            - self
+                .solution
+                .tactical_loadings
+                .get_resource(resource, day.day_index)
+                .ok()?;
 
         if remaining_capacity <= Work::from(0.0) {
             None

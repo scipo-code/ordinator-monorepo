@@ -2,6 +2,7 @@ use std::fmt::Display;
 use std::str::FromStr;
 
 use chrono::NaiveTime;
+use colored::*;
 use rust_xlsxwriter::IntoExcelData;
 use serde::Deserialize;
 use serde::Serialize;
@@ -379,7 +380,7 @@ impl Display for Id
     {
         write!(
             f,
-            "Id: {:?} | resources: {:?} | asset: {:?}",
+            "Id: {} | resources: {:?} | asset: {:?}",
             self.0, self.1, self.2
         )
     }

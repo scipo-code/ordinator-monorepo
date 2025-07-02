@@ -8,7 +8,6 @@ use std::ops::DerefMut;
 use std::sync::Arc;
 use std::sync::Mutex;
 
-use algorithm::FillinOperationalEvents;
 use algorithm::OperationalAlgorithm;
 use algorithm::operational_parameter::OperationalParameters;
 use algorithm::operational_solution::OperationalSolution;
@@ -82,10 +81,10 @@ where
         OperationalAlgorithm<Ss>: ActorBasedLargeNeighborhoodSearch
             + Send
             + Sync
-            + From<Algorithm<OperationalSolution, OperationalParameters, FillinOperationalEvents, Ss>>,
+            + From<Algorithm<OperationalSolution, OperationalParameters, (), Ss>>,
     {
         Actor::<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>::builder()
-        .agent_id(Id::new("OperationalAgent", vec![], vec![id.asset().clone()]))
+        .agent_id(id.clone())
         .scheduling_environment(Arc::clone(&scheduling_environment_guard))
         .algorithm(|ab| {
             ab.id(id)

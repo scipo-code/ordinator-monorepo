@@ -155,7 +155,7 @@ pub struct StrategicClustering
 /// There is a good change that there should be a generic parameter in this
 /// type as there are so many different ways that a `StrategicParameter`
 /// can be handled.
-#[derive(Debug, PartialEq, Clone, Default, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 pub struct WorkOrderParameter
 {
     pub locked_in_period: Option<Period>,

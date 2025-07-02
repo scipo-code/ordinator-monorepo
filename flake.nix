@@ -46,9 +46,21 @@
             })
             pkgs.zellij
             pythonEnv
+	    (pkgs.writeShellScriptBin "lldb-dap" ''
+
+		exec ${pkgs.lldb}/bin/lldb-dap \ 
+			--one-line-before-file \ 
+			"command script import \"$(rustc --print sysroot)/lib/rustlib/etc/lldb_lookup.py\"" \
+			--one-line-before-file "type category enable Rust" \
+			"$@"
+	    '')
 
           ];
-        };
+	 shellHook = ''
+	    export RUST_LLDB_PRINTERS="$(rustc --print sysroot)/lib/rustlib/etc/lldb_lookup.py"
+	 '';       
+	};
+
         packages.default = pkgs.buildRustPackage {
           pname = "ordinator";
           version = "1.0.0";

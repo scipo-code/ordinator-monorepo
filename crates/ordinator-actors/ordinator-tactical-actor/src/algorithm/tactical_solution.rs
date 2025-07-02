@@ -72,11 +72,7 @@ impl Solution for TacticalSolution
             .resources
             .iter()
             .map(|(wo, days)| {
-                let inner_map = days
-                    .days
-                    .keys()
-                    .map(|day| (day.clone(), Work::from(0.0)))
-                    .collect();
+                let inner_map = days.days.iter().map(|_| Work::from(0.0)).collect();
                 (*wo, Days::new(inner_map))
             })
             .collect();

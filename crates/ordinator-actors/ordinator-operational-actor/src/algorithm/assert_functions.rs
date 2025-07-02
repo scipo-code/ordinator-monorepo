@@ -4,7 +4,8 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 
 use super::OperationalAlgorithm;
 
-pub trait OperationalAlgorithmAsserts {
+pub trait OperationalAlgorithmAsserts
+{
     fn assert_no_operation_overlap(&self) -> Result<()>;
 }
 
@@ -14,13 +15,14 @@ impl<Ss> OperationalAlgorithmAsserts for OperationalAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    fn assert_no_operation_overlap(&self) -> Result<()> {
+    fn assert_no_operation_overlap(&self) -> Result<()>
+    {
         let operational_solutions = self
             .solution
             .scheduled_work_order_activities
             .iter()
             .flat_map(|woa_os| woa_os.1.assignments.clone())
-            .chain(self.solution_intermediate.0.clone());
+            .chain(self.solution.non_productive.clone());
 
         for (index_1, operational_solution_1) in operational_solutions.clone().enumerate() {
             for (index_2, operational_solution_2) in operational_solutions.clone().enumerate() {

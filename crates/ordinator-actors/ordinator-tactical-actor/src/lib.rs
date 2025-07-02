@@ -87,7 +87,7 @@ where
     ) -> Result<Self::Communication>
     {
         Actor::<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>::builder()
-            .agent_id(Id::new("TacticalAgent", vec![], vec![id.asset().clone()]))
+            .agent_id(id.clone())
             .scheduling_environment(Arc::clone(&scheduling_environment_guard))
             // TODO
             // Make a builder here!

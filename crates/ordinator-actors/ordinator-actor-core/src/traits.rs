@@ -1,4 +1,5 @@
 use std::fmt::Debug;
+use std::panic::Location;
 use std::sync::MutexGuard;
 
 use anyhow::Context;
@@ -38,10 +39,9 @@ pub trait ActorBasedLargeNeighborhoodSearch
         // it is a part of the actor it should be dependency injected. I think that this
         // is the best approach
         //
-
-        return Ok(());
-        // You still have the same problem. Why do you keep running in circles? I do not
-        // understand it. You have to fix this. You will work longer hours.
+        // Temporary
+        self.calculate_objective_value()
+            .with_context(|| format!("{}", Location::caller()))?;
         self.update_based_on_system_solution().with_context(|| {
             format!(
                 "Could not update the Algorithm state based on SystemSolution\nLocation: {}:{}",
@@ -71,6 +71,9 @@ pub trait ActorBasedLargeNeighborhoodSearch
             Level::INFO,
             better_objective = ?objective_value_type
         );
+        // Temporary
+        self.calculate_objective_value()
+            .with_context(|| format!("{}", Location::caller()))?;
 
         match objective_value_type {
             ObjectiveValueType::Better(objective_value) => {
@@ -81,9 +84,12 @@ pub trait ActorBasedLargeNeighborhoodSearch
             ObjectiveValueType::Worse => self
                 .algorithm_util_methods()
                 .swap_solution(current_solution),
+
             ObjectiveValueType::Force => todo!(),
         }
-
+        // Temporary
+        self.calculate_objective_value()
+            .with_context(|| format!("{}", Location::caller()))?;
         Ok(())
     }
 
@@ -121,6 +127,7 @@ pub trait ActorBasedLargeNeighborhoodSearch
     {
         self.algorithm_util_methods().load_shared_solution();
 
+        // Crucial, the issue is with the `incorporate_system_solution`.
         let state_change = self.incorporate_system_solution()?;
 
         if state_change {

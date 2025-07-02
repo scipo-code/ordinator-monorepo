@@ -96,9 +96,30 @@ where
                 .expect("If this happens no amount of error handling will save the program")
         }
 
+        // Temporary
+        if let Err(actor_error) = self
+            .algorithm
+            .calculate_objective_value()
+            .with_context(|| format!("{}", Location::caller()))
+        {
+            self.error_channel
+                .send(anyhow!(actor_error))
+                .expect("If this happens no amount of error handling will save the program")
+        };
+
         schedule_iteration.increment();
 
         loop {
+            // Temporary
+            if let Err(actor_error) = self
+                .algorithm
+                .calculate_objective_value()
+                .with_context(|| format!("{}", Location::caller()))
+            {
+                self.error_channel
+                    .send(anyhow!(actor_error))
+                    .expect("If this happens no amount of error handling will save the program")
+            };
             while let Ok(message) = self.receiver_from_orchestrator.try_recv() {
                 match self.handle(message) {
                     Ok(_) => (),
@@ -114,16 +135,7 @@ where
                 .throttling
                 .get_throttling(&self.actor_id.0)
             {
-<<<<<<< HEAD
-                Ok(throttle) => throttle,
-||||||| ce3fc6a
-                Ok(id) => {
-                    println!("{id}");
-                    id
-                }
-=======
                 Ok(throttling) => throttling,
->>>>>>> 2025-05-29-frontend-mvps
                 Err(err) => {
                     self.error_channel
                         .send(err)
@@ -133,7 +145,16 @@ where
             };
 
             std::thread::sleep(std::time::Duration::from_millis(sleep_duration));
-
+            // Temporary
+            if let Err(actor_error) = self
+                .algorithm
+                .calculate_objective_value()
+                .with_context(|| format!("{}", Location::caller()))
+            {
+                self.error_channel
+                    .send(anyhow!(actor_error))
+                    .expect("If this happens no amount of error handling will save the program")
+            };
             if let Err(actor_error) = self
                 .algorithm
                 // Ahh the issue is that you cannot put this kind of thing in here. The issue comes
@@ -152,7 +173,16 @@ where
                     .send(actor_error)
                     .expect("If this happens no amount of error handling will save the program")
             }
-
+            // Temporary
+            if let Err(actor_error) = self
+                .algorithm
+                .calculate_objective_value()
+                .with_context(|| format!("{}", Location::caller()))
+            {
+                self.error_channel
+                    .send(anyhow!(actor_error))
+                    .expect("If this happens no amount of error handling will save the program")
+            };
             schedule_iteration.increment();
         }
     }
@@ -176,6 +206,7 @@ where
 // Is what you are getting from this worth it? I do not really
 // think so. You will have to make a new function in the
 // other
+/// There are many thing
 impl<ActorRequest, ActorResponse, Algorithm> CommandHandler
     for Actor<ActorRequest, ActorResponse, Algorithm>
 where
@@ -196,6 +227,7 @@ where
     fn handle_request_message(&mut self, _request_message: Self::Req) -> Result<Self::Res>
     {
         // The individual actor has to implement this
+
         todo!();
     }
 }
@@ -240,7 +272,7 @@ where
             error_channel: self.error_channel.unwrap(),
         };
 
-        let thread_name = agent.actor_id.to_string();
+        let thread_name = agent.actor_id.0.to_string();
 
         std::thread::Builder::new()
             .name(thread_name)

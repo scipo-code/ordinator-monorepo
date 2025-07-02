@@ -1,9 +1,10 @@
 use std::sync::Arc;
 
 use axum::routing::get;
+use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Orchestrator;
-use ordinator_orchestrator::TotalSystemSolution;
 use utoipa_axum::router::OpenApiRouter;
+use utoipa_axum::routes;
 
 use crate::handlers::tactical_handlers::status;
 
@@ -14,6 +15,9 @@ pub async fn tactical_route(
 {
     OpenApiRouter::new()
         .route("/", get(status::<TotalSystemSolution>))
+        .routes(routes!(
+            crate::handlers::tactical_handlers::start_days_for_activities
+        ))
         .with_state(state)
 }
 
@@ -22,3 +26,8 @@ pub async fn tactical_route(
 // Ok(orchestrator
 //     .handle_tactical_request(tactical_request)
 //     .await?)
+//
+// NOTE [ ] 2025-07-02 here is how you do.
+// .routes(routes!(
+//     crate::handlers::supervisor_handlers::all_available_technicians
+// ))

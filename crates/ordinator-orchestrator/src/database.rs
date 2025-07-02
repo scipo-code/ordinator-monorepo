@@ -8,6 +8,8 @@ use std::sync::Mutex;
 use anyhow::Context;
 use anyhow::Result;
 use arc_swap::ArcSwap;
+use chrono::DateTime;
+use chrono::Utc;
 use ordinator_configuration::SystemConfigurations;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 
@@ -30,6 +32,7 @@ impl DataBaseConnection
     }
 
     pub fn scheduling_environment(
+        current_time: DateTime<Utc>,
         system_configuration: Arc<ArcSwap<SystemConfigurations>>,
     ) -> Result<Arc<Mutex<SchedulingEnvironment>>>
     {
@@ -37,12 +40,17 @@ impl DataBaseConnection
         if database_path.exists() {
             initialize_from_database(database_path)
         } else {
-            initialize_from_source_data_and_initialize_database(system_configuration.load())
-                .context("Could not write SchedulingEnvironment to database.")
+            initialize_from_source_data_and_initialize_database(
+                current_time,
+                system_configuration.load(),
+            )
+            .context("Could not write SchedulingEnvironment to database.")
         }
     }
 }
 
+// TODO 2025-07-02 [ ] This logic is completely wrong. You should move the
+// deserialization code out of the [`SchedulingEnvironment`].
 fn initialize_from_database(path: &Path) -> Result<Arc<Mutex<SchedulingEnvironment>>>
 {
     let mut file = File::open(path)?;
@@ -52,16 +60,17 @@ fn initialize_from_database(path: &Path) -> Result<Arc<Mutex<SchedulingEnvironme
 
     Ok(Arc::new(Mutex::new(serde_json::from_str::<
         SchedulingEnvironment,
-    >(&data)?)))
+    >(&data).context("Could not build the SchedulingEnvironment from the JSON file\n1. Did you modify the schema (SchedulingEnvironment)?\n2. Is the data corrupted?")?)))
 }
 
 fn initialize_from_source_data_and_initialize_database(
+    current_time: DateTime<Utc>,
     system_configurations: arc_swap::Guard<Arc<SystemConfigurations>>,
 ) -> Result<Arc<Mutex<SchedulingEnvironment>>>
 {
     let file_path = system_configurations.database_config.clone();
     let scheduling_environment =
-        model_initializers::initialize_scheduling_environment(system_configurations)
+        model_initializers::initialize_scheduling_environment(current_time, system_configurations)
             .context("Could not initialize the SchedulingEnvironment from source data")?;
 
     let json_scheduling_environment =

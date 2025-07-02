@@ -47,16 +47,10 @@ use tracing::Level;
 use tracing::event;
 
 #[derive(Debug)]
-pub struct OperationalAlgorithm<Ss>(
-    Algorithm<OperationalSolution, OperationalParameters, FillinOperationalEvents, Ss>,
-)
+pub struct OperationalAlgorithm<Ss>(Algorithm<OperationalSolution, OperationalParameters, (), Ss>)
 where
     Ss: SystemSolutions,
-    Algorithm<OperationalSolution, OperationalParameters, FillinOperationalEvents, Ss>: AbLNSUtils;
-
-// This has the wrong name, it is simply the fill out.
-#[derive(Clone, Default, Debug)]
-pub struct FillinOperationalEvents(pub Vec<Assignment>);
+    Algorithm<OperationalSolution, OperationalParameters, (), Ss>: AbLNSUtils;
 
 pub trait OperationalTraitUtils
 {
@@ -238,8 +232,7 @@ impl<Ss> Deref for OperationalAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    type Target =
-        Algorithm<OperationalSolution, OperationalParameters, FillinOperationalEvents, Ss>;
+    type Target = Algorithm<OperationalSolution, OperationalParameters, (), Ss>;
 
     fn deref(&self) -> &Self::Target
     {
@@ -257,16 +250,21 @@ where
     }
 }
 
+// TODO
+// The algorithms should not run until they have anything to schedule. We want
+// the `ScheduleIteration` counter to mean something always.
 impl<Ss> ActorBasedLargeNeighborhoodSearch for OperationalAlgorithm<Ss>
 where
     Ss: SystemSolutions<Operational = OperationalSolution>,
-    Algorithm<OperationalSolution, OperationalParameters, FillinOperationalEvents, Ss>:
+    Algorithm<OperationalSolution, OperationalParameters, (), Ss>:
         AbLNSUtils<SolutionType = OperationalSolution>,
 {
-    type Algorithm =
-        Algorithm<OperationalSolution, OperationalParameters, FillinOperationalEvents, Ss>;
+    type Algorithm = Algorithm<OperationalSolution, OperationalParameters, (), Ss>;
     type Options = OperationalOptions;
 
+    // NOTE 2025-06-28
+    // [`Solution`]s should not be created in here. The `schedule` function should
+    // construct them directly to avoid state duplictions.
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
         let operational_shared_solution = self
@@ -282,8 +280,6 @@ where
             // delay and significant redirections.
             .delegates_for_agent(&self.id);
 
-        // Should the supervisor necessarily be in here? I do not think so
-        // the best approach is probably
         self.solution
             .scheduled_work_order_activities
             // We retain all `OperationalSolution`s which are not `Delegate::Drop` where
@@ -339,11 +335,38 @@ where
             .cloned()
             .collect();
 
+        no_overlap(&operational_events.clone()).with_context(|| {
+            format!(
+                "Overlap between work order activities\n{}:{}",
+                file!(),
+                line!()
+            )
+        })?;
+        no_overlap(&self.solution.non_productive.clone()).with_context(|| {
+            format!(
+                "Overlap between work order activities\n{}:{}",
+                file!(),
+                line!()
+            )
+        })?;
         event!(Level::DEBUG, operational_events_len = ?operational_events.iter().filter(|val| val.operational_events.is_wrench_time()).collect::<Vec<_>>().len());
+        // TODO [x]
+        // How do we determine what should be done about the overlap here?
+        // The first thing to determine is whether the overlap are from two different
+        // sources meaning the
 
+        // Good so now we have that in place. Now we need the debugger to determine
+        // where the error is:
+        // Remember
+        // 1. Knowledge
+        // 2. Tools
+        // 3. Harness and tests
+        // 4. Source code
+        // 5. Runtime
+        //
         let all_events = operational_events
             .into_iter()
-            .chain(self.solution_intermediate.0.clone())
+            .chain(self.solution.non_productive.clone())
             .sorted_unstable_by_key(|ass| ass.start);
 
         no_overlap(&all_events.clone().collect::<Vec<_>>()).with_context(|| {
@@ -448,7 +471,7 @@ where
 
         ensure!(
             total_time == self.parameters.availability.duration(),
-            self.solution_intermediate.0.len()
+            self.solution.non_productive.len()
         );
         assert!(total_time == self.parameters.availability.duration());
 
@@ -476,9 +499,11 @@ where
         }
     }
 
+    // So after this function everything should be alright correct?
+    // TODO [ ] Test that the overlap in non existent after a schedule call
     fn schedule(&mut self) -> Result<()>
     {
-        self.solution_intermediate.0.clear();
+        self.solution.non_productive.clear();
         // This method should now go into the trait for the supervisor. And its name
         // will provide for the
         // TODO [ ]
@@ -494,6 +519,7 @@ where
             .with_context(|| "SupervisorSolution is not initialized for the OperationalActor")?
             .delegated_tasks(&self.id);
 
+        dbg!(&work_order_activities.len());
         for work_order_activity in work_order_activities {
             let operational_parameter = match self
                 .parameters
@@ -505,6 +531,7 @@ where
             };
             ensure!(!operational_parameter.work.is_zero());
 
+            dbg!(&operational_parameter);
             let start_time = self
                 .determine_first_available_start_time(work_order_activity, operational_parameter)
                 .with_context(|| format!("{work_order_activity:#?}"))?;
@@ -538,7 +565,7 @@ where
 
         let all_events = operational_events
             .into_iter()
-            .chain(self.solution_intermediate.0.clone())
+            .chain(self.solution.non_productive.clone())
             .sorted_unstable_by_key(|ass| ass.start);
         no_overlap(&all_events.collect::<Vec<_>>())
             .with_context(|| "Overlap between work order activities".to_string())?;
@@ -602,7 +629,14 @@ where
                     );
                     // This is the error. Hmm... The question then becomes who
                     // should handle the hjjk
-                    self.solution_intermediate.0.push(assignment);
+                    // ESSAY
+                    // The issue is the the non-productive is also part of the solution. I do not
+                    // think that we can be without them. I think that we should just put the
+                    // non-productive into the `Solution`
+
+                    // TODO 2025-06-30 [ ] Make a custom push that only allows you to push
+                    // in `OperationalEvents::NonProductiveTime`.
+                    self.solution.non_productive.push(assignment);
                 }
                 // I think that this should be renamed.
                 ContainOrNextOrNone::None => {
@@ -616,7 +650,7 @@ where
                     let assignment =
                         Assignment::new(operational_event, current_time, new_current_time)?;
                     current_time = new_current_time;
-                    self.solution_intermediate.0.push(assignment);
+                    self.solution.non_productive.push(assignment);
                 }
             };
 
@@ -632,13 +666,13 @@ where
 
             let all_events = operational_events
                 .into_iter()
-                .chain(self.solution_intermediate.0.clone())
+                .chain(self.solution.non_productive.clone())
                 .sorted_unstable_by_key(|ass| ass.start);
 
             no_overlap(&all_events.collect::<Vec<_>>())
                 .with_context(|| "Overlap between work order activities".to_string())?;
             if current_time >= self.parameters.availability.finish_date {
-                self.solution_intermediate.0.last_mut().unwrap().finish =
+                self.solution.non_productive.last_mut().unwrap().finish =
                     self.parameters.availability.finish_date;
                 break;
             };
@@ -655,7 +689,7 @@ where
 
         let all_events = operational_events
             .into_iter()
-            .chain(self.solution_intermediate.0.clone())
+            .chain(self.solution.non_productive.clone())
             .sorted_unstable_by_key(|ass| ass.start);
         no_overlap(&all_events.collect::<Vec<_>>())
             .with_context(|| "Overlap between work order activities".to_string())?;
@@ -992,6 +1026,9 @@ where
                 &self.parameters.availability.finish_date,
             ),
             (_, Some(d)) => d,
+            // So the issue here is that the `StrategicActor` makes a period. That is
+            // depend on a current time. This means that it is not working on the
+            // correct `SystemClock`.
             (Some(Some(period)), _) => (period.start_date(), period.end_date()),
             (Some(None), _) => (
                 &self.parameters.availability.start_date,
@@ -1206,14 +1243,12 @@ fn equality_between_time_interval_and_assignments(all_events: &Vec<Assignment>)
         )
     }
 }
-impl<Ss> From<Algorithm<OperationalSolution, OperationalParameters, FillinOperationalEvents, Ss>>
+impl<Ss> From<Algorithm<OperationalSolution, OperationalParameters, (), Ss>>
     for OperationalAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    fn from(
-        value: Algorithm<OperationalSolution, OperationalParameters, FillinOperationalEvents, Ss>,
-    ) -> Self
+    fn from(value: Algorithm<OperationalSolution, OperationalParameters, (), Ss>) -> Self
     {
         OperationalAlgorithm(value)
     }

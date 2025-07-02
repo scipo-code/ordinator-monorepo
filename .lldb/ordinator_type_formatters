@@ -1,0 +1,7 @@
+
+command script import /nix/store/cs92r0s0n6pa5nyrp34dnyb1rzh8raml-rust-default-1.88.0-nightly-2025-05-09/lib/rustlib/etc/lldb_lookup.py
+type category enable Rust
+
+command script import .lldb/chrono.py
+type summary add -F chrono.DateTimeSummary chrono::datetime::DateTime<chrono::offset::utc::Utc>
+
