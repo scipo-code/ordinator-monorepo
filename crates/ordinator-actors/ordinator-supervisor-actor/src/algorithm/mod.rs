@@ -503,6 +503,9 @@ where
                 .difference(&strategic_activities),
         );
 
+        // After all the state has been in corporated, an [`ArcSwap`] must be 
+        // performed. 
+        // NOTE 2025-06-28
         Ok(true)
     }
 

@@ -10,6 +10,7 @@ ordinator-contracts = { path = "../ordinator-contracts" }
 
 axum = {version = "*", features = ["macros", "tokio"]}
 axum-server = "*"
+chrono.workspace = true
 tower = "*"
 tower-http = { version = "*", features = ["fs"]}
 # actix-files = { workspace = true}
@@ -24,6 +25,7 @@ serde_json = {workspace = true}
 utoipa = {version = "*", features = ["yaml", "axum_extras"]}
 utoipa-axum = "*" 
 utoipa-swagger-ui = {version = "*", features = ["axum"]}
+chrono-tz.workspace = true
 
 # [target.'cfg(not(target_env = "msvc"))'.dependencies]
 # tikv-jemallocator = {version = "0.6"}

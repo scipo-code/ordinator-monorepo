@@ -17,6 +17,7 @@ use utoipa::ToSchema;
 pub mod orchestrator;
 pub mod scheduler;
 pub mod supervisor;
+pub mod technician;
 // This is a DTO object, it should be moved out of the
 // `scheduling-environment`
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]

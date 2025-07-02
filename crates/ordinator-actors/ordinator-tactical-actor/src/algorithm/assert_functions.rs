@@ -6,6 +6,7 @@ use anyhow::bail;
 use colored::Colorize;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::time_environment::day::Day;
+use ordinator_scheduling_environment::time_environment::day::Days;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
@@ -62,18 +63,18 @@ where
         }
 
         for resource in Resources::iter() {
-            for day in &self.parameters.tactical_days {
+            for day in self.parameters.tactical_days.iter().enumerate() {
                 let resource_map = match aggregated_load.get(&resource) {
                     Some(map) => Cow::Borrowed(map),
                     None => Cow::Owned(HashMap::new()),
                 };
 
                 let zero_work = Work::from(0.0);
-                let agg_load = resource_map.get(day).unwrap_or(&zero_work);
+                let agg_load = resource_map.get(day.1).unwrap_or(&zero_work);
                 let sch_load = self
                     .solution
                     .tactical_loadings
-                    .get_resource(&resource, day)
+                    .get_resource(&resource, day.0)
                     // The important thing here is that the asserts should not know
                     // about the initialization of the
                     .unwrap_or(&zero_work);
@@ -82,7 +83,7 @@ where
                     event!(Level::ERROR, agg_load = ?agg_load, sch_load = ?sch_load, resource = ?resource, day = ?day);
                     bail!(
                         "Loads does not match on: day {}\n\tresource: {}\n\tscheduled load: {}\n\taggregated_load: {}\n",
-                        day.to_string().bright_green(),
+                        day.1.to_string().bright_green(),
                         resource.to_string().bright_blue(),
                         sch_load.to_string().bright_yellow(),
                         agg_load.to_string().bright_yellow()
@@ -98,13 +99,22 @@ where
     {
         let mut total_excess_hours = Work::from(0.0);
         for (resource, days) in &self.solution.tactical_loadings.resources {
-            for (day, load) in &days.days {
-                let capacity = self
-                    .parameters
-                    .tactical_capacity
-                    .get_resource(resource, day)?;
+            let capacity_days = self
+                .parameters
+                .tactical_capacity
+                .resources
+                .get(resource)
+                .cloned()
+                .unwrap_or(Days::zero_from_existing(days));
 
-                total_excess_hours += (load - capacity).max(Work::from(0.0));
+            for (load, capacity) in days.days.iter().zip(capacity_days.days) {
+                // let capacity = self
+                //     .parameters
+                //     .tactical_capacity
+                //     .resources.
+                //     .get_resource(resource, day)?;
+
+                total_excess_hours += (*load - capacity).max(Work::from(0.0));
                 // ensure!(
                 //     load <= capacity,
                 //     format!(

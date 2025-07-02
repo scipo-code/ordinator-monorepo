@@ -30,8 +30,8 @@ impl TacticalInterface for TacticalSolution
             ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => return None,
         };
 
-        let start = scheduled_days.first().unwrap().0.date();
-        let end = scheduled_days.last().unwrap().0.date();
+        let start = &scheduled_days.first().unwrap().0.date;
+        let end = &scheduled_days.last().unwrap().0.date;
 
         Some((start, end))
     }
@@ -47,7 +47,7 @@ impl TacticalInterface for TacticalSolution
                 ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Strategic => None,
                 ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Tactical(wo) => {
                     let first_activity = wo.0.first_key_value();
-                    let first_date = first_activity?.1.scheduled.first()?.0.date();
+                    let first_date = first_activity?.1.scheduled.first()?.0.date;
                     Some(WorkOrder::date_to_period(periods, &first_date.date_naive()))
                 }
                 ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => None,

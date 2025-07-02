@@ -8,7 +8,6 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
 use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 
-use super::algorithm::FillinOperationalEvents;
 use super::algorithm::operational_parameter::OperationalParameters;
 use crate::algorithm::operational_events::OperationalEvents;
 use crate::algorithm::operational_solution::OperationalSolution;
@@ -20,8 +19,7 @@ pub trait OperationalAssertions
     fn assert_marginal_fitness_is_correct(&self) -> Result<()>;
 }
 
-impl<Ss> OperationalAssertions
-    for Algorithm<OperationalSolution, OperationalParameters, FillinOperationalEvents, Ss>
+impl<Ss> OperationalAssertions for Algorithm<OperationalSolution, OperationalParameters, (), Ss>
 where
     Ss: SystemSolutions,
 {
@@ -48,8 +46,8 @@ where
             let finish_of_prev = assignments[0].1.finish_time();
             let start_of_next = assignments[2].1.start_time();
             let combined_non_productive: TimeDelta = self
-                .solution_intermediate
-                .0
+                .solution
+                .non_productive
                 .iter()
                 .filter(|non_prod| match &non_prod.operational_events {
                     OperationalEvents::NonProductiveTime(_time_interval) => {

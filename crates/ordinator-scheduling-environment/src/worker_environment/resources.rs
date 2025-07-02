@@ -380,7 +380,7 @@ impl Display for Id
     {
         write!(
             f,
-            "Id: {:?} | resources: {:?} | asset: {:?}",
+            "Id: {} | resources: {:?} | asset: {:?}",
             self.0, self.1, self.2
         )
     }

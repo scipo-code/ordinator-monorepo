@@ -21,6 +21,7 @@ use crate::routes::api::AppError;
 #[debug_handler]
 #[utoipa::path(
     get,
+    tag = "Supervisor",
     path = "/{asset}/{supervisor_id}",
     params (
         ("asset" = AssetNames, Path),
@@ -68,6 +69,7 @@ pub async fn status(
 #[utoipa::path(
     get,
     path = "/all_technicians/{asset}/{supervisor_id}",
+    tag = "Supervisor",
     params (
         ("asset" = AssetNames, Path),
         ("supervisor_id" = String, Path),

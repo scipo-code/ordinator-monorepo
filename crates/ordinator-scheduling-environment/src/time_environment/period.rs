@@ -11,18 +11,20 @@ use chrono::NaiveDate;
 use chrono::TimeZone;
 use chrono::Utc;
 use chrono::Weekday;
-use clap::Args;
 use colored::Colorize;
 use rust_xlsxwriter::IntoExcelData;
 use serde::Deserialize;
 use serde::Serialize;
 
-#[derive(Args, Serialize, Deserialize, Eq, PartialEq, Hash, Clone, PartialOrd, Ord)]
+
+// Clap should not be in the `SchedulingEnvironment`
+
+#[derive( Serialize, Deserialize, Eq, PartialEq, Hash, Clone, PartialOrd, Ord)]
 pub struct Period {
-    id_internal: i32,
     period_string: String,
     start_date: DateTime<Utc>,
     end_date: DateTime<Utc>,
+    pub day_indices: Vec<u64>,
     pub year: i32,
     pub start_week: u32,
     pub finish_week: u32,
@@ -35,9 +37,7 @@ impl std::fmt::Debug for Period {
                 f,
                 "{}",
                 format!(
-                    "Period {{\n\t{}: {}, \n\t{}: {}, \n\t{}: {}, \n\t{}: {}\n}}",
-                    "id_internal",
-                    self.id_internal,
+                    "Period {{\n\t{}: {}, \n\t{}: {}, \n\t{}: {}\n}}",
                     "year",
                     self.year,
                     "start_week",
@@ -52,8 +52,7 @@ impl std::fmt::Debug for Period {
                 f,
                 "{}",
                 format!(
-                    "Period {{\n\t\tid_internal: {}, \n\t\tperiod_string: {}, \n\t\tstart_date: {}, \n\t\tfinish_date: {}, \n\t\tyear: {}, \n\t\tstart_week: {}, \n\t\tfinish_week: {}\n}}",
-                    self.id_internal,
+                    "Period {{\n\t\tperiod_string: {}, \n\t\tstart_date: {}, \n\t\tfinish_date: {}, \n\t\tyear: {}, \n\t\tstart_week: {}, \n\t\tfinish_week: {}\n}}",
                     self.period_string,
                     self.start_date, 
                     self.end_date, 
@@ -69,7 +68,7 @@ impl std::fmt::Debug for Period {
 
 #[allow(dead_code)]
 impl Period {
-    pub fn new(id: i32, start_date: DateTime<Utc>, end_date: DateTime<Utc>) -> Period {
+    pub fn new(start_date: DateTime<Utc>, end_date: DateTime<Utc>, day_indices: Vec<u64>) -> Period {
         let mut year = start_date.year();
 
         if is_last_three_days_of_year(start_date.naive_utc().date()) {
@@ -85,14 +84,15 @@ impl Period {
 
         let period_string = format!("{year}-W{start_week}-{end_week}");
 
+
         Period {
-            id_internal: id,
             period_string,
             start_date,
             end_date,
             year,
             start_week,
             finish_week: end_week,
+            day_indices,
         }
     }
 
@@ -131,19 +131,16 @@ impl Period {
         &self.end_date
     }
 
-    pub fn id(&self) -> &i32 {
-        &self.id_internal
-    }
 }
 
 impl Add<Duration> for Period {
     type Output = Self;
 
     fn add(self, rhs: Duration) -> Self::Output {
-        let id = self.id_internal + 1;
         let start_date = self.start_date + rhs;
         let end_date = self.end_date + rhs;
-        Period::new(id, start_date, end_date)
+        let day_indices = self.day_indices.iter().map(|i| i + rhs.num_days() as u64).collect();
+        Period::new(start_date, end_date, day_indices)
     }
 }
 
@@ -151,10 +148,10 @@ impl Sub<Duration> for Period {
     type Output = Period;
 
     fn sub(self, rhs: Duration) -> Self::Output {
-        let id = self.id_internal - 1;
         let start_date = self.start_date - rhs;
         let end_date = self.end_date - rhs;
-        Period::new(id, start_date, end_date)
+        let day_indices = self.day_indices.iter().map(|i|i+14).collect();
+        Period::new( start_date, end_date, day_indices)
     }
 }
 
@@ -162,10 +159,10 @@ impl Add<Duration> for &Period {
     type Output = Period;
 
     fn add(self, rhs: Duration) -> Self::Output {
-        let id = self.id_internal - 1;
         let start_date = self.start_date + rhs;
         let end_date = self.end_date + rhs;
-        Period::new(id, start_date, end_date)
+        let day_indices = self.day_indices.iter().map(|i|i+14).collect();
+        Period::new( start_date, end_date, day_indices)
     }
 }
 
@@ -185,16 +182,9 @@ impl Display for Period {
     }
 }
 
-impl Default for Period {
-    fn default() -> Self {
-        Period::new(
-            0,
-            Utc.with_ymd_and_hms(2021, 1, 1, 0, 0, 0).unwrap(),
-            Utc.with_ymd_and_hms(2021, 1, 14, 23, 59, 59).unwrap(),
-        )
-    }
-}
 
+// This is then no longer possible. What should you do instead? I think
+// that the best approach would be to make the systems.
 impl FromStr for Period {
     type Err = String;
 
@@ -217,7 +207,7 @@ impl FromStr for Period {
                 .parse::<u32>()
                 .map_err(|_| "Invalid start week")?
         };
-        let mut end_week = parts[2].parse::<u32>().map_err(|_| "Invalid end week")?;
+        let mut finish_week = parts[2].parse::<u32>().map_err(|_| "Invalid end week")?;
 
         // Convert week number to a DateTime<Utc>
 
@@ -225,34 +215,35 @@ impl FromStr for Period {
         let local_datetime = local.and_hms_opt(0, 0, 0).unwrap();
         let start_date = Utc.from_local_datetime(&local_datetime);
 
-        let end_date = if end_week == 52
-            || (end_week == 53 && NaiveDate::from_isoywd_opt(year, 53, Weekday::Mon).is_some())
+        let end_date = if finish_week == 52
+            || (finish_week == 53 && NaiveDate::from_isoywd_opt(year, 53, Weekday::Mon).is_some())
         {
             // Last moment of week 52 or 53
-            let local = NaiveDate::from_isoywd_opt(year, end_week, Weekday::Sun).unwrap();
+            let local = NaiveDate::from_isoywd_opt(year, finish_week, Weekday::Sun).unwrap();
             let local_datetime = local.and_hms_opt(23, 59, 59);
             Utc.from_local_datetime(&local_datetime.unwrap()).unwrap()
         } else {
             // Handle rollover to the next year
-            if end_week > 52 {
-                end_week = 1;
+            if finish_week > 52 {
+                finish_week = 1;
                 year += 1;
             }
             // Moment just before the start of the next week
-            let local = NaiveDate::from_isoywd_opt(year, end_week + 1, Weekday::Mon).unwrap();
+            let local = NaiveDate::from_isoywd_opt(year, finish_week + 1, Weekday::Mon).unwrap();
             let local_datetime = local.and_hms_opt(0, 0, 0);
             Utc.from_local_datetime(&local_datetime.unwrap()).unwrap() - Duration::seconds(1)
         };
 
         // Create Period
         Ok(Period {
-            id_internal: 0, // Assuming default value for id, modify as needed
             period_string: period_string.to_string(),
             start_date: start_date.unwrap(),
             end_date,
             year,
             start_week,
-            finish_week: end_week,
+            finish_week,
+            //WARN [ ] 2025-07-02 We should be very careful about doing this/
+            day_indices: vec![],
         })
     }
 }
@@ -291,10 +282,9 @@ mod tests {
     #[test]
     fn test_period_add_duration_1() {
         // Setup initial period
-        let initial_id = 1;
         let initial_start_date = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
         let initial_end_date = Utc.with_ymd_and_hms(2023, 1, 14, 23, 59, 59).unwrap();
-        let period = Period::new(initial_id, initial_start_date, initial_end_date);
+        let period = Period::new( initial_start_date, initial_end_date, vec![]);
 
         // Define the duration to add (e.g., 1 month)
         let duration_to_add = Duration::weeks(2); // Adjust as per your Duration type
@@ -303,7 +293,6 @@ mod tests {
         let new_period = period + duration_to_add;
 
         // Assert that the new period has the expected values
-        assert_eq!(new_period.id_internal, initial_id + 1);
         assert_eq!(new_period.start_date, initial_start_date + duration_to_add);
         assert_eq!(new_period.end_date, initial_end_date + duration_to_add);
     }
@@ -311,10 +300,9 @@ mod tests {
     #[test]
     fn test_period_add_duration_2() {
         // Setup initial period
-        let initial_id = 1;
         let initial_start_date = Utc.with_ymd_and_hms(2023, 12, 18, 0, 0, 0).unwrap();
         let initial_end_date = Utc.with_ymd_and_hms(2023, 12, 31, 23, 59, 59).unwrap();
-        let period = Period::new(initial_id, initial_start_date, initial_end_date);
+        let period = Period::new( initial_start_date, initial_end_date, vec![]);
 
         // Define the duration to add (e.g., 1 month)
         let duration_to_add = Duration::weeks(2); // Adjust as per your Duration type
@@ -323,7 +311,6 @@ mod tests {
         let new_period = period + duration_to_add;
 
         // Assert that the new period has the expected values
-        assert_eq!(new_period.id_internal, initial_id + 1);
         assert_eq!(new_period.start_date, initial_start_date + duration_to_add);
         assert_eq!(new_period.end_date, initial_end_date + duration_to_add);
         assert_eq!(new_period.period_string, "2024-W1-2".to_string());
@@ -416,9 +403,12 @@ mod tests {
         let period = Period::from_str("2024-W51-52").unwrap();
 
         let new_period = Period::new(
-            1,
             period.start_date().to_owned() + Duration::weeks(2),
             period.end_date().to_owned() + Duration::weeks(2),
+            vec![]
+
+
+
         );
 
         assert_eq!(new_period.period_string, "2025-W1-2".to_string());

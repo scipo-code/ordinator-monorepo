@@ -393,10 +393,10 @@ where
     }
 
     #[allow(dead_code)]
-    pub fn calculate_utilization(&self) -> Result<Vec<(i32, u64)>> {
+    pub fn calculate_utilization(&self) -> Result<Vec<(i64, u64)>> {
         let mut utilization_by_period = Vec::new();
 
-        for period in &self.parameters.strategic_periods {
+        for (index, period) in self.parameters.strategic_periods.iter().enumerate() {
             let mut intermediate_loading: f64 = 0.0;
             let mut intermediate_capacity: f64 = 0.0;
             for resource in Resources::iter() {
@@ -408,7 +408,7 @@ where
             }
             let percentage_loading =
                 ((intermediate_loading / intermediate_capacity) * 100.0) as u64;
-            utilization_by_period.push((*period.id(), percentage_loading));
+            utilization_by_period.push((index as i64, percentage_loading));
         }
         Ok(utilization_by_period)
     }
@@ -1306,6 +1306,7 @@ fn determine_unschedule_work_resource_loadings(
 
 /// This function determines the resource load for when a work order should be
 /// forced into the schedule.
+#[allow(unused_assignments)]
 fn determine_forced_work_order_resource_loadings(
     period: &Period,
     best_total_excess: &mut Work,
