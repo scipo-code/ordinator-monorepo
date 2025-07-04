@@ -4,6 +4,7 @@ mod operational_interface;
 pub mod operational_parameter;
 pub mod operational_solution;
 
+use std::collections::HashSet;
 use std::ops::Deref;
 use std::ops::DerefMut;
 use std::sync::Arc;
@@ -691,6 +692,35 @@ where
             .sorted_unstable_by_key(|ass| ass.start);
         no_overlap(&all_events.collect::<Vec<_>>())
             .with_context(|| "Overlap between work order activities".to_string())?;
+
+        let value = self
+            .solution
+            .scheduled_work_order_activities
+            .iter()
+            .map(|e| e.0.0)
+            .collect::<HashSet<_>>();
+
+        ensure!(
+            value.iter().all(|won_outer| {
+                self.solution
+                    .scheduled_work_order_activities
+                    .iter()
+                    .filter(|won_acn| won_acn.0.0 == *won_outer)
+                    .dropping(1)
+                    .dropping_back(1)
+                    .map(|won| won.0.1)
+                    .collect::<Vec<_>>()
+                    .is_sorted()
+            }),
+            "Precedence constraints internally in the TechnicianAlgorithm are violated\nSolution: \n{:#?}",
+            self.solution
+                .scheduled_work_order_activities
+                .iter()
+                .map(|won| won.0.1)
+                .dropping(1)
+                .dropping_back(1)
+                .collect::<Vec<_>>()
+        );
 
         Ok(())
     }

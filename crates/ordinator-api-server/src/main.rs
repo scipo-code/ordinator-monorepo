@@ -13,10 +13,8 @@ use std::sync::Arc;
 use anyhow::Context;
 use anyhow::Result;
 use axum::routing::get;
-
 use chrono::TimeZone;
 use chrono_tz::Europe::Copenhagen;
-
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Asset;
 // use std::fs::File;
@@ -30,6 +28,9 @@ use utoipa::openapi::OpenApiBuilder;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_swagger_ui::Config;
 use utoipa_swagger_ui::SwaggerUi;
+
+pub const RESEARCH: &str = "research";
+
 #[tokio::main]
 async fn main() -> Result<()>
 {

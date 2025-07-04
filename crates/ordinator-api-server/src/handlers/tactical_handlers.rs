@@ -102,6 +102,37 @@ where
     Ok(Json(tactical_days).into_response())
 }
 
+#[utoipa::path(
+    get,
+    tag = "Scheduler",
+    path = "/daily_loadings/{asset}",
+    params (
+        ("asset" = AssetNames, Path),
+    ),
+    responses((status = 200, body = [Vec<String>]))
+)]
+pub async fn daily_loadings<Ss>(
+    State(orchestrator): State<Arc<Orchestrator<Ss>>>,
+    Path(asset): Path<Asset>,
+) -> Result<Response, AppError>
+where
+    Ss: SystemSolutions,
+{
+    let tactical_days = orchestrator
+        .system_solutions
+        .lock()
+        .unwrap_or_else(|_| panic!("Could not lock the SystemSolution for Asset: {}", &asset))
+        .get(&asset)
+        .with_context(|| format!("SystemSolution for Asset: {} does not exist", &asset))
+        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .load()
+        .tactical_actor_solution()
+        .map_err(|_| AppError::Anyhow(format!("No TacticalSolution exists for Asset: {}", &asset)))?
+        .tactical_loadings();
+
+    Ok(Json(tactical_days).into_response())
+}
+
 use ordinator_orchestrator::TacticalInterface;
 
 use crate::routes::api::AppError;

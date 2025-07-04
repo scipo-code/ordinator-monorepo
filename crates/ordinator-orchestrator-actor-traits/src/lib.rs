@@ -26,7 +26,9 @@ use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::Resources;
 
 pub trait OrchestratorNotifier: Send + Sync + 'static
 {
@@ -417,6 +419,8 @@ where
     ) -> Option<&'a Period>;
 
     fn all_scheduled_tasks(&self) -> HashMap<WorkOrderNumber, BTreeMap<ActivityNumber, Day>>;
+
+    fn tactical_loadings(&self) -> BTreeMap<Resources, Vec<Work>>;
 }
 
 // This is a core type that each `Actor` should implement, I think
@@ -515,6 +519,8 @@ where
         &'a self,
         work_order_activity: &WorkOrderActivity,
     ) -> Option<&'a MarginalFitness>;
+
+    fn scheduled_activities_for_operational_actor(&self) -> HashSet<WorkOrderActivity>;
 }
 
 // You should make an API on the `Communication` struct. What other approach

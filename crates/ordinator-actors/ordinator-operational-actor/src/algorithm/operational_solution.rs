@@ -30,7 +30,11 @@ use super::operational_parameter::OperationalParameters;
 /// You want this to be a struct so that you can implement methods and
 /// formatting and logging.
 #[derive(Serialize, Copy, PartialEq, PartialOrd, Ord, Eq, Debug, Default, Clone)]
-pub struct OperationalObjectiveValue(pub u64);
+pub struct OperationalObjectiveValue
+{
+    /// utilization
+    hands_on_tool_time: u64,
+}
 
 impl ObjectiveValue for OperationalObjectiveValue {}
 
@@ -38,7 +42,9 @@ impl From<u64> for OperationalObjectiveValue
 {
     fn from(value: u64) -> Self
     {
-        OperationalObjectiveValue(value)
+        Self {
+            hands_on_tool_time: value,
+        }
     }
 }
 
@@ -102,7 +108,9 @@ impl Solution for OperationalSolution
         scheduled_work_order_activities.push(((WorkOrderNumber(0), 0), unavailability_end_event));
 
         Ok(Self {
-            objective_value: OperationalObjectiveValue(0),
+            objective_value: OperationalObjectiveValue {
+                hands_on_tool_time: 0,
+            },
             scheduled_work_order_activities,
             non_productive: vec![],
         })
