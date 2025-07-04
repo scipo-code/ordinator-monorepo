@@ -101,6 +101,7 @@ pub fn setup_logging() -> LogHandles
     let (research_non_blocking, research_log_guard) = tracing_appender::non_blocking(research_file);
     std::mem::forget(research_log_guard);
 
+    
     let research_layer = fmt::layer()
         .with_writer(research_non_blocking)
         .json()

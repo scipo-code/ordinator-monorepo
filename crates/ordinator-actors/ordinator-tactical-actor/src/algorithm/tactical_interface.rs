@@ -93,4 +93,18 @@ impl TacticalInterface for TacticalSolution
             })
             .collect()
     }
+
+    fn tactical_loadings(
+        &self,
+    ) -> BTreeMap<
+        ordinator_scheduling_environment::worker_environment::resources::Resources,
+        Vec<ordinator_scheduling_environment::work_order::operation::Work>,
+    >
+    {
+        self.tactical_loadings
+            .resources
+            .iter()
+            .map(|e| (*e.0, e.1.days.clone()))
+            .collect()
+    }
 }

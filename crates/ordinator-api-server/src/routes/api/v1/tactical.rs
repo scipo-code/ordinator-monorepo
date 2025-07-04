@@ -16,8 +16,9 @@ pub async fn tactical_route(
     OpenApiRouter::new()
         .route("/", get(status::<TotalSystemSolution>))
         .routes(routes!(
-            crate::handlers::tactical_handlers::start_days_for_activities
+            crate::handlers::tactical_handlers::start_days_for_activities,
         ))
+        .routes(routes!(crate::handlers::tactical_handlers::daily_loadings,))
         .with_state(state)
 }
 

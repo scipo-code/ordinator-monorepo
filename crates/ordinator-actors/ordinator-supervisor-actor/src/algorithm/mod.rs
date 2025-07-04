@@ -16,6 +16,7 @@ use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::AbLNSUtils;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
+use ordinator_orchestrator_actor_traits::OperationalInterface;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
@@ -159,10 +160,57 @@ where
 
         let objective_value = (intermediate * 1000.0) as u64;
 
+        // Why is there not assigned more WOs from the supervisor? There are
+        // a couple of reasons, either the OperationalActors are not
+        // able to insert them or the Supervisor is bad at optimizing the
+        // `Delegate`s based on the otherwise good functioning of the
+        // OperationalActors.
+        //
+        // I think that the most propable is the Operational not actually scheduling
+        // that much I will include this here
+        //
+        // TODO [ ] 2025-07-03 Essay on the different tracing files.
+        // TODO [ ] 2025-07-03 Determine how much is actually scheduled by the
+        // operational actors.
+        //
         if self.solution.objective_value < objective_value {
+            // NOTE [ ] 2025-07-03 We should work on getting this to work correctly
+            // with
+            //
+            let mut every_operational_assigned_or_assess_work_order_activity: HashSet<(
+                WorkOrderNumber,
+                ActivityNumber,
+            )> = HashSet::new();
+            for operational_id in self.loaded_system_solution.all_operational() {
+                let total_number_of_assess_or_assign = self
+                    .loaded_system_solution
+                    .operational_actor_solutions(&operational_id)
+                    .with_context(|| {
+                        format!("The operational_actor: {operational_id} does not exist")
+                    })?;
+
+                let operational_scheduled_work_order_activities =
+                    total_number_of_assess_or_assign.scheduled_activities_for_operational_actor();
+                every_operational_assigned_or_assess_work_order_activity =
+                    every_operational_assigned_or_assess_work_order_activity
+                        .union(&operational_scheduled_work_order_activities)
+                        .cloned()
+                        .collect::<HashSet<_>>();
+            }
+            let all_work_order_activities = self
+                .solution
+                .operational_state_machine
+                .keys()
+                .map(|e| e.1)
+                .collect::<HashSet<_>>();
+
+            let share_of_schedule_work_order_activities =
+                every_operational_assigned_or_assess_work_order_activity.len() as f64
+                    / all_work_order_activities.len() as f64;
             event!(
                 Level::INFO,
-                supervisor_objective_value_better = objective_value
+                supervisor_objective_value_better = objective_value,
+                share_of_schedule_work_order_activities = share_of_schedule_work_order_activities,
             );
             Ok(ObjectiveValueType::Better(objective_value))
         } else {
@@ -503,8 +551,8 @@ where
                 .difference(&strategic_activities),
         );
 
-        // After all the state has been in corporated, an [`ArcSwap`] must be 
-        // performed. 
+        // After all the state has been in corporated, an [`ArcSwap`] must be
+        // performed.
         // NOTE 2025-06-28
         Ok(true)
     }
