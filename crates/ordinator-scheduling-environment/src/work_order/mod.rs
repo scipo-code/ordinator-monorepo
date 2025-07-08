@@ -98,7 +98,7 @@ impl WorkOrdersBuilder
         }
     }
 
-    pub fn work_order_builder<F>(&mut self, f: F, work_order_number: WorkOrderNumber) -> &mut Self
+    pub fn work_order_builder<F>(&mut self, work_order_number: WorkOrderNumber, f: F) -> &mut Self
     where
         F: FnOnce(&mut WorkOrderBuilder) -> &mut WorkOrderBuilder,
     {

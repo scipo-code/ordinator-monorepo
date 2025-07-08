@@ -1,5 +1,4 @@
 use std::fmt::Debug;
-use std::panic::Location;
 use std::sync::MutexGuard;
 
 use anyhow::Context;
@@ -9,6 +8,7 @@ use ordinator_scheduling_environment::SchedulingEnvironment;
 use serde::Serialize;
 use tracing::Level;
 use tracing::event;
+use tracing::info;
 
 pub type ActorLinkToSchedulingEnvironment<'a> = MutexGuard<'a, SchedulingEnvironment>;
 
@@ -39,9 +39,6 @@ pub trait ActorBasedLargeNeighborhoodSearch
         // it is a part of the actor it should be dependency injected. I think that this
         // is the best approach
         //
-        // Temporary
-        self.calculate_objective_value()
-            .with_context(|| format!("{}", Location::caller()))?;
         // You still have the same problem. Why do you keep running in circles? I do not
         // understand it. You have to fix this. You will work longer hours.
         self.update_based_on_system_solution().with_context(|| {
@@ -73,12 +70,10 @@ pub trait ActorBasedLargeNeighborhoodSearch
             Level::INFO,
             better_objective = ?objective_value_type
         );
-        // Temporary
-        self.calculate_objective_value()
-            .with_context(|| format!("{}", Location::caller()))?;
 
         match objective_value_type {
             ObjectiveValueType::Better(objective_value) => {
+                info!(target: "research", objective_value = ?objective_value);
                 self.algorithm_util_methods()
                     .update_objective_value(objective_value);
                 self.make_atomic_pointer_swap();
@@ -89,9 +84,6 @@ pub trait ActorBasedLargeNeighborhoodSearch
 
             ObjectiveValueType::Force => todo!(),
         }
-        // Temporary
-        self.calculate_objective_value()
-            .with_context(|| format!("{}", Location::caller()))?;
         Ok(())
     }
 

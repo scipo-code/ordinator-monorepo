@@ -96,30 +96,9 @@ where
                 .expect("If this happens no amount of error handling will save the program")
         }
 
-        // Temporary
-        if let Err(actor_error) = self
-            .algorithm
-            .calculate_objective_value()
-            .with_context(|| format!("{}", Location::caller()))
-        {
-            self.error_channel
-                .send(anyhow!(actor_error))
-                .expect("If this happens no amount of error handling will save the program")
-        };
-
         schedule_iteration.increment();
 
         loop {
-            // Temporary
-            if let Err(actor_error) = self
-                .algorithm
-                .calculate_objective_value()
-                .with_context(|| format!("{}", Location::caller()))
-            {
-                self.error_channel
-                    .send(anyhow!(actor_error))
-                    .expect("If this happens no amount of error handling will save the program")
-            };
             while let Ok(message) = self.receiver_from_orchestrator.try_recv() {
                 match self.handle(message) {
                     Ok(_) => (),
@@ -145,16 +124,6 @@ where
             };
 
             std::thread::sleep(std::time::Duration::from_millis(sleep_duration));
-            // Temporary
-            if let Err(actor_error) = self
-                .algorithm
-                .calculate_objective_value()
-                .with_context(|| format!("{}", Location::caller()))
-            {
-                self.error_channel
-                    .send(anyhow!(actor_error))
-                    .expect("If this happens no amount of error handling will save the program")
-            };
             if let Err(actor_error) = self
                 .algorithm
                 // Ahh the issue is that you cannot put this kind of thing in here. The issue comes
@@ -173,16 +142,6 @@ where
                     .send(actor_error)
                     .expect("If this happens no amount of error handling will save the program")
             }
-            // Temporary
-            if let Err(actor_error) = self
-                .algorithm
-                .calculate_objective_value()
-                .with_context(|| format!("{}", Location::caller()))
-            {
-                self.error_channel
-                    .send(anyhow!(actor_error))
-                    .expect("If this happens no amount of error handling will save the program")
-            };
             schedule_iteration.increment();
         }
     }

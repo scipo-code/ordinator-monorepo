@@ -23,6 +23,7 @@ use ordinator_orchestrator::Orchestrator;
 use routes::api::v1::api_scope;
 use tokio::task::JoinHandle;
 use tower_http::services::ServeDir;
+use tracing::info;
 use utoipa::openapi::Info;
 use utoipa::openapi::OpenApiBuilder;
 use utoipa_axum::router::OpenApiRouter;
@@ -88,6 +89,7 @@ async fn main() -> Result<()>
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     let server = axum_server::bind(addr).serve(merged_app.into_make_service());
 
+    info!(target: "stdout", "System initialized (4 of 4): ordinator-api-server");
     tokio::select! {
         res = server => res?,
         res = error_handle => res??,

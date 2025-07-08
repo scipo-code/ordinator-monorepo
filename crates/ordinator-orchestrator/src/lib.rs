@@ -63,6 +63,7 @@ use ordinator_total_data_processing::excel_dumps::create_excel_dump;
 use serde::Deserialize;
 use serde::Serialize;
 use tokio::task::JoinHandle;
+use tracing::info;
 use tracing::instrument;
 
 use self::actor_registry::ActorRegistry;
@@ -631,6 +632,7 @@ where
             system_clock_tick_receiver,
             system_clock_time_commands_sender,
         });
+        info!(target: "stdout", "System initialized (2 of 4): orchestrator");
         Ok((orchestrator, error_task_handle, system_clock_handle))
     }
 
@@ -768,6 +770,7 @@ where
             .lock()
             .unwrap()
             .insert(asset.clone(), agent_registry);
+        info!(target: "stdout", "System initialized (3 of 4): Asset {}", asset);
 
         Ok(self)
     }

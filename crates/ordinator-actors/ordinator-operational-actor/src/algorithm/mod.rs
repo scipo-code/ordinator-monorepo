@@ -22,7 +22,6 @@ use operational_parameter::OperationalParameter;
 use operational_parameter::OperationalParameters;
 use operational_solution::Assignment;
 use operational_solution::OperationalAssignment;
-use operational_solution::OperationalFunctions;
 use operational_solution::OperationalObjectiveValue;
 use operational_solution::OperationalSolution;
 use ordinator_actor_core::algorithm::Algorithm;
@@ -45,6 +44,7 @@ use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use rand::seq::IndexedRandom;
 use tracing::Level;
+use tracing::debug;
 use tracing::event;
 
 #[derive(Debug)]
@@ -549,6 +549,7 @@ where
                     )
                 })?;
 
+            debug!(target: "debug", work_order_activity = ?work_order_activity, assignmends = ?assignments);
             self.solution.try_insert(*work_order_activity, assignments);
         }
 

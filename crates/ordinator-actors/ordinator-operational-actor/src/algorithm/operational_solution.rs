@@ -209,12 +209,13 @@ pub trait OperationalFunctions
     fn containing_operational_solution(&self, time: DateTime<Utc>) -> ContainOrNextOrNone;
 }
 
-impl OperationalFunctions for OperationalSolution
+impl OperationalSolution
 {
-    type Key = WorkOrderActivity;
-    type Sequence = Vec<Assignment>;
-
-    fn try_insert(&mut self, key: Self::Key, assignments: Self::Sequence)
+    pub fn try_insert(
+        &mut self,
+        key: WorkOrderActivity,
+        assignments: Vec<Assignment>,
+    ) -> Option<WorkOrderActivity>
     {
         for (index, operational_solution) in self
             .scheduled_work_order_activities
@@ -249,12 +250,14 @@ impl OperationalFunctions for OperationalSolution
 
                     assert!(no_overlap_by_ref(assignments));
                 }
-                break;
+                return None;
             }
         }
+
+        Some(key)
     }
 
-    fn containing_operational_solution(&self, time: DateTime<Utc>) -> ContainOrNextOrNone
+    pub fn containing_operational_solution(&self, time: DateTime<Utc>) -> ContainOrNextOrNone
     {
         let containing: Option<OperationalAssignment> = self
             .scheduled_work_order_activities
@@ -426,6 +429,8 @@ mod tests
 {
     use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 
+    use crate::OperationalActor;
+
     #[test]
     fn test_marginal_fitness_debug()
     {
@@ -437,5 +442,13 @@ mod tests
             formatted_marginal_fitness,
             "MarginalFitness::Scheduled(3600, 1, 0)"
         );
+    }
+
+    #[test]
+    fn test_try_insert()
+    {
+
+        // let operational_actor = OperationalActor::from(value)
+        // try_insert( );
     }
 }

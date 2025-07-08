@@ -8,158 +8,114 @@ wmat = 3
 
 [strategic]
 number_of_strategic_periods = 52
-id = [ [], "strategic", [] ]
-is.assets ["DF"]
+id = [ "strategic", [], ["DF"] ]
+
 strategic_options.number_of_removed_work_orders = 25
 strategic_options.urgency_weight = 1
 strategic_options.resource_penalty_weight = 1000000
 strategic_options.clustering_weight = 1000
-material_to_period.nmat = 0
-material_to_period.smat = 0
-material_to_period.cmat = 2
-material_to_period.pmat = 3
-material_to_period.wmat = 3
 
 [tactical]
-number_of_tactical_periods =4
-is.assets ["DF"]
+number_of_tactical_days =120
+id = [ "tactical_TEST", [], ["DF"]]
 tactical_options.number_of_removed_work_orders = 25
 tactical_options.urgency = 1
 tactical_options.resource_penalty = 10000000
-material_to_period.nmat = 0
-material_to_period.smat = 0
-material_to_period.cmat = 2
-material_to_period.pmat = 3
-material_to_period.wmat = 3
-
 
 [[supervisors]]
-id = [ "tactical", [], "main" ]
 number_of_supervisor_periods = 3
-id = [ [], [], ["DF"] ]
-supervisor_options.number_of_removed_work_orders = 15
+id = [ "main", [], ["DF"] ]
+supervisor_options.number_of_unassigned_work_orders = 15
 
 ################################
 ###          MTN-ELEC        ###
 ################################
 [[operational]]
 hours_per_day = 81.0
-operational_options.number_of_removed_work_orders = 15
+operational_options.number_of_removed_activities = 15
 operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
 operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
 operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-id = [ "OP-01-001", ["MTN-MECH",, ["DF"] ]
+id = [ "OP-01-001", ["MTN-MECH"], ["DF"] ]
 
 [[operational]]
 hours_per_day = 81.0
-operational_options.number_of_removed_work_orders = 15
+operational_options.number_of_removed_activities = 15
 operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
 operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
 operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-id = [ "OP-01-002", ["MTN-MECH",, ["DF"] ]
+id = [ "OP-01-002", ["MTN-MECH"], ["DF"] ]
 
 [[operational]]
 hours_per_day = 81.0
-operational_options.number_of_removed_work_orders = 15
+operational_options.number_of_removed_activities = 15
 operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
 operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
 operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-id = [ "OP-01-003", ["MTN-LAGG",, ["DF"] ]
-[wdf_priority_map]
-
-"1" = 500
-
-"2" = 50
-
-"3" = 5
-
-"4" = 1
-
-"5" = 1
-
-"6" = 1
-
-"7" = 1
-
-"8" = 1
+id = [ "OP-01-003", ["MTN-LAGG"], ["DF"] ]
 
 
-[wgn_priority_map]
-
-"1" = 500
-
-"2" = 50
-
-"3" = 5
-
-"4" = 1
-
-"5" = 1
-
-"6" = 1
-
-"7" = 1
-
-"8" = 1
+[work_order_configurations.wdf_priority_map]
+1 = 500
+2 = 50
+3 = 5
+4 = 1
+5 = 1
+6 = 1
+7 = 1
+8 = 1
 
 
-[wpm_priority_map]
+[work_order_configurations.wgn_priority_map]
+1 = 500
+2 = 50
+3 = 5
+4 = 1
+5 = 1
+6 = 1
+7 = 1
+8 = 1
 
+
+[work_order_configurations.wpm_priority_map]
 "A" = 500
-
 "B" = 50
-
 "C" = 5
-
 "D" = 1
 
 
-[vis_priority_map]
-
+[work_order_configurations.vis_priority_map]
 "V" = 100
-
 "I" = 10
-
 "S" = 10
 
 
-[order_type_weights]
-
+[work_order_configurations.order_type_weights]
 "WDF" = 10
-
 "WGN" = 8
-
 "WPM" = 5
-
 "Other" = 0
 
 
-[status_weights]
-
+[work_order_configurations.status_weights]
 "SECE" = 7500
-
 "PCNF_NMAT_SMAT" = 1500
-
 "AWSC" = 10000
 
 
-[clustering_weights]
-
+[work_order_configurations.clustering_weights]
 "asset" = 10
-
 "sector" = 5
-
 "system" = 2
-
 "subsystem" = 2
-
 "equipment_tag" = 1
 
-
+[work_order_configurations]
 operating_time = 6
+

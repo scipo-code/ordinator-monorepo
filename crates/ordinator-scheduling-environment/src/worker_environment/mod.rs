@@ -69,6 +69,8 @@ impl WorkerEnvironmentBuilder
     // this to work.
     pub fn actor_environment(mut self, asset: Asset) -> Result<Self>
     {
+        println!("{}", std::env::current_dir()?.display());
+
         // This should then be changed into something different for this to
         // work. You need to put it into the Asset and the ... I think that
         // it is okay to simply hard code the information for now. Hmm...
@@ -85,6 +87,7 @@ impl WorkerEnvironmentBuilder
         // DATE 2025-05-01
         // let list_of_actor_specification = vec![
         //     (
+        //
         //         Asset::DF,
         //         "./configuration/actor_specification/actor_specification_df.toml",
         //     ),
@@ -114,10 +117,12 @@ impl WorkerEnvironmentBuilder
         let path = format!(
             "./temp_scheduling_environment_database/actor_specifications/actor_specification_{asset_string}.toml",
         );
+        println!("{:?}", std::fs::canonicalize(path.clone())?);
 
         let contents = std::fs::read_to_string(&path).with_context(|| {
             format!("Could not read string for ActorSpecification\nPath: {path}")
         })?;
+
         let actor_specifications: ActorSpecifications =
             toml::from_str(&contents).with_context(|| {
                 format!(
