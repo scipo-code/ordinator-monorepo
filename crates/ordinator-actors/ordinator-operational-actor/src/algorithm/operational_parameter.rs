@@ -147,7 +147,7 @@ impl Parameters for OperationalParameters
             .operational
             .iter()
             .find(|oca| asset == &oca.id)
-            .with_context(|| format!("{:#?} did not exist", asset.0))?;
+            .with_context(|| format!("{:#?} did not exist.", asset.0))?;
 
         // What you have been doing is really silly here. You should work on improving
         // this as much as possible.

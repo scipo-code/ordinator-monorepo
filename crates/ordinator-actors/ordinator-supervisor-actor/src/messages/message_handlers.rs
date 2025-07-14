@@ -4,7 +4,6 @@ use std::fmt::Debug;
 use anyhow::Context;
 use anyhow::Result;
 use anyhow::bail;
-use ordinator_orchestrator_actor_traits::ActorSpecific;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
@@ -30,47 +29,43 @@ where
     fn handle_state_link(&mut self, state_link: StateLink) -> Result<Self::Res>
     {
         match state_link {
-            StateLink::WorkOrders(agent_specific) => match agent_specific {
-                ActorSpecific::Strategic(changed_work_orders) => {
-                    // It is beginning to seem a little horrible that the self. here holds both the
-                    // `scheduling_environment` and the `algorithm`. There is a
-                    // couple of issues here relating to how we interact
-                    // with the algorithm. I
-                    let work_orders = {
-                        let scheduling_environment_guard =
-                            self.scheduling_environment.lock().unwrap();
+            StateLink::WorkOrders(changed_work_orders) => {
+                // It is beginning to seem a little horrible that the self. here holds both the
+                // `scheduling_environment` and the `algorithm`. There is a
+                // couple of issues here relating to how we interact
+                // with the algorithm. I
+                let work_orders = {
+                    let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 
-                        scheduling_environment_guard.work_orders.inner.clone()
-                    };
+                    scheduling_environment_guard.work_orders.inner.clone()
+                };
 
-                    for work_order_number in changed_work_orders {
-                        let work_order =
-                            work_orders.get(&work_order_number).with_context(|| {
-                                format!(
-                                    "{:?} should always be present in {}",
-                                    work_order_number,
-                                    std::any::type_name::<SupervisorParameters>()
-                                )
-                            })?;
-                        // TODO [ ]
-                        // You need to take a clear stance on this in the code. Should you make an
-                        // API for this? Of course you should.
-                        //
-                        // This is written so sloppy.
-                        // I can sense that we should instead think about the data flow in
-                        // the program. That probably has a higher chance of success. Yes.
-                        for (activity_number, operation) in &work_order.operations.0 {
-                            self.algorithm
-                                .parameters
-                                .create_and_insert_supervisor_parameter(
-                                    operation,
-                                    &(work_order_number, *activity_number),
-                                )
-                        }
+                for work_order_number in changed_work_orders {
+                    let work_order = work_orders.get(&work_order_number).with_context(|| {
+                        format!(
+                            "{:?} should always be present in {}",
+                            work_order_number,
+                            std::any::type_name::<SupervisorParameters>()
+                        )
+                    })?;
+                    // TODO [ ]
+                    // You need to take a clear stance on this in the code. Should you make an
+                    // API for this? Of course you should.
+                    //
+                    // This is written so sloppy.
+                    // I can sense that we should instead think about the data flow in
+                    // the program. That probably has a higher chance of success. Yes.
+                    for (activity_number, operation) in &work_order.operations.0 {
+                        self.algorithm
+                            .parameters
+                            .create_and_insert_supervisor_parameter(
+                                operation,
+                                &(work_order_number, *activity_number),
+                            )
                     }
-                    Ok(SupervisorResponseMessage::StateLink)
                 }
-            },
+                Ok(SupervisorResponseMessage::StateLink)
+            }
             StateLink::WorkerEnvironment => {
                 let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 

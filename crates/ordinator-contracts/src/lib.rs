@@ -23,6 +23,22 @@ pub mod technician;
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
 pub struct AssetNames(String);
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
+pub struct PeriodDto
+{
+    pub period_string: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
+pub struct WorkOrderNumberDto(u64);
+
+impl From<WorkOrderNumberDto> for WorkOrderNumber
+{
+    fn from(value: WorkOrderNumberDto) -> Self
+    {
+        WorkOrderNumber(value.0)
+    }
+}
 impl AssetNames
 {
     pub fn convert_to_asset_names() -> Vec<AssetNames>

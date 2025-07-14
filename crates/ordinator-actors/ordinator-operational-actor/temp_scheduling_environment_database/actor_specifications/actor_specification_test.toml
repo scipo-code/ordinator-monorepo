@@ -8,7 +8,7 @@ wmat = 3
 
 [strategic]
 number_of_strategic_periods = 52
-id = [ "strategic", [], ["DF"] ]
+id = [ "strategic", [], ["Test"] ]
 
 strategic_options.number_of_removed_work_orders = 25
 strategic_options.urgency_weight = 1
@@ -17,14 +17,14 @@ strategic_options.clustering_weight = 1000
 
 [tactical]
 number_of_tactical_days =120
-id = [ "tactical_TEST", [], ["DF"]]
+id = [ "tactical_Test", [], ["Test"]]
 tactical_options.number_of_removed_work_orders = 25
 tactical_options.urgency = 1
 tactical_options.resource_penalty = 10000000
 
 [[supervisors]]
 number_of_supervisor_periods = 3
-id = [ "main", [], ["DF"] ]
+id = [ "main", [], ["Test"] ]
 supervisor_options.number_of_unassigned_work_orders = 15
 
 ################################
@@ -38,7 +38,7 @@ operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00
 operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-id = [ "OP-01-001", ["MTN-MECH"], ["DF"] ]
+id = [ "OP-01-001", ["MTN-MECH"], ["Test"] ]
 
 [[operational]]
 hours_per_day = 81.0
@@ -48,7 +48,7 @@ operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00
 operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-id = [ "OP-01-002", ["MTN-MECH"], ["DF"] ]
+id = [ "OP-01-002", ["MTN-MECH"], ["Test"] ]
 
 [[operational]]
 hours_per_day = 81.0
@@ -58,7 +58,7 @@ operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00
 operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-id = [ "OP-01-003", ["MTN-LAGG"], ["DF"] ]
+id = [ "OP-01-003", ["MTN-LAGG"], ["Test"] ]
 
 
 [work_order_configurations.wdf_priority_map]

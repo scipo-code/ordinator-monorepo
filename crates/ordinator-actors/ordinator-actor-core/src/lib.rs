@@ -12,6 +12,7 @@ use anyhow::Context;
 use anyhow::Result;
 use anyhow::anyhow;
 use arc_swap::ArcSwap;
+use bus::BusReader;
 use colored::Colorize;
 use flume::Receiver;
 use flume::Sender;
@@ -19,7 +20,6 @@ use ordinator_configuration::SystemConfigurations;
 use ordinator_orchestrator_actor_traits::ActorMessage;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
-use ordinator_orchestrator_actor_traits::OrchestratorNotifier;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::StateLink;
@@ -53,10 +53,13 @@ where
     pub actor_id: Id,
     pub scheduling_environment: Arc<Mutex<SchedulingEnvironment>>,
     pub algorithm: Algorithm,
+    // TODO [ ] 2025-07-14 These senders and receivers are relevant for the `Algorithm`
+    // and not shared with the `SchedulingEnvironment` changes and the `StateLink` and
+    // should therefore be changed.
     pub receiver_from_orchestrator: Receiver<ActorMessage<ActorRequest>>,
     pub sender_to_orchestrator: Sender<Result<ActorResponse>>,
+    pub state_link_receiver: BusReader<StateLink>,
     pub configurations: Arc<ArcSwap<SystemConfigurations>>,
-    pub notify_orchestrator: Arc<dyn OrchestratorNotifier>,
     pub error_channel: Sender<anyhow::Error>,
 }
 
@@ -146,6 +149,8 @@ where
         }
     }
 
+    // I believe that many of these fields can be set by themselves.
+    //
     pub fn builder() -> ActorBuilder<ActorRequest, ActorResponse, Algorithm>
     {
         ActorBuilder {
@@ -154,8 +159,8 @@ where
             algorithm: None,
             receiver_from_orchestrator: None,
             sender_to_orchestrator: None,
+            state_link_bus: None,
             configurations: None,
-            notify_orchestrator: None,
             communication_for_orchestrator: None,
             error_channel: None,
         }
@@ -202,8 +207,8 @@ where
     algorithm: Option<Algorithm>,
     receiver_from_orchestrator: Option<Receiver<ActorMessage<ActorRequest>>>,
     sender_to_orchestrator: Option<Sender<Result<ActorResponse>>>,
+    state_link_bus: Option<BusReader<StateLink>>,
     configurations: Option<Arc<ArcSwap<SystemConfigurations>>>,
-    notify_orchestrator: Option<Arc<dyn OrchestratorNotifier>>,
     //
     communication_for_orchestrator: Option<Communication<ActorRequest, ActorResponse>>,
     error_channel: Option<Sender<anyhow::Error>>,
@@ -226,8 +231,8 @@ where
             algorithm: self.algorithm.unwrap(),
             receiver_from_orchestrator: self.receiver_from_orchestrator.unwrap(),
             sender_to_orchestrator: self.sender_to_orchestrator.unwrap(),
+            state_link_receiver: self.state_link_bus.unwrap(),
             configurations: self.configurations.unwrap(),
-            notify_orchestrator: self.notify_orchestrator.unwrap(),
             error_channel: self.error_channel.unwrap(),
         };
 
@@ -284,7 +289,11 @@ where
 
     // What is the error here? I think that it has to do with the
     // bounded channel.
-    pub fn communication(mut self, error_channel: Sender<anyhow::Error>) -> Self
+    pub fn communication(
+        mut self,
+        error_channel: Sender<anyhow::Error>,
+        bus_reader: BusReader<StateLink>,
+    ) -> Self
     {
         let (sender_to_actor, receiver_from_orchestrator): (
             flume::Sender<ActorMessage<ActorRequest>>,
@@ -302,6 +311,7 @@ where
         self.receiver_from_orchestrator = Some(receiver_from_orchestrator);
         self.sender_to_orchestrator = Some(sender_to_orchestrator);
         self.error_channel = Some(error_channel);
+        self.state_link_bus = Some(bus_reader);
         self
     }
 
@@ -326,13 +336,6 @@ where
     pub fn configurations(mut self, configurations: Arc<ArcSwap<SystemConfigurations>>) -> Self
     {
         self.configurations = Some(configurations);
-        self
-    }
-
-    pub fn notify_orchestrator(mut self, notify_orchestrator: Arc<dyn OrchestratorNotifier>)
-    -> Self
-    {
-        self.notify_orchestrator = Some(notify_orchestrator);
         self
     }
 }

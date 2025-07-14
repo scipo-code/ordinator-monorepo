@@ -27,6 +27,19 @@ pub struct SupervisorSolution
     pub(crate) operational_state_machine: HashMap<(Id, WorkOrderActivity), Delegate>,
 }
 
+impl SupervisorSolution
+{
+    pub fn new_from_parts(
+        operational_state_machine: HashMap<(Id, WorkOrderActivity), Delegate>,
+    ) -> Self
+    {
+        Self {
+            objective_value: SupervisorObjectiveValue::default(),
+            operational_state_machine,
+        }
+    }
+}
+
 impl std::fmt::Debug for SupervisorSolution
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result

@@ -2,7 +2,6 @@ use std::fmt::Debug;
 
 use anyhow::Context;
 use anyhow::Result;
-use ordinator_orchestrator_actor_traits::ActorSpecific;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
@@ -69,65 +68,62 @@ where
     fn handle_state_link(&mut self, state_link: StateLink) -> Result<Self::Res>
     {
         match state_link {
-            StateLink::WorkOrders(agent_specific) => match agent_specific {
-                ActorSpecific::Strategic(changed_work_orders) => {
-                    let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
+            StateLink::WorkOrders(modified_work_orders) => {
+                let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 
-                    let work_orders = &scheduling_environment_guard.work_orders.inner.clone();
-                    let work_order_configurations = &scheduling_environment_guard
-                        .worker_environment
-                        .actor_specification
-                        .get(self.actor_id.asset())
-                        .unwrap()
-                        .work_order_configurations
-                        .clone();
+                let work_orders = &scheduling_environment_guard.work_orders.inner.clone();
+                let work_order_configurations = &scheduling_environment_guard
+                    .worker_environment
+                    .actor_specification
+                    .get(self.actor_id.asset())
+                    .unwrap()
+                    .work_order_configurations
+                    .clone();
 
-                    drop(scheduling_environment_guard);
-                    for work_order_number in changed_work_orders {
-                        let work_order =
-                            work_orders.get(&work_order_number).with_context(|| {
-                                format!(
-                                    "{:?} should always be present in {}",
-                                    work_order_number,
-                                    std::any::type_name::<TacticalParameters>()
-                                )
-                            })?;
+                drop(scheduling_environment_guard);
+                for work_order_number in modified_work_orders {
+                    let work_order = work_orders.get(&work_order_number).with_context(|| {
+                        format!(
+                            "{:?} should always be present in {}",
+                            work_order_number,
+                            std::any::type_name::<TacticalParameters>()
+                        )
+                    })?;
 
-                        // FIX
-                        // The solution should also be updated here. Think about how you can make
-                        // this generic.
-                        // QUESTION
-                        // Is this a good way of coding the program? I think that there is common
-                        // behavior here that we are going to have to
-                        // exploit to make sense of this. You are not creating this in the best
-                        // possible way at the moment I think. There is a
-                        // better approach for dealing with this.
-                        //
-                        // You should wrap this up in the `Interface`
+                    // FIX
+                    // The solution should also be updated here. Think about how you can make
+                    // this generic.
+                    // QUESTION
+                    // Is this a good way of coding the program? I think that there is common
+                    // behavior here that we are going to have to
+                    // exploit to make sense of this. You are not creating this in the best
+                    // possible way at the moment I think. There is a
+                    // better approach for dealing with this.
+                    //
+                    // You should wrap this up in the `Interface`
 
-                        let tactical_parameter =
-                            create_tactical_parameter(work_order, work_order_configurations)?;
+                    let tactical_parameter =
+                        create_tactical_parameter(work_order, work_order_configurations)?;
 
-                        // It is only the algorithm that can modify parameters. Not the the Actor
-                        // directly you should fix this issue soon. What
-                        // about the code. You should make the interface
-                        // here for interacting with the algorithm.
-                        self.algorithm
-                            .parameters
-                            .tactical_work_orders
-                            .insert(work_order_number, tactical_parameter);
+                    // It is only the algorithm that can modify parameters. Not the the Actor
+                    // directly you should fix this issue soon. What
+                    // about the code. You should make the interface
+                    // here for interacting with the algorithm.
+                    self.algorithm
+                        .parameters
+                        .tactical_work_orders
+                        .insert(work_order_number, tactical_parameter);
 
-                        self.algorithm
-                            .solution
-                            .tactical_work_orders
-                            .0
-                            .insert(work_order_number, WhereIsWorkOrder::NotScheduled);
-                    }
-                    Ok(TacticalResponseMessage::FreeStringResponse(
-                        "Updated StateLink::WorkOrders".to_string(),
-                    ))
+                    self.algorithm
+                        .solution
+                        .tactical_work_orders
+                        .0
+                        .insert(work_order_number, WhereIsWorkOrder::NotScheduled);
                 }
-            },
+                Ok(TacticalResponseMessage::FreeStringResponse(
+                    "Updated StateLink::WorkOrders".to_string(),
+                ))
+            }
             StateLink::WorkerEnvironment => {
                 let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 

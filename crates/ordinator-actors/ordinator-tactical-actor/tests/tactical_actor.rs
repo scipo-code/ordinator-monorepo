@@ -1,3 +1,19 @@
+use chrono::Days;
+use ordinator_actor_core::algorithm::Algorithm;
+use ordinator_orchestrator_actor_traits::Solution;
+use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_environment::time_environment::day::Day;
+use ordinator_scheduling_environment::time_environment::period::Period;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::worker_environment::TacticalOptions;
+use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_tactical_actor::algorithm::tactical_parameters::TacticalParameters;
+use ordinator_tactical_actor::algorithm::tactical_resources::TacticalResources;
+use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
+use strum::IntoEnumIterator;
+
 #[test]
 fn test_calculate_objective_value()
 {
@@ -230,6 +246,7 @@ fn test_schedule_2()
 
     let id = Id::default();
     let options = TacticalOptions::default();
+    // This is a huge no go! I think that you should be able to test
     let scheduling_environment = SchedulingEnvironment::default();
 
     // SchedulingEnvironment

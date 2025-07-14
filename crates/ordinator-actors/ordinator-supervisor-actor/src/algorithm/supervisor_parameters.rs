@@ -82,8 +82,12 @@ impl Parameters for SupervisorParameters
             // ISSUE #130
             .clone();
 
-        let supervisor_periods = &scheduling_environment.time_environment.periods
-            [0..input_supervisor.number_of_supervisor_periods as usize];
+        let supervisor_periods = &scheduling_environment
+            .time_environment
+            .periods
+            .get(0..input_supervisor.number_of_supervisor_periods as usize)
+            .with_context(||format!("There are not enough periods in the TimeEnvironment to initialize the Supervisor\nNumber of supervisor periods: {}", input_supervisor.number_of_supervisor_periods))?;
+
         for (work_order_number, work_order) in scheduling_environment
             .work_orders
             .inner

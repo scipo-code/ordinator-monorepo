@@ -91,13 +91,13 @@ impl Solution for OperationalSolution
     {
         let mut scheduled_work_order_activities = Vec::new();
 
-        let start_event = Assignment::make_unavailable_event(
-            Unavailability::Beginning,
-            &parameters.availability,
-        )?;
+        let start_event =
+            Assignment::make_unavailable_event(Unavailability::Beginning, &parameters.availability)
+                .context("Could not make unavailability event for the OperationalActor")?;
 
         let end_event =
-            Assignment::make_unavailable_event(Unavailability::End, &parameters.availability)?;
+            Assignment::make_unavailable_event(Unavailability::End, &parameters.availability)
+                .context("Could not make unavailability event for the OperationalActor")?;
 
         let unavailability_start_event = OperationalAssignment::new(vec![start_event]);
 

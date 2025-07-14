@@ -4,6 +4,7 @@ pub mod resources;
 pub mod worker;
 
 use std::collections::HashMap;
+use std::path::PathBuf;
 
 use anyhow::Context;
 use anyhow::Result;
@@ -67,7 +68,7 @@ impl WorkerEnvironmentBuilder
     // Ideally we need to provide a resource file for each of the different.
     // assets. That means that this should be callable many times over for
     // this to work.
-    pub fn actor_environment(mut self, asset: Asset) -> Result<Self>
+    pub fn actor_environment(mut self, asset: Asset, path_to_data: PathBuf) -> Result<Self>
     {
         println!("{}", std::env::current_dir()?.display());
 
@@ -112,15 +113,12 @@ impl WorkerEnvironmentBuilder
 
         // You should put the data into the toml? Yes I think that is the best approach
         // here.
-        let asset_string = asset.to_string().to_lowercase();
 
-        let path = format!(
-            "./temp_scheduling_environment_database/actor_specifications/actor_specification_{asset_string}.toml",
-        );
-        println!("{:?}", std::fs::canonicalize(path.clone())?);
-
-        let contents = std::fs::read_to_string(&path).with_context(|| {
-            format!("Could not read string for ActorSpecification\nPath: {path}")
+        let contents = std::fs::read_to_string(&path_to_data).with_context(|| {
+            format!(
+                "Could not read string for ActorSpecification\nPath: {}",
+                path_to_data.display()
+            )
         })?;
 
         let actor_specifications: ActorSpecifications =

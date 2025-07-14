@@ -3,6 +3,7 @@ use std::error::Error;
 use std::fs;
 use std::fs::File;
 use std::hash::Hash;
+use std::path::Path;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::Mutex;
@@ -15,6 +16,7 @@ use ordinator_configuration::SystemConfigurations;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::IntoSchedulingEnvironment;
 use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_environment::time_environment::create_time_environment;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
@@ -25,7 +27,6 @@ use serde::Deserialize;
 use serde::de::DeserializeOwned;
 
 use super::baptiste_csv_reader_merges::load_csv_data;
-use super::create_time_environment;
 
 #[derive(Default)]
 pub struct TotalSap {}
@@ -61,11 +62,18 @@ impl IntoSchedulingEnvironment for TotalSap
         let time_input: TimeInput = toml::from_str(&time_input_string).with_context(|| {
             format!("Could not deserialize the TimeInput config. Input:\n{time_input_string}")
         })?;
+        let asset = Asset::DF;
+        let asset_string = asset.to_string().to_lowercase();
+
+        let path = format!(
+            "temp_scheduling_environment_database/actor_specifications/actor_specification_{asset_string}.toml",
+        );
+        let path_to_data = Path::new(env!("CARGO_MANIFEST_DIR")).join(path);
 
         Ok(SchedulingEnvironment::builder()
             .worker_environment(
                 WorkerEnvironment::builder()
-                    .actor_environment(Asset::DF)?
+                    .actor_environment(Asset::DF, path_to_data)?
                     .build(), // Add more assets here.
             )
             .time_environment(create_time_environment(current_time, &time_input))

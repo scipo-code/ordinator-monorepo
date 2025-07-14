@@ -21,3 +21,4 @@ serde = {workspace = true}
 strum = { workspace = true }
 tracing = {workspace = true}
 flume = { workspace = true}
+bus = "2.4.1"

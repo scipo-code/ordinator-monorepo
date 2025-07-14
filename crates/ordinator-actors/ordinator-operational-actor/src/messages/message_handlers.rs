@@ -2,7 +2,6 @@ use std::fmt::Debug;
 
 use anyhow::Result;
 use anyhow::bail;
-use ordinator_orchestrator_actor_traits::ActorSpecific;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SupervisorInterface;
@@ -33,7 +32,7 @@ where
                 self.algorithm.parameters.work_order_parameters.len()
         );
         match state_link {
-            StateLink::WorkOrders(ActorSpecific::Strategic(changed_work_orders)) => {
+            StateLink::WorkOrders(changed_work_orders) => {
                 // TODO:
                 event!(Level::ERROR, unhandled_work_orders = ?changed_work_orders);
                 bail!("IMPLEMENT STATELINK FOR THE OPERATIONAL AGENT");

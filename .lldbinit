@@ -4,3 +4,4 @@ command source /nix/store/cs92r0s0n6pa5nyrp34dnyb1rzh8raml-rust-default-1.88.0-n
 type category enable Rust
 command script import .lldb/chrono.py
 type summary add -F chrono.DateTimeSummary chrono::datetime::DateTime<chrono::offset::utc::Utc>
+command script import ~/.lldb/rudy_lldb.py

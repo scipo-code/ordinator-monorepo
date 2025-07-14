@@ -11,6 +11,7 @@ use anyhow::Context;
 use anyhow::Result;
 use anyhow::anyhow;
 use arc_swap::ArcSwap;
+use bus::BusReader;
 use chrono::DateTime;
 use chrono::Utc;
 use colored::Colorize;
@@ -19,7 +20,6 @@ use flume::Receiver;
 use flume::Sender;
 use marginal_fitness::MarginalFitness;
 use ordinator_configuration::SystemConfigurations;
-use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::period::Period;
@@ -29,16 +29,8 @@ use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
-
-pub trait OrchestratorNotifier: Send + Sync + 'static
-{
-    fn notify_all_agents_of_work_order_change(
-        &self,
-        work_orders: Vec<WorkOrderNumber>,
-        asset: &Asset,
-    ) -> Result<()>;
-}
 use thiserror::Error;
+
 #[derive(Error, Debug)]
 pub enum ActorError
 {
@@ -553,11 +545,17 @@ pub enum ActorMessage<ActorRequest>
 #[derive(Debug, Clone)]
 pub enum StateLink
 {
-    WorkOrders(ActorSpecific),
+    WorkOrders(Vec<WorkOrderNumber>),
     WorkerEnvironment,
     TimeEnvironment,
 }
 
+// You can now remove it. The actors should never communicate state like
+// this! This is a bad way of... Maybe not... Knowing the `Actor` that
+// caused this message could be valuable... But I do not think so.
+//
+// This message was made when the idea was that the `Actor`s themselves
+// should create this. You are `Simplifying`!
 #[derive(Debug, Clone)]
 pub enum ActorSpecific
 {
@@ -574,8 +572,8 @@ where
         id: Id,
         scheduling_environment: Arc<Mutex<SchedulingEnvironment>>,
         system_solution_arc_swap: Arc<ArcSwap<Ss>>,
-        notify_orchestrator: Arc<dyn OrchestratorNotifier>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,
+        stake_link_bus: BusReader<StateLink>,
         error_channel: Sender<anyhow::Error>,
     ) -> Result<Self::Communication>;
 }

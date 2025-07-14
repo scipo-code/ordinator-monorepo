@@ -34,3 +34,4 @@ tracing-flame = {workspace = true}
 tracing-subscriber = {workspace = true}
 
 file-rotate = "*"
+bus = "2.4.1"

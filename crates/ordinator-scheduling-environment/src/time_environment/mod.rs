@@ -1,9 +1,12 @@
 use anyhow::Result;
 use anyhow::ensure;
 use chrono::DateTime;
+use chrono::Datelike;
 use chrono::Days;
+use chrono::Duration;
 use chrono::NaiveTime;
 use chrono::TimeDelta;
+use chrono::Timelike;
 use chrono::Utc;
 use serde::Deserialize;
 use serde::Deserializer;
@@ -158,4 +161,84 @@ where
 {
     let time_str: String = Deserialize::deserialize(deserializer)?;
     NaiveTime::parse_from_str(&time_str, "%H:%M:%S").map_err(de::Error::custom)
+}
+pub fn create_time_environment(
+    current_time: DateTime<Utc>,
+    time_input: &crate::worker_environment::TimeInput,
+) -> TimeEnvironment
+{
+    let first_day = current_time;
+
+    let days = |number_of_days: u64| -> Vec<Day> {
+        let mut days: Vec<Day> = Vec::new();
+        let mut date = first_day.to_owned();
+        for day_index in 0..number_of_days {
+            days.push(Day::new(day_index as usize, date.to_owned()));
+            date = date.checked_add_days(Days::new(1)).unwrap();
+        }
+        days
+    };
+
+    let days = days(time_input.number_of_days);
+    let strategic_periods: Vec<Period> =
+        create_periods(current_time, time_input.number_of_periods, &days);
+    TimeEnvironment::new(strategic_periods, days)
+}
+fn create_periods(current_time: DateTime<Utc>, number_of_periods: u64, days: &[Day])
+-> Vec<Period>
+{
+    let mut periods: Vec<Period> = Vec::<Period>::new();
+    // TODO
+    // This needs to go. Where should we move it to?
+    //
+    let mut start_time = current_time;
+
+    // Get the ISO week number
+    let week_number = chrono::Datelike::iso_week(&start_time).week();
+    // Determine target week number: If current is even, target is the previous odd
+    let target_week = if week_number % 2 == 0 {
+        week_number - 1
+    } else {
+        week_number
+    };
+
+    // Compute the offset in days to reach Monday of the target week
+    let days_to_offset = (start_time.weekday().num_days_from_monday() as i64)
+        + (7 * (week_number - target_week) as i64);
+
+    start_time -= Duration::days(days_to_offset);
+
+    start_time = start_time
+        .with_hour(0)
+        .and_then(|d| d.with_minute(0))
+        .and_then(|d| d.with_second(0))
+        .and_then(|d| d.with_nanosecond(0))
+        .unwrap();
+
+    let mut end_date = start_time + Duration::weeks(2);
+
+    end_date -= Duration::days(1);
+
+    end_date = end_date
+        .with_hour(23)
+        .and_then(|d| d.with_minute(59))
+        .and_then(|d| d.with_second(59))
+        .and_then(|d| d.with_nanosecond(0))
+        .unwrap();
+
+    let day_indices = days
+        .iter()
+        .filter(|day| {
+            start_time.date_naive() <= day.date.date_naive()
+                && day.date.date_naive() <= end_date.date_naive()
+        })
+        .map(|day| day.day_index as u64)
+        .collect::<Vec<_>>();
+    let mut period = Period::new(start_time, end_date, day_indices);
+    periods.push(period.clone());
+    for _ in 1..number_of_periods {
+        period = period + Duration::weeks(2);
+        periods.push(period.clone());
+    }
+    periods
 }

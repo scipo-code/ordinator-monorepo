@@ -19,6 +19,8 @@ rand = {workspace = true}
 serde = {workspace = true}
 tracing = {workspace = true}
 flume = { workspace = true}
+bus = "2.4.1"
 
 [dev-dependencies]
 mockall = {workspace = true}
+ordinator-supervisor-actor.path = "../ordinator-supervisor-actor/"

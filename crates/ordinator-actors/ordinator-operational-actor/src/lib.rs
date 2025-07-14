@@ -13,6 +13,7 @@ use algorithm::operational_parameter::OperationalParameters;
 use algorithm::operational_solution::OperationalSolution;
 use anyhow::Result;
 use arc_swap::ArcSwap;
+use bus::BusReader;
 use flume::Sender;
 use messages::OperationalRequestMessage;
 use messages::OperationalResponseMessage;
@@ -23,7 +24,7 @@ use ordinator_configuration::SystemConfigurations;
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
-use ordinator_orchestrator_actor_traits::OrchestratorNotifier;
+use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
@@ -72,8 +73,8 @@ where
         id: Id,
         scheduling_environment_guard: Arc<Mutex<SchedulingEnvironment>>,
         shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
-        notify_orchestrator: Arc<dyn OrchestratorNotifier>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,
+        state_link_bus: BusReader<StateLink>,
         error_channel: Sender<anyhow::Error>,
     ) -> Result<Self::Communication>
     where
@@ -94,9 +95,8 @@ where
                 )?
                 .system_solution_arc_swap(shared_solution_arc_swap)
         })?
-        .communication(error_channel)
+        .communication(error_channel, state_link_bus)
         .configurations(system_configurations)
-        .notify_orchestrator(notify_orchestrator)
         .build()
     }
 }
