@@ -1,12 +1,13 @@
 import React, { useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef, ValueFormatterParams,  } from 'ag-grid-community';
+import { ColDef, } from 'ag-grid-community';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 
 import { SchedulerWorkOrderDto } from "../../../../../crates/ordinator-contracts/bindings/SchedulerWorkOrderDto.ts";
 import { SingleRowDto } from "../../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
 
+type SingleRowDtoWithOptions = SingleRowDto & {"menu": string};
 
 // import { agGridThemeLight } from "./theme";
 // https://www.youtube.com/watch?v=TrKlKF5au6c&ab_channel=m6io
@@ -14,14 +15,6 @@ import { SingleRowDto } from "../../../../../crates/ordinator-contracts/bindings
 const toTitle = (s: string): string =>
   s.replace(/_/g, " ").replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1));
 
-/** Detect "YYYY-MM-DD…" and pretty-print, otherwise echo. */
-const tryFmtDate = (v: unknown): string => {
-  if (typeof v !== "string" || v.length < 8) return String(v ?? "");
-  const match = v.match(/^(\d{4})[-/](\d{2})[-/](\d{2})/);
-  if (!match) return v;
-  const d = new Date(match[0]);
-  return isNaN(d.getTime()) ? v : d.toLocaleDateString();
-};
 
 export const useSchedulerColumns = () =>
   useMemo<ColDef<SingleRowDto>[]>(() => {
@@ -66,9 +59,6 @@ export const useSchedulerColumns = () =>
         ? "left"
         : undefined,
       width: 150,
-      valueFormatter: (
-        p: ValueFormatterParams<SingleRowDto, string> /* value is string */
-      ) => tryFmtDate(p.value),
     }));
   }, []);
   
@@ -88,6 +78,12 @@ const fetchWorkOrders = async (
   // The Rust DTO is `Vec<SingleRowDto>` => serialises to a bare JSON array
   return (await res.json()) as SchedulerWorkOrderDto;
 };
+
+// const onReschedule = (row: SingleRowDto) => {
+//   // TODO Do something
+//   console.log("Reschedule workorder:", row.work_order_number);
+// }
+
 
 const Scheduler: React.FC = () => {
   const { asset } = useParams<{ asset: string }>();
@@ -150,6 +146,36 @@ const Scheduler: React.FC = () => {
             flex: 1,
             minWidth: 100
           }}
+
+          // NOTE This is an enterprise feature costing 999 USD pr developer.
+          // getContextMenuItems={(
+          //   params: GetContextMenuItemsParams<SingleRowDto>
+          // ) => {
+          //   const defaultItems = [
+          //     "copy",
+          //     "copyWithHeaders",
+          //     "export"
+          //   ];
+
+          //   const row = params.node?.data;
+          //   if (!row) return defaultItems;
+            
+          //   const customItems: any[] = [
+          //     {
+          //       name: "Reschedule",
+          //       action: () => onReschedule(row),
+          //       icon: `<i class="fas fa-calendar-alt"></i>`
+          //     },
+          //     {
+          //       name: "Lock In Period",
+          //       action: () => {
+          //         console.log("Lock: ", row.work_order_number);
+          //       }
+          //     }
+          //   ];
+
+          //   return [...defaultItems, "separator", ...customItems];
+          // }}
         />
       </div>
     </div>
