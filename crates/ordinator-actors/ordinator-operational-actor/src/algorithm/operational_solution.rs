@@ -14,6 +14,7 @@ use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
+use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
@@ -199,24 +200,29 @@ impl OperationalSolution
     }
 }
 
-pub trait OperationalFunctions
-{
-    type Key;
-    type Sequence;
-
-    fn try_insert(&mut self, key: Self::Key, sequence: Self::Sequence);
-
-    fn containing_operational_solution(&self, time: DateTime<Utc>) -> ContainOrNextOrNone;
-}
-
 impl OperationalSolution
 {
     pub fn try_insert(
         &mut self,
-        key: WorkOrderActivity,
+        work_order_activity: WorkOrderActivity,
         assignments: Vec<Assignment>,
+        activity_relation: ActivityRelation,
     ) -> Option<WorkOrderActivity>
     {
+        // ESSAY [ ]
+        // Where should this be implemented? The start time of a work_order_activity has
+        // to be greater than the finish time of the previous assigned one. I do
+        // not see anyway
+        //
+        // TODO { }
+        // * Go into the internal state of the Actor and make sure that the `Precedence`
+        //   relation
+        // - [ ] Put the precedence relation into the `OperationalParameter`
+        // is upheld. You should expand the `OperationalParameter`s to handle this so
+        // that the `Tactical` and the `Operational` actors are based on the
+        // same formulation. This means that a simply if statement here is a really bad
+        // idea. You need to trace it up to the root.
+        //
         for (index, operational_solution) in self
             .scheduled_work_order_activities
             .iter()
@@ -226,7 +232,50 @@ impl OperationalSolution
             .map(|x| (&x[0], &x[1]))
             .enumerate()
         {
-            let start_of_solution_window = operational_solution.0.finish_time();
+            // If this is a start-start relation then it should be reverted. to
+            // `operational_solution.0.start_time` otherwise simply stay as-is.
+            //
+            // Go for a walk and then come back.
+            let latest_work_order_activity_in_solution = self
+                .scheduled_work_order_activities
+                .iter()
+                .filter(|f| f.0.0 == work_order_activity.0)
+                .filter(|f| f.0.1 < work_order_activity.1)
+                .max_by(|d, e| {
+                    // If the relation between work_order `operational_solution.0` and key.1 is
+                    // start-start we should take the start time of the two. This means that there
+                    // are multiple things that are wrong here. You should aim to make the correct
+                    // implementation. finish_time() is not the best approach here.
+                    // You need to get the relation in here to do this. I think that this
+                    // is in the wrong place of the code.
+                    // You can learn a lot here! Keep it up.
+                    // You have to find the index of the `activity_number`. This is currently
+                    // unknowable. Where should you pull it in from?
+                    // You need an `activity_index`. This only counts for the last thing. I think
+                    // that we should.
+                    // This is only the
+                    // All error cases should be handled.
+                    match activity_relation {
+                        ActivityRelation::StartStart => d.1.start_time().cmp(&e.1.start_time()),
+                        ActivityRelation::FinishStart => d.1.finish_time().cmp(&e.1.finish_time()),
+                        // TODO [ ] 2025-07-15 fix this after the
+                        ActivityRelation::Postpone(_time_delta) => {
+                            d.1.finish_time().cmp(&e.1.finish_time())
+                        }
+                    }
+                })
+                .map(|f| &f.1);
+
+            // TODO ISSUE [ ] 2025-07-15 add `StartStart` logic here.
+            // TODO ISSUE [ ] 2025-07-15 use `ActivityRelation::PostPone` to move the start
+            // date further.
+            let start_of_solution_window = match latest_work_order_activity_in_solution {
+                Some(op_ass) => operational_solution
+                    .0
+                    .finish_time()
+                    .max(op_ass.finish_time()),
+                None => operational_solution.0.finish_time(),
+            };
 
             let end_of_solution_window = operational_solution.1.start_time();
 
@@ -239,9 +288,9 @@ impl OperationalSolution
             {
                 let operational_solution = OperationalAssignment::new(assignments);
 
-                if !self.is_operational_solution_already_scheduled(key) {
+                if !self.is_operational_solution_already_scheduled(work_order_activity) {
                     self.scheduled_work_order_activities
-                        .insert(index + 1, (key, operational_solution));
+                        .insert(index + 1, (work_order_activity, operational_solution));
                     let assignments = self
                         .scheduled_work_order_activities
                         .iter()
@@ -254,7 +303,7 @@ impl OperationalSolution
             }
         }
 
-        Some(key)
+        Some(work_order_activity)
     }
 
     pub fn containing_operational_solution(&self, time: DateTime<Utc>) -> ContainOrNextOrNone
@@ -428,8 +477,6 @@ impl Assignment
 mod tests
 {
     use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
-
-    use crate::OperationalActor;
 
     #[test]
     fn test_marginal_fitness_debug()

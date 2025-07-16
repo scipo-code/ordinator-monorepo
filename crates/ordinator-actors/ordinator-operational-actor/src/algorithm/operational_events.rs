@@ -57,7 +57,7 @@ impl OperationalEvents
         matches!(&self, OperationalEvents::Unavailable(_))
     }
 
-    pub fn is_wrench_time(&self) -> bool
+    pub fn is_hands_on_tool_time(&self) -> bool
     {
         matches!(&self, Self::WrenchTime(_))
     }

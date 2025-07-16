@@ -35,11 +35,14 @@ pub struct TacticalActor<Ss: Debug>(
 )
 where
     Ss: SystemSolutions<Tactical = TacticalSolution>,
-    Self: CommandHandler<Req = TacticalRequestMessage, Res = TacticalResponseMessage>;
+    Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>:
+        CommandHandler<Req = TacticalRequestMessage, Res = TacticalResponseMessage>;
 
 impl<Ss> Deref for TacticalActor<Ss>
 where
     Ss: SystemSolutions<Tactical = TacticalSolution> + Debug,
+    Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>:
+        CommandHandler<Req = TacticalRequestMessage, Res = TacticalResponseMessage>,
 {
     type Target = Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>;
 
@@ -52,6 +55,8 @@ where
 impl<Ss: Debug> DerefMut for TacticalActor<Ss>
 where
     Ss: SystemSolutions<Tactical = TacticalSolution>,
+    Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>:
+        CommandHandler<Req = TacticalRequestMessage, Res = TacticalResponseMessage>,
 {
     fn deref_mut(&mut self) -> &mut Self::Target
     {
@@ -75,6 +80,8 @@ where
                 Ss,
             >,
         >,
+    Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>:
+        CommandHandler<Req = TacticalRequestMessage, Res = TacticalResponseMessage>,
 {
     type Communication = Communication<TacticalRequestMessage, TacticalResponseMessage>;
 

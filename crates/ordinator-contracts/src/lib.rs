@@ -24,10 +24,7 @@ pub mod technician;
 pub struct AssetNames(String);
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
-pub struct PeriodDto
-{
-    pub period_string: String,
-}
+pub struct PeriodDto(pub String);
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
 pub struct WorkOrderNumberDto(u64);

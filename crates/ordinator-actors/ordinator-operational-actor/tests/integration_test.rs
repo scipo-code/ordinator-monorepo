@@ -450,21 +450,22 @@ fn start_operational_actor()
     //
     match receiver.recv() {
         Ok(t) => panic!(),
-        Err(_) => todo!(),
+        Err(e) => {
+            dbg!(e);
+            panic!();
+        }
     };
 
-    assert!(
-        _system_solution
-            .load()
-            .operational
-            .get(&operational_id)
-            .unwrap()
-            .scheduled_work_order_activities
-            .iter()
-            .any(|d| d.0 == (WorkOrderNumber(1001), 10))
-    );
-    dbg!(_system_solution);
-    panic!()
+    // assert!(
+    //     _system_solution
+    //         .load()
+    //         .operational
+    //         .get(&operational_id)
+    //         .unwrap()
+    //         .scheduled_work_order_activities
+    //         .iter()
+    //         .any(|d| d.0 == (WorkOrderNumber(1001), 10))
+    // );
     // I am so frustrated about this! I am not really sure what it is that I am
     // doing!
 }

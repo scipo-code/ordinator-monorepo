@@ -24,6 +24,27 @@ use crate::algorithm::strategic_solution::StrategicSolution;
 use crate::messages::StrategicRequestScheduling;
 use crate::messages::StrategicResponseScheduling;
 
+// This will not work
+// ESSAY [ ]
+// What should... You have made a mistake, splitting the crates is like
+// bounded contexts. You will have to reformulate the types.
+//
+// I do not know what to do here. You have to start writing to get the
+// most out of this.
+//
+// Okay you have to make this work... You have some decisions to make
+// the issue here is that the OrphanRule means that I have to create
+// either a new type or a new trait. The issue currently is that you 
+// have a blanket implementation for the LNS, which is crucial. The
+// blanket implementation handles messages aswell. This means that 
+// it will be difficult to make the code work. You discovered something
+// crucial. You made a blanket implementation on the inner type while 
+// in the Actors themselves you implemened the actual functionality.
+// This means that you have found a huge bug in the system. What should
+// you do now? I think that the best approach is to make the system. 
+// Work 
+//
+// You have to  f
 impl<Ss> CommandHandler for StrategicActor<Ss>
 where
     Ss: SystemSolutions<Strategic = StrategicSolution> + Debug,
@@ -213,7 +234,9 @@ where
                 // What should you do now? Should you remove the whole thing? I guess that is the
                 // best approach. The use cases should be handled in the Orchestrator. Yes,
                 // recognize this idiocy quickly and move on and grow.
-                StrategicSchedulingEnvironmentCommands::UserStatus(strategic_user_status_codes) => {
+                StrategicSchedulingEnvironmentCommands::UserStatus(
+                    _strategic_user_status_codes,
+                ) => {
                     // let scheduling_environment_lock =
                     //     &mut self.scheduling_environment.lock().unwrap();
 

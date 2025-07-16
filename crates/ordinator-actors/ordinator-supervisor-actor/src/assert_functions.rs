@@ -28,6 +28,7 @@ impl<MessageRequest, MessageResponse, Ss> SupervisorAssertions
     for Actor<MessageRequest, MessageResponse, SupervisorAlgorithm<Ss>>
 where
     Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
+    MessageResponse: Debug,
 {
     fn test_symmetric_difference_between_tactical_operations_and_operational_state_machine(
         &self,

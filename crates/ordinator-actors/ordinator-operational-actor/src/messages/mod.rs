@@ -29,7 +29,7 @@ pub enum ResponseMessage<S, Sc, R, T>
 // You should use the module paths in `operational::response::Status`,
 // `supervisor::request::Status`. Yes that is the correct approach here.
 // I do not think that there is a better way of doing it.
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub enum OperationalResponseMessage
 {
     Status(OperationalResponseStatus),

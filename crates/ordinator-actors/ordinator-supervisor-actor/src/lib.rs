@@ -40,6 +40,7 @@ where
 impl<Ss> Deref for SupervisorActor<Ss>
 where
     Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
+    Self: CommandHandler<Req = SupervisorRequestMessage, Res = SupervisorResponseMessage>,
 {
     type Target =
         Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>;

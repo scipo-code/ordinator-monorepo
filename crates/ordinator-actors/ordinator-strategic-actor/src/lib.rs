@@ -37,11 +37,14 @@ pub struct StrategicActor<Ss: Debug>(
 )
 where
     Ss: SystemSolutions<Strategic = StrategicSolution>,
-    Self: CommandHandler<Req = StrategicRequestMessage, Res = StrategicResponseMessage>;
+    Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>:
+        CommandHandler<Req = StrategicRequestMessage, Res = StrategicResponseMessage>;
 
 impl<Ss> Deref for StrategicActor<Ss>
 where
     Ss: SystemSolutions<Strategic = StrategicSolution> + Debug,
+    Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>:
+        CommandHandler<Req = StrategicRequestMessage, Res = StrategicResponseMessage>,
 {
     type Target = Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>;
 
@@ -54,6 +57,8 @@ where
 impl<Ss> DerefMut for StrategicActor<Ss>
 where
     Ss: SystemSolutions<Strategic = StrategicSolution> + Debug,
+    Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>:
+        CommandHandler<Req = StrategicRequestMessage, Res = StrategicResponseMessage>,
 {
     fn deref_mut(&mut self) -> &mut Self::Target
     {
@@ -65,6 +70,8 @@ pub struct StrategicApi {}
 impl<Ss> ActorFactory<Ss> for StrategicApi
 where
     Ss: SystemSolutions<Strategic = StrategicSolution> + Send + Sync + 'static + Debug,
+    Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>:
+        CommandHandler<Req = StrategicRequestMessage, Res = StrategicResponseMessage>,
 {
     type Communication = Communication<StrategicRequestMessage, StrategicResponseMessage>;
 

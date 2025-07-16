@@ -1,5 +1,7 @@
 use std::collections::HashSet;
 use std::fmt::Debug;
+use std::ops::Deref;
+use std::ops::DerefMut;
 
 use anyhow::Context;
 use anyhow::Result;
@@ -19,6 +21,7 @@ use crate::algorithm::supervisor_solution::SupervisorSolution;
 use crate::messages::responses::SupervisorResponseScheduling;
 use crate::messages::responses::SupervisorResponseStatus;
 
+// Should you implement on the new ty
 impl<Ss> CommandHandler for SupervisorActor<Ss>
 where
     Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
@@ -35,7 +38,8 @@ where
                 // couple of issues here relating to how we interact
                 // with the algorithm. I
                 let work_orders = {
-                    let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
+                    let scheduling_environment_guard =
+                        self.0.scheduling_environment.lock().unwrap();
 
                     scheduling_environment_guard.work_orders.inner.clone()
                 };
@@ -56,7 +60,8 @@ where
                     // I can sense that we should instead think about the data flow in
                     // the program. That probably has a higher chance of success. Yes.
                     for (activity_number, operation) in &work_order.operations.0 {
-                        self.algorithm
+                        self.0
+                            .algorithm
                             .parameters
                             .create_and_insert_supervisor_parameter(
                                 operation,

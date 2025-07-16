@@ -17,7 +17,6 @@ use colored::Colorize;
 use flume::Receiver;
 use flume::Sender;
 use ordinator_configuration::SystemConfigurations;
-use ordinator_orchestrator_actor_traits::ActorMessage;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::Parameters;
@@ -29,12 +28,15 @@ use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use serde::Deserialize;
 use serde::Serialize;
+use tracing::Level;
+use tracing::event;
 
 use self::traits::ActorBasedLargeNeighborhoodSearch;
 
 // I do not know if there is
 // TODO [ ] FIX [ ]
 // You should reuse the trait bounds on the Agent and the Algorithm.
+//
 pub struct Actor<ActorRequest, ActorResponse, Algorithm>
 where
     // What should you do here with the
@@ -49,6 +51,7 @@ where
     // Actor implementations provide functions.
     Self: CommandHandler<Req = ActorRequest, Res = ActorResponse>,
     Algorithm: ActorBasedLargeNeighborhoodSearch + Debug,
+    ActorResponse: Debug,
 {
     pub actor_id: Id,
     pub scheduling_environment: Arc<Mutex<SchedulingEnvironment>>,
@@ -56,7 +59,7 @@ where
     // TODO [ ] 2025-07-14 These senders and receivers are relevant for the `Algorithm`
     // and not shared with the `SchedulingEnvironment` changes and the `StateLink` and
     // should therefore be changed.
-    pub receiver_from_orchestrator: Receiver<ActorMessage<ActorRequest>>,
+    pub receiver_from_orchestrator: Receiver<ActorRequest>,
     pub sender_to_orchestrator: Sender<Result<ActorResponse>>,
     pub state_link_receiver: BusReader<StateLink>,
     pub configurations: Arc<ArcSwap<SystemConfigurations>>,
@@ -69,13 +72,31 @@ where
 // important thing here
 impl<ActorRequest, ActorResponse, Algorithm> Actor<ActorRequest, ActorResponse, Algorithm>
 where
+    // This is
+    // not possible.
+    // It cannot
+    // be implemented
+    // like this.
+    // That is
+    // problem.
+    // You
+    // were confused
+    // about this
+    // before.
+    // At least
+    // now you
+    // understand
+    // the
+    // implications of it.
     Self: CommandHandler<Req = ActorRequest, Res = ActorResponse>,
     Algorithm: ActorBasedLargeNeighborhoodSearch + Debug,
     ActorRequest: Send + Sync + 'static,
-    ActorResponse: Send + Sync + 'static,
+    ActorResponse: Send + Sync + 'static + Debug,
 {
     // This method sends errors to the Orchestrator, which handles the errors
     // from there.
+    //
+    // One thing is for sure. Now is not the time to fix this.
     pub fn run(&mut self) -> ()
     {
         let mut schedule_iteration = ScheduleIteration::default();
@@ -101,9 +122,21 @@ where
 
         schedule_iteration.increment();
 
+        // There is something fundamental that you are not getting here.
         loop {
+            while let Ok(state_link) = self.state_link_receiver.try_recv() {
+                match self.handle_state_link(state_link) {
+                    // TODO [ ] 2025-07-15 This message could be used to communicate with
+                    // the Orchestrator again.
+                    Ok(_e) => {
+                        event!(target: "business_event", Level::INFO, "{}", format!("Actor {} handled a state_link_message\nActorResponse {_e:?}",self.actor_id));
+                    }
+                    Err(_) => todo!(),
+                }
+            }
+
             while let Ok(message) = self.receiver_from_orchestrator.try_recv() {
-                match self.handle(message) {
+                match self.handle_request_message(message) {
                     Ok(_) => (),
                     Err(e) => self.error_channel.send(e).expect(
                         "If this happens no amount of error handling will save the program",
@@ -171,30 +204,7 @@ where
 // think so. You will have to make a new function in the
 // other
 /// There are many thing
-impl<ActorRequest, ActorResponse, Algorithm> CommandHandler
-    for Actor<ActorRequest, ActorResponse, Algorithm>
-where
-    Algorithm: ActorBasedLargeNeighborhoodSearch + Debug,
-{
-    type Req = ActorRequest;
-    type Res = ActorResponse;
-
-    fn handle_state_link(&mut self, state_link: StateLink) -> Result<Self::Res>
-    {
-        match state_link {
-            StateLink::WorkOrders(_actor_specific) => todo!(),
-            StateLink::WorkerEnvironment => todo!(),
-            StateLink::TimeEnvironment => todo!(),
-        }
-    }
-
-    fn handle_request_message(&mut self, _request_message: Self::Req) -> Result<Self::Res>
-    {
-        // The individual actor has to implement this
-
-        todo!();
-    }
-}
+/// This should simply be removed!
 
 pub struct ActorBuilder<ActorRequest, ActorResponse, Algorithm>
 where
@@ -205,7 +215,7 @@ where
     agent_id: Option<Id>,
     scheduling_environment: Option<Arc<Mutex<SchedulingEnvironment>>>,
     algorithm: Option<Algorithm>,
-    receiver_from_orchestrator: Option<Receiver<ActorMessage<ActorRequest>>>,
+    receiver_from_orchestrator: Option<Receiver<ActorRequest>>,
     sender_to_orchestrator: Option<Sender<Result<ActorResponse>>>,
     state_link_bus: Option<BusReader<StateLink>>,
     configurations: Option<Arc<ArcSwap<SystemConfigurations>>>,
@@ -221,7 +231,7 @@ where
         CommandHandler<Req = ActorRequest, Res = ActorResponse>,
     SpecificAlgorithm: ActorBasedLargeNeighborhoodSearch + Send + 'static + Debug,
     ActorRequest: Send + Sync + 'static,
-    ActorResponse: Send + Sync + 'static,
+    ActorResponse: Send + Sync + 'static + Debug,
 {
     pub fn build(self) -> Result<Communication<ActorRequest, ActorResponse>>
     {
@@ -296,8 +306,8 @@ where
     ) -> Self
     {
         let (sender_to_actor, receiver_from_orchestrator): (
-            flume::Sender<ActorMessage<ActorRequest>>,
-            flume::Receiver<ActorMessage<ActorRequest>>,
+            flume::Sender<ActorRequest>,
+            flume::Receiver<ActorRequest>,
         ) = flume::unbounded();
 
         let (sender_to_orchestrator, receiver_from_actor): (
@@ -317,7 +327,7 @@ where
 
     pub fn receiver_from_orchestrator(
         mut self,
-        receiver_from_orchestrator: Receiver<ActorMessage<ActorRequest>>,
+        receiver_from_orchestrator: Receiver<ActorRequest>,
     ) -> Self
     {
         self.receiver_from_orchestrator = Some(receiver_from_orchestrator);

@@ -56,7 +56,7 @@ pub struct ErrorInfo
 }
 pub struct Communication<RequestMessage, Res>
 {
-    sender_to_actor: Sender<ActorMessage<RequestMessage>>,
+    sender_to_actor: Sender<RequestMessage>,
     pub receiver_from_actor: Receiver<Result<Res>>,
 }
 
@@ -70,10 +70,7 @@ pub struct Communication<RequestMessage, Res>
 // generics in the correct way. There is something to learn here.
 impl<RequestMessage, Res> Communication<RequestMessage, Res>
 {
-    pub fn new(
-        sender: Sender<ActorMessage<RequestMessage>>,
-        receiver: Receiver<Result<Res>>,
-    ) -> Self
+    pub fn new(sender: Sender<RequestMessage>, receiver: Receiver<Result<Res>>) -> Self
     {
         Self {
             sender_to_actor: sender,
@@ -86,19 +83,12 @@ impl<RequestMessage, Res> Communication<RequestMessage, Res>
     pub fn from_agent(&self, message: RequestMessage) -> Result<()>
     {
         // What is it that you need to do here? You should
-        let message = ActorMessage::Actor(message);
         self.sender_to_actor.send(message).map_err(|e| anyhow!(e.to_string() )).context("The Actor has stopped running. If the reason for this is not obvious, it means that the error handling should be extended.")
     }
 
     pub fn from_actor(&self) -> Res
     {
         self.receiver_from_actor.recv().unwrap().unwrap()
-    }
-
-    pub fn from_orchestrator(&self, state_link: StateLink)
-    {
-        let message = ActorMessage::State(state_link);
-        self.sender_to_actor.send(message).expect("The Actor has stopped running. If the reason for this is not obvious, it means that the error handling should be extended.");
     }
 }
 
@@ -357,22 +347,12 @@ pub trait Solution: Sized
 // through the `MassageHandler` channel.
 /// This trait should be implemented by every Actor so that it will be able to
 /// receive messages from the user and the [`Orchestrator`].  
+///
+/// Funny that you again remove the things that you hate! I think
 pub trait CommandHandler
 {
     type Req;
     type Res;
-
-    // This has the wrong kind of name. I do not see what else I could do here.
-    // Maybe I should strive
-    // Here it wraps the `Req` in the `ActorMessage` I do not think that this
-    // is the best way of doing it
-    fn handle(&mut self, actor_message: ActorMessage<Self::Req>) -> Result<Self::Res>
-    {
-        match actor_message {
-            ActorMessage::State(state_link) => self.handle_state_link(state_link),
-            ActorMessage::Actor(actor_request) => self.handle_request_message(actor_request),
-        }
-    }
 
     fn handle_state_link(&mut self, state_link: StateLink) -> Result<Self::Res>;
 
@@ -513,21 +493,6 @@ where
     ) -> Option<&'a MarginalFitness>;
 
     fn scheduled_activities_for_operational_actor(&self) -> HashSet<WorkOrderActivity>;
-}
-
-// You should make an API on the `Communication` struct. What other approach
-// should I take.
-#[derive(Clone)]
-pub enum ActorMessage<ActorRequest>
-{
-    State(StateLink),
-    Actor(ActorRequest),
-    // Yes so options should be included here as part of what needs to be created for
-    // this to work. I believe that the best approach here will be to make something
-    // that
-    // FIX
-    // Add Options here so that every agent can have its options updated at run time.
-    // Options(),
 }
 
 /// The StateLink is a generic type that each type of Agent will implement.

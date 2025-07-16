@@ -28,6 +28,7 @@ pub enum StrategicSchedulingEnvironmentCommands
 
 #[derive(Serialize)]
 #[allow(clippy::large_enum_variant)]
+#[derive(Debug)]
 pub enum StrategicResponseMessage
 {
     StateLink,

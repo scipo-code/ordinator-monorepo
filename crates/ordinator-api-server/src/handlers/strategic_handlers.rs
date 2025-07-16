@@ -64,11 +64,9 @@ pub async fn get_scheduler_work_orders(
     // orchestrator.get_work_order(id)
 }
 
-/// This handler sends a `command` to the `StrategicActor` that a change to the
-/// `UnloadingPoint` has occured. You need to send the `Actor` a message. should
-/// you make the.
-///
-/// TODO [ ] Make an Essay
+/// This handler updates the [`SchedulingEnvironment`] that the UnloadingPoint
+/// has been updated and sends a command
+/// to every `Actor` that the [`SchedulignEnvironment`] has changed.
 #[debug_handler]
 #[utoipa::path(
     post,
@@ -80,49 +78,58 @@ pub async fn get_scheduler_work_orders(
         ("period" = PeriodDto, Path),
     ),
     responses(
-        (status = 200, body = WorkOrderSingleRowSimpleDto),
+        (status = 200),
         (status = 404, body = AppError),
         (status = 500, body = AppError),
     )
 )]
 pub async fn assign_work_order_to_period(
     State(_orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    Path((asset, work_order_number_dto, period_dto)): Path<(
+    Path((asset_dto, work_order_number_dto, period_dto)): Path<(
         AssetNames,
         WorkOrderNumberDto,
         PeriodDto,
     )>,
-) -> Result<Json<SchedulerWorkOrderDto>, AppError>
+) -> Result<String, AppError>
 {
     // This should go into the handler, directory. There is no other way around it
     // REMEMBER: You should only wrap method calls that the Orchestrator exposes.
     //
     // WARN: You are beginning to feel drained again. You should grap something to
     // eat again.
-    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+    // TODO [ ] add a `bus` for each `Asset`
+    let _asset = Asset::try_from(asset_dto).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let scheduling_environment = _orchestrator.scheduling_environment.lock().unwrap();
+    let mut scheduling_environment = _orchestrator.scheduling_environment.lock().unwrap();
 
     let work_order_number = WorkOrderNumber::from(work_order_number_dto);
     let period_option = scheduling_environment
         .time_environment
         .periods
         .iter()
-        .find(|per| per.period_string() == period_dto.period_string);
+        .find(|per| per.period_string() == period_dto.0)
+        .cloned();
 
     let period = match period_option {
         Some(period) => period,
         None => {
             return Err(AppError::Anyhow(format!(
-                "Period: {:?}\nwas not found in the scheduling_environment\nDid you:\n1. use the pattern yyyy-Wxx-Wzz?\n2. Use the correct even or uneven week numbers correctly",
-                period_dto
+                "Period: {period_dto:?}\nwas not found in the scheduling_environment\nDid you:\n1. use the pattern yyyy-Wxx-Wzz?\n2. Use the correct even or uneven week numbers correctly"
             )));
         }
     };
 
     scheduling_environment
         .work_orders
-        .update_period_unloading_point(&work_order_number, period);
+        .update_period_unloading_point(&work_order_number, &period)
+        .with_context(|| {
+            format!(
+                "Could assign work order {:#?} to period {}",
+                work_order_number,
+                period.period_string()
+            )
+        })
+        .map_err(|e| AppError::Anyhow(e.to_string()))?;
 
     // I hated that message structure when I first wrote it, now you have a lesson
     // to learn. So the [`StateLink`] is responsible for updating the `Actors` when
@@ -141,9 +148,13 @@ pub async fn assign_work_order_to_period(
     // TODO [x] 2025-07-14 make a broadcast channel.
     // It is very important that you get this right. You should make sure to use the
     // correct construct. I think
-    _orchestrator.Ok(Json(
-        SchedulerWorkOrderDto::try_from((asset.clone(), scheduling_environment, system_solution))
-            .expect("This should never fail"),
+    //
+    // This is an issue, I think that the best approach here is to make the system
+    // work in a way that will not let the system.
+    Ok(format!(
+        "Command successfully processed in the system\nWork order {} was correctly scheduled into period {}",
+        work_order_number,
+        period.period_string()
     ))
     // TODO [ ] M
     // orchestrator.get_work_order(id)

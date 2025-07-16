@@ -15,6 +15,9 @@ pub async fn scheduler_nest(
         .routes(routes!(
             crate::handlers::strategic_handlers::get_scheduler_work_orders
         ))
+        .routes(routes!(
+            crate::handlers::strategic_handlers::assign_work_order_to_period,
+        ))
         .with_state(state)
 }
 
