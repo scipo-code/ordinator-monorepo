@@ -4,7 +4,6 @@ use std::fmt::Debug;
 use anyhow::Context;
 use anyhow::Result;
 use anyhow::bail;
-use ordinator_orchestrator_actor_traits::ActorSpecific;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
@@ -20,64 +19,60 @@ use crate::algorithm::supervisor_solution::SupervisorSolution;
 use crate::messages::responses::SupervisorResponseScheduling;
 use crate::messages::responses::SupervisorResponseStatus;
 
-impl<Ss> CommandHandler for SupervisorActor<Ss>
+// Should you implement on the new ty
+impl<Ss> CommandHandler<SupervisorRequestMessage, SupervisorResponseMessage> for SupervisorActor<Ss>
 where
     Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
 {
-    type Req = SupervisorRequestMessage;
-    type Res = SupervisorResponseMessage;
-
-    fn handle_state_link(&mut self, state_link: StateLink) -> Result<Self::Res>
+    fn handle_state_link(&mut self, state_link: StateLink) -> Result<SupervisorResponseMessage>
     {
         match state_link {
-            StateLink::WorkOrders(agent_specific) => match agent_specific {
-                ActorSpecific::Strategic(changed_work_orders) => {
-                    // It is beginning to seem a little horrible that the self. here holds both the
-                    // `scheduling_environment` and the `algorithm`. There is a
-                    // couple of issues here relating to how we interact
-                    // with the algorithm. I
-                    let work_orders = {
-                        let scheduling_environment_guard =
-                            self.scheduling_environment.lock().unwrap();
+            StateLink::WorkOrders(changed_work_orders) => {
+                // It is beginning to seem a little horrible that the self. here holds both the
+                // `scheduling_environment` and the `algorithm`. There is a
+                // couple of issues here relating to how we interact
+                // with the algorithm. I
+                let work_orders = {
+                    let scheduling_environment_guard =
+                        self.0.scheduling_environment.lock().unwrap();
 
-                        scheduling_environment_guard.work_orders.inner.clone()
-                    };
+                    scheduling_environment_guard.work_orders.inner.clone()
+                };
 
-                    for work_order_number in changed_work_orders {
-                        let work_order =
-                            work_orders.get(&work_order_number).with_context(|| {
-                                format!(
-                                    "{:?} should always be present in {}",
-                                    work_order_number,
-                                    std::any::type_name::<SupervisorParameters>()
-                                )
-                            })?;
-                        // TODO [ ]
-                        // You need to take a clear stance on this in the code. Should you make an
-                        // API for this? Of course you should.
-                        //
-                        // This is written so sloppy.
-                        // I can sense that we should instead think about the data flow in
-                        // the program. That probably has a higher chance of success. Yes.
-                        for (activity_number, operation) in &work_order.operations.0 {
-                            self.algorithm
-                                .parameters
-                                .create_and_insert_supervisor_parameter(
-                                    operation,
-                                    &(work_order_number, *activity_number),
-                                )
-                        }
+                for work_order_number in changed_work_orders {
+                    let work_order = work_orders.get(&work_order_number).with_context(|| {
+                        format!(
+                            "{:?} should always be present in {}",
+                            work_order_number,
+                            std::any::type_name::<SupervisorParameters>()
+                        )
+                    })?;
+                    // TODO [ ]
+                    // You need to take a clear stance on this in the code. Should you make an
+                    // API for this? Of course you should.
+                    //
+                    // This is written so sloppy.
+                    // I can sense that we should instead think about the data flow in
+                    // the program. That probably has a higher chance of success. Yes.
+                    for (activity_number, operation) in &work_order.operations.0 {
+                        self.0
+                            .algorithm
+                            .parameters
+                            .create_and_insert_supervisor_parameter(
+                                operation,
+                                &(work_order_number, *activity_number),
+                            )
                     }
-                    Ok(SupervisorResponseMessage::StateLink)
                 }
-            },
+                Ok(SupervisorResponseMessage::StateLink)
+            }
             StateLink::WorkerEnvironment => {
-                let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
+                let scheduling_environment_guard = self.0.scheduling_environment.lock().unwrap();
 
                 let operational_agents = scheduling_environment_guard
                     .worker_environment
                     .actor_specification
-                    .get(self.actor_id.asset())
+                    .get(self.0.actor_id.asset())
                     .unwrap()
                     .operational
                     .iter()
@@ -87,6 +82,7 @@ where
                 event!(
                     Level::ERROR,
                     does_state_ids_and_addr_ids_match = self
+                        .0
                         .algorithm
                         .loaded_system_solution
                         .all_operational()
@@ -115,7 +111,7 @@ where
             SupervisorRequestMessage::Update => {
                 bail!(
                     "IMPLEMENT update logic for Supervisor for Asset: {:?}",
-                    self.actor_id.asset()
+                    self.0.actor_id.asset()
                 );
             }
             SupervisorRequestMessage::Status(supervisor_status_message) => {
@@ -125,9 +121,9 @@ where
                     supervisor_status_message
                 );
                 let supervisor_status = SupervisorResponseStatus {
-                    supervisor_resource: self.algorithm.parameters.operational_ids.clone(),
-                    delegated_work_order_activities: self.algorithm.solution.count_unique_woa(),
-                    objective: self.algorithm.solution.objective_value,
+                    supervisor_resource: self.0.algorithm.parameters.operational_ids.clone(),
+                    delegated_work_order_activities: self.0.algorithm.solution.count_unique_woa(),
+                    objective: self.0.algorithm.solution.objective_value,
                 };
                 event!(Level::WARN, "after creation of the supervisor_status");
 

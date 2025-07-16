@@ -10,19 +10,19 @@ use file_rotate::compression::Compression;
 use file_rotate::suffix::AppendCount;
 use tracing::Level;
 use tracing::event;
+use tracing_appender::non_blocking;
 use tracing_appender::non_blocking::NonBlocking;
 use tracing_flame::FlameLayer;
 use tracing_subscriber::Registry;
-use tracing_subscriber::filter;
 use tracing_subscriber::filter::EnvFilter;
 use tracing_subscriber::filter::Filtered;
+use tracing_subscriber::filter::Targets;
 use tracing_subscriber::fmt::Layer;
 use tracing_subscriber::fmt::format::Format;
 use tracing_subscriber::fmt::format::Json;
 use tracing_subscriber::fmt::format::JsonFields;
 use tracing_subscriber::fmt::{self};
 use tracing_subscriber::prelude::*;
-use tracing_subscriber::reload;
 use tracing_subscriber::reload::Handle;
 
 type LogLayer = Handle<
@@ -34,8 +34,8 @@ type ProfilingLayer = Filtered<FlameLayer<Registry, BufWriter<File>>, EnvFilter,
 #[derive(Debug)]
 pub struct LogHandles
 {
-    pub file_handle: LogLayer,
-    pub _flame_handle: Handle<ProfilingLayer, Registry>,
+    pub file_handle: Option<LogLayer>,
+    pub _flame_handle: Option<Handle<ProfilingLayer, Registry>>,
 }
 
 // TODO [ ]
@@ -64,6 +64,150 @@ pub struct LogHandles
 
 pub fn setup_logging() -> LogHandles
 {
+    delete_old_log_files();
+
+    // Set the log directory
+    let log_dir = env::var("ORDINATOR_LOG_DIR")
+        .expect("A logging/tracing directory should be set in the .env file");
+
+    // Set the log file paths.
+    let research_path: PathBuf = (log_dir.clone() + "ordinator.research.log").into();
+    let developer_path: PathBuf = (log_dir.clone() + "ordinator.developer.log").into();
+    let debug_path: PathBuf = (log_dir.clone() + "ordinator.debug.log").into();
+    let business_events_path: PathBuf = (log_dir.clone() + "ordinator.business_events.log").into();
+
+    // Create the files that will contain the logs with specific options for each of
+    // these.
+    let research_file = FileRotate::new(
+        research_path,
+        AppendCount::new(1),
+        ContentLimit::Bytes(1024 * 1024 * 1024),
+        Compression::None,
+        None,
+    );
+
+    let developer_file = FileRotate::new(
+        developer_path,
+        AppendCount::new(1),
+        ContentLimit::Bytes(50 * 1024 * 1024),
+        Compression::None,
+        None,
+    );
+
+    let debug_file = FileRotate::new(
+        debug_path,
+        AppendCount::new(1),
+        ContentLimit::Bytes(50 * 1024 * 1024),
+        Compression::None,
+        None,
+    );
+
+    let business_events_file = FileRotate::new(
+        business_events_path,
+        AppendCount::new(5),
+        ContentLimit::Time(file_rotate::TimeFrequency::Weekly),
+        Compression::None,
+        None,
+    );
+
+    // Create the writers that `write!` to the individual file.
+    let (research_writer, research_log_guard) = non_blocking(research_file);
+    std::mem::forget(research_log_guard);
+    let (developer_writer, developer_log_guard) = non_blocking(developer_file);
+    std::mem::forget(developer_log_guard);
+    let (debug_writer, developer_log_guard) = non_blocking(debug_file);
+    std::mem::forget(developer_log_guard);
+    let (business_events_writer, business_events_guard) = non_blocking(business_events_file);
+    std::mem::forget(business_events_guard);
+
+    // Set targets so that logs are routes to the correct file at the call site.
+    // Specified with `event!(target: "<NAME OF FILE>")`.
+
+    let research_targets = Targets::new().with_target("research", Level::INFO);
+    let debug_targets = Targets::new().with_target("debug", Level::TRACE);
+
+    let developer_targets = Targets::new().with_target("developer", Level::TRACE);
+    let business_event_targets = Targets::new().with_target("business_events", Level::INFO);
+    let stdout_targets = Targets::new().with_target("stdout", Level::TRACE);
+
+    // Make the logging layers
+    let research_layer = fmt::layer()
+        .with_writer(research_writer)
+        .json()
+        .with_ansi(true)
+        .with_file(true) // Include file name in logs
+        .with_thread_ids(true)
+        .with_thread_names(true)
+        .with_line_number(true)
+        .with_filter(research_targets);
+
+    let developer_layer = fmt::layer()
+        .with_writer(developer_writer)
+        .json()
+        .with_ansi(true)
+        .with_file(true) // Include file name in logs
+        .with_thread_ids(true)
+        .with_thread_names(true)
+        .with_line_number(true)
+        .with_filter(developer_targets);
+
+    let debug_layer = fmt::layer()
+        .with_writer(debug_writer)
+        .with_ansi(true)
+        .with_file(true) // Include file name in logs
+        .with_thread_ids(true)
+        .with_thread_names(true)
+        .with_line_number(true)
+        .with_filter(debug_targets);
+
+    let business_events_layer = fmt::layer()
+        .with_writer(business_events_writer)
+        .json()
+        .with_thread_names(true)
+        .with_filter(business_event_targets);
+
+    let stdout_layer = tracing_subscriber::fmt::layer().with_filter(stdout_targets);
+
+    let flame_layer = FlameLayer::with_file(
+        env::var("PROFILING_FILE").expect("A file name for the profiling data has to be set"),
+    )
+    .unwrap()
+    .0
+    .with_filter(EnvFilter::from_env("PROFILING_LEVEL"));
+
+    // let layers = vec![
+    //     research_layer.boxed(),
+    //     flame_layer.boxed(),
+    //     developer_layer.boxed(),
+    // ];
+
+    // TODO [ ] 2025-07-07 implement tracing::reload if you need dynamic changing of
+    // the logging system. If you need better logging.
+    // let (research_layer, research_reload_handle) =
+    // reload::Layer::new(research_layer); let (flame_layer,
+    // flame_reload_handle) = reload::Layer::new(flame_layer);
+    //
+    // So the `schedule()` function works correctly. But where is the bug
+    // introduced? I really have to find this as the next step. I do not see a
+    // different way of going about it.
+    tracing_subscriber::registry()
+        .with(research_layer)
+        .with(developer_layer)
+        .with(debug_layer)
+        .with(business_events_layer)
+        .with(stdout_layer)
+        .with(flame_layer)
+        .init();
+
+    event!(target: "stdout", Level::INFO, "System initialized (1 of 4): logging");
+    LogHandles {
+        file_handle: None,
+        _flame_handle: None,
+    }
+}
+
+fn delete_old_log_files()
+{
     let previous_log_files = fs::read_dir(
         dotenvy::var("ORDINATOR_LOG_DIR")
             .expect("The ORDINATOR_LOG_DIR environment variables should always be set."),
@@ -83,80 +227,5 @@ pub fn setup_logging() -> LogHandles
         {
             fs::remove_file(path).expect("If you encounter this error ");
         }
-    }
-
-    let log_dir = env::var("ORDINATOR_LOG_DIR")
-        .expect("A logging/tracing directory should be set in the .env file");
-    let research_log_file: PathBuf = (log_dir.clone() + "ordinator.developer.log").into();
-    let operational_logging_path: PathBuf = (log_dir.clone() + "ordinator.developer.log").into();
-
-    let research_file = FileRotate::new(
-        research_log_file,
-        AppendCount::new(1),
-        ContentLimit::Bytes(1024 * 1024 * 1024),
-        Compression::None,
-        None,
-    );
-
-    let (research_non_blocking, research_log_guard) = tracing_appender::non_blocking(research_file);
-    std::mem::forget(research_log_guard);
-
-    
-    let research_layer = fmt::layer()
-        .with_writer(research_non_blocking)
-        .json()
-        .with_ansi(true)
-        .with_file(true) // Include file name in logs
-        .with_thread_ids(true)
-        .with_thread_names(true)
-        .with_line_number(true) // Include line number in logs
-        .with_filter(EnvFilter::from_env("TRACING_LEVEL"));
-
-    let (research_layer, file_handle) = reload::Layer::new(research_layer);
-
-    let developer_file = FileRotate::new(
-        operational_logging_path,
-        AppendCount::new(1),
-        ContentLimit::Bytes(50 * 1024 * 1024),
-        Compression::None,
-        None,
-    );
-
-    let (operational_nb, developer_log_guard) = tracing_appender::non_blocking(developer_file);
-    std::mem::forget(developer_log_guard);
-
-    let developer_layer = fmt::layer()
-        .with_writer(operational_nb)
-        .json()
-        .with_ansi(true)
-        .with_file(true) // Include file name in logs
-        .with_thread_ids(true)
-        .with_thread_names(true)
-        .with_line_number(true) // Include line number in logs
-        .with_filter(filter::LevelFilter::DEBUG);
-
-    let flame_layer = FlameLayer::with_file(
-        env::var("PROFILING_FILE").expect("A file name for the profiling data has to be set"),
-    )
-    .unwrap()
-    .0
-    .with_filter(EnvFilter::from_env("PROFILING_LEVEL"));
-    let (flame_layer, _flame_handle) = reload::Layer::new(flame_layer);
-
-    let layers = vec![
-        research_layer.boxed(),
-        flame_layer.boxed(),
-        developer_layer.boxed(),
-    ];
-
-    // So the `schedule()` function works correctly. But where is the bug
-    // introduced? I really have to find this as the next step. I do not see a
-    // different way of going about it.
-    tracing_subscriber::registry().with(layers).init();
-
-    event!(Level::INFO, "starting loging");
-    LogHandles {
-        file_handle,
-        _flame_handle,
     }
 }

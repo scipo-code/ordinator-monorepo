@@ -12,6 +12,7 @@ use algorithm::tactical_parameters::TacticalParameters;
 use algorithm::tactical_solution::TacticalSolution;
 use anyhow::Result;
 use arc_swap::ArcSwap;
+use bus::BusReader;
 use flume::Sender;
 use messages::TacticalRequestMessage;
 use messages::TacticalResponseMessage;
@@ -22,7 +23,7 @@ use ordinator_configuration::SystemConfigurations;
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
-use ordinator_orchestrator_actor_traits::OrchestratorNotifier;
+use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
@@ -34,11 +35,14 @@ pub struct TacticalActor<Ss: Debug>(
 )
 where
     Ss: SystemSolutions<Tactical = TacticalSolution>,
-    Self: CommandHandler<Req = TacticalRequestMessage, Res = TacticalResponseMessage>;
+    Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>:
+        CommandHandler<Req = TacticalRequestMessage, Res = TacticalResponseMessage>;
 
 impl<Ss> Deref for TacticalActor<Ss>
 where
     Ss: SystemSolutions<Tactical = TacticalSolution> + Debug,
+    Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>:
+        CommandHandler<Req = TacticalRequestMessage, Res = TacticalResponseMessage>,
 {
     type Target = Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>;
 
@@ -51,6 +55,8 @@ where
 impl<Ss: Debug> DerefMut for TacticalActor<Ss>
 where
     Ss: SystemSolutions<Tactical = TacticalSolution>,
+    Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>:
+        CommandHandler<Req = TacticalRequestMessage, Res = TacticalResponseMessage>,
 {
     fn deref_mut(&mut self) -> &mut Self::Target
     {
@@ -74,6 +80,8 @@ where
                 Ss,
             >,
         >,
+    Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>:
+        CommandHandler<Req = TacticalRequestMessage, Res = TacticalResponseMessage>,
 {
     type Communication = Communication<TacticalRequestMessage, TacticalResponseMessage>;
 
@@ -81,8 +89,8 @@ where
         id: Id,
         scheduling_environment_guard: Arc<Mutex<SchedulingEnvironment>>,
         shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
-        notify_orchestrator: Arc<dyn OrchestratorNotifier>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,
+        state_link_bus: BusReader<StateLink>,
         error_channel: Sender<anyhow::Error>,
     ) -> Result<Self::Communication>
     {
@@ -104,9 +112,8 @@ where
             })?
             // TODO [x]
             // These should be created in a single step
-            .communication(error_channel)
+            .communication(error_channel, state_link_bus)
             .configurations(system_configurations)
-            .notify_orchestrator(notify_orchestrator)
             .build()
     }
 }

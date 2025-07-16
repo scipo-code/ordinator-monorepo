@@ -265,7 +265,9 @@ struct OperationDto
 {
     activity: u64,
     work_remaining: f64,
+
     work_center: ResourcesDto,
+    number_of_people: u64,
 }
 
 impl From<WorkOrder> for WorkOrderSingleRowSimpleDto
@@ -294,6 +296,7 @@ impl From<Operation> for OperationDto
             activity: value.activity,
             work_remaining: value.operation_info.work_remaining.to_f64(),
             work_center: value.resource.to_string(),
+            number_of_people: value.operation_info.number,
         }
     }
 }

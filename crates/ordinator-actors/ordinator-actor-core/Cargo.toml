@@ -19,3 +19,4 @@ proptest = {workspace = true}
 rand = {workspace = true}
 serde = {workspace = true}
 tracing = {workspace = true}
+bus = "2.4.1"

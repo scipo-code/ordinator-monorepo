@@ -1,5 +1,6 @@
 use std::any::Any;
 
+use anyhow::Context;
 use rust_xlsxwriter::ColNum;
 use rust_xlsxwriter::Format;
 use rust_xlsxwriter::IntoExcelData;
@@ -41,7 +42,10 @@ impl Priority
         } else if let Some(char) = input.downcast_ref::<char>() {
             Priority::Char(*char)
         } else {
-            let string_value = input.downcast_ref::<String>().unwrap();
+            let string_value = input
+                .downcast_ref::<String>()
+                .with_context(|| format!("Could not parse {input:?} as a Priority"))
+                .expect("");
 
             match string_value.parse::<u64>() {
                 Ok(int) => Priority::Int(int),

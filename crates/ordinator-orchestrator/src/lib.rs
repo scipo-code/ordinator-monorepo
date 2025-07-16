@@ -29,10 +29,8 @@ pub use ordinator_operational_actor::messages::OperationalRequestMessage;
 pub use ordinator_operational_actor::messages::OperationalResponseMessage;
 pub use ordinator_operational_actor::messages::requests::OperationalStatusRequest;
 use ordinator_orchestrator_actor_traits::ActorFactory;
-use ordinator_orchestrator_actor_traits::ActorSpecific;
 use ordinator_orchestrator_actor_traits::Communication;
-use ordinator_orchestrator_actor_traits::OrchestratorNotifier;
-use ordinator_orchestrator_actor_traits::StateLink;
+pub use ordinator_orchestrator_actor_traits::StateLink;
 pub use ordinator_orchestrator_actor_traits::SystemSolutions;
 // TODO [ ] 2025-07-02 add the other `<Actor>Interface`s here
 pub use ordinator_orchestrator_actor_traits::TacticalInterface;
@@ -63,6 +61,7 @@ use ordinator_total_data_processing::excel_dumps::create_excel_dump;
 use serde::Deserialize;
 use serde::Serialize;
 use tokio::task::JoinHandle;
+use tracing::info;
 use tracing::instrument;
 
 use self::actor_registry::ActorRegistry;
@@ -75,6 +74,7 @@ pub struct Orchestrator<Ss>
     pub system_solutions: std::sync::Mutex<HashMap<Asset, Arc<ArcSwap<Ss>>>>,
     pub actor_registries: std::sync::Mutex<HashMap<Asset, ActorRegistry>>,
     pub error_channels: (Sender<anyhow::Error>, Receiver<anyhow::Error>),
+    pub state_link_bus: std::sync::Mutex<bus::Bus<StateLink>>,
     pub system_configurations: Arc<ArcSwap<SystemConfigurations>>,
     pub database_connections: DataBaseConnection,
     pub actor_notify: Option<Weak<Orchestrator<Ss>>>,
@@ -94,52 +94,8 @@ impl<Ss> Clone for NotifyOrchestrator<Ss>
 }
 
 // WARNING: This should only take immutable references to self!
-impl<Ss> OrchestratorNotifier for NotifyOrchestrator<Ss>
-where
-    Ss: SystemSolutions + Send + Sync + 'static,
-{
-    fn notify_all_agents_of_work_order_change(
-        &self,
-        work_orders: Vec<WorkOrderNumber>,
-        asset: &Asset,
-    ) -> Result<()>
-// The function should simply be a fire and forget. We should probably, just send a
-    // message to the Orchestrator.
-    {
-        // It is too late to change this at the moment. You have to do something else
-        // instead.
-
-        let actor_registries = self.0.actor_registries.lock().unwrap();
-        let actor_registry = actor_registries
-            .get(asset)
-            .context("Asset should always be there")?;
-
-        let state_link = StateLink::WorkOrders(ActorSpecific::Strategic(work_orders.clone()));
-
-        //
-        actor_registry
-            .strategic_agent_sender
-            .from_orchestrator(state_link);
-
-        let state_link = StateLink::WorkOrders(ActorSpecific::Strategic(work_orders.clone()));
-
-        actor_registry
-            .tactical_agent_sender
-            .from_orchestrator(state_link);
-
-        for comm in actor_registry.supervisor_agent_senders.values() {
-            let state_link = StateLink::WorkOrders(ActorSpecific::Strategic(work_orders.clone()));
-            comm.from_orchestrator(state_link);
-        }
-
-        for comm in actor_registry.operational_agent_senders.values() {
-            let state_link = StateLink::WorkOrders(ActorSpecific::Strategic(work_orders.clone()));
-            comm.from_orchestrator(state_link);
-        }
-
-        Ok(())
-    }
-}
+// This is not needed either. I think that is a good idea it
+// was something that confused me quite a lot.
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum OrchestratorRequest
@@ -617,6 +573,10 @@ where
             DataBaseConnection::scheduling_environment(current_time, configurations.clone())
                 .context("Could not build SchedulingEnvironment")?;
 
+        // CRUCIAL LESSON: For types that there exists multiple versions of always
+        // qualify the whole path.
+        let state_link_bus: std::sync::Mutex<bus::Bus<StateLink>> =
+            std::sync::Mutex::new(bus::Bus::new(5));
         // WARN THIS SHOULD BE CHANGED
 
         let orchestrator: Arc<Orchestrator<Ss>> = Arc::new_cyclic(|weak_self| Orchestrator {
@@ -628,9 +588,11 @@ where
             system_configurations: configurations,
             database_connections,
             error_channels,
+            state_link_bus,
             system_clock_tick_receiver,
             system_clock_time_commands_sender,
         });
+        info!(target: "stdout", "System initialized (2 of 4): orchestrator");
         Ok((orchestrator, error_task_handle, system_clock_handle))
     }
 
@@ -705,7 +667,7 @@ where
             dependencies.0.clone(),
             dependencies.1.clone(),
             dependencies.2.clone(),
-            dependencies.3.clone(),
+            self.state_link_bus.lock().unwrap().add_rx(),
             self.error_channels.0.clone(),
         )
         .with_context(|| format!("Could not construct StartegicActor {strategic_id}"))?;
@@ -718,7 +680,7 @@ where
             dependencies.0.clone(),
             dependencies.1.clone(),
             dependencies.2.clone(),
-            dependencies.3.clone(),
+            self.state_link_bus.lock().unwrap().add_rx(),
             self.error_channels.0.clone(),
         )
         .with_context(|| format!("{tactical_id} could not be constructed"))?;
@@ -735,7 +697,7 @@ where
                 dependencies.0.clone(),
                 dependencies.1.clone(),
                 dependencies.2.clone(),
-                dependencies.3.clone(),
+                self.state_link_bus.lock().unwrap().add_rx(),
                 self.error_channels.0.clone(),
             )?;
 
@@ -749,7 +711,7 @@ where
                 dependencies.0.clone(),
                 dependencies.1.clone(),
                 dependencies.2.clone(),
-                dependencies.3.clone(),
+                self.state_link_bus.lock().unwrap().add_rx(),
                 self.error_channels.0.clone(),
             )?;
 
@@ -768,6 +730,7 @@ where
             .lock()
             .unwrap()
             .insert(asset.clone(), agent_registry);
+        info!(target: "stdout", "System initialized (3 of 4): Asset {}", asset);
 
         Ok(self)
     }

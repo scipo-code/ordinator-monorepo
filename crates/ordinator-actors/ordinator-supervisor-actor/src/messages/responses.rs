@@ -1,13 +1,13 @@
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use serde::Serialize;
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct SupervisorResponseResources {}
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct SupervisorResponseScheduling {}
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct SupervisorResponseStatus
 {
     pub supervisor_resource: Vec<Id>,
@@ -15,5 +15,5 @@ pub struct SupervisorResponseStatus
     pub objective: u64,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct SupervisorResponseTime {}

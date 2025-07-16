@@ -3,6 +3,7 @@ pub mod operation;
 pub mod work_order_analytic;
 pub mod work_order_dates;
 pub mod work_order_info;
+pub mod work_orders_api;
 
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -40,6 +41,12 @@ use super::worker_environment::resources::Resources;
 use crate::Asset;
 use crate::time_environment::MaterialToPeriod;
 
+// TODO [ ]
+//
+// You should really consider making this into a struct so that
+// you can define custom behavior on it. I do not think that there
+// is a better way of defining the code here.
+pub type WorkOrderActivity = (WorkOrderNumber, ActivityNumber);
 pub type WorkOrderValue = u64;
 
 #[derive(Copy, Clone, PartialOrd, Ord, Hash, PartialEq, Eq)]
@@ -98,13 +105,13 @@ impl WorkOrdersBuilder
         }
     }
 
-    pub fn work_order_builder<F>(&mut self, f: F, work_order_number: WorkOrderNumber) -> &mut Self
+    pub fn work_order_builder<F>(mut self, work_order_number: WorkOrderNumber, f: F) -> Self
     where
-        F: FnOnce(&mut WorkOrderBuilder) -> &mut WorkOrderBuilder,
+        F: FnOnce(WorkOrderBuilder) -> WorkOrderBuilder,
     {
-        let mut work_order_builder = WorkOrder::builder(work_order_number);
+        let work_order_builder = WorkOrder::builder(work_order_number);
 
-        f(&mut work_order_builder);
+        let work_order_builder = f(work_order_builder);
 
         match &mut self.inner {
             Some(work_orders_inner) => {
@@ -200,7 +207,7 @@ impl WorkOrderBuilder
         }
     }
 
-    pub fn work_order_number(&mut self, work_order_number: WorkOrderNumber) -> &mut Self
+    pub fn work_order_number(mut self, work_order_number: WorkOrderNumber) -> Self
     {
         self.work_order_number = work_order_number;
         self
@@ -550,13 +557,6 @@ impl FromStr for WorkOrderNumber
         Ok(Self(number))
     }
 }
-
-// TODO [ ]
-//
-// You should really consider making this into a struct so that
-// you can define custom behavior on it. I do not think that there
-// is a better way of defining the code here.
-pub type WorkOrderActivity = (WorkOrderNumber, ActivityNumber);
 
 impl From<u64> for WorkOrderNumber
 {

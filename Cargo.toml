@@ -13,11 +13,12 @@ members = [
     # "crates/ordinator-imperium",
     "crates/ordinator-orchestrator",
     "crates/ordinator-orchestrator-actor-traits",
-    "crates/ordinator-scheduling-environment",
+    "crates/ordinator-scheduling-environment", "crates/ordinator-test-support",
     # TODO [ ]
     # Make `imperium` rely on `ordinator-api-server` and `ordinator-contracts`
     # "crates/ordinator-scheduling-environment-common",
     "crates/ordinator-total-data-processing",
+    "crates/ordinator-test-support",
 ]
 
 [profile.dev]
@@ -56,3 +57,4 @@ tracing-appender = "*"
 tracing-flame = "*"
 tracing-subscriber ={version = "*", features = ["std", "fmt", "env-filter", "json"]} 
 # tikv-jemallocator = "0.6"
+

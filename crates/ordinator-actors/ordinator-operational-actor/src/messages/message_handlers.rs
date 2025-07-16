@@ -2,7 +2,6 @@ use std::fmt::Debug;
 
 use anyhow::Result;
 use anyhow::bail;
-use ordinator_orchestrator_actor_traits::ActorSpecific;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SupervisorInterface;
@@ -18,22 +17,20 @@ use crate::OperationalActor;
 use crate::algorithm::operational_solution::OperationalSolution;
 // Was this actually needed? I am not really sure here I believe that
 // the best approach is to make something.
-impl<Ss> CommandHandler for OperationalActor<Ss>
+impl<Ss> CommandHandler<OperationalRequestMessage, OperationalResponseMessage>
+    for OperationalActor<Ss>
 where
     Ss: SystemSolutions<Operational = OperationalSolution> + Debug,
 {
-    type Req = OperationalRequestMessage;
-    type Res = OperationalResponseMessage;
-
     fn handle_state_link(&mut self, state_link: StateLink) -> Result<OperationalResponseMessage>
     {
         event!(
             Level::INFO,
             self.algorithm.operational_parameters =
-                self.algorithm.parameters.work_order_parameters.len()
+                self.0.algorithm.parameters.work_order_parameters.len()
         );
         match state_link {
-            StateLink::WorkOrders(ActorSpecific::Strategic(changed_work_orders)) => {
+            StateLink::WorkOrders(changed_work_orders) => {
                 // TODO:
                 event!(Level::ERROR, unhandled_work_orders = ?changed_work_orders);
                 bail!("IMPLEMENT STATELINK FOR THE OPERATIONAL AGENT");
@@ -69,10 +66,11 @@ where
                 //     )
                 // }
                 let (assign, assess, unassign): (u64, u64, u64) = self
+                    .0
                     .algorithm
                     .loaded_system_solution
                     .supervisor_actor_solutions()?
-                    .count_delegate_types(&self.actor_id);
+                    .count_delegate_types(&self.0.actor_id);
 
                 // Remember that the business types should not be the same type as the
                 // algorithm types. That is crucial to understand in all this.
@@ -80,11 +78,11 @@ where
                 // QUESTION
                 // Should the `OperationalObjectiveValue` be shareable? No I do not think so.
                 let operational_response_status = OperationalResponseStatus::new(
-                    self.actor_id.clone(),
+                    self.0.actor_id.clone(),
                     assign,
                     assess,
                     unassign,
-                    self.algorithm.solution.objective_value,
+                    self.0.algorithm.solution.objective_value,
                 );
                 Ok(OperationalResponseMessage::Status(
                     operational_response_status,

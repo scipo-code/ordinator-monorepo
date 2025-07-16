@@ -11,7 +11,7 @@ pub struct StrategicObjectiveValueResponse
     field_one: String,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct StrategicResponsePeriods
 {
     periods: Vec<Period>,
@@ -28,7 +28,7 @@ impl StrategicResponsePeriods
 // This is a low level type and it should not be exposed here
 // TODO [ ] FIX [ ]
 // Make a custom type for the StrategicResourcesApi
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub enum StrategicResponseResources
 {
     UpdatedResources(u32),
@@ -36,10 +36,10 @@ pub enum StrategicResponseResources
     Percentage(StrategicResourcesApi, StrategicResourcesApi),
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct StrategicResourcesApi {}
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct StrategicResponseScheduling
 {
     work_orders: usize,
@@ -61,7 +61,7 @@ use ordinator_scheduling_environment::Asset;
 use crate::StrategicActor;
 use crate::algorithm::strategic_solution::StrategicSolution;
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct StrategicResponseStatus
 {
     pub asset: Asset,

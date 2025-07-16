@@ -22,7 +22,6 @@ use operational_parameter::OperationalParameter;
 use operational_parameter::OperationalParameters;
 use operational_solution::Assignment;
 use operational_solution::OperationalAssignment;
-use operational_solution::OperationalFunctions;
 use operational_solution::OperationalObjectiveValue;
 use operational_solution::OperationalSolution;
 use ordinator_actor_core::algorithm::Algorithm;
@@ -37,6 +36,7 @@ use ordinator_orchestrator_actor_traits::TacticalInterface;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
 use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
+use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
@@ -45,6 +45,7 @@ use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use rand::seq::IndexedRandom;
 use tracing::Level;
+use tracing::debug;
 use tracing::event;
 
 #[derive(Debug)]
@@ -350,7 +351,7 @@ where
                 line!()
             )
         })?;
-        event!(Level::DEBUG, operational_events_len = ?operational_events.iter().filter(|val| val.operational_events.is_wrench_time()).collect::<Vec<_>>().len());
+        event!(Level::DEBUG, operational_events_len = ?operational_events.iter().filter(|val| val.operational_events.is_hands_on_tool_time()).collect::<Vec<_>>().len());
         // TODO [x]
         // How do we determine what should be done about the overlap here?
         // The first thing to determine is whether the overlap are from two different
@@ -548,8 +549,32 @@ where
                         self.parameters.availability,
                     )
                 })?;
+            let activity_relations = &self
+                .parameters
+                .work_order_activity_relations
+                .get(&work_order_activity.0)
+                .unwrap();
 
-            self.solution.try_insert(*work_order_activity, assignments);
+            // Can this ever be None?
+            let activity_index = self
+                .parameters
+                .work_order_parameters
+                .keys()
+                .filter(|d| d.0 == work_order_activity.0)
+                .map(|e| e.1)
+                .sorted()
+                .find_position(|f| *f == work_order_activity.1)
+                .ok_or(anyhow::anyhow!(
+                    "You should always be able to locate a work_order_activity".to_string()
+                ))?;
+
+            let activity_relation = match activity_index {
+                value if value.0 >= 1 => activity_relations[value.0 - 1].clone(),
+                _ => ActivityRelation::FinishStart,
+            };
+            debug!(target: "debug", work_order_activity = ?work_order_activity, assignmends = ?assignments);
+            self.solution
+                .try_insert(*work_order_activity, assignments, activity_relation);
         }
 
         let operational_events: Vec<Assignment> = self
@@ -560,7 +585,7 @@ where
             .cloned()
             .collect();
 
-        event!(Level::DEBUG, operational_events_len = ?operational_events.iter().filter(|val| val.operational_events.is_wrench_time()).collect::<Vec<_>>().len());
+        event!(Level::DEBUG, operational_events_len = ?operational_events.iter().filter(|val| val.operational_events.is_hands_on_tool_time()).collect::<Vec<_>>().len());
 
         let all_events = operational_events
             .into_iter()
@@ -587,7 +612,7 @@ where
                             &mut current_time,
                             Some(&individual_operational_assignment),
                         )?;
-                    ensure!(!operational_event.is_wrench_time());
+                    ensure!(!operational_event.is_hands_on_tool_time());
                     ensure!(operational_event.time_delta() == new_current_time - current_time);
                     // The amount of business logic that has to go into all of this is enourmous.
                     let assignment =
@@ -644,7 +669,7 @@ where
                         .with_context(|| {
                             "Could not determine the next non-productive event".to_string()
                         })?;
-                    ensure!(!operational_event.is_wrench_time());
+                    ensure!(!operational_event.is_hands_on_tool_time());
                     ensure!(operational_event.time_delta() == new_current_time - current_time);
                     let assignment =
                         Assignment::new(operational_event, current_time, new_current_time)?;
@@ -661,7 +686,7 @@ where
                 .cloned()
                 .collect();
 
-            event!(Level::DEBUG, operational_events_len = ?operational_events.iter().filter(|val| val.operational_events.is_wrench_time()).collect::<Vec<_>>().len());
+            event!(Level::DEBUG, operational_events_len = ?operational_events.iter().filter(|val| val.operational_events.is_hands_on_tool_time()).collect::<Vec<_>>().len());
 
             let all_events = operational_events
                 .into_iter()
@@ -684,7 +709,7 @@ where
             .cloned()
             .collect();
 
-        event!(Level::DEBUG, operational_events_len = ?operational_events.iter().filter(|val| val.operational_events.is_wrench_time()).collect::<Vec<_>>().len());
+        event!(Level::DEBUG, operational_events_len = ?operational_events.iter().filter(|val| val.operational_events.is_hands_on_tool_time()).collect::<Vec<_>>().len());
 
         let all_events = operational_events
             .into_iter()
@@ -716,7 +741,7 @@ where
             self.solution
                 .scheduled_work_order_activities
                 .iter()
-                .map(|won| won.0.1)
+                .map(|won| won.0)
                 .dropping(1)
                 .dropping_back(1)
                 .collect::<Vec<_>>()

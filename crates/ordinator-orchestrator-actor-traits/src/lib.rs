@@ -11,6 +11,7 @@ use anyhow::Context;
 use anyhow::Result;
 use anyhow::anyhow;
 use arc_swap::ArcSwap;
+use bus::BusReader;
 use chrono::DateTime;
 use chrono::Utc;
 use colored::Colorize;
@@ -19,7 +20,6 @@ use flume::Receiver;
 use flume::Sender;
 use marginal_fitness::MarginalFitness;
 use ordinator_configuration::SystemConfigurations;
-use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::period::Period;
@@ -29,16 +29,8 @@ use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
-
-pub trait OrchestratorNotifier: Send + Sync + 'static
-{
-    fn notify_all_agents_of_work_order_change(
-        &self,
-        work_orders: Vec<WorkOrderNumber>,
-        asset: &Asset,
-    ) -> Result<()>;
-}
 use thiserror::Error;
+
 #[derive(Error, Debug)]
 pub enum ActorError
 {
@@ -64,7 +56,7 @@ pub struct ErrorInfo
 }
 pub struct Communication<RequestMessage, Res>
 {
-    sender_to_actor: Sender<ActorMessage<RequestMessage>>,
+    sender_to_actor: Sender<RequestMessage>,
     pub receiver_from_actor: Receiver<Result<Res>>,
 }
 
@@ -78,10 +70,7 @@ pub struct Communication<RequestMessage, Res>
 // generics in the correct way. There is something to learn here.
 impl<RequestMessage, Res> Communication<RequestMessage, Res>
 {
-    pub fn new(
-        sender: Sender<ActorMessage<RequestMessage>>,
-        receiver: Receiver<Result<Res>>,
-    ) -> Self
+    pub fn new(sender: Sender<RequestMessage>, receiver: Receiver<Result<Res>>) -> Self
     {
         Self {
             sender_to_actor: sender,
@@ -94,19 +83,12 @@ impl<RequestMessage, Res> Communication<RequestMessage, Res>
     pub fn from_agent(&self, message: RequestMessage) -> Result<()>
     {
         // What is it that you need to do here? You should
-        let message = ActorMessage::Actor(message);
         self.sender_to_actor.send(message).map_err(|e| anyhow!(e.to_string() )).context("The Actor has stopped running. If the reason for this is not obvious, it means that the error handling should be extended.")
     }
 
     pub fn from_actor(&self) -> Res
     {
         self.receiver_from_actor.recv().unwrap().unwrap()
-    }
-
-    pub fn from_orchestrator(&self, state_link: StateLink)
-    {
-        let message = ActorMessage::State(state_link);
-        self.sender_to_actor.send(message).expect("The Actor has stopped running. If the reason for this is not obvious, it means that the error handling should be extended.");
     }
 }
 
@@ -365,26 +347,14 @@ pub trait Solution: Sized
 // through the `MassageHandler` channel.
 /// This trait should be implemented by every Actor so that it will be able to
 /// receive messages from the user and the [`Orchestrator`].  
-pub trait CommandHandler
+///
+/// Funny
+/// TODO [ ] You need to experience so much pain for this to work correctly
+pub trait CommandHandler<Req, Res>
 {
-    type Req;
-    type Res;
+    fn handle_state_link(&mut self, state_link: StateLink) -> Result<Res>;
 
-    // This has the wrong kind of name. I do not see what else I could do here.
-    // Maybe I should strive
-    // Here it wraps the `Req` in the `ActorMessage` I do not think that this
-    // is the best way of doing it
-    fn handle(&mut self, actor_message: ActorMessage<Self::Req>) -> Result<Self::Res>
-    {
-        match actor_message {
-            ActorMessage::State(state_link) => self.handle_state_link(state_link),
-            ActorMessage::Actor(actor_request) => self.handle_request_message(actor_request),
-        }
-    }
-
-    fn handle_state_link(&mut self, state_link: StateLink) -> Result<Self::Res>;
-
-    fn handle_request_message(&mut self, request_message: Self::Req) -> Result<Self::Res>;
+    fn handle_request_message(&mut self, request_message: Req) -> Result<Res>;
 }
 
 // There should only be a single interface here there should be a
@@ -523,21 +493,6 @@ where
     fn scheduled_activities_for_operational_actor(&self) -> HashSet<WorkOrderActivity>;
 }
 
-// You should make an API on the `Communication` struct. What other approach
-// should I take.
-#[derive(Clone)]
-pub enum ActorMessage<ActorRequest>
-{
-    State(StateLink),
-    Actor(ActorRequest),
-    // Yes so options should be included here as part of what needs to be created for
-    // this to work. I believe that the best approach here will be to make something
-    // that
-    // FIX
-    // Add Options here so that every agent can have its options updated at run time.
-    // Options(),
-}
-
 /// The StateLink is a generic type that each type of Agent will implement.
 /// The generics mean:
 ///     S: Strategic
@@ -553,11 +508,17 @@ pub enum ActorMessage<ActorRequest>
 #[derive(Debug, Clone)]
 pub enum StateLink
 {
-    WorkOrders(ActorSpecific),
+    WorkOrders(Vec<WorkOrderNumber>),
     WorkerEnvironment,
     TimeEnvironment,
 }
 
+// You can now remove it. The actors should never communicate state like
+// this! This is a bad way of... Maybe not... Knowing the `Actor` that
+// caused this message could be valuable... But I do not think so.
+//
+// This message was made when the idea was that the `Actor`s themselves
+// should create this. You are `Simplifying`!
 #[derive(Debug, Clone)]
 pub enum ActorSpecific
 {
@@ -574,8 +535,8 @@ where
         id: Id,
         scheduling_environment: Arc<Mutex<SchedulingEnvironment>>,
         system_solution_arc_swap: Arc<ArcSwap<Ss>>,
-        notify_orchestrator: Arc<dyn OrchestratorNotifier>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,
+        stake_link_bus: BusReader<StateLink>,
         error_channel: Sender<anyhow::Error>,
     ) -> Result<Self::Communication>;
 }

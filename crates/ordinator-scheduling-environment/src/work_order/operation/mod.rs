@@ -144,15 +144,18 @@ impl OperationBuilder
             activity: self.operations_number,
             resource: self.resource,
             unloading_point: self.unloading_point.unwrap_or_default(),
+            // Here you have to do something different. I think that the
+            // best approach here is to make a system that will. I think
+            // that you should make a builders.
             operation_info: self
                 .operation_info
-                .expect("This value should always be part of the operation"),
+                .expect("operation_info should always be part of the operation"),
             operation_analytic: self
                 .operation_analytic
-                .expect("This value should always be part of the operation"),
+                .expect("operation_analytic shoud always be part of the operation"),
             operation_dates: self
                 .operation_dates
-                .expect("This value should always be part of the operation"),
+                .expect("operation_dates should always be part of the operation"),
         }
     }
 }

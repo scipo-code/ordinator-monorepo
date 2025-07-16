@@ -14,6 +14,7 @@ use anyhow::Result;
 use arc_swap::ArcSwap;
 #[allow(unused_imports)]
 use assert_functions::SupervisorAssertions;
+use bus::BusReader;
 use flume::Sender;
 use messages::SupervisorRequestMessage;
 use messages::SupervisorResponseMessage;
@@ -24,7 +25,7 @@ use ordinator_configuration::SystemConfigurations;
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
-use ordinator_orchestrator_actor_traits::OrchestratorNotifier;
+use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
@@ -34,11 +35,14 @@ pub struct SupervisorActor<Ss: Debug>(
 )
 where
     Ss: SystemSolutions<Supervisor = SupervisorSolution>,
-    Self: CommandHandler<Req = SupervisorRequestMessage, Res = SupervisorResponseMessage>;
+    Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>:
+        CommandHandler<SupervisorRequestMessage, SupervisorResponseMessage>;
 
 impl<Ss> Deref for SupervisorActor<Ss>
 where
     Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
+    Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>:
+        CommandHandler<SupervisorRequestMessage, SupervisorResponseMessage>,
 {
     type Target =
         Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>;
@@ -52,6 +56,8 @@ where
 impl<Ss> DerefMut for SupervisorActor<Ss>
 where
     Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
+    Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>:
+        CommandHandler<SupervisorRequestMessage, SupervisorResponseMessage>,
 {
     fn deref_mut(&mut self) -> &mut Self::Target
     {
@@ -73,6 +79,8 @@ where
         + Send
         + Sync
         + From<Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>>,
+    Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>:
+        CommandHandler<SupervisorRequestMessage, SupervisorResponseMessage>,
 {
     type Communication = Communication<SupervisorRequestMessage, SupervisorResponseMessage>;
 
@@ -80,8 +88,8 @@ where
         id: Id,
         scheduling_environment_guard: Arc<Mutex<SchedulingEnvironment>>,
         shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
-        notify_orchestrator: Arc<dyn OrchestratorNotifier>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,
+        state_link_bus: BusReader<StateLink>,
         error_channel: Sender<anyhow::Error>,
     ) -> Result<Self::Communication>
     where
@@ -98,9 +106,8 @@ where
                 )?
                 .system_solution_arc_swap(shared_solution_arc_swap)
         })?
-        .communication(error_channel)
+        .communication(error_channel, state_link_bus)
         .configurations(system_configurations)
-        .notify_orchestrator(notify_orchestrator)
         .build()
     }
 }

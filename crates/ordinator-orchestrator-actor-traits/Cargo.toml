@@ -13,4 +13,5 @@ chrono.workspace = true
 colored.workspace = true
 flume = {workspace = true}
 thiserror.workspace = true
+bus = "2.4.1"
 

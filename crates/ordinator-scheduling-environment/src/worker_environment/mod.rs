@@ -4,6 +4,7 @@ pub mod resources;
 pub mod worker;
 
 use std::collections::HashMap;
+use std::path::PathBuf;
 
 use anyhow::Context;
 use anyhow::Result;
@@ -67,8 +68,10 @@ impl WorkerEnvironmentBuilder
     // Ideally we need to provide a resource file for each of the different.
     // assets. That means that this should be callable many times over for
     // this to work.
-    pub fn actor_environment(mut self, asset: Asset) -> Result<Self>
+    pub fn actor_environment(mut self, asset: Asset, path_to_data: PathBuf) -> Result<Self>
     {
+        println!("{}", std::env::current_dir()?.display());
+
         // This should then be changed into something different for this to
         // work. You need to put it into the Asset and the ... I think that
         // it is okay to simply hard code the information for now. Hmm...
@@ -85,6 +88,7 @@ impl WorkerEnvironmentBuilder
         // DATE 2025-05-01
         // let list_of_actor_specification = vec![
         //     (
+        //
         //         Asset::DF,
         //         "./configuration/actor_specification/actor_specification_df.toml",
         //     ),
@@ -109,15 +113,14 @@ impl WorkerEnvironmentBuilder
 
         // You should put the data into the toml? Yes I think that is the best approach
         // here.
-        let asset_string = asset.to_string().to_lowercase();
 
-        let path = format!(
-            "./temp_scheduling_environment_database/actor_specifications/actor_specification_{asset_string}.toml",
-        );
-
-        let contents = std::fs::read_to_string(&path).with_context(|| {
-            format!("Could not read string for ActorSpecification\nPath: {path}")
+        let contents = std::fs::read_to_string(&path_to_data).with_context(|| {
+            format!(
+                "Could not read string for ActorSpecification\nPath: {}",
+                path_to_data.display()
+            )
         })?;
+
         let actor_specifications: ActorSpecifications =
             toml::from_str(&contents).with_context(|| {
                 format!(

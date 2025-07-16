@@ -14,6 +14,7 @@ use algorithm::strategic_parameters::StrategicParameters;
 use algorithm::strategic_solution::StrategicSolution;
 use anyhow::Result;
 use arc_swap::ArcSwap;
+use bus::BusReader;
 use flume::Sender;
 use messages::StrategicRequestMessage;
 use messages::StrategicResponseMessage;
@@ -24,7 +25,7 @@ use ordinator_configuration::SystemConfigurations;
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
-use ordinator_orchestrator_actor_traits::OrchestratorNotifier;
+use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
@@ -36,11 +37,14 @@ pub struct StrategicActor<Ss: Debug>(
 )
 where
     Ss: SystemSolutions<Strategic = StrategicSolution>,
-    Self: CommandHandler<Req = StrategicRequestMessage, Res = StrategicResponseMessage>;
+    Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>:
+        CommandHandler<Req = StrategicRequestMessage, Res = StrategicResponseMessage>;
 
 impl<Ss> Deref for StrategicActor<Ss>
 where
     Ss: SystemSolutions<Strategic = StrategicSolution> + Debug,
+    Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>:
+        CommandHandler<Req = StrategicRequestMessage, Res = StrategicResponseMessage>,
 {
     type Target = Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>;
 
@@ -53,6 +57,8 @@ where
 impl<Ss> DerefMut for StrategicActor<Ss>
 where
     Ss: SystemSolutions<Strategic = StrategicSolution> + Debug,
+    Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>:
+        CommandHandler<Req = StrategicRequestMessage, Res = StrategicResponseMessage>,
 {
     fn deref_mut(&mut self) -> &mut Self::Target
     {
@@ -64,6 +70,8 @@ pub struct StrategicApi {}
 impl<Ss> ActorFactory<Ss> for StrategicApi
 where
     Ss: SystemSolutions<Strategic = StrategicSolution> + Send + Sync + 'static + Debug,
+    Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>:
+        CommandHandler<Req = StrategicRequestMessage, Res = StrategicResponseMessage>,
 {
     type Communication = Communication<StrategicRequestMessage, StrategicResponseMessage>;
 
@@ -71,8 +79,8 @@ where
         id: Id,
         scheduling_environment_guard: Arc<Mutex<SchedulingEnvironment>>,
         shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
-        notify_orchestrator: Arc<dyn OrchestratorNotifier>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,
+        state_link_bus: BusReader<StateLink>,
         error_channel: Sender<anyhow::Error>,
     ) -> Result<<Self as ActorFactory<Ss>>::Communication>
     where
@@ -99,9 +107,8 @@ where
                 .parameters_and_solution(&scheduling_environment_guard.lock().unwrap())?
                 .system_solution_arc_swap(shared_solution_arc_swap)
         })?
-        .communication(error_channel)
+        .communication(error_channel, state_link_bus)
         .configurations(system_configurations)
-        .notify_orchestrator(notify_orchestrator)
         .build()
     }
 }

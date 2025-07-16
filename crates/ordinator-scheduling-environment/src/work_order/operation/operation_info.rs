@@ -45,9 +45,11 @@ impl OperationInfoBuilder
             number: self.number.unwrap_or(1),
             work_remaining: self
                 .work_remaining
-                .expect("`Work` values cannot be missing"),
-            work_actual: self.work_actual.expect("`Work` values cannot be missing"),
-            work: self.work.expect("`Work` values cannot be missing"),
+                .expect("`Work` (work_remaining) values cannot be missing"),
+            work_actual: self
+                .work_actual
+                .expect("`Work` (work_actual) values cannot be missing"),
+            work: self.work.expect("`Work` (work) values cannot be missing"),
         }
     }
 

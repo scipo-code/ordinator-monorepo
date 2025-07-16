@@ -33,7 +33,7 @@ pub enum SupervisorType
 // You cannot have this one here. You have to do something else instead. I think
 // that the best approach is to make a `From` implementation.
 //
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub enum SupervisorResponseMessage
 {
     StateLink,

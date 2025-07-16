@@ -1,7 +1,9 @@
 use std::fmt::Debug;
+use std::panic::Location;
 use std::sync::Arc;
 use std::sync::MutexGuard;
 
+use anyhow::Context;
 use anyhow::Result;
 use arc_swap::ArcSwap;
 use arc_swap::Guard;
@@ -176,7 +178,12 @@ where
         // reason that you. Ahh CRUCIAL INSIGHT... The S is the actual concrete type
         // here and `Solution` was simply the trait... This is a crucial insight here.
         // There is so many
-        self.solution = Some(S::new(&parameters)?);
+        self.solution = Some(S::new(&parameters).with_context(|| {
+            format!(
+                "Could not build solution from parameters\nLocation: {}",
+                Location::caller()
+            )
+        })?);
 
         self.parameters = Some(parameters);
 
@@ -185,12 +192,12 @@ where
 
     pub fn system_solution_arc_swap(
         mut self,
-        shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
+        system_solution_arc_swap: Arc<ArcSwap<Ss>>,
     ) -> Result<Self>
     where
         Ss: SystemSolutions,
     {
-        self.arc_swap_shared_solution = Some(shared_solution_arc_swap);
+        self.arc_swap_shared_solution = Some(system_solution_arc_swap);
         // CRUCIAL INSIGHT
         // The individual solutions should specify how to swap the
         // solution in the [`SystemSolution`]. It is not the task

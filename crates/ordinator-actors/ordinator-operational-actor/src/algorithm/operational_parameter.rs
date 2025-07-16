@@ -22,15 +22,35 @@ use colored::Colorize;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
+use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 
+// Again there are here multiple ways of doing things. You should be careful
+// I think that the best approach is to put the... You could reformulate
+// the [`SchedulingEnvironment`] and then update the precedence relation
+// directly from the source. is this a good idea? The other approach is
+// to have the code have an additional field here.
+//
+// You have a dilemma here, in the the choice of turning the
+// SchedulingEnvironment into a highly concurrent data structure will allow you
+// to remove an insane amount of state duplication. I am not sure that this is
+// something that you want. It is?
+//
+// You have to make a SWAT analysis. From your current view point it seems like
+// a good idea. but is it? I am not really sure. You are doing everything right
+// here.
+//
+// I do not think that you should make a highly concurrent SchedulingEnvironment
+// yet
 pub struct OperationalParameters
 {
     pub work_order_parameters: HashMap<WorkOrderActivity, OperationalParameter>,
+    pub work_order_activity_relations: HashMap<WorkOrderNumber, Vec<ActivityRelation>>,
     pub availability: Availability,
     pub off_shift_interval: TimeInterval,
     pub break_interval: TimeInterval,
@@ -115,6 +135,7 @@ impl Parameters for OperationalParameters
     ) -> Result<Self>
     {
         let mut work_order_parameters = HashMap::default();
+        let mut work_order_activity_relations = HashMap::default();
 
         for (work_order_number, work_order) in &scheduling_environment.work_orders.inner {
             for (activity_number, operation) in &work_order.operations.0 {
@@ -137,6 +158,15 @@ impl Parameters for OperationalParameters
 
                 work_order_parameters.insert(work_order_activity, operational_parameter);
             }
+            let activity_relations = scheduling_environment
+                .work_orders
+                .inner
+                .get(work_order_number)
+                .context("Could not find the work_order_number")?
+                .operations
+                .relations();
+
+            work_order_activity_relations.insert(*work_order_number, activity_relations);
         }
 
         let operational_configuration = &scheduling_environment
@@ -147,12 +177,13 @@ impl Parameters for OperationalParameters
             .operational
             .iter()
             .find(|oca| asset == &oca.id)
-            .with_context(|| format!("{:#?} did not exist", asset.0))?;
+            .with_context(|| format!("{:#?} did not exist.", asset.0))?;
 
         // What you have been doing is really silly here. You should work on improving
         // this as much as possible.
         Ok(Self {
             work_order_parameters,
+            work_order_activity_relations,
             availability: operational_configuration
                 .operational_configuration
                 .availability
