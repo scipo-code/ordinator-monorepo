@@ -5,6 +5,7 @@ use std::fmt::Display;
 use anyhow::Context;
 use anyhow::Result;
 use anyhow::bail;
+use colored::Colorize;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
@@ -51,7 +52,7 @@ impl TacticalObjectiveValue
     }
 }
 
-#[derive(PartialEq, Eq, Debug, Clone)]
+#[derive(PartialEq, Eq, Clone)]
 pub struct TacticalSolution
 {
     pub(crate) objective_value: TacticalObjectiveValue,
@@ -59,6 +60,31 @@ pub struct TacticalSolution
     pub(crate) tactical_loadings: TacticalResources,
 }
 
+impl std::fmt::Debug for TacticalSolution
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        if f.alternate() {
+            let tactical_work_orders = self.tactical_work_orders.0.len();
+
+            write!(
+                f,
+                "{}",
+                format!(
+                    "{:#?}\nnumber of tactical work orders: {}\n{:#?}",
+                    self.objective_value, tactical_work_orders, self.tactical_loadings,
+                )
+                .bright_blue()
+            )
+        } else {
+            f.debug_struct("TacticalSolution")
+                .field("objective_value", &self.objective_value)
+                .field("tactical_work_orders", &self.tactical_work_orders)
+                .field("tactical_loadings", &self.tactical_loadings)
+                .finish()
+        }
+    }
+}
 // This should be put into the `algorithm.rs` file
 impl Solution for TacticalSolution
 {

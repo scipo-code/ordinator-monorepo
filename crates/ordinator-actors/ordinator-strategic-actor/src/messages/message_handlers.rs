@@ -5,6 +5,7 @@ use anyhow::Context;
 use anyhow::Result;
 use anyhow::bail;
 use colored::Colorize;
+use ordinator_actor_core::Actor;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
@@ -14,10 +15,9 @@ use tracing::event;
 
 use super::StrategicRequestMessage;
 use super::StrategicResponseMessage;
-use super::StrategicResponseStatus;
 use super::StrategicSchedulingEnvironmentCommands;
 use super::StrategicStatusMessage;
-use crate::StrategicActor;
+use crate::algorithm::StrategicAlgorithm;
 use crate::algorithm::strategic_parameters::WorkOrderParameter;
 use crate::algorithm::strategic_resources::StrategicResources;
 use crate::algorithm::strategic_solution::StrategicSolution;
@@ -34,37 +34,42 @@ use crate::messages::StrategicResponseScheduling;
 //
 // Okay you have to make this work... You have some decisions to make
 // the issue here is that the OrphanRule means that I have to create
-// either a new type or a new trait. The issue currently is that you 
+// either a new type or a new trait. The issue currently is that you
 // have a blanket implementation for the LNS, which is crucial. The
-// blanket implementation handles messages aswell. This means that 
+// blanket implementation handles messages aswell. This means that
 // it will be difficult to make the code work. You discovered something
-// crucial. You made a blanket implementation on the inner type while 
+// crucial. You made a blanket implementation on the inner type while
 // in the Actors themselves you implemened the actual functionality.
 // This means that you have found a huge bug in the system. What should
-// you do now? I think that the best approach is to make the system. 
-// Work 
+// you do now? I think that the best approach is to make the system.
+// Work
 //
 // You have to  f
-impl<Ss> CommandHandler<StrategicRequestMessage, StrategicResponseMessage> for StrategicActor<Ss>
+impl<Ss> CommandHandler<StrategicRequestMessage, StrategicResponseMessage>
+    for Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>
 where
     Ss: SystemSolutions<Strategic = StrategicSolution> + Debug,
 {
-
-    fn handle_request_message(&mut self, strategic_request_message: StrategicRequestMessage)
-    -> Result<StrategicResponseMessage>
+    fn handle_request_message(
+        &mut self,
+        strategic_request_message: StrategicRequestMessage,
+    ) -> Result<StrategicResponseMessage>
     {
         let strategic_response = match strategic_request_message {
             ordinator_actor_core::RequestMessage::Status(strategic_status_message) => {
                 match strategic_status_message {
                     StrategicStatusMessage::General => {
-                        // You should not provide a message of this type with the
-                        // CRUCIAL INSIGHT
-                        // You should always strive to make the code run with the correct,
-                        let response = StrategicResponseStatus::from(&mut *self);
+                        // // You should not provide a message of this type with the
+                        // // CRUCIAL INSIGHT
+                        // // You should always strive to make the code run with the correct,
+                        // let response = StrategicResponseStatus::from(&mut *self);
 
-                        let strategic_response_message = StrategicResponseMessage::Status(response);
+                        // let strategic_response_message =
+                        //     StrategicResponseMessage::Success(response);
 
-                        Ok(strategic_response_message)
+                        Err(anyhow::anyhow!(
+                            "Implement this. And please, do it correctly and thoughtfully the first time"
+                        ))
                     }
                     // This could be created by the `Orchestrator` instead
                     StrategicStatusMessage::Period(period) => {
@@ -167,7 +172,7 @@ where
                 }
             }
             ordinator_actor_core::RequestMessage::Scheduling(scheduling_message) => {
-                let scheduling_output: StrategicResponseScheduling = self.0
+                let scheduling_output: StrategicResponseScheduling = self
                     .algorithm
                     .update_scheduling_state(scheduling_message)
                     .with_context(|| {
@@ -181,22 +186,22 @@ where
                         )
                     })?;
 
-                self.0.algorithm.calculate_objective_value()?;
-                event!(Level::INFO, strategic_objective_value = ?self.0.algorithm.solution.objective_value);
+                self.algorithm.calculate_objective_value()?;
+                event!(Level::INFO, strategic_objective_value = ?self.algorithm.solution.objective_value);
                 Ok(StrategicResponseMessage::Scheduling(scheduling_output))
             }
             ordinator_actor_core::RequestMessage::Resource(resources_message) => {
-                let resources_output = self.0.algorithm.update_resources_state(resources_message);
+                let resources_output = self.algorithm.update_resources_state(resources_message);
 
-                self.0.algorithm.calculate_objective_value()?;
-                event!(Level::INFO, strategic_objective_value = ?self.0.algorithm.solution.objective_value);
+                self.algorithm.calculate_objective_value()?;
+                event!(Level::INFO, strategic_objective_value = ?self.algorithm.solution.objective_value);
                 Ok(StrategicResponseMessage::Resources(
                     resources_output.unwrap(),
                 ))
             }
             ordinator_actor_core::RequestMessage::Time(_periods_message) => {
                 // let mut scheduling_environment_guard =
-                // self.0.scheduling_environment.lock().unwrap();
+                // self.scheduling_environment.lock().unwrap();
 
                 // let periods = &mut scheduling_environment_guard
                 //     .time_environment
@@ -213,7 +218,7 @@ where
                 // }
                 // // It should not happen like this. I think that the periods should be
                 // // created through the
-                // self.0.algorithm.parameters.strategic_periods = periods.to_vec();
+                // self.algorithm.parameters.strategic_periods = periods.to_vec();
                 // let strategic_response_periods =
                 // StrategicResponsePeriods::new(periods.clone());
                 // Ok(StrategicResponseMessage::Periods(
@@ -236,7 +241,7 @@ where
                     _strategic_user_status_codes,
                 ) => {
                     // let scheduling_environment_lock =
-                    //     &mut self.0.scheduling_environment.lock().unwrap();
+                    //     &mut self.scheduling_environment.lock().unwrap();
 
                     // for work_order_number in &strategic_user_status_codes.work_order_numbers {
                     //     let work_order = scheduling_environment_lock
@@ -247,7 +252,7 @@ where
                     //             format!(
                     //                 "{:?} is not found for {:?}",
                     //                 work_order_number,
-                    //                 self.0.actor_id.asset()
+                    //                 self.actor_id.asset()
                     //             )
                     //         })?;
 
@@ -281,7 +286,7 @@ where
                     // doing the project.
 
                     // QUESTION
-                    // Should these message handlers mutate self.0? No I do
+                    // Should these message handlers mutate self? No I do
                     // not think so. What should
                     // happen then instead?
                     // This should happen in a different message.
@@ -296,7 +301,7 @@ where
                     // allowed to communicate together.
                     //
                     //
-                    // This means that writing `self.0.algorithm.<field or
+                    // This means that writing `self.algorithm.<field or
                     // method>` is a complete no go.
                     // I do not see another way around it. You have to
                     // *encapsulate* the `Algorithm`
@@ -316,10 +321,10 @@ where
                     // I think that this is the best way of doing it.
                     //
                     //     let last_period =
-                    //         self.0.algorithm.parameters.strategic_periods.
+                    //         self.algorithm.parameters.strategic_periods.
                     // last().cloned();
 
-                    //     let unscheduled_period = self.0
+                    //     let unscheduled_period = self
                     //         .algorithm
                     //         .solution
                     //         .strategic_scheduled_work_orders
@@ -331,7 +336,7 @@ where
                     // between ScheduleIteration loops",
                     //         );
 
-                    //     let work_load = self.0
+                    //     let work_load = self
                     //         .algorithm
                     //         .parameters
                     //         .strategic_work_order_parameters
@@ -340,7 +345,7 @@ where
                     //         .work_load
                     //         .clone();
 
-                    //     let unscheduled_resources = self.0
+                    //     let unscheduled_resources = self
                     //         .algorithm
                     //         .determine_best_permutation(
                     //             work_load.clone(),
@@ -359,11 +364,11 @@ where
                     //         .expect("It should always be possible to
                     // release resources");
 
-                    //     self.0.algorithm
+                    //     self.algorithm
                     //         .update_loadings(unscheduled_resources,
                     // LoadOperation::Sub);
 
-                    //     let scheduled_resources = self.0
+                    //     let scheduled_resources = self
                     //         .algorithm
                     //         .determine_best_permutation(
                     //             work_load,
@@ -382,7 +387,7 @@ where
                     //         .expect("It should always be possible to
                     // release resources");
 
-                    //     self.0.algorithm
+                    //     self.algorithm
                     //         .update_loadings(scheduled_resources,
                     // LoadOperation::Add);
                     // FIX
@@ -391,9 +396,9 @@ where
                     // Signal Orchestrator that the it should tell all actor to update work orders
                     // Well this is not needed anymore either. As the Actors are not responsible
                     // for this anymore. You should keep going!
-                    // let asset = self.0.actor_id.asset().clone();
+                    // let asset = self.actor_id.asset().clone();
 
-                    // self.0.notify_orchestrator
+                    // self.notify_orchestrator
                     //     .notify_all_agents_of_work_order_change(
                     //         strategic_user_status_codes.work_order_numbers,
                     //         &asset,
@@ -405,17 +410,17 @@ where
             },
             ordinator_actor_core::RequestMessage::Update => todo!(),
         };
-        self.0.algorithm.calculate_objective_value()?;
+        self.algorithm.calculate_objective_value()?;
 
         strategic_response
     }
 
-    fn handle_state_link(&mut self.0, msg: StateLink) -> Result<StrategicResponseMessage>
+    fn handle_state_link(&mut self, msg: StateLink) -> Result<StrategicResponseMessage>
     {
         match msg {
             StateLink::WorkOrders(changed_work_orders) => {
                 for work_order_number in changed_work_orders {
-                    let scheduling_environment_guard = self.0.scheduling_environment.lock().unwrap();
+                    let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
                     let work_order =
                         scheduling_environment_guard
                             .work_orders
@@ -429,7 +434,7 @@ where
                     let actor_specification = scheduling_environment_guard
                         .worker_environment
                         .actor_specification
-                        .get(self.0.actor_id.asset())
+                        .get(self.actor_id.asset())
                         .expect("Missing Asset for ActorSpecification");
                     let work_order_configurations = &actor_specification.work_order_configurations;
                     let material_to_period = &actor_specification.material_to_period;
@@ -444,7 +449,7 @@ where
                         .build();
 
                     drop(scheduling_environment_guard);
-                    self.0.algorithm
+                    self.algorithm
                         .parameters
                         .strategic_work_order_parameters
                         .insert(work_order_number, strategic_parameter);
@@ -453,12 +458,12 @@ where
                 Ok(StrategicResponseMessage::StateLink)
             }
             StateLink::WorkerEnvironment => {
-                let scheduling_environment_guard = self.0.scheduling_environment.lock().unwrap();
+                let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
                 let strategic_resources =
-                    StrategicResources::from((&scheduling_environment_guard, &self.0.actor_id));
+                    StrategicResources::from((&scheduling_environment_guard, &self.actor_id));
                 drop(scheduling_environment_guard);
 
-                self.0.algorithm
+                self.algorithm
                     .parameters
                     .strategic_capacity
                     .update_resource_capacities(strategic_resources)

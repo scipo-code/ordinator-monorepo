@@ -12,6 +12,8 @@ use tracing::event;
 
 use crate::algorithm::SupervisorAlgorithm;
 use crate::algorithm::supervisor_solution::SupervisorSolution;
+use crate::messages::SupervisorRequestMessage;
+use crate::messages::SupervisorResponseMessage;
 
 #[allow(dead_code)]
 pub trait SupervisorAssertions
@@ -24,11 +26,11 @@ pub trait SupervisorAssertions
     ) -> Result<()>;
 }
 
-impl<MessageRequest, MessageResponse, Ss> SupervisorAssertions
-    for Actor<MessageRequest, MessageResponse, SupervisorAlgorithm<Ss>>
+impl<Ss> SupervisorAssertions
+    for Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>
 where
     Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
-    MessageResponse: Debug,
+    SupervisorResponseMessage: Debug,
 {
     fn test_symmetric_difference_between_tactical_operations_and_operational_state_machine(
         &self,

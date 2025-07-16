@@ -36,6 +36,7 @@ pub enum OperationalResponseMessage
     Scheduling(OperationalSchedulingResponse),
     Resource(OperationalResourceResponse),
     Time(OperationalTimeResponse),
+    Success,
 }
 
 #[derive(Serialize)]

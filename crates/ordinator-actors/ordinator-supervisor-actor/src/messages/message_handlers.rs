@@ -4,6 +4,7 @@ use std::fmt::Debug;
 use anyhow::Context;
 use anyhow::Result;
 use anyhow::bail;
+use ordinator_actor_core::Actor;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
@@ -13,14 +14,15 @@ use tracing::event;
 
 use super::SupervisorRequestMessage;
 use super::SupervisorResponseMessage;
-use crate::SupervisorActor;
+use crate::algorithm::SupervisorAlgorithm;
 use crate::algorithm::supervisor_parameters::SupervisorParameters;
 use crate::algorithm::supervisor_solution::SupervisorSolution;
 use crate::messages::responses::SupervisorResponseScheduling;
 use crate::messages::responses::SupervisorResponseStatus;
 
 // Should you implement on the new ty
-impl<Ss> CommandHandler<SupervisorRequestMessage, SupervisorResponseMessage> for SupervisorActor<Ss>
+impl<Ss> CommandHandler<SupervisorRequestMessage, SupervisorResponseMessage>
+    for Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>
 where
     Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
 {
@@ -33,8 +35,7 @@ where
                 // couple of issues here relating to how we interact
                 // with the algorithm. I
                 let work_orders = {
-                    let scheduling_environment_guard =
-                        self.0.scheduling_environment.lock().unwrap();
+                    let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 
                     scheduling_environment_guard.work_orders.inner.clone()
                 };
@@ -55,8 +56,7 @@ where
                     // I can sense that we should instead think about the data flow in
                     // the program. That probably has a higher chance of success. Yes.
                     for (activity_number, operation) in &work_order.operations.0 {
-                        self.0
-                            .algorithm
+                        self.algorithm
                             .parameters
                             .create_and_insert_supervisor_parameter(
                                 operation,
@@ -67,12 +67,12 @@ where
                 Ok(SupervisorResponseMessage::StateLink)
             }
             StateLink::WorkerEnvironment => {
-                let scheduling_environment_guard = self.0.scheduling_environment.lock().unwrap();
+                let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 
                 let operational_agents = scheduling_environment_guard
                     .worker_environment
                     .actor_specification
-                    .get(self.0.actor_id.asset())
+                    .get(self.actor_id.asset())
                     .unwrap()
                     .operational
                     .iter()
@@ -82,7 +82,6 @@ where
                 event!(
                     Level::ERROR,
                     does_state_ids_and_addr_ids_match = self
-                        .0
                         .algorithm
                         .loaded_system_solution
                         .all_operational()
@@ -111,7 +110,7 @@ where
             SupervisorRequestMessage::Update => {
                 bail!(
                     "IMPLEMENT update logic for Supervisor for Asset: {:?}",
-                    self.0.actor_id.asset()
+                    self.actor_id.asset()
                 );
             }
             SupervisorRequestMessage::Status(supervisor_status_message) => {
@@ -121,9 +120,9 @@ where
                     supervisor_status_message
                 );
                 let supervisor_status = SupervisorResponseStatus {
-                    supervisor_resource: self.0.algorithm.parameters.operational_ids.clone(),
-                    delegated_work_order_activities: self.0.algorithm.solution.count_unique_woa(),
-                    objective: self.0.algorithm.solution.objective_value,
+                    supervisor_resource: self.algorithm.parameters.operational_ids.clone(),
+                    delegated_work_order_activities: self.algorithm.solution.count_unique_woa(),
+                    objective: self.algorithm.solution.objective_value,
                 };
                 event!(Level::WARN, "after creation of the supervisor_status");
 

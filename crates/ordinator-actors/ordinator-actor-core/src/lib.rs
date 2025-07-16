@@ -131,7 +131,9 @@ where
                     Ok(_e) => {
                         event!(target: "business_event", Level::INFO, "{}", format!("Actor {} handled a state_link_message\nActorResponse {_e:?}",self.actor_id));
                     }
-                    Err(_) => todo!(),
+                    Err(e) => self.error_channel.send(e).expect(
+                        "If this happens no amount of error handling will save the program",
+                    ),
                 }
             }
 
@@ -203,9 +205,6 @@ where
 // Is what you are getting from this worth it? I do not really
 // think so. You will have to make a new function in the
 // other
-/// There are many thing
-/// This should simply be removed!
-
 pub struct ActorBuilder<ActorRequest, ActorResponse, Algorithm>
 where
     Algorithm: ActorBasedLargeNeighborhoodSearch,

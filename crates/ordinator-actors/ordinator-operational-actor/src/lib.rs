@@ -37,13 +37,13 @@ pub struct OperationalActor<Ss: Debug>(
 where
     Ss: SystemSolutions<Operational = OperationalSolution>,
     Actor<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>:
-        CommandHandler<Req = OperationalRequestMessage, Res = OperationalResponseMessage>;
+        CommandHandler<OperationalRequestMessage, OperationalResponseMessage>;
 
 impl<Ss> Deref for OperationalActor<Ss>
 where
     Ss: SystemSolutions<Operational = OperationalSolution> + Debug,
     Actor<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>:
-        CommandHandler<Req = OperationalRequestMessage, Res = OperationalResponseMessage>,
+        CommandHandler<OperationalRequestMessage, OperationalResponseMessage>,
 {
     type Target =
         Actor<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>;
@@ -58,7 +58,7 @@ impl<Ss: Debug> DerefMut for OperationalActor<Ss>
 where
     Ss: SystemSolutions<Operational = OperationalSolution>,
     Actor<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>:
-        CommandHandler<Req = OperationalRequestMessage, Res = OperationalResponseMessage>,
+        CommandHandler<OperationalRequestMessage, OperationalResponseMessage>,
 {
     fn deref_mut(&mut self) -> &mut Self::Target
     {
@@ -72,7 +72,7 @@ impl<Ss> ActorFactory<Ss> for OperationalApi
 where
     Ss: SystemSolutions<Operational = OperationalSolution> + Send + Sync + 'static + Debug,
     Actor<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>:
-        CommandHandler<Req = OperationalRequestMessage, Res = OperationalResponseMessage>,
+        CommandHandler<OperationalRequestMessage, OperationalResponseMessage>,
 {
     type Communication = Communication<OperationalRequestMessage, OperationalResponseMessage>;
 

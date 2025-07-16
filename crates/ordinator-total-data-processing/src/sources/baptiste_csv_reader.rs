@@ -68,7 +68,10 @@ impl IntoSchedulingEnvironment for TotalSap
         let path = format!(
             "temp_scheduling_environment_database/actor_specifications/actor_specification_{asset_string}.toml",
         );
+        #[cfg(test)]
         let path_to_data = Path::new(env!("CARGO_MANIFEST_DIR")).join(path);
+        #[cfg(not(test))]
+        let path_to_data = Path::new("./").join(path);
 
         Ok(SchedulingEnvironment::builder()
             .worker_environment(

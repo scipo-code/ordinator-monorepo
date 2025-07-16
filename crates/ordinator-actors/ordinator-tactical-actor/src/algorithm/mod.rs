@@ -186,8 +186,6 @@ where
         tactical_objective_value.urgency.1 = objective_value_from_tardiness;
     }
 
-    // ISSUE #000 TODO [ ] 2025-07-02 Turn the [`Days`] into a `Vec` as it is always
-    // given by the [`TimeEnvironment`] and always contiguous.
     fn determine_loading(&self) -> f64
     where
         Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
@@ -328,8 +326,15 @@ where
         //
         // Just be aware of the issue.
 
+        // I am not sure whether this assertion should even be here/
+        // ESSAY on whether the `incorporate_state` or `schedule` and `unschedule`
+        // should handle the changes to the [`SchedulingEnvironment`].
+        //
+        // What part of the program should be responsible for all of this? I believe
+        // that the fundamental issue here is that we should be able to make
+        // something that can change the way that we work with the.
         self.asset_that_loading_matches_scheduled()
-            .with_context(|| format!("TESTING_ASSERTION\nfile: {}\nline: {}", file!(), line!()))?;
+            .with_context(|| format!("TESTING_ASSERTION\nLocation: {}", Location::caller()))?;
 
         for (work_order_number, solution) in &self.solution.tactical_work_orders.0.clone() {
             let tactical_parameter = self

@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 
 use anyhow::Result;
-use anyhow::bail;
+use ordinator_actor_core::Actor;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SupervisorInterface;
@@ -13,12 +13,13 @@ use super::OperationalRequestMessage;
 use super::OperationalResponseMessage;
 use super::requests::OperationalSchedulingRequest;
 use super::responses::OperationalResponseStatus;
-use crate::OperationalActor;
+use crate::algorithm::OperationalAlgorithm;
+use crate::algorithm::operational_parameter::OperationalParameter;
 use crate::algorithm::operational_solution::OperationalSolution;
 // Was this actually needed? I am not really sure here I believe that
 // the best approach is to make something.
 impl<Ss> CommandHandler<OperationalRequestMessage, OperationalResponseMessage>
-    for OperationalActor<Ss>
+    for Actor<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>
 where
     Ss: SystemSolutions<Operational = OperationalSolution> + Debug,
 {
@@ -27,18 +28,42 @@ where
         event!(
             Level::INFO,
             self.algorithm.operational_parameters =
-                self.0.algorithm.parameters.work_order_parameters.len()
+                self.algorithm.parameters.work_order_parameters.len()
         );
         match state_link {
             StateLink::WorkOrders(changed_work_orders) => {
-                // TODO:
-                event!(Level::ERROR, unhandled_work_orders = ?changed_work_orders);
-                bail!("IMPLEMENT STATELINK FOR THE OPERATIONAL AGENT");
-            }
-            // Here you should make a clear separation between the different
-            // ways
-            StateLink::WorkerEnvironment => todo!(),
+                event!(target: "business_events", Level::ERROR, unhandled_work_orders = ?changed_work_orders);
+                let locked_scheduling_environment = self
+                    .scheduling_environment
+                    .lock()
+                    .expect("SchedulignEnvironment Mutex could not be acquired.");
 
+                for work_order_number in changed_work_orders {
+                    let work_order = locked_scheduling_environment
+                        .work_orders
+                        .inner
+                        .get(&work_order_number)
+                        .unwrap();
+
+                    for (activity_number, operation) in work_order.operations.0.iter() {
+                        let operational_parameter = match OperationalParameter::new(
+                            operation.operation_info.work_remaining,
+                            operation.operation_analytic.preparation_time,
+                        ) {
+                            Some(operational_parameter) => operational_parameter,
+                            None => continue,
+                        };
+
+                        self.algorithm
+                            .parameters
+                            .work_order_parameters
+                            .insert((work_order_number, *activity_number), operational_parameter);
+                    }
+                }
+
+                Ok(OperationalResponseMessage::Success)
+            }
+            StateLink::WorkerEnvironment => todo!(),
             StateLink::TimeEnvironment => todo!(),
         }
     }
@@ -66,11 +91,10 @@ where
                 //     )
                 // }
                 let (assign, assess, unassign): (u64, u64, u64) = self
-                    .0
                     .algorithm
                     .loaded_system_solution
                     .supervisor_actor_solutions()?
-                    .count_delegate_types(&self.0.actor_id);
+                    .count_delegate_types(&self.actor_id);
 
                 // Remember that the business types should not be the same type as the
                 // algorithm types. That is crucial to understand in all this.
@@ -78,11 +102,11 @@ where
                 // QUESTION
                 // Should the `OperationalObjectiveValue` be shareable? No I do not think so.
                 let operational_response_status = OperationalResponseStatus::new(
-                    self.0.actor_id.clone(),
+                    self.actor_id.clone(),
                     assign,
                     assess,
                     unassign,
-                    self.0.algorithm.solution.objective_value,
+                    self.algorithm.solution.objective_value,
                 );
                 Ok(OperationalResponseMessage::Status(
                     operational_response_status,

@@ -147,7 +147,7 @@ impl Parameters for OperationalParameters
                 );
 
                 // Are we mutating this function?
-                let operational_parameter = match operational_parameter_option.ok() {
+                let operational_parameter = match operational_parameter_option {
                     Some(operational_parameter) => operational_parameter,
                     None => continue,
                 };
@@ -240,14 +240,18 @@ impl OperationalParameter
         // end_window: DateTime<Utc>,
         // delegated: Delegate,
         // marginal_fitness: MarginalFitness,
-    ) -> Result<Self>
+    ) -> Option<Self>
     {
         //
         let combined_time = (work + _preparation).in_seconds();
         let operation_time_delta = TimeDelta::new(combined_time, 0).unwrap();
-        ensure!(work.to_f64() > 0.0);
-        ensure!(operation_time_delta > TimeDelta::new(0, 0).unwrap());
-        Ok(Self {
+        if work.to_f64() >= 0.0 {
+            return None;
+        }
+        if operation_time_delta > TimeDelta::new(0, 0).unwrap() {
+            return None;
+        }
+        Some(Self {
             work,
             _preparation,
             operation_time_delta,

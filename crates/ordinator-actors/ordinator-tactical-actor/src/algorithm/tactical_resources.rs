@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use anyhow::Context;
 use anyhow::Result;
+use colored::Colorize;
 use ordinator_actor_core::traits::ActorLinkToSchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
@@ -14,10 +15,52 @@ use serde::Serialize;
 
 use super::DayIndex;
 
-#[derive(Eq, PartialEq, Default, Serialize, Deserialize, Debug, Clone)]
+#[derive(Eq, PartialEq, Default, Serialize, Deserialize, Clone)]
 pub struct TacticalResources
 {
     pub resources: HashMap<Resources, Days>,
+}
+
+impl std::fmt::Debug for TacticalResources
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        if f.alternate() {
+            let resources = self.resources.len();
+
+            let days = self
+                .resources
+                .values()
+                .next()
+                .cloned()
+                .unwrap_or(Days::new(vec![]));
+
+            let number_of_days = days.days.len();
+
+            // Do you want to call it?
+            //
+            let mut days_loading = vec![Work::from(0.0); days.days.len()];
+            let average_hours_per_day = self.resources.values().map(|day| {
+                days_loading.iter_mut().enumerate().for_each(|f| {
+                    *f.1 += day
+                        .days
+                        .get(f.0)
+                        .expect("This should neven happen. Look at the implementation above")
+                })
+            });
+            write!(
+                f,
+                "{}",
+                format!(
+                    "TacticalResources: \nDays: {number_of_days}\nResources: {resources}\nAverage hours per day: {average_hours_per_day:#?}"
+                ).bright_blue()
+            )
+        } else {
+            f.debug_struct("TacticalResources")
+                .field("resources", &self.resources)
+                .finish()
+        }
+    }
 }
 impl TacticalResources
 {

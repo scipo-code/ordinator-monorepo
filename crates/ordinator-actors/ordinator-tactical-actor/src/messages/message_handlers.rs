@@ -2,6 +2,7 @@ use std::fmt::Debug;
 
 use anyhow::Context;
 use anyhow::Result;
+use ordinator_actor_core::Actor;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
@@ -9,7 +10,7 @@ use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 
 use super::TacticalRequestMessage;
 use super::TacticalResponseMessage;
-use crate::TacticalActor;
+use crate::algorithm::TacticalAlgorithm;
 use crate::algorithm::tactical_parameters::TacticalParameters;
 use crate::algorithm::tactical_parameters::create_tactical_parameter;
 use crate::algorithm::tactical_resources::TacticalResources;
@@ -20,8 +21,9 @@ use crate::algorithm::tactical_solution::TacticalSolution;
 // way that you will find out is by creating the system in the new way you are
 // so much out of the water here that getting it to compile and run is the only
 // way to consolidate your knowledge.
+// TODO [ ] This should be changed.
 impl<Ss: Debug> CommandHandler<TacticalRequestMessage, TacticalResponseMessage>
-    for TacticalActor<Ss>
+    for Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>
 where
     Ss: SystemSolutions<Tactical = TacticalSolution>,
 {
@@ -67,13 +69,13 @@ where
     {
         match state_link {
             StateLink::WorkOrders(modified_work_orders) => {
-                let scheduling_environment_guard = self.0.scheduling_environment.lock().unwrap();
+                let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 
                 let work_orders = &scheduling_environment_guard.work_orders.inner.clone();
                 let work_order_configurations = &scheduling_environment_guard
                     .worker_environment
                     .actor_specification
-                    .get(self.0.actor_id.asset())
+                    .get(self.actor_id.asset())
                     .unwrap()
                     .work_order_configurations
                     .clone();
@@ -107,14 +109,12 @@ where
                     // directly you should fix this issue soon. What
                     // about the code. You should make the interface
                     // here for interacting with the algorithm.
-                    self.0
-                        .algorithm
+                    self.algorithm
                         .parameters
                         .tactical_work_orders
                         .insert(work_order_number, tactical_parameter);
 
-                    self.0
-                        .algorithm
+                    self.algorithm
                         .solution
                         .tactical_work_orders
                         .0
@@ -125,16 +125,15 @@ where
                 ))
             }
             StateLink::WorkerEnvironment => {
-                let scheduling_environment_guard = self.0.scheduling_environment.lock().unwrap();
+                let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 
                 // The issue here is that `from` does not consume the value. But instead work
                 // with the reference.
                 let tactical_resources =
-                    TacticalResources::from((&scheduling_environment_guard, &self.0.actor_id));
+                    TacticalResources::from((&scheduling_environment_guard, &self.actor_id));
                 drop(scheduling_environment_guard);
 
-                self.0
-                    .algorithm
+                self.algorithm
                     .parameters
                     .tactical_capacity
                     .update_resources(tactical_resources);

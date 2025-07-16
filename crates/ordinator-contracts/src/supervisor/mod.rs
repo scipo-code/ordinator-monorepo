@@ -13,8 +13,6 @@ use crate::WorkOrderActivityDto;
 #[derive(ToSchema, Serialize)]
 pub struct SupervisorResources
 {
-    // TODO [x] Make DTO for `Id`
-    // TODO [x] Make DTO for 'WorkOrderActivity`
     all_technicians: BTreeSet<IdDto>,
     assigned_activities: BTreeMap<IdDto, WorkOrderActivityDto>,
 }
