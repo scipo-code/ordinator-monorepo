@@ -1,50 +1,14 @@
-warning: unused import: `ordinator_scheduling_environment::time_environment::period::Period`
-  --> crates/ordinator-actors/ordinator-tactical-actor/src/algorithm/tactical_parameters.rs:13:5
-   |
-13 | use ordinator_scheduling_environment::time_environment::period::Period;
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   |
-   = note: `#[warn(unused_imports)]` on by default
-
-warning: unused import: `anyhow::bail`
-  --> crates/ordinator-actors/ordinator-tactical-actor/src/algorithm/mod.rs:16:5
-   |
-16 | use anyhow::bail;
-   |     ^^^^^^^^^^^^
-
-warning: unused import: `ordinator_orchestrator_actor_traits::WhereIsWorkOrder`
- --> crates/ordinator-actors/ordinator-tactical-actor/src/messages/message_handlers.rs:9:5
-  |
-9 | use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
-  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+   Compiling ordinator-scheduling-environment v0.1.0 (/home/cbrje/projects/ordinator/ordinator-api/crates/ordinator-scheduling-environment)
+   Compiling ordinator-configuration v0.1.0 (/home/cbrje/projects/ordinator/ordinator-api/crates/ordinator-configuration)
+   Compiling ordinator-orchestrator-actor-traits v0.1.0 (/home/cbrje/projects/ordinator/ordinator-api/crates/ordinator-orchestrator-actor-traits)
+   Compiling ordinator-actor-core v0.1.0 (/home/cbrje/projects/ordinator/ordinator-api/crates/ordinator-actors/ordinator-actor-core)
+   Compiling ordinator-supervisor-actor v0.1.0 (/home/cbrje/projects/ordinator/ordinator-api/crates/ordinator-actors/ordinator-supervisor-actor)
+   Compiling ordinator-tactical-actor v0.1.0 (/home/cbrje/projects/ordinator/ordinator-api/crates/ordinator-actors/ordinator-tactical-actor)
    Compiling ordinator-strategic-actor v0.1.0 (/home/cbrje/projects/ordinator/ordinator-api/crates/ordinator-actors/ordinator-strategic-actor)
-warning: `ordinator-tactical-actor` (lib) generated 3 warnings (run `cargo fix --lib -p ordinator-tactical-actor` to apply 3 suggestions)
-error[E0596]: cannot borrow data in a `&` reference as mutable
-   --> crates/ordinator-actors/ordinator-strategic-actor/src/algorithm/strategic_parameters.rs:285:38
-    |
-285 |           let unloading_point_period = work_order
-    |  ______________________________________^
-286 | |             .operations
-287 | |             .0
-288 | |             .iter()
-289 | |             .nth(0)
-290 | |             .unwrap()
-291 | |             .1
-    | |______________^ cannot borrow as mutable
-
-error[E0596]: cannot borrow data in a `&` reference as mutable
-   --> crates/ordinator-actors/ordinator-strategic-actor/src/algorithm/strategic_parameters.rs:362:12
-    |
-362 |           if work_order
-    |  ____________^
-363 | |             .operations
-364 | |             .0
-365 | |             .iter()
-366 | |             .nth(0)
-367 | |             .unwrap()
-368 | |             .1
-    | |______________^ cannot borrow as mutable
-
-For more information about this error, try `rustc --explain E0596`.
-error: could not compile `ordinator-strategic-actor` (lib) due to 2 previous errors
+   Compiling ordinator-operational-actor v0.1.0 (/home/cbrje/projects/ordinator/ordinator-api/crates/ordinator-actors/ordinator-operational-actor)
+   Compiling ordinator-total-data-processing v0.2.2 (/home/cbrje/projects/ordinator/ordinator-api/crates/ordinator-total-data-processing)
+   Compiling ordinator-contracts v0.1.0 (/home/cbrje/projects/ordinator/ordinator-api/crates/ordinator-contracts)
+   Compiling ordinator-orchestrator v0.1.0 (/home/cbrje/projects/ordinator/ordinator-api/crates/ordinator-orchestrator)
+   Compiling ordinator-api-server v0.1.0 (/home/cbrje/projects/ordinator/ordinator-api/crates/ordinator-api-server)
+    Finished `release` profile [optimized + debuginfo] target(s) in 31.57s
+     Running `target/release/ordinator-api-server`

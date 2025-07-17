@@ -161,7 +161,7 @@ fn create_work_orders(
                 // FIX [ ]
                 // This is state duplication in the code! This is always morally wrong especially when in the `SchedulingEnvironment`
                 let unloading_point: UnloadingPoint =
-                    UnloadingPoint::new(operation_csv.OPR_Scheduled_Work.clone());
+                    UnloadingPoint::new(operation_csv.OPR_Scheduled_Work.clone(), None);
 
                 let planned_work
                     = operation_csv.OPR_Planned_Work.clone().parse::<f64>().expect("Planned work should be present. There is not implemented correct error handling here due to `rayon::par_iter`");

@@ -13,7 +13,6 @@ use std::sync::Arc;
 
 use anyhow::Context;
 use anyhow::Result;
-use anyhow::bail;
 use chrono::NaiveDate;
 use chrono::TimeDelta;
 use ordinator_actor_core::algorithm::Algorithm;

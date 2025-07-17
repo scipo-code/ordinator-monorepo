@@ -1,5 +1,6 @@
 use anyhow::Context;
 
+use super::work_order_dates::unloading_point::UnloadingPoint;
 use crate::time_environment::period::Period;
 use crate::work_order::WorkOrderNumber;
 use crate::work_order::WorkOrders;
@@ -25,7 +26,12 @@ impl WorkOrders
             .operations
             .0
             .iter_mut()
-            .for_each(|e| e.1.unloading_point.period_string = Some(period.period_string()));
+            // This is a little bit bummer. I think that the best thing to do here is to make the
+            // code work correctly with the supplied 
+            // This is not okay. I think that there are many different paths to take here. 
+            .for_each(|e| {
+                e.1.unloading_point = UnloadingPoint::new(e.1.unloading_point.string.clone(), Some(period.period_string()))
+            });
 
         Ok(())
     }

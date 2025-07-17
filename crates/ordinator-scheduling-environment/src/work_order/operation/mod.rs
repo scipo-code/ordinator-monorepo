@@ -116,39 +116,12 @@ impl Operation
     // the right point. What other things do you have?
     //
     //
-    pub fn unloading_point<'a>(&mut self, periods: &'a [Period]) -> Option<&'a Period>
+    pub fn unloading_point<'a>(&self, periods: &'a [Period]) -> Option<&'a Period>
     {
-        let re = regex::Regex::new(r"(\d{2})?-?[W|w](\d+)-?[W|w]?(\d+)").unwrap();
-
-        let captures = match &self.unloading_point.period_string {
-            Some(value) => re.captures(value),
-            None => re.captures(&self.unloading_point.string),
-        };
-
-        let start_year_and_weeks = match captures {
-            Some(cap) => (
-                cap.get(1).map_or("", |m| m.as_str()).parse::<u32>().ok(),
-                cap.get(2).map_or("", |m| m.as_str()).parse::<u32>().ok(),
-                cap.get(3).map_or("", |m| m.as_str()).parse::<u32>().ok(),
-            ),
-            None => (None, None, None),
-        };
-        let value = periods.iter().find(|&period| {
-            if start_year_and_weeks.0.is_some() {
-                period.year as u32 == start_year_and_weeks.0.unwrap() + 2000
-                    && (period.start_week == start_year_and_weeks.1.unwrap_or(0)
-                        || period.finish_week == start_year_and_weeks.1.unwrap_or(0))
-            } else {
-                period.start_week == start_year_and_weeks.1.unwrap_or(0)
-                    || period.finish_week == start_year_and_weeks.1.unwrap_or(0)
-            }
-        });
-
-        match value {
-            Some(period) => self.unloading_point.period_string = Some(period.period_string()),
-            None => todo!(),
+        match &self.unloading_point.period_string {
+            Some(period) => periods.iter().find(|per| per.period_string() == *period),
+            None => None,
         }
-        value
     }
 }
 

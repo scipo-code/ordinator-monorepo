@@ -6,7 +6,6 @@ use ordinator_actor_core::Actor;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 
 use super::TacticalRequestMessage;
 use super::TacticalResponseMessage;
