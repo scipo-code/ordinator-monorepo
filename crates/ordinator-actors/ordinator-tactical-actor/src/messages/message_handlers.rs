@@ -114,11 +114,52 @@ where
                         .tactical_work_orders
                         .insert(work_order_number, tactical_parameter);
 
+                    // You update the `solution::work_order` but not the `solution::loading`
+                    // this is an issue. But the more important question is whether this
+                    // matters in the long run of things. The best approach is to make
+                    // the system work correctly with the policy that we have set out to
+                    // achieve. What is the best approach for doing this? I think that
+                    // we should work on the
+                    //
+                    // I think that the approach here is that the state_link message should
+                    // only update the parameters. And not the Solution itself. Where should
+                    // the code then be located that makes the system work correctly with the
+                    //
+                    // There must be a better way of enforcing this? You need a crystal clear
+                    // policy here on how to handle the state changes. I think that you should
+                    // for the most part rely
+                    //
+                    // You could make a trait here
+                    // QUESTION [ ] 2025-07-17 Does the StrategicActor touch the `Solution`?
+                    // No the Strategic does not touch the solution at all. This is insanely
+                    // important to get right. You need to be sure what to do about the code
+                    // for it to run correctly.
+                    //
+                    // User -> Orchestrator -> StateLink -> Actor -> Parameter -> Solution
+                    //
+                    // I think that this should be the flow. At the moment you have
+                    //
+                    // User -> Orchestrator -> StateLink -> Actor -> Parameter
+                    //                                            -> Solution
+                    //
+                    // What should be done now? I think that the best approach is
+                    // to remove this below. And then the force schedule function
+                    // should handle this. The issue here is that I am not sure what
+                    // will lead to the right outcome.
+                    //
+                    // You should delete this. And then make it unschedule the work_order
+                    // correctly elsewhere.
+                    //
+                    // This is the goal to reach now.
+                    // TODO [ ] 2025-07-17 make the TacticalActor unschedule correctly
+                    // based on `Parameter` values and updates.
                     self.algorithm
-                        .solution
-                        .tactical_work_orders
-                        .0
-                        .insert(work_order_number, WhereIsWorkOrder::NotScheduled);
+                        .unschedule_specific_work_order(work_order_number)
+                        .with_context(|| {
+                            format!(
+                                "could not unschedule tactical work order:\n{work_order_number:#?}"
+                            )
+                        })?;
                 }
                 Ok(TacticalResponseMessage::FreeStringResponse(
                     "Updated StateLink::WorkOrders".to_string(),

@@ -109,11 +109,21 @@ impl Operation
         todo!("Derive these based on self")
     }
 
-    pub fn unloading_point<'a>(&'a self, periods: &'a [Period]) -> Option<&'a Period>
+    // You should make the most of all of this. Again, here it is crucial that you
+    // do not do something quick and stupid, which is exactly what you are
+    // thinking about. You should instead take a step back and reflect here. The
+    // initialization is wrong and that need to be fixed in order to get this to
+    // the right point. What other things do you have?
+    //
+    //
+    pub fn unloading_point<'a>(&mut self, periods: &'a [Period]) -> Option<&'a Period>
     {
         let re = regex::Regex::new(r"(\d{2})?-?[W|w](\d+)-?[W|w]?(\d+)").unwrap();
-        let input_string = &self.unloading_point.string;
-        let captures = re.captures(input_string);
+
+        let captures = match &self.unloading_point.period_string {
+            Some(value) => re.captures(value),
+            None => re.captures(&self.unloading_point.string),
+        };
 
         let start_year_and_weeks = match captures {
             Some(cap) => (
@@ -123,7 +133,7 @@ impl Operation
             ),
             None => (None, None, None),
         };
-        periods.iter().find(|&period| {
+        let value = periods.iter().find(|&period| {
             if start_year_and_weeks.0.is_some() {
                 period.year as u32 == start_year_and_weeks.0.unwrap() + 2000
                     && (period.start_week == start_year_and_weeks.1.unwrap_or(0)
@@ -132,7 +142,13 @@ impl Operation
                 period.start_week == start_year_and_weeks.1.unwrap_or(0)
                     || period.finish_week == start_year_and_weeks.1.unwrap_or(0)
             }
-        })
+        });
+
+        match value {
+            Some(period) => self.unloading_point.period_string = Some(period.period_string()),
+            None => todo!(),
+        }
+        value
     }
 }
 

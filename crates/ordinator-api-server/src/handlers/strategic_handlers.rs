@@ -5,6 +5,8 @@ use axum::Json;
 use axum::debug_handler;
 use axum::extract::Path;
 use axum::extract::State;
+use axum::response::IntoResponse;
+use axum::response::Response;
 use axum::response::Result;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::PeriodDto;
@@ -15,6 +17,8 @@ use ordinator_contracts::scheduler::WorkOrderSingleRowSimpleDto;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::StateLink;
+use ordinator_orchestrator::StrategicInterface;
+use ordinator_orchestrator::SystemSolutions;
 use ordinator_orchestrator::WorkOrderNumber;
 
 use crate::routes::api::AppError;
@@ -64,6 +68,45 @@ pub async fn get_scheduler_work_orders(
     // orchestrator.get_work_order(id)
 }
 
+#[utoipa::path(
+    get,
+    tag = "Scheduler",
+    path = "/period_for_work_order/{asset}",
+    params (
+        ("asset" = AssetNames, Path),
+    ),
+    responses((status = 200, body = [HashMap<WorkOrderNumberDto, PeriodDto>]))
+)]
+pub async fn period_for_work_order<Ss>(
+    State(orchestrator): State<Arc<Orchestrator<Ss>>>,
+    Path(asset): Path<Asset>,
+) -> Result<Response, AppError>
+where
+    Ss: SystemSolutions,
+{
+    let tactical_days = orchestrator
+        .system_solutions
+        .lock()
+        .unwrap_or_else(|_| panic!("Could not lock the SystemSolution for Asset: {}", &asset));
+    let tactical_days = tactical_days
+        .get(&asset)
+        .with_context(|| format!("SystemSolution for Asset: {} does not exist", &asset))
+        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .load();
+    let tactical_days = tactical_days
+        .strategic()
+        .map_err(|_| {
+            AppError::Anyhow(format!("No StrategicSolution exists for Asset: {}", &asset))
+        })?
+        .all_scheduled_tasks();
+
+    let tactical_days: Vec<_> = tactical_days
+        .iter()
+        .map(|f| (WorkOrderNumberDto(f.0.0), PeriodDto(f.1.period_string())))
+        .collect();
+
+    Ok(Json(tactical_days).into_response())
+}
 /// This handler updates the [`SchedulingEnvironment`] that the UnloadingPoint
 /// has been updated and sends a command
 /// to every `Actor` that the [`SchedulignEnvironment`] has changed.

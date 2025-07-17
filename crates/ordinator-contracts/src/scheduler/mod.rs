@@ -15,6 +15,7 @@ use serde::Serialize;
 use ts_rs::TS;
 use utoipa::ToSchema;
 
+use crate::PeriodDto;
 use crate::TotalSystemSolution;
 
 #[derive(Serialize, ToSchema, TS)]
@@ -268,6 +269,8 @@ struct OperationDto
 
     work_center: ResourcesDto,
     number_of_people: u64,
+    unloading_point_period: Option<PeriodDto>,
+    unloading_point_string: String,
 }
 
 impl From<WorkOrder> for WorkOrderSingleRowSimpleDto
@@ -297,6 +300,12 @@ impl From<Operation> for OperationDto
             work_remaining: value.operation_info.work_remaining.to_f64(),
             work_center: value.resource.to_string(),
             number_of_people: value.operation_info.number,
+            unloading_point_period: if value.unloading_point.period_string.is_some() {
+                Some(PeriodDto(value.unloading_point.period_string.unwrap()))
+            } else {
+                None
+            },
+            unloading_point_string: value.unloading_point.string,
         }
     }
 }

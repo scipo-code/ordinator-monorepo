@@ -285,6 +285,7 @@ impl WorkOrderParameterBuilder
         let unloading_point_period = work_order
             .operations
             .0
+            // This is a whole new nightmare
             .iter()
             .nth(0)
             .unwrap()

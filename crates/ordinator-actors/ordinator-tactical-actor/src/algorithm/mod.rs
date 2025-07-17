@@ -243,6 +243,35 @@ where
 
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
+        // Here we have to
+        // TODO [ ] 2025-07-17 make the `incorporate_system_solution`
+        // ESSAY [ ] 2025-07-17
+        // What should be done here?
+        // When the `UnloadingPoint` leaves the tactical schedule it should
+        // be forced out of the solution. So we the work order is Unscheduled
+        // and the work order is not in the tactical point of view we should
+        // make the code unschedule the WorkOrder if the new date is outside
+        // of the `tactical_days`. Yes that is the way of coding this system.
+        // First two TEST.
+        // [ ] Does scheduling inside of the `tactical_days` also give an error?
+        // -> No it does not, that means that it is only when the work order
+        //    leaves the tactical_days that we have an issue
+        // [ ] Does removing the `assert` in the `schedule` function remove the error?
+        // ESSAY: Should the schedule handle this? No! I think that we need a very
+        // clear policy here.
+        //
+        // This will be crucial, the tactical have to respect the `TechnicianActor` as
+        // well. I think that the best approach is to make the system. Work with
+        // that, but now the goal is to make Brian happy.
+        // for (work_order_number, tactical_parameter) in
+        // &self.parameters.tactical_work_orders {
+
+        // tactical_parameter.
+
+        // Now we want to remove the work orders that are no longer to be a
+        // part of the solution.
+        // }
+
         Ok(true)
     }
 
@@ -547,6 +576,25 @@ where
     // TODO [ ]
     // Confirm that it is the `schedule` method that is causing the issue
     // Remember that you should only change one thing at a time.
+    // Where do we want to fix this? The change is not found in the Strategic
+    // Actor alone. That means that it should not be in the
+    // `incorporate_system_solution` although that function also needs to be
+    // implemented correctly.
+    //
+    // What other options do we have here? I think that the best approach is
+    // to make the system work correctly with the. You are not the most focussed at
+    // the moment. What should you do here? I think that the best approach is to
+    // make the system work correctly.
+    //
+    // QUESTION [ ] 2025-07-17 where are the forced work orders handled in the
+    // tactical actor?
+    //
+    // Okay so the TacticalActor does not have an `schedule_forced` that
+    // makes this really difficult to work with.
+    //
+    // How does the parameters even fit in together with the idea that the
+    // code should be working with the earliest_start_day to put the
+    // work_order on the correct day?
     fn unschedule(&mut self) -> Result<()>
     {
         let mut rng = rng();
@@ -657,22 +705,19 @@ where
         work_order_number: WorkOrderNumber,
     ) -> Result<()>
     {
-        let solution = self
+        let previous_solution = self
             .solution
             .tactical_work_orders
             .0
             .insert(work_order_number, WhereIsWorkOrder::NotScheduled)
             .context("This means that the TacticalAlgorithm has been initialized wrong")?;
 
-        match solution {
+        match previous_solution {
             WhereIsWorkOrder::Strategic => Ok(()),
             WhereIsWorkOrder::Tactical(operation_solutions) => {
                 self.update_loadings(&operation_solutions.clone(), LoadOperation::Sub)
             }
-            WhereIsWorkOrder::NotScheduled => bail!(
-                "Unschedule should never be called on the {}. The state slipped through the tactical scheduling process",
-                std::any::type_name_of_val(&solution)
-            ),
+            WhereIsWorkOrder::NotScheduled => Ok(()),
         }
     }
 

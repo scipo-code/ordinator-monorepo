@@ -109,11 +109,15 @@ where
     type Options = StrategicOptions;
 
     fn incorporate_system_solution(&mut self) -> Result<bool> {
+        // This function makes the code work correctly with the 
+        // 
         let mut work_order_numbers: Vec<ForcedWorkOrder> = vec![];
         let mut state_change = false;
 
         // This is the problem. What is the best way around it?
         // We should create a method to update the
+        
+        // So the strategic actually loops over all the parameters.
         for (work_order_number, strategic_parameter) in
             self.parameters.strategic_work_order_parameters.iter()
         {
@@ -145,6 +149,9 @@ where
                 .and_then(|solution| solution.tactical_period(work_order_number, &self.parameters.strategic_periods));
 
                 
+            // If the work order is locked, that is respected. If it is not, then 
+            // the tactical takes precedence. This is actually good. You shoule simply 
+            // do the same in the tactical.
             if strategic_parameter.locked_in_period.is_some() {
                 work_order_numbers.push(ForcedWorkOrder::Locked(*work_order_number));
             } else if let Some(tactical_period) = tactical_scheduled_period {
@@ -155,7 +162,10 @@ where
             }
         }
 
-        // Ahh forced is always part of the `incorporate` shared state.
+        
+        // [ ] I believe that you simply have to make this work now 
+        // CRUCIAL: forced is always part of the `incorporate` shared state. This means that 
+        // if a solution leaves the 
         for forced_work_order_numbers in work_order_numbers.iter() {
             state_change = true;
             self.schedule_forced_strategic_work_order(forced_work_order_numbers)
@@ -714,7 +724,21 @@ where
         Ok(None)
     }
 
-    // Where should this code go now? I think that it should go into the
+    // This function makes sure that the strategic work order if forced scheduled and 
+    // if the date change. It makes sure that the Are there other ways of doing this
+    // that would fit the pattern even better? I am not really sure. The best approach
+    // would probably be to make sure that you are working on this in the correct order
+    // The problem with making a `schedule_forced_*` for each actor is that you have 
+    // to remember to call it. I really think that you need to be smart here. You 
+    // could use a template trait here. To make sure that each actor performs the 
+    // optations in the same way. I actually think that this is the best idea. 
+    //
+    // And maybe the handle state_link should only take a function parameter to a 
+    // &mut impl Parameters. This is also a really good idea. What other approaches
+    // do you have here that you could work with. So what you are approaching here 
+    // is to make the code work correctly on a higher level. 
+    //
+    // What should the state_link affect here? 
     fn schedule_forced_strategic_work_order(
         &mut self,
         force_schedule_work_order: &ForcedWorkOrder,

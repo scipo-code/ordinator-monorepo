@@ -27,7 +27,7 @@ pub struct AssetNames(String);
 pub struct PeriodDto(pub String);
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
-pub struct WorkOrderNumberDto(u64);
+pub struct WorkOrderNumberDto(pub u64);
 
 impl From<WorkOrderNumberDto> for WorkOrderNumber
 {

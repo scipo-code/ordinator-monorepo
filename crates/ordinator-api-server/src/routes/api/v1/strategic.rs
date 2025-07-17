@@ -16,11 +16,13 @@ pub async fn scheduler_nest(
             crate::handlers::strategic_handlers::get_scheduler_work_orders
         ))
         .routes(routes!(
+            crate::handlers::strategic_handlers::period_for_work_order,
+        ))
+        .routes(routes!(
             crate::handlers::strategic_handlers::assign_work_order_to_period,
         ))
         .with_state(state)
 }
-
 // let asset = strategic_request.asset;
 // let orchestrator_guard = orchestrator.lock().unwrap();
 

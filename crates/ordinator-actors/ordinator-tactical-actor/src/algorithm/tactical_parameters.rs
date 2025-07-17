@@ -10,6 +10,7 @@ use chrono::NaiveDate;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::day::Day;
+use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderConfigurations;
@@ -132,6 +133,8 @@ pub struct TacticalParameter
 {
     pub main_work_center: Resources,
     pub tactical_operation_parameters: HashMap<ActivityNumber, OperationParameter>,
+    // ISSUE #300 TODO [ ] 2025-07-17 implement the `forced_schedule_*` in the tactical
+    // pub forced_in_period: Option<Period>,
     pub weight: u64,
     pub relations: Vec<ActivityRelation>,
     // TODO: These two should be moved out of the pa
@@ -151,6 +154,14 @@ impl TacticalParameter
         Ok(Self {
             main_work_center: work_order.main_work_center,
             tactical_operation_parameters: operation_parameters,
+            // Setting this field will be immensely difficult. This is where much of the business
+            // logic should recide. It will not be simple to create this.
+            // This is a crazy place to code the system. You have to work more on this.
+            // Should you wait with this? Yes you should... You cannot see the path forward
+            // and it is causing you pain here. The best approach forward here is to make the
+            // system function with o
+            // ISSUE #300 TODO [ ] 2025-07-17 implement the `forced_schedule_*` in the tactical
+            // actor forced_in_period: work_order.,
             weight: work_order.work_order_value(work_order_configuration)?,
             relations: work_order.operations.relations(),
             earliest_allowed_start_date: work_order.work_order_dates.earliest_allowed_start_date,
@@ -158,10 +169,17 @@ impl TacticalParameter
     }
 }
 
+// Okay so
+// You cannot make a forced method for the `tactical` as you do not know where
+// to fit them in this.
+// TODO [ ] This is lacking the earliest_strat_day. That is not good that
+// it is missing.
 #[derive(Clone, Serialize, Debug)]
 pub struct OperationParameter
 {
     pub work_order_number: WorkOrderNumber,
+    // ISSUE #300 TODO [ ] 2025-07-17 implement the `forced_schedule_*` in the tactical
+    // pub forced_start_day: Option<Day>,
     pub number: NumberOfPeople,
     pub duration: Work,
     pub operating_time: Work,

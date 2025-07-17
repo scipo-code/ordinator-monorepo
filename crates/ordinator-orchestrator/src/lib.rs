@@ -31,6 +31,7 @@ pub use ordinator_operational_actor::messages::requests::OperationalStatusReques
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::Communication;
 pub use ordinator_orchestrator_actor_traits::StateLink;
+pub use ordinator_orchestrator_actor_traits::StrategicInterface;
 pub use ordinator_orchestrator_actor_traits::SystemSolutions;
 // TODO [ ] 2025-07-02 add the other `<Actor>Interface`s here
 pub use ordinator_orchestrator_actor_traits::TacticalInterface;
