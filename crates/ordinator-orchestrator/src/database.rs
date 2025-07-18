@@ -15,7 +15,7 @@ use ordinator_scheduling_environment::SchedulingEnvironment;
 
 use super::model_initializers;
 
-pub struct DataBaseConnection {}
+pub struct DataBaseConnection;
 
 // At the moment you are simply reading everything into a
 // single struct and then you forget about the MongoDB
@@ -24,13 +24,6 @@ pub struct DataBaseConnection {}
 // continuously for this to work.
 impl DataBaseConnection
 {
-    // ISSUE #000 move-temp-scheduling-environment-into-mongodb
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self
-    {
-        Self {}
-    }
-
     pub fn scheduling_environment(
         current_time: DateTime<Utc>,
         system_configuration: Arc<ArcSwap<SystemConfigurations>>,

@@ -9,8 +9,8 @@ use std::collections::HashMap;
 use std::fmt::Debug;
 use std::fs::File;
 use std::io::Read;
+use std::marker::PhantomData;
 use std::sync::Arc;
-use std::sync::Weak;
 
 use anyhow::Context;
 use anyhow::Result;
@@ -69,6 +69,7 @@ use self::actor_registry::ActorRegistry;
 use self::database::DataBaseConnection;
 use self::logging::LogHandles;
 
+// O
 pub struct Orchestrator<Ss>
 {
     pub scheduling_environment: Arc<std::sync::Mutex<SchedulingEnvironment>>,
@@ -78,25 +79,10 @@ pub struct Orchestrator<Ss>
     pub state_link_bus: std::sync::Mutex<bus::Bus<StateLink>>,
     pub system_configurations: Arc<ArcSwap<SystemConfigurations>>,
     pub database_connections: DataBaseConnection,
-    pub actor_notify: Option<Weak<Orchestrator<Ss>>>,
     pub system_clock_tick_receiver: Receiver<DateTime<Utc>>,
     pub system_clock_time_commands_sender: Option<Sender<TimeCommand>>,
     pub log_handles: LogHandles,
 }
-
-pub struct NotifyOrchestrator<Ss>(Arc<Orchestrator<Ss>>);
-
-impl<Ss> Clone for NotifyOrchestrator<Ss>
-{
-    fn clone(&self) -> Self
-    {
-        Self(self.0.clone())
-    }
-}
-
-// WARNING: This should only take immutable references to self!
-// This is not needed either. I think that is a good idea it
-// was something that confused me quite a lot.
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum OrchestratorRequest
@@ -304,14 +290,6 @@ where
                 // `SchedulingEnvironment` is created.
                 // todo!();
                 // FIX
-                let _notify_orchestrator = NotifyOrchestrator(
-                    self.actor_notify
-                        .as_ref()
-                        .expect("Orchestrator is initialized with the Option::Some variant")
-                        .upgrade()
-                        .expect("This Weak reference should always be able to be upgraded."),
-                );
-
                 // The methods should be defined on the `actor_factory`
                 // This should be encapsulated. The factory method and the registry should be of
                 // the same process. Should this be inside of the `Orchestrator`
@@ -437,6 +415,9 @@ where
 //
 // The idea is that you have a single function and then you decide to
 // make this function correctly with the right kind of
+//
+// You had completely misunderstood how this should work. Great that you are
+// growing so fast!
 impl ActorRegistry
 {
     fn new(
@@ -488,12 +469,19 @@ impl ActorRegistry
     }
 }
 
-type OrchestratorBuildOutput<Ss> = Result<(
+pub type OrchestratorBuildOutput<Ss> = Result<(
     Arc<Orchestrator<Ss>>,
     JoinHandle<Result<()>>,
     JoinHandle<()>,
 )>;
 
+pub enum Environment
+{
+    Prod,
+    Test(DateTime<Utc>),
+}
+
+// This should be removed and replaced with a dyn
 impl<Ss> Orchestrator<Ss>
 where
     Ss: SystemSolutions<
@@ -507,96 +495,25 @@ where
         + 'static
         + Debug,
 {
-    pub fn new(test_or_prod: Option<DateTime<Utc>>) -> OrchestratorBuildOutput<Ss>
+    pub fn builder() -> OrchestratorBuilder<StepLogging>
     {
-        // You should change all the dates to `DateTime<Copenhagen>` and then when you
-        // need something different. Then you should do that.
-        //
-        //
-        // What should you do here? I think that the best approach is to make the
-        // system run with the
-
-        let configurations = SystemConfigurations::read_all_configs().unwrap();
-
-        let log_handles = logging::setup_logging();
-
-        let database_connections = DataBaseConnection::new();
-
-        // The configurations are already in place, you should strive to make the system
-        // as self contained as possible.
-        // This simply initializes the WorkerEnvironment, this should be done in the
-        // building of the `SchedulingEnvironment` not in here
-        //
-        // This is a huge no go. you should have done this in an entirely different way
-        // to make this system work.
-        let error_channels: (Sender<anyhow::Error>, Receiver<anyhow::Error>) = flume::bounded(0);
-
-        let error_task_handle: JoinHandle<Result<()>> =
-            tokio::spawn(Self::actor_error_handler(error_channels.1.clone()));
-
-        // WARN THIS SHOULD BE CHANGED
-        // The primary issue here is that the code is not made for testing. That is a
-        // huge issue, you should ideally inject a test time only to test the
-        // components that need this. You are making something that is not the best
-        // approach. Also, you should refactor all
-        let (system_clock_handle, system_clock_tick_receiver, system_clock_time_commands_sender) =
-            match test_or_prod {
-                Some(current_time) => {
-                    let (system_clock_time_commands_sender, system_clock_time_commands_receiver) =
-                        flume::unbounded();
-                    let (system_clock_tick_sender, system_clock_tick_receiver) = flume::unbounded();
-
-                    let system_clock_handle = TestSystemClock::new(
-                        current_time,
-                        system_clock_time_commands_receiver,
-                        system_clock_tick_sender,
-                    )
-                    .start_system_clock();
-
-                    (
-                        system_clock_handle,
-                        system_clock_tick_receiver,
-                        Some(system_clock_time_commands_sender),
-                    )
-                }
-                None => {
-                    let (system_clock_tick_sender, system_clock_tick_receiver) = flume::unbounded();
-
-                    let system_clock_handle =
-                        ProductionSystemClock::new(system_clock_tick_sender).start_system_clock();
-
-                    (system_clock_handle, system_clock_tick_receiver, None)
-                }
-            };
-
-        let current_time = system_clock_tick_receiver.recv()?;
-        let scheduling_environment =
-            DataBaseConnection::scheduling_environment(current_time, configurations.clone())
-                .context("Could not build SchedulingEnvironment")?;
-
-        // CRUCIAL LESSON: For types that there exists multiple versions of always
-        // qualify the whole path.
-        let state_link_bus: std::sync::Mutex<bus::Bus<StateLink>> =
-            std::sync::Mutex::new(bus::Bus::new(5));
-        // WARN THIS SHOULD BE CHANGED
-
-        let orchestrator: Arc<Orchestrator<Ss>> = Arc::new_cyclic(|weak_self| Orchestrator {
-            scheduling_environment,
-            system_solutions: std::sync::Mutex::new(HashMap::new()),
-            actor_registries: std::sync::Mutex::new(HashMap::new()),
-            log_handles,
-            actor_notify: Some(weak_self.clone()),
-            system_configurations: configurations,
-            database_connections,
-            error_channels,
-            state_link_bus,
-            system_clock_tick_receiver,
-            system_clock_time_commands_sender,
-        });
-        info!(target: "stdout", "System initialized (2 of 4): orchestrator");
-        Ok((orchestrator, error_task_handle, system_clock_handle))
+        OrchestratorBuilder::<StepLogging> {
+            logging: None,
+            system_clock_tick_receiver: None,
+            system_clock_time_commands_sender: None,
+            system_clock_handle: None,
+            system_configurations: None,
+            scheduling_environment: None,
+            _marker: PhantomData::<StepLogging>,
+        }
     }
 
+    // This is made in a wrong way. You should put the code into the
+    // What should be done here? You need to provide the Orchestrator with
+    // a `SchedulingEnvironment` so that you can test it. At the moment the
+    //
+    // scheduling environment can only be supplied through files.
+    // Make the builder afterwards. Now you have to focus on the
     async fn actor_error_handler(error_receiver: Receiver<anyhow::Error>) -> Result<()>
     {
         // This function will become important if [`ActorError`]s should
@@ -736,6 +653,239 @@ where
         Ok(self)
     }
 }
+
+pub struct StepLogging;
+pub struct StepSystemClock;
+pub struct StepConfiguration;
+pub struct StepSchedulingEnvironment;
+pub struct StepBuild;
+
+// pub struct Orchestrator<Ss>
+// {
+//     pub scheduling_environment: Arc<std::sync::Mutex<SchedulingEnvironment>>,
+//     pub system_solutions: std::sync::Mutex<HashMap<Asset, Arc<ArcSwap<Ss>>>>,
+//     pub actor_registries: std::sync::Mutex<HashMap<Asset, ActorRegistry>>,
+//     pub error_channels: (Sender<anyhow::Error>, Receiver<anyhow::Error>),
+//     pub state_link_bus: std::sync::Mutex<bus::Bus<StateLink>>,
+//     pub system_configurations: Arc<ArcSwap<SystemConfigurations>>,
+//     pub database_connections: DataBaseConnection,
+//     pub system_clock_tick_receiver: Receiver<DateTime<Utc>>,
+//     pub system_clock_time_commands_sender: Option<Sender<TimeCommand>>,
+//     pub log_handles: LogHandles,
+// }
+
+pub struct OrchestratorBuilder<Step>
+{
+    logging: Option<LogHandles>,
+    system_clock_tick_receiver: Option<Receiver<DateTime<Utc>>>,
+    system_clock_time_commands_sender: Option<Option<Sender<TimeCommand>>>,
+    system_clock_handle: Option<JoinHandle<()>>,
+    system_configurations: Option<Arc<ArcSwap<SystemConfigurations>>>,
+    scheduling_environment: Option<Arc<std::sync::Mutex<SchedulingEnvironment>>>,
+    _marker: PhantomData<Step>,
+}
+
+impl OrchestratorBuilder<StepLogging>
+{
+    pub fn logging(self, logging: LogHandles) -> OrchestratorBuilder<StepSystemClock>
+    {
+        OrchestratorBuilder::<StepSystemClock> {
+            logging: Some(logging),
+            system_clock_tick_receiver: None,
+            system_clock_time_commands_sender: None,
+            system_clock_handle: None,
+            system_configurations: None,
+            scheduling_environment: None,
+            _marker: PhantomData,
+        }
+    }
+}
+impl OrchestratorBuilder<StepSystemClock>
+{
+    pub fn system_clock(self, environment: &Environment) -> OrchestratorBuilder<StepConfiguration>
+    {
+        let (system_clock_handle, system_clock_tick_receiver, system_clock_time_commands_sender): (
+            JoinHandle<()>,
+            Receiver<DateTime<Utc>>,
+            Option<Sender<TimeCommand>>,
+        ) = match environment {
+            Environment::Test(current_time) => {
+                let (system_clock_time_commands_sender, system_clock_time_commands_receiver) =
+                    flume::unbounded();
+                let (system_clock_tick_sender, system_clock_tick_receiver) = flume::unbounded();
+
+                let system_clock_handle = TestSystemClock::new(
+                    *current_time,
+                    system_clock_time_commands_receiver,
+                    system_clock_tick_sender,
+                )
+                .start_system_clock();
+
+                (
+                    system_clock_handle,
+                    system_clock_tick_receiver,
+                    Some(system_clock_time_commands_sender),
+                )
+            }
+            Environment::Prod => {
+                let (system_clock_tick_sender, system_clock_tick_receiver) = flume::unbounded();
+
+                let system_clock_handle =
+                    ProductionSystemClock::new(system_clock_tick_sender).start_system_clock();
+
+                (system_clock_handle, system_clock_tick_receiver, None)
+            }
+        };
+
+        OrchestratorBuilder::<StepConfiguration> {
+            logging: self.logging,
+            system_clock_tick_receiver: Some(system_clock_tick_receiver),
+            system_clock_time_commands_sender: Some(system_clock_time_commands_sender),
+            system_clock_handle: Some(system_clock_handle),
+
+            system_configurations: None,
+            scheduling_environment: None,
+            _marker: PhantomData,
+        }
+    }
+}
+
+// The most important thing is that you can sustain a good pace all the time
+// moving forward continuously and improving.
+impl OrchestratorBuilder<StepConfiguration>
+{
+    pub fn system_configurations(self) -> OrchestratorBuilder<StepSchedulingEnvironment>
+    {
+        let configurations = SystemConfigurations::read_all_configs().unwrap();
+        OrchestratorBuilder::<StepSchedulingEnvironment> {
+            logging: self.logging,
+            system_clock_tick_receiver: self.system_clock_tick_receiver,
+            system_clock_time_commands_sender: self.system_clock_time_commands_sender,
+            system_clock_handle: self.system_clock_handle,
+            system_configurations: Some(configurations),
+            scheduling_environment: None,
+            _marker: PhantomData,
+        }
+    }
+}
+
+impl OrchestratorBuilder<StepSchedulingEnvironment>
+{
+    pub fn scheduling_environment_from_database(
+        self,
+    ) -> anyhow::Result<OrchestratorBuilder<StepBuild>>
+    {
+        let recv = &self
+            .system_clock_tick_receiver
+            .as_ref()
+            .expect("previous builder created this")
+            .recv()
+            .expect("Previous builder made this");
+
+        let system_configurations = self
+            .system_configurations
+            .expect("Previous builder created this")
+            .clone();
+
+        let scheduling_environment =
+            DataBaseConnection::scheduling_environment(*recv, system_configurations.clone())
+                .context("Could not build SchedulingEnvironment")?;
+
+        Ok(OrchestratorBuilder::<StepBuild> {
+            logging: self.logging,
+            system_clock_tick_receiver: self.system_clock_tick_receiver,
+            system_clock_time_commands_sender: self.system_clock_time_commands_sender,
+            system_clock_handle: self.system_clock_handle,
+            system_configurations: Some(system_configurations),
+            scheduling_environment: Some(scheduling_environment),
+            _marker: PhantomData,
+        })
+    }
+
+    pub fn scheduling_environment_manual(
+        self,
+        scheduling_environment: Arc<std::sync::Mutex<SchedulingEnvironment>>,
+    ) -> OrchestratorBuilder<StepBuild>
+    {
+        OrchestratorBuilder::<StepBuild> {
+            logging: self.logging,
+            system_clock_tick_receiver: self.system_clock_tick_receiver,
+            system_clock_time_commands_sender: self.system_clock_time_commands_sender,
+            system_clock_handle: self.system_clock_handle,
+            system_configurations: self.system_configurations,
+            scheduling_environment: Some(scheduling_environment),
+            _marker: PhantomData,
+        }
+    }
+}
+
+impl OrchestratorBuilder<StepBuild>
+{
+    pub fn build<Ss>(self) -> OrchestratorBuildOutput<Ss>
+    where
+        Ss: SystemSolutions<
+                Strategic = StrategicSolution,
+                Tactical = TacticalSolution,
+                Supervisor = SupervisorSolution,
+                Operational = OperationalSolution,
+            >
+            + Send
+            + Sync
+            + 'static
+            + Debug,
+    {
+        let error_channels: (Sender<anyhow::Error>, Receiver<anyhow::Error>) = flume::bounded(0);
+
+        let error_task_handle: JoinHandle<Result<()>> = tokio::spawn(
+            Orchestrator::<Ss>::actor_error_handler(error_channels.1.clone()),
+        );
+
+        // WARN THIS SHOULD BE CHANGED
+        // The primary issue here is that the code is not made for testing. That is a
+        // huge issue, you should ideally inject a test time only to test the
+        // components that need this. You are making something that is not the best
+        // approach. Also, you should refactor all
+
+        // This should be a bus::Bus instead.
+        // The current time should come from the SystemClock not the other way
+        // around. You are experiencing pain. And that pain is what is needed to
+        // grow and solve this problem.
+        // This is completely wrong... Not you simply have to be able to inject your own
+        // scheduling environment here. That is the main issue with this
+        // function.
+
+        // CRUCIAL LESSON: For types that there exists multiple versions of always
+        // qualify the whole path.
+        let state_link_bus: std::sync::Mutex<bus::Bus<StateLink>> =
+            std::sync::Mutex::new(bus::Bus::new(5));
+        // WARN THIS SHOULD BE CHANGED
+        let orchestrator = Orchestrator::<Ss> {
+            scheduling_environment: self.scheduling_environment.expect("Should be type safe"),
+            system_solutions: std::sync::Mutex::new(HashMap::new()),
+            actor_registries: std::sync::Mutex::new(HashMap::new()),
+            error_channels,
+            state_link_bus,
+            system_configurations: self.system_configurations.expect("Should be type safe"),
+            // We are not using it yet and you should remove it from the system
+            database_connections: DataBaseConnection,
+            system_clock_tick_receiver: self
+                .system_clock_tick_receiver
+                .expect("Should be type safe"),
+            system_clock_time_commands_sender: self
+                .system_clock_time_commands_sender
+                .expect("Should be type safe"),
+            log_handles: self.logging.expect("Should be type safe"),
+        };
+        info!(target: "stdout", "System initialized (2 of 4): orchestrator");
+        Ok((
+            Arc::new(orchestrator),
+            error_task_handle,
+            self.system_clock_handle.expect("Should be type safe"),
+        ))
+    }
+}
+
+// let current_time = system_clock_tick_receiver.recv()?;
 
 // fn start_steel_repl(arc_orchestrator: ArcOrchestrator) {
 //     thread::spawn(move || {

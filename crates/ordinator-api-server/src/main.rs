@@ -9,34 +9,26 @@
 // #[cfg(not(target_env = "msvc"))]
 // #[global_allocator]
 // static GLOBAL: Jemalloc = Jemalloc;
-mod handlers;
-mod routes;
-
-use std::net::SocketAddr;
-use std::sync::Arc;
 
 use anyhow::Context;
 use anyhow::Result;
-use axum::routing::get;
 use chrono::TimeZone;
 use chrono_tz::Europe::Copenhagen;
+use ordinator_api_server::start_application;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Asset;
+use ordinator_orchestrator::Orchestrator;
 // use std::fs::File;
 // use std::io::Read;
-use ordinator_orchestrator::Orchestrator;
-use routes::api::v1::api_scope;
-use tokio::task::JoinHandle;
-use tower_http::services::ServeDir;
+use ordinator_orchestrator::logging::setup_logging;
+use tokio::signal;
 use tracing::info;
-use utoipa::openapi::Info;
-use utoipa::openapi::OpenApiBuilder;
-use utoipa_axum::router::OpenApiRouter;
-use utoipa_swagger_ui::Config;
-use utoipa_swagger_ui::SwaggerUi;
 
 pub const RESEARCH: &str = "research";
 
+// TODO [x] Make the `orchestrator` testable
+// TODO [ ] Create custom `SchedulingEnvironment`
+// The goal is to build a testable system that is small scale.
 #[tokio::main]
 async fn main() -> Result<()>
 {
@@ -53,53 +45,30 @@ async fn main() -> Result<()>
     // ISSUE #000 TODO [ ] 2025-06-29 turn this into `match
     //  dotenvy::var("DEPLOY_ENVIRONMENT");` instead of `Option::Some(current_time)`
     // TODO [ ] This is quite annoying.}
-    let (orchestrator, error_handle, system_clock_handle): (
-        Arc<Orchestrator<TotalSystemSolution>>,
-        JoinHandle<Result<()>>,
-        JoinHandle<()>,
-    ) = Orchestrator::new(Some(current_time)).context("Orchestrator could not be created")?;
+
+    let environment = ordinator_orchestrator::Environment::Test(current_time);
+    let (orchestrator, error_handle, system_clock_handle) =
+        Orchestrator::<TotalSystemSolution>::builder()
+            .logging(setup_logging())
+            .system_clock(&environment)
+            .system_configurations()
+            .scheduling_environment_from_database()?
+            .build()?;
 
     // WARN: Manually add `Asset`s here. Everything added here should be done from
     // the API in actual production. So this is only a temporary solution.
 
     orchestrator.asset_factory(&Asset::DF)?;
 
-    let scheduler_files = ServeDir::new("./static_files/scheduler/dist");
-    let supervisor_files =
-        ServeDir::new("./static_files/supervisor/dist/supervisor-calendar/browser");
+    let server = start_application(orchestrator, &environment);
 
-    let app = OpenApiRouter::new()
-        .nest("/api/v1", api_scope(orchestrator.clone()).await)
-        .nest_service("/scheduler", scheduler_files)
-        .nest_service("/supervisor", supervisor_files)
-        .route("/hello", get(|| async { "Hello, world!" }))
-        .with_state(orchestrator)
-        .split_for_parts();
-
-    // Here you can modify the the 'OpenApi' specification
-    let openapi = OpenApiBuilder::from(app.1)
-        .info(Info::new("Ordinator API Specification", "0.2.2"))
-        .build();
-
-    // Here you can modify the [`SwaggerUi`]
-    let swagger_config = Config::new(["/api-doc/openapi.json"])
-        .display_request_duration(true)
-        .try_it_out_enabled(true);
-
-    let merged_app = app.0.merge(
-        SwaggerUi::new("/swagger")
-            .config(swagger_config)
-            .url("/api-doc/openapi.json", openapi),
-    );
-
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    let server = axum_server::bind(addr).serve(merged_app.into_make_service());
-
-    info!(target: "stdout", "System initialized (4 of 4): ordinator-api-server");
     tokio::select! {
-        res = server => res?,
+        res = server => res.await?,
         res = error_handle => res??,
         res = system_clock_handle => res?,
+        _ = signal::ctrl_c() => {
+            info!(target: "stdout", "System shutting down");
+            }
     }
 
     Ok(())

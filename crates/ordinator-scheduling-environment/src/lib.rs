@@ -225,6 +225,9 @@ impl Asset
             "TS" => Some(Asset::TS),
             "VA" => Some(Asset::VA),
             "VB" => Some(Asset::VB),
+            "TEST" => Some(Asset::Test),
+            "test" => Some(Asset::Test),
+            "Test" => Some(Asset::Test),
             _ => None,
         }
     }

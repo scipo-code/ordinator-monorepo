@@ -143,7 +143,7 @@ impl Parameters for StrategicParameters
     }
 }
 
-pub type ClusteringValue = u64;
+pub type ClusteringValue = i64;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct StrategicClustering
@@ -162,7 +162,7 @@ pub struct WorkOrderParameter
     pub excluded_periods: HashSet<Period>,
     pub latest_period: Period,
 
-    pub weight: u64,
+    pub weight: i64,
     // This weight is derived from the ['StrategicOptions`]. This means that the code should
     // work better
     pub work_load: HashMap<Resources, Work>,
@@ -395,7 +395,8 @@ impl WorkOrderParameterBuilder
                 .expect("There should always be a latest period on a StrategicWorkOrder"),
             weight: self
                 .weight
-                .expect("There should always a weight on a StrategicWorkOrder"),
+                .expect("There should always a weight on a StrategicWorkOrder")
+                as i64,
             work_load: self.work_load,
         }
     }
@@ -468,7 +469,7 @@ impl StrategicClustering
                     score
                 };
 
-                clustering_similarity.insert((**wo_num1, **wo_num2), similarity);
+                clustering_similarity.insert((**wo_num1, **wo_num2), similarity as i64);
             }
         }
         Ok(StrategicClustering {

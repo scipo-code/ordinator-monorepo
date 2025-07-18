@@ -58,10 +58,10 @@ impl Debug for StrategicSolution
 #[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone)]
 pub struct StrategicObjectiveValue
 {
-    pub objective_value: u64,
-    pub urgency: (usize, u64),
-    pub resource_penalty: (usize, u64),
-    pub clustering_value: (usize, u64),
+    pub objective_value: i64,
+    pub urgency: (usize, i64),
+    pub resource_penalty: (usize, i64),
+    pub clustering_value: (usize, i64),
 }
 
 impl StrategicObjectiveValue
@@ -69,18 +69,19 @@ impl StrategicObjectiveValue
     pub fn new(strategic_options: &StrategicOptions) -> Self
     {
         Self {
-            objective_value: u64::MAX,
-            urgency: (strategic_options.urgency_weight, u64::MIN),
-            resource_penalty: (strategic_options.resource_penalty_weight, u64::MIN),
-            clustering_value: (strategic_options.clustering_weight, u64::MIN),
+            objective_value: i64::MAX,
+            urgency: (strategic_options.urgency_weight, 0),
+            resource_penalty: (strategic_options.resource_penalty_weight, 0),
+            clustering_value: (strategic_options.clustering_weight, 0),
         }
     }
 
     pub fn aggregate_objectives(&mut self)
     {
-        self.objective_value = self.urgency.0 as u64 * self.urgency.1
-            + self.resource_penalty.0 as u64 * self.resource_penalty.1
-            - self.clustering_value.0 as u64 * self.clustering_value.1;
+        // This can be negative!
+        self.objective_value = self.urgency.0 as i64 * self.urgency.1
+            + self.resource_penalty.0 as i64 * self.resource_penalty.1
+            - self.clustering_value.0 as i64 * self.clustering_value.1;
     }
 }
 impl Solution for StrategicSolution

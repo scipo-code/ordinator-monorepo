@@ -54,19 +54,47 @@ impl UnloadingPoint
                     })
                     .unwrap_or(chrono::Utc::now().year() as u32);
 
-                let from = caps
+                let mut from = caps
                     .name("from")
                     .expect("This value is hardcoded")
                     .as_str()
                     .parse::<u32>()
                     .expect("This value is hardcoded");
 
+                let date =
+                    chrono::NaiveDate::from_isoywd_opt(year as i32, from, chrono::Weekday::Mon);
+
+                if date.is_none() {
+                    from = 1
+                }
+
                 let to = match caps.name("to") {
-                    Some(regex_match) => regex_match
-                        .as_str()
-                        .parse::<u32>()
-                        .expect("This value is hardcoded"),
-                    None => from + 1,
+                    Some(regex_match) => {
+                        let mut to = regex_match
+                            .as_str()
+                            .parse::<u32>()
+                            .expect("This value is hardcoded");
+
+                        if chrono::NaiveDate::from_isoywd_opt(year as i32, to, chrono::Weekday::Mon)
+                            .is_none()
+                        {
+                            to = 1
+                        };
+                        to
+                    }
+                    None => {
+                        if chrono::NaiveDate::from_isoywd_opt(
+                            year as i32,
+                            from + 1,
+                            chrono::Weekday::Mon,
+                        )
+                        .is_none()
+                        {
+                            1
+                        } else {
+                            from + 1
+                        }
+                    }
                 };
 
                 Some(year.to_string() + "-W" + &from.to_string() + "-W" + &to.to_string())
@@ -143,6 +171,8 @@ mod tests
         let period_14 = "2025W10W11";
         let period_15 = "2025W10-13";
 
+        let period_16 = "2025W53";
+
         let capture_1 = UnloadingPoint::new(period_1.to_string(), None);
         let capture_2 = UnloadingPoint::new(period_2.to_string(), None);
         let capture_3 = UnloadingPoint::new(period_3.to_string(), None);
@@ -158,6 +188,8 @@ mod tests
         let capture_13 = UnloadingPoint::new(period_13.to_string(), None);
         let capture_14 = UnloadingPoint::new(period_14.to_string(), None);
         let capture_15 = UnloadingPoint::new(period_15.to_string(), None);
+
+        let capture_16 = UnloadingPoint::new(period_16.to_string(), None);
 
         assert_eq!(capture_1.period_string, Some("2025-W1-W2".to_string()));
         assert_eq!(capture_2.period_string, Some("1994-W1-W2".to_string()));
@@ -178,5 +210,7 @@ mod tests
         assert_eq!(capture_13.period_string, None);
         assert_eq!(capture_14.period_string, Some("2025-W10-W11".to_string()));
         assert_eq!(capture_15.period_string, Some("2025-W10-W13".to_string()));
+
+        assert_eq!(capture_16.period_string, Some("2025-W1-W2".to_string()));
     }
 }

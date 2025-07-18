@@ -92,7 +92,7 @@ where
                 Algorithm<
                     StrategicSolution,
                     StrategicParameters,
-                    PriorityQueue<WorkOrderNumber, u64>,
+                    PriorityQueue<WorkOrderNumber, i64>,
                     Ss,
                 >,
             >,

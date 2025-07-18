@@ -1,3 +1,6 @@
+run:
+    cargo run --release --bin ordinator-api-server 2> temp_output_from_program
+
 zellij:
     zellij --layout ordinator.kdl --session "ordinator-api"
 

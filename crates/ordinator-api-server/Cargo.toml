@@ -27,5 +27,8 @@ utoipa-axum = "*"
 utoipa-swagger-ui = {version = "*", features = ["axum"]}
 chrono-tz.workspace = true
 
+[dev-dependencies]
+ordinator-scheduling-environment.path = "../ordinator-scheduling-environment"
+
 # [target.'cfg(not(target_env = "msvc"))'.dependencies]
 # tikv-jemallocator = {version = "0.6"}

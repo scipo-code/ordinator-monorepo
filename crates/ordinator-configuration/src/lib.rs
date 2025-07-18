@@ -29,7 +29,8 @@ use user_interface::EventColors;
 // Remember! You have a single source of all configurations here,
 // so there is no reason to question that in the system.
 #[derive(Debug)]
-pub struct SystemConfigurations {
+pub struct SystemConfigurations
+{
     pub data_locations: BaptisteToml,
     pub throttling: Throttling,
     pub user_interface: EventColors,
@@ -41,8 +42,10 @@ impl SystemConfigurationTrait for SystemConfigurations {}
 // FIX [ ]
 // This is a good initial approach but remember to make it better if you have to
 // revisit it.
-impl SystemConfigurations {
-    pub fn read_all_configs() -> Result<Arc<ArcSwap<SystemConfigurations>>> {
+impl SystemConfigurations
+{
+    pub fn read_all_configs() -> Result<Arc<ArcSwap<SystemConfigurations>>>
+    {
         let baptiste_data_locations_contents =
             std::fs::read_to_string("./configuration/data_locations/baptiste_data_locations.toml")
                 .unwrap();
@@ -70,19 +73,11 @@ impl SystemConfigurations {
             user_interface: event_colors,
             database_config: database_path.to_owned(),
         }))))
-        // TODO [ ]
-        // Integrate this if you have issues with data initialization
-        // let file_string = dotenvy::var("ORDINATOR_INPUT")
-        //     .expect("The ORDINATOR_INPUT environment variable have to be
-        // set");
-
-        // let mut file_path = PathBuf::new();
-
-        // file_path.push(&file_string);
     }
 
     // This is actually a `From <SystemConfiguration> for StrateticOptions`
 }
+
 // This should be a part of the creation of the `SchedulingEnvironment`
 // #[test]
 // fn test_read_config() {

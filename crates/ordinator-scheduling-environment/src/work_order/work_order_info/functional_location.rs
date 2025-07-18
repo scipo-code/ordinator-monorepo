@@ -18,9 +18,10 @@ impl FunctionalLocation
     pub fn new(functional_location: &str) -> Self
     {
         let asset_string = functional_location
-            .split(' ')
+            .split('/')
             .next()
-            .expect("All work orders need to have an Asset");
+            .expect("All work orders need to have an Asset")
+            .trim();
 
         let asset = Asset::new_from_string(asset_string).unwrap_or(Asset::Unknown);
         Self {
@@ -31,22 +32,32 @@ impl FunctionalLocation
 
     pub fn sector(&self) -> Option<&str>
     {
-        self.string.split('/').nth(1)
+        self.string.split('/').nth(1).map(|str| str.trim())
     }
 
     pub fn system(&self) -> Option<char>
     {
-        self.string.split('/').nth(2)?.chars().nth(1)
+        self.string
+            .split('/')
+            .nth(2)
+            .map(|str| str.trim())?
+            .chars()
+            .nth(0)
     }
 
     pub fn subsystem(&self) -> Option<char>
     {
-        self.string.split('/').nth(2)?.chars().nth(1)
+        self.string
+            .split('/')
+            .nth(2)
+            .map(|str| str.trim())?
+            .chars()
+            .nth(1)
     }
 
     pub fn equipment_tag(&self) -> Option<&str>
     {
-        self.string.split('/').nth(3)
+        self.string.split('/').nth(3).map(|str| str.trim())
     }
 }
 
@@ -92,5 +103,42 @@ impl IntoExcelData for FunctionalLocation
     {
         let value = self.string;
         worksheet.write_string_with_format(row, col, value, format)
+    }
+}
+
+#[cfg(test)]
+mod tests
+{
+    use super::FunctionalLocation;
+    use crate::Asset;
+
+    #[test]
+    fn test_functional_location_string_parsing()
+    {
+        let functional_location_string_0 = "DF/A/09/RA-REA";
+        let functional_location_0 = FunctionalLocation::new(functional_location_string_0);
+        assert_eq!(functional_location_0.asset, Asset::DF);
+        assert_eq!(functional_location_0.sector(), Some("A"));
+        assert_eq!(functional_location_0.system(), Some('0'));
+        assert_eq!(functional_location_0.subsystem(), Some('9'));
+        assert_eq!(functional_location_0.equipment_tag(), Some("RA-REA"));
+
+        let functional_location_string_1 = " DF  / A / 09 /  RA-REA";
+        let functional_location_1 = FunctionalLocation::new(functional_location_string_1);
+        assert_eq!(functional_location_1.asset, Asset::DF);
+        assert_eq!(functional_location_1.sector(), Some("A"));
+        assert_eq!(functional_location_1.system(), Some('0'));
+        assert_eq!(functional_location_1.subsystem(), Some('9'));
+        assert_eq!(functional_location_1.equipment_tag(), Some("RA-REA"));
+
+        let functional_location_string_2 = "TEST  / A / 09 /  RA-REA";
+        let functional_location_2 = FunctionalLocation::new(functional_location_string_2);
+        dbg!(&functional_location_2);
+
+        assert_eq!(functional_location_2.asset, Asset::Test);
+        assert_eq!(functional_location_2.sector(), Some("A"));
+        assert_eq!(functional_location_2.system(), Some('0'));
+        assert_eq!(functional_location_2.subsystem(), Some('9'));
+        assert_eq!(functional_location_2.equipment_tag(), Some("RA-REA"));
     }
 }

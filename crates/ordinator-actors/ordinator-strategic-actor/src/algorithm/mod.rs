@@ -67,13 +67,13 @@ use crate::messages::responses::StrategicResponseScheduling;
 
 #[derive(Debug)]
 pub struct StrategicAlgorithm<Ss>(
-    pub Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>,
+    pub Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>,
 )
 where
     StrategicSolution: Solution,
     StrategicParameters: Parameters,
     Ss: SystemSolutions,
-    Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
+    Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>:
         AbLNSUtils;
 
 impl<Ss> Deref for StrategicAlgorithm<Ss>
@@ -81,7 +81,7 @@ where
     Ss: SystemSolutions,
 {
     type Target =
-        Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>;
+        Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -98,14 +98,14 @@ where
 
 impl<Ss> ActorBasedLargeNeighborhoodSearch for StrategicAlgorithm<Ss>
 where
-    Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
+    Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>:
         AbLNSUtils<SolutionType = StrategicSolution>,
     StrategicSolution: Solution,
     StrategicParameters: Parameters,
     Ss: SystemSolutions<Strategic = StrategicSolution>,
 {
     type Algorithm =
-        Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>;
+        Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>;
     type Options = StrategicOptions;
 
     fn incorporate_system_solution(&mut self) -> Result<bool> {
@@ -541,7 +541,7 @@ where
                 .sum();
 
             if loading - capacity > 0.0 {
-                strategic_objective_value.resource_penalty.1 += (loading - capacity) as u64
+                strategic_objective_value.resource_penalty.1 += (loading - capacity) as i64
             }
         }
     }
@@ -1571,12 +1571,12 @@ fn determine_difference_resources(
     difference_resources
 }
 
-pub fn calculate_period_difference(scheduled_period: &Period, latest_period: &Period) -> u64 {
+pub fn calculate_period_difference(scheduled_period: &Period, latest_period: &Period) -> i64 {
     let scheduled_period_date = scheduled_period.end_date().to_owned();
     let latest_date = latest_period.end_date();
     let duration = scheduled_period_date.signed_duration_since(latest_date);
     let days = duration.num_days();
-    std::cmp::max(days / 7, 0) as u64
+    std::cmp::max(days / 7, 0) as i64
 }
 
 
@@ -1829,7 +1829,7 @@ where
 }
 
 impl<Ss>
-    From<Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>>
+    From<Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>>
     for StrategicAlgorithm<Ss>
 where
     Ss: SystemSolutions,
@@ -1838,7 +1838,7 @@ where
         value: Algorithm<
             StrategicSolution,
             StrategicParameters,
-            PriorityQueue<WorkOrderNumber, u64>,
+            PriorityQueue<WorkOrderNumber, i64>,
             Ss,
         >,
     ) -> Self {
@@ -1862,7 +1862,7 @@ mod tests {
             locked_in_period: Option<Period>,
             excluded_periods: HashSet<Period>,
             latest_period: Period,
-            weight: u64,
+            weight: i64,
             work_load: HashMap<Resources, Work>,
         ) -> Self {
             Self {
