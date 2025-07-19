@@ -39,6 +39,22 @@ submit an issue. The --generator function can be used to generate shell completi
 will make imperium significantly more ergonomic.
 
 
+# Architecture
+Ordinator consists of several library crates and one binary crate:
+```bash
+crates/ordinator-actors  
+crates/ordinator-api-server # <-- Binary
+crates/ordinator-configuration
+crates/ordinator-contracts
+crates/ordinator-conversions
+crates/ordinator-imperium # <-- Binary WARN No longer active
+crates/ordinator-orchestrator
+crates/ordinator-orchestrator-actor-traits
+crates/ordinator-scheduling-environment
+crates/ordinator-total-data-processing
+```
+
+
 
 
 <!-- # Documentation -->
