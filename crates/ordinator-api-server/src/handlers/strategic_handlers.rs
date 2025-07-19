@@ -40,7 +40,7 @@ use crate::routes::api::AppError;
     )
 )]
 pub async fn get_scheduler_work_orders(
-    State(_orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     Path(asset): Path<AssetNames>,
 ) -> Result<Json<SchedulerWorkOrderDto>, AppError>
 {
@@ -50,7 +50,7 @@ pub async fn get_scheduler_work_orders(
     // WARN: You are beginning to feel drained again. You should grap something to
     // eat again.
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
-    let system_solution = _orchestrator
+    let system_solution = orchestrator
         .system_solutions
         .lock()
         .unwrap()
@@ -59,7 +59,7 @@ pub async fn get_scheduler_work_orders(
         .map_err(|e| AppError::Anyhow(e.to_string()))?
         .load();
 
-    let scheduling_environment = _orchestrator.scheduling_environment.lock().unwrap();
+    let scheduling_environment = orchestrator.scheduling_environment.lock().unwrap();
     Ok(Json(
         SchedulerWorkOrderDto::try_from((asset.clone(), scheduling_environment, system_solution))
             .expect("This should never fail"),
