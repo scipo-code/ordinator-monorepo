@@ -82,9 +82,12 @@ impl
     {
         let mut all_rows: Vec<SingleRowDto> = Vec::new();
 
-        let work_orders = value.1.work_orders.clone();
         let system_solution = value.2;
-        let work_orders_by_asset: Vec<WorkOrder> = work_orders
+
+        let work_orders_by_asset: Vec<WorkOrder> = value
+            .1
+            .work_orders
+            .clone()
             .inner
             .into_iter()
             .filter(|(_, wo)| wo.work_order_info.functional_location.asset == value.0)
@@ -92,10 +95,7 @@ impl
             .collect();
 
         for work_order in work_orders_by_asset {
-            let mut sorted_operations = work_order.operations.0.iter().collect::<Vec<_>>();
-
-            sorted_operations
-                .sort_unstable_by(|value1, value2| value1.0.partial_cmp(value2.0).unwrap());
+            let sorted_operations = work_order.operations.0.iter().collect::<Vec<_>>();
 
             let strategic_period = system_solution
                 .strategic()?
