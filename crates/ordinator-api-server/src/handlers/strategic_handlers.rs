@@ -127,7 +127,7 @@ where
     )
 )]
 pub async fn assign_work_order_to_period(
-    State(_orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     Path((asset_dto, work_order_number_dto, period_dto)): Path<(
         AssetNames,
         WorkOrderNumberDto,
@@ -143,7 +143,7 @@ pub async fn assign_work_order_to_period(
     // TODO [ ] add a `bus` for each `Asset`
     let _asset = Asset::try_from(asset_dto).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let mut scheduling_environment = _orchestrator.scheduling_environment.lock().unwrap();
+    let mut scheduling_environment = orchestrator.scheduling_environment.lock().unwrap();
 
     let work_order_number = WorkOrderNumber::from(work_order_number_dto);
     let period_option = scheduling_environment
@@ -182,7 +182,7 @@ pub async fn assign_work_order_to_period(
     let state_link = StateLink::WorkOrders(vec![work_order_number]);
 
     // You are doing what you should have done a long time ago.
-    _orchestrator
+    orchestrator
         .state_link_bus
         .lock()
         .unwrap()
