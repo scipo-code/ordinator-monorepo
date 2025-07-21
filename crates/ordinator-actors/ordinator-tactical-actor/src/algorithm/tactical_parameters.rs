@@ -6,7 +6,9 @@ use std::sync::MutexGuard;
 
 use anyhow::Context;
 use anyhow::Result;
+use chrono::DateTime;
 use chrono::NaiveDate;
+use chrono::Utc;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::day::Day;
@@ -168,10 +170,9 @@ impl TacticalParameter
     }
 }
 
-// Okay so
 // You cannot make a forced method for the `tactical` as you do not know where
 // to fit them in this.
-// TODO [ ] This is lacking the earliest_strat_day. That is not good that
+// TODO [x] This is lacking the earliest_strat_day. That is not good that
 // it is missing.
 #[derive(Clone, Serialize, Debug)]
 pub struct OperationParameter
@@ -184,6 +185,9 @@ pub struct OperationParameter
     pub operating_time: Work,
     pub work_remaining: Work,
     pub resource: Resources,
+    // You did something right here. What was that? I am not really sure here.
+    pub earliest_start_date: DateTime<Utc>,
+    pub earliest_finish_date: DateTime<Utc>,
 }
 
 impl OperationParameter
@@ -203,6 +207,8 @@ impl OperationParameter
             operating_time,
             work_remaining: operation.operation_info.work_remaining,
             resource: operation.resource,
+            earliest_start_date: operation.operation_dates.earliest_start_datetime,
+            earliest_finish_date: operation.operation_dates.earliest_finish_datetime,
         })
     }
 }

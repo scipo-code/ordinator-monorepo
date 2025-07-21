@@ -245,10 +245,10 @@ impl OperationalParameter
         //
         let combined_time = (work + _preparation).in_seconds();
         let operation_time_delta = TimeDelta::new(combined_time, 0).unwrap();
-        if work.to_f64() >= 0.0 {
+        if work.to_f64() == 0.0 {
             return None;
         }
-        if operation_time_delta > TimeDelta::new(0, 0).unwrap() {
+        if operation_time_delta == TimeDelta::new(0, 0).unwrap() {
             return None;
         }
         Some(Self {

@@ -17,6 +17,7 @@ async fn test_complete_system() -> anyhow::Result<()>
     let environment = ordinator_orchestrator::Environment::Test(
         Utc.with_ymd_and_hms(2025, 1, 1, 7, 0, 0).unwrap(),
     );
+    dbg!(&scheduling_environment);
     let (orchestrator, error_handle, system_clock_handle) =
         Orchestrator::<TotalSystemSolution>::builder()
             .logging(setup_logging())
