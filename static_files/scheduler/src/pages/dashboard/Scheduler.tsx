@@ -1,50 +1,24 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 import { SchedulingData, useTableColDefs } from './scheduler/ColDef';
-
+import { fetchWorkOrders, useAssignWorkorderToPeriod } from './scheduler/ApiHandlers';
+import { PeriodDto } from '../../../../../crates/ordinator-contracts/bindings/PeriodDto';
 
 
 // import { agGridThemeLight } from "./theme";
 // https://www.youtube.com/watch?v=TrKlKF5au6c&ab_channel=m6io
 /** snake_case → "Title Case" */
 
-
-  
-  
-const fetchWorkOrders = async (
-  asset: string,
-): Promise<SchedulingData[]> => {
-  const res = await fetch(
-    `/api/v1/scheduler/scheduler/work_orders_with_scheduling/${asset}`,
-  );
-
-  if (!res.ok) {
-    // propagate a rejected promise so React Query sets "error"
-    const body = await res.text();
-    throw new Error(`(${res.status}) ${body}`);
-  }
-
-  // The Rust DTO is `Vec<SingleRowDto>` => serialises to a bare JSON array
-  return (await res.json()) as SchedulingData[];
-};
-
-// const onReschedule = (row: SingleRowDto) => {
-//   // TODO Do something
-//   console.log("Reschedule workorder:", row.work_order_number);
-// }
-
-
 const Scheduler: React.FC = () => {
   const { asset } = useParams<{ asset: string }>();
-  const navigate = useNavigate();
   const columns = useTableColDefs();
-  
+    
   /* Safeguard against missing /asset */
-  React.useEffect(() => {
-    if (!asset) navigate("/dashboard/DF");
-  }, [asset, navigate]);
+  if (!asset) {
+    return <Navigate to="/dashboard/DF" replace />;
+  }
 
   /* Fetch with React Query */
   const {
@@ -61,6 +35,20 @@ const Scheduler: React.FC = () => {
     staleTime: 60_000,              // cache 1 min
   });
 
+
+  const assignMutation = useAssignWorkorderToPeriod();
+  const handleAssignPeriod = useCallback(
+    (row: SchedulingData) => {
+      assignMutation.mutate({
+        asset,
+        period: row.suggested_scheduled_period as PeriodDto,
+        workorder: row.work_order_number,
+      })
+    },
+    [asset, assignMutation],
+  )
+
+  
   if (!asset) return null;
 
   if (isLoading)
@@ -89,6 +77,11 @@ const Scheduler: React.FC = () => {
           className='h-full w-full'
           rowData={workOrders}
           columnDefs={columns}
+          context={
+          {
+            onAssign: handleAssignPeriod
+          }
+        }
           defaultColDef={{
             resizable: true,
             sortable: true,
