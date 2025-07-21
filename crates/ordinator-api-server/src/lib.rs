@@ -46,6 +46,7 @@ pub async fn start_application(
     // Here you can modify the [`SwaggerUi`]
     let swagger_config = Config::new(["/api-doc/openapi.json"])
         .display_request_duration(true)
+        .with_syntax_highlight(false)
         .try_it_out_enabled(true);
 
     let merged_app = app.0.merge(
@@ -58,5 +59,6 @@ pub async fn start_application(
     let server = axum_server::bind(addr).serve(merged_app.into_make_service());
 
     info!(target: "stdout", "System initialized (4 of 4): ordinator-api-server");
+    info!(target: "stdout", "Access the API documentation at: http://{}:{}/swagger", &addr.ip(), &addr.port());
     server
 }
