@@ -1,70 +1,194 @@
-import React, { useMemo } from 'react';
+import React, {memo, useCallback, useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef, } from 'ag-grid-community';
+import { ColDef, ICellRendererParams, } from 'ag-grid-community';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 
-import { SchedulerWorkOrderDto } from "../../../../../crates/ordinator-contracts/bindings/SchedulerWorkOrderDto.ts";
 import { SingleRowDto } from "../../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu.tsx';
+import { MoreHorizontal } from 'lucide-react';
 
-type SingleRowDtoWithOptions = SingleRowDto & {"menu": string};
+type SchedulingData = SingleRowDto & {action: string | null};
 
 // import { agGridThemeLight } from "./theme";
 // https://www.youtube.com/watch?v=TrKlKF5au6c&ab_channel=m6io
 /** snake_case → "Title Case" */
-const toTitle = (s: string): string =>
-  s.replace(/_/g, " ").replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1));
 
 
-export const useSchedulerColumns = () =>
-  useMemo<ColDef<SingleRowDto>[]>(() => {
-    const fields: (keyof SingleRowDto)[] = [
-      "scheduled_period",
-      "scheduled_start_date",
-      "priority",
-      "revision",
-      "work_order_type",
-      "main_work_ctr",
-      "operation_work_center",
-      "work_order_number",
-      "description_work_order",
-      "operation_short_text",
-      "material_status",
-      "system_status",
-      "user_status",
-      "work",
-      "actual_work",
-      "unloading_point",
-      "basic_start_date",
-      "basic_finish_date",
-      "earliest_start_date",
-      "earliest_finish_date",
-      "earliest_allowed_start_date",
-      "latest_allowed_finish_date",
-      "activity",
-      "functional_location",
-      "description_operation",
-      "subnetwork_of",
-      "system_condition",
-      "maintenance_plan",
-      "planner_group",
-      "maintenance_plant",
-      "pm_collective",
-      "room",
+const ActionMenu: React.FC<ICellRendererParams<SchedulingData>> = memo((({ data }) => {
+  const handleSelect = useCallback(() => {
+    if (data) console.log(data.work_order_number);
+  }, [data]);
+  
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button onClick={(e) => e.stopPropagation} className='p-1'>
+          <MoreHorizontal size={14} />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent side='right' align='start' onClick={(e) => e.stopPropagation()}>
+        <DropdownMenuItem onClick={handleSelect}>Accept</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+  
+}));
+  
+function useTableColDefs(): ColDef<SchedulingData>[] {
+  return useMemo((() => {
+    const base: ColDef[] = [
+      {
+        field: 'scheduled_period',
+        pinned: "left",
+        width: 120,
+      },
+      {
+        field: 'scheduled_start_date',
+        pinned: "left",
+        width: 120,
+      },
+      {
+        field: 'work_order_number',
+        pinned: "left",
+        width: 130,
+      },
+      {
+        field: 'action',
+        headerName: "",
+        width: 15,
+        cellStyle: {textAlign: "center"},
+        sortable: false,
+        filter: false,
+        editable: false,
+        suppressSizeToFit: true,
+        pinned: "left",
+        cellRenderer: ActionMenu,         
+      },
+      {
+         field: 'priority',
+         width: 100,
+      },
+      {
+         field: 'revision',
+         width: 100,
+      },
+      {
+         field: 'work_order_type',
+         width: 100,
+      },
+      {
+         field: 'main_work_ctr',
+         width: 100,
+      },
+      {
+         field: 'operation_work_center',
+         width: 100,
+      },
+      {
+         field: 'description_work_order',
+         width: 100,
+      },
+      {
+         field: 'operation_short_text',
+         width: 100,
+      },
+      {
+         field: 'material_status',
+         width: 100,
+      },
+      {
+         field: 'system_status',
+         width: 100,
+      },
+      {
+         field: 'user_status',
+         width: 100,
+      },
+      {
+         field: 'work',
+         width: 100,
+      },
+      {
+         field: 'actual_work',
+         width: 100,
+      },
+      {
+         field: 'unloading_point',
+         width: 100,
+      },
+      {
+         field: 'basic_start_date',
+         width: 100,
+      },
+      {
+         field: 'basic_finish_date',
+         width: 100,
+      },
+      {
+         field: 'earliest_start_date',
+         width: 100,
+      },
+      {
+         field: 'earliest_finish_date',
+         width: 100,
+      },
+      {
+         field: 'earliest_allowed_start_date',
+         width: 100,
+      },
+      {
+         field: 'latest_allowed_finish_date',
+         width: 100,
+      },
+      {
+         field: 'activity',
+         width: 100,
+      },
+      {
+         field: 'functional_location',
+         width: 100,
+      },
+      {
+         field: 'description_operation',
+         width: 100,
+      },
+      {
+         field: 'subnetwork_of',
+         width: 100,
+      },
+      {
+         field: 'system_condition',
+         width: 100,
+      },
+      {
+         field: 'maintenance_plan',
+         width: 100,
+      },
+      {
+         field: 'planner_group',
+         width: 100,
+      },
+      {
+         field: 'maintenance_plant',
+         width: 100,
+      },
+      {
+         field: 'pm_collective',
+         width: 100,
+      },
+      {
+         field: 'room',
+         width: 100,
+      }
     ];
-    return fields.map<ColDef<SingleRowDto>>(field => ({
-      field,
-      headerName: toTitle(field),
-      pinned: ["scheduled_period", "work_order_number"].includes(field)
-        ? "left"
-        : undefined,
-      width: 150,
-    }));
-  }, []);
+    return base;
+  }), [])
+};
   
 const fetchWorkOrders = async (
   asset: string,
-): Promise<SingleRowDto[]> => {
+): Promise<SchedulingData[]> => {
   const res = await fetch(
     `/api/v1/scheduler/scheduler/work_orders_with_scheduling/${asset}`,
   );
@@ -76,7 +200,7 @@ const fetchWorkOrders = async (
   }
 
   // The Rust DTO is `Vec<SingleRowDto>` => serialises to a bare JSON array
-  return (await res.json()) as SchedulerWorkOrderDto;
+  return (await res.json()) as SchedulingData[];
 };
 
 // const onReschedule = (row: SingleRowDto) => {
@@ -88,13 +212,13 @@ const fetchWorkOrders = async (
 const Scheduler: React.FC = () => {
   const { asset } = useParams<{ asset: string }>();
   const navigate = useNavigate();
+  const columns = useTableColDefs();
   
   /* Safeguard against missing /asset */
   React.useEffect(() => {
     if (!asset) navigate("/dashboard/DF");
   }, [asset, navigate]);
 
-  const columnDefs = useSchedulerColumns();
   /* Fetch with React Query */
   const {
     data: workOrders = [],          // default ↠ empty array
@@ -137,45 +261,13 @@ const Scheduler: React.FC = () => {
         <AgGridReact
           className='h-full w-full'
           rowData={workOrders}
-          // theme={agGridThemeLight}
-          columnDefs={columnDefs}
+          columnDefs={columns}
           defaultColDef={{
             resizable: true,
             sortable: true,
             filter: true,
             flex: 1,
-            minWidth: 100
           }}
-
-          // NOTE This is an enterprise feature costing 999 USD pr developer.
-          // getContextMenuItems={(
-          //   params: GetContextMenuItemsParams<SingleRowDto>
-          // ) => {
-          //   const defaultItems = [
-          //     "copy",
-          //     "copyWithHeaders",
-          //     "export"
-          //   ];
-
-          //   const row = params.node?.data;
-          //   if (!row) return defaultItems;
-            
-          //   const customItems: any[] = [
-          //     {
-          //       name: "Reschedule",
-          //       action: () => onReschedule(row),
-          //       icon: `<i class="fas fa-calendar-alt"></i>`
-          //     },
-          //     {
-          //       name: "Lock In Period",
-          //       action: () => {
-          //         console.log("Lock: ", row.work_order_number);
-          //       }
-          //     }
-          //   ];
-
-          //   return [...defaultItems, "separator", ...customItems];
-          // }}
         />
       </div>
     </div>
