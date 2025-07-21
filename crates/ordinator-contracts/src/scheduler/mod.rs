@@ -28,7 +28,7 @@ pub struct SchedulerWorkOrderDto(Vec<SingleRowDto>);
 #[derive(Serialize, ToSchema, TS)]
 pub struct SingleRowDto
 {
-    scheduled_period: String,
+    suggested_scheduled_period: String,
     scheduled_start_date: String,
     priority: String,
     revision: String,
@@ -144,7 +144,7 @@ impl
                 // You are not good enough to code. You are good enough to do this, Brian
                 // believes in you. You simply have to keep working.
                 let one_row = SingleRowDto {
-                    scheduled_period: strategic_schedule.clone(),
+                    suggested_scheduled_period: strategic_schedule.clone(),
                     scheduled_start_date: option_day.to_string(),
                     priority: work_order.work_order_info.priority.to_string(),
                     revision: work_order.work_order_info.revision.to_string(),

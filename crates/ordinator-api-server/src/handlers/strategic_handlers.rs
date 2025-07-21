@@ -27,7 +27,7 @@ use crate::routes::api::AppError;
 #[debug_handler]
 #[utoipa::path(
     get,
-    path = "/scheduler/work_orders_with_scheduling/{asset}",
+    path = "/work_orders_with_scheduling/{asset}",
 
     tag = "Scheduler",
     params (
@@ -113,7 +113,7 @@ where
 #[debug_handler]
 #[utoipa::path(
     post,
-    path = "/scheduler/{asset}/assign_work_order_to_period/{work_order_number}/{period}",
+    path = "/{asset}/assign_work_order_to_period/{work_order_number}/{period}",
     tag = "Scheduler",
     params (
         ("asset" = AssetNames, Path),
