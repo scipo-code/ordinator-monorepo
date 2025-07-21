@@ -963,6 +963,8 @@ pub enum TimeCommand
     Advance(chrono::Duration),
     SetTime(chrono::DateTime<Utc>),
 }
+// ISSUE #000 TODO [ ] 2025-07-21 fix the message channel. Make the
+// [`Orchestrator`] await the [`SystemClock`].
 pub struct TestSystemClock
 {
     current_time: chrono::DateTime<chrono::Utc>,

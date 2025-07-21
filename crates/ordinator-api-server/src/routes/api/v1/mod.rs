@@ -35,6 +35,9 @@ pub async fn api_scope(
         .routes(routes!(crate::handlers::orchestrator_handlers::days))
         .routes(routes!(crate::handlers::orchestrator_handlers::periods))
         .routes(routes!(
+            crate::handlers::orchestrator_handlers::system_clock
+        ))
+        .routes(routes!(
             crate::handlers::orchestrator_handlers::work_order_info
         ))
     // .nest("/supervisor", router)
