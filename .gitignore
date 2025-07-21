@@ -4,10 +4,10 @@
 /target/
 
 # Logging
-/logging/logs/*.log.*
-/logging/logs/*.log
-**.log
-**.log*
+**/logging/logs/*.log.*
+**/logging/logs/*.log
+
+
 *.folded
 
 /temp_scheduling_environment_database/*.json
