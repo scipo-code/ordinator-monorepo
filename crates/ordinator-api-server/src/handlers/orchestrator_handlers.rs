@@ -14,7 +14,6 @@ use axum::response::Response;
 use axum::response::Result;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::TotalSystemSolution;
-
 use ordinator_contracts::scheduler::WorkOrderSingleRowSimpleDto;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
@@ -22,7 +21,6 @@ use ordinator_orchestrator::OrchestratorRequest;
 use ordinator_orchestrator::WorkOrderNumber;
 
 use crate::routes::api::AppError;
-
 
 // This should be deleted and replaced with the other handler. I do not
 // see a different way around it.
@@ -149,6 +147,25 @@ pub async fn work_order_info(
 
     let work_order_dto = WorkOrderSingleRowSimpleDto::from(work_order.clone());
     Ok(Json(work_order_dto).into_response())
+}
+
+#[utoipa::path(
+    get,
+    tag = "General",
+    path = "/system_clock",
+    responses((status = 200, body = String))
+)]
+pub async fn system_clock(
+    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+) -> Result<Response, AppError>
+{
+    let system_datetime = orchestrator
+        .system_clock_tick_receiver
+        .recv()
+        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .to_rfc3339();
+
+    Ok(Json(system_datetime).into_response())
 }
 
 // This should I think that the best thing to do here is to make the
