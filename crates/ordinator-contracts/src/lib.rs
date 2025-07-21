@@ -24,6 +24,7 @@ pub mod technician;
 pub struct AssetNames(String);
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
+#[ts(export)]
 pub struct PeriodDto(pub String);
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
