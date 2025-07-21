@@ -54,7 +54,11 @@ crates/ordinator-scheduling-environment
 crates/ordinator-total-data-processing
 ```
 
+## Testing
 
+```bash
+cargo test test_complete_system -- --no-capture
+```
 
 
 <!-- # Documentation -->
