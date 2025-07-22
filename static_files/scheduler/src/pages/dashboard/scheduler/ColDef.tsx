@@ -6,6 +6,8 @@ import { MoreHorizontal } from 'lucide-react';
 import { SingleRowDto } from "../../../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
 import { PeriodDto } from '../../../../../../crates/ordinator-contracts/bindings/PeriodDto.ts';
 import { PeriodStatus } from '../../../../../../crates/ordinator-contracts/bindings/PeriodStatus.ts';
+import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command.tsx';
+import { CommandEmpty } from 'cmdk';
 export type SchedulingData = SingleRowDto & {action: string | null};
 
 
@@ -63,15 +65,22 @@ const ActionMenu: React.FC<ActionMenuParams> = memo((({ data, context}) => {
         <DropdownMenuSeparator/>
         <DropdownMenuSub>
            <DropdownMenuSubTrigger>Lock in period:</DropdownMenuSubTrigger>
-           <DropdownMenuPortal>
-              <DropdownMenuSubContent>
+           <DropdownMenuSubContent>
+           <Command>
+              <CommandInput placeholder='Lock in period...' autoFocus={true}/>
+              <CommandList>
+                 <CommandEmpty>No period found.</CommandEmpty>
+                 <CommandGroup>
                      {
                      periods.map(p => (
-                        <DropdownMenuItem key={p} onSelect={() => onAssignPeriod(data, p)}>{p}</DropdownMenuItem>
+                        <CommandItem key={p} value={p} onSelect={() => onAssignPeriod(data, p)}>{p}</CommandItem>
                      ))
                   }
-            </DropdownMenuSubContent>
-        </DropdownMenuPortal>
+
+            </CommandGroup>
+         </CommandList>
+      </Command>
+     </DropdownMenuSubContent>
       </DropdownMenuSub>
       </DropdownMenuContent>
     </DropdownMenu>
