@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { useParams, Navigate } from 'react-router-dom';
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { SchedulingData, useTableColDefs } from './scheduler/ColDef';
-import { fetchPeriods, fetchWorkOrders, useAssignWorkorderToPeriod } from './scheduler/ApiHandlers';
+import { fetchPeriods, fetchSystemClock, fetchWorkOrders, useAssignWorkorderToPeriod } from './scheduler/ApiHandlers';
 import { PeriodDto } from '../../../../../crates/ordinator-contracts/bindings/PeriodDto';
+import { parseISO, format } from 'date-fns';
 
 
 // import { agGridThemeLight } from "./theme";
@@ -46,14 +47,14 @@ const Scheduler: React.FC = () => {
     staleTime: Infinity,
   });
 
-  const qc = useQueryClient();
-  useEffect(() => {
-    qc.prefetchQuery({
-      queryKey: ["periods"],
-      queryFn: fetchPeriods
-    });
-  }, [qc]);
 
+  const {
+    data: systemclock,
+  } = useQuery({
+    queryKey: ["systemclock"],
+    queryFn: fetchSystemClock,
+    staleTime: Infinity,
+  });
   
   const assignMutation = useAssignWorkorderToPeriod();
   const handleAssignPeriod = useCallback(
@@ -75,7 +76,7 @@ const Scheduler: React.FC = () => {
 
   
   if (!asset) return null;
-
+  if (!systemclock) return;
 
   // Handling Scheduling data varians
   if (isLoading)
@@ -100,7 +101,7 @@ const Scheduler: React.FC = () => {
 
   return (
     <div className="p-4 flex flex-col flex-1 min-h-0 overflow-hidden">
-      <h2 className="text-2xl font-bold mb-4 shrink-0">Work Orders - {asset}</h2>
+      <h2 className="text-2xl font-bold mb-4 shrink-0">Work Orders - {asset}: {format(parseISO(systemclock), "PPP p")}</h2>
       <div className="flex-1 min-h-0">
         <AgGridReact
           className='h-full w-full'
