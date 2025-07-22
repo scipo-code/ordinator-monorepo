@@ -8,6 +8,7 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::TacticalInterface;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::operation::Operation;
 use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::MaterialStatus;
@@ -22,6 +23,29 @@ use crate::TotalSystemSolution;
 #[ts(export)]
 pub struct SchedulerWorkOrderDto(Vec<SingleRowDto>);
 
+#[derive(Serialize, ToSchema, TS, Clone)]
+#[ts(export)]
+enum PeriodStatus
+{
+    Frozen,
+    Draft,
+    Active,
+    NotScheduled,
+}
+
+impl PeriodStatus
+{
+    pub fn status_for(period: &Period, periods: &[Period]) -> PeriodStatus
+    {
+        // NOTE: Is this also correct for other firms or is this Total Specific?
+        match period {
+            p if *p == periods[0] => PeriodStatus::Frozen,
+            p if *p == periods[1] => PeriodStatus::Draft,
+            _ => PeriodStatus::Active,
+        }
+    }
+}
+
 // This should all be strings. You should reuse the logic from the other
 // component. I do not see what other aspect that we have.
 #[derive(Serialize, ToSchema, TS)]
@@ -29,6 +53,7 @@ pub struct SingleRowDto
 {
     suggested_scheduled_period: String,
     scheduled_start_date: String,
+    period_status: PeriodStatus,
     priority: String,
     revision: String,
     work_order_type: String,
@@ -94,6 +119,9 @@ impl
             .map(|(_, wo)| wo)
             .collect();
 
+        let periods = value.1.time_environment.periods.clone();
+        let periods_for_frozen_and_draft = [periods[0].clone(), periods[1].clone()];
+
         for work_order in work_orders_by_asset {
             let sorted_operations = work_order.operations.0.iter().collect::<Vec<_>>();
 
@@ -121,6 +149,16 @@ impl
                 None => "Work Order not part of scheduling process".to_string(),
             };
 
+            let period_status = match strategic_period {
+                Some(opt_period) => match opt_period {
+                    Some(period) => {
+                        PeriodStatus::status_for(&period, &periods_for_frozen_and_draft)
+                    }
+                    None => PeriodStatus::NotScheduled,
+                },
+                None => PeriodStatus::NotScheduled,
+            };
+
             for activity in sorted_operations {
                 let tactical_solution = &system_solution
                     .tactical
@@ -144,6 +182,7 @@ impl
                 let one_row = SingleRowDto {
                     suggested_scheduled_period: strategic_schedule.clone(),
                     scheduled_start_date: option_day.to_string(),
+                    period_status: period_status.clone(),
                     priority: work_order.work_order_info.priority.to_string(),
                     revision: work_order.work_order_info.revision.to_string(),
                     work_order_type: work_order.work_order_info.work_order_type.to_string(),
