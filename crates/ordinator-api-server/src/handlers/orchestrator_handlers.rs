@@ -89,7 +89,7 @@ pub async fn periods(State(orchestrator): State<Arc<Orchestrator<TotalSystemSolu
     let periods: Vec<_> = orchestrator
         .scheduling_environment
         .lock()
-        .expect("Should ever happen")
+        .expect("Should never happen")
         .time_environment
         .periods
         .iter()
