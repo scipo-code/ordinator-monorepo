@@ -1,33 +1,57 @@
 import { ColDef, ICellRendererParams, } from 'ag-grid-community';
-import { memo, useCallback, useMemo } from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu.tsx';
+import { memo, useMemo } from "react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuPortal, DropdownMenuSubTrigger, DropdownMenuSubContent} from '@/components/ui/dropdown-menu.tsx';
 import { MoreHorizontal } from 'lucide-react';
 
 import { SingleRowDto } from "../../../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
+import { PeriodDto } from '../../../../../../crates/ordinator-contracts/bindings/PeriodDto.ts';
 export type SchedulingData = SingleRowDto & {action: string | null};
 
 
 interface ActionMenuParams extends ICellRendererParams<SchedulingData> {
    context: {
-      onAssign: (row: SchedulingData) => void;
-   };
+      onAssignPeriod: (row: SchedulingData, period?: PeriodDto) => void;
+      periods: PeriodDto[];
+   },
 }
 
 
-const ActionMenu: React.FC<ActionMenuParams> = memo((({ data, context }) => {
-  const handleSelect = useCallback(() => {
-     if (data) context.onAssign(data);
-  }, [data,context]);
+const ActionMenu: React.FC<ActionMenuParams> = memo((({ data, context}) => {
+   const { onAssignPeriod, periods } = context;
+   // const [chosenPeriod, setChosenPeriod] = useState<PeriodDto | null>(null);
+   if (!data) return null;
+
+   const acceptSuggested = () => {
+      if (data) onAssignPeriod(data);
+   };
+  
+
+
   
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button onClick={(e) => e.stopPropagation} className='p-1'>
+        <button onClick={(e) => e.stopPropagation()} className='p-1'>
           <MoreHorizontal size={14} />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent side='right' align='start' onClick={(e) => e.stopPropagation()}>
-        <DropdownMenuItem onClick={handleSelect}>Accept {data?.suggested_scheduled_period}</DropdownMenuItem>
+        <DropdownMenuItem onClick={acceptSuggested} disabled={data?.suggested_scheduled_period === "Could not be scheduled under current business rules"}>
+           Accept {data?.suggested_scheduled_period}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator/>
+        <DropdownMenuSub>
+           <DropdownMenuSubTrigger>Lock in period:</DropdownMenuSubTrigger>
+           <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                     {
+                     periods.map(p => (
+                        <DropdownMenuItem key={p} onSelect={() => onAssignPeriod(data, p)}>{p}</DropdownMenuItem>
+                     ))
+                  }
+            </DropdownMenuSubContent>
+        </DropdownMenuPortal>
+      </DropdownMenuSub>
       </DropdownMenuContent>
     </DropdownMenu>
   );
