@@ -20,15 +20,27 @@ export const fetchWorkOrders = async (
   return (await res.json()) as SchedulingData[];
 };
 
+export const fetchPeriods = async (): Promise<PeriodDto[]>  => {
+  const res = await fetch(
+    '/api/v1/periods',
+  );
 
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`(${res.status}) ${body}`);
+  }
+
+  return (await res.json()) as PeriodDto[];
+  
+}
 
 async function assignWorkordertoPeriod(
   asset: string,
-  period: PeriodDto,
   workorder: string,
+  period: PeriodDto,
 ): Promise<string> {
   const url = `/api/v1/scheduler/${encodeURIComponent(asset)}` +
-                       `/assign_work_order_to_period/${encodeURIComponent(workorder.toString())}` +
+                       `/assign_work_order_to_period/${encodeURIComponent(workorder)}` +
                        `/${encodeURIComponent(period)}`;
 
   const res = await fetch(url, { method: "POST" });
@@ -47,12 +59,12 @@ export function useAssignWorkorderToPeriod() {
     useMutation({
       mutationFn: (params: {
         asset: string;
-        period: PeriodDto;
         workorder: string;
+        period: PeriodDto;
       }) => assignWorkordertoPeriod(
           params.asset,
-          params.period,
           params.workorder,
+          params.period,
         ),
 
         onSuccess: () => {
