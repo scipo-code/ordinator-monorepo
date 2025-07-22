@@ -5,8 +5,32 @@ import { MoreHorizontal } from 'lucide-react';
 
 import { SingleRowDto } from "../../../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
 import { PeriodDto } from '../../../../../../crates/ordinator-contracts/bindings/PeriodDto.ts';
+import { PeriodStatus } from '../../../../../../crates/ordinator-contracts/bindings/PeriodStatus.ts';
 export type SchedulingData = SingleRowDto & {action: string | null};
 
+
+const PeriodStatusColors: Record<PeriodStatus, string> = {
+   Frozen: '#fcba03',
+   Draft: '#000080',
+   Active: '#ffffff',
+   NotScheduled: '#8c1212',
+}
+
+type PeriodStatusBadgeProps = ICellRendererParams<{ period_status: PeriodStatus }>;
+
+const PeriodStatusBadge  = memo(({value}: PeriodStatusBadgeProps ) => {
+   if (!value) return;
+
+   return (
+      <span
+         className='inline-block rounded-full px-2.5 py-0.5 text-xs text-white'
+         style={{
+            background: PeriodStatusColors[value as PeriodStatus] ?? '#ccc',
+         }}
+      >{value}
+      </span>
+   )
+})
 
 interface ActionMenuParams extends ICellRendererParams<SchedulingData> {
    context: {
@@ -24,9 +48,6 @@ const ActionMenu: React.FC<ActionMenuParams> = memo((({ data, context}) => {
    const acceptSuggested = () => {
       if (data) onAssignPeriod(data);
    };
-  
-
-
   
   return (
     <DropdownMenu>
@@ -55,8 +76,10 @@ const ActionMenu: React.FC<ActionMenuParams> = memo((({ data, context}) => {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-  
 }));
+
+
+
 export function useTableColDefs(): ColDef<SchedulingData>[] {
   return useMemo((() => {
     const base: ColDef[] = [
@@ -77,6 +100,13 @@ export function useTableColDefs(): ColDef<SchedulingData>[] {
         headerName: 'work order number',
         pinned: "left",
         minWidth: 130,
+      },
+      {
+        field: 'period_status',
+        headerName: 'period status',
+        pinned: "left",
+        minWidth: 20,
+        cellRenderer: PeriodStatusBadge,
       },
       {
         field: 'action',

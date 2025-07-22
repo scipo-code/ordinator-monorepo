@@ -34,6 +34,19 @@ export const fetchPeriods = async (): Promise<PeriodDto[]>  => {
   
 }
 
+type SystemClock = string;
+
+export const fetchSystemClock = async (): Promise<SystemClock> => {
+  const res = await fetch('/api/v1/system_clock')
+
+  if (!res.ok) {
+    throw new Error(await res.text());
+  }
+
+  return (await res.json()) as SystemClock
+}
+
+
 async function assignWorkordertoPeriod(
   asset: string,
   workorder: string,
