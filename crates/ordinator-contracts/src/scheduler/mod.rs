@@ -153,10 +153,13 @@ impl
 
             let period_status = match strategic_period {
                 Some(opt_period) => match opt_period {
-                    Some(period) => {
+                    WhereIsWorkOrder::Strategic(period) => {
                         PeriodStatus::status_for(&period, &periods_for_frozen_and_draft)
                     }
-                    None => PeriodStatus::NotScheduled,
+                    WhereIsWorkOrder::Tactical(period) => {
+                        PeriodStatus::status_for(&period, &periods_for_frozen_and_draft)
+                    }
+                    WhereIsWorkOrder::NotScheduled => PeriodStatus::NotScheduled,
                 },
                 None => PeriodStatus::NotScheduled,
             };
@@ -293,7 +296,8 @@ impl
 
 type ResourcesDto = String;
 
-#[derive(Serialize, ToSchema)]
+#[derive(Serialize, ToSchema, TS)]
+#[ts(export)]
 pub struct WorkOrderSingleRowSimpleDto
 {
     work_order_number: u64,
@@ -305,7 +309,7 @@ pub struct WorkOrderSingleRowSimpleDto
     vendor: bool,
 }
 
-#[derive(Serialize, ToSchema)]
+#[derive(Serialize, ToSchema, TS)]
 struct OperationDto
 {
     activity: u64,

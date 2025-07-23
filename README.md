@@ -61,6 +61,7 @@ crates/ordinator-total-data-processing
 
 ```bash
 cargo test test_complete_system -- --no-capture
+cargo test test_complete_system -- --no-capture --ignored
 ```
 
 
