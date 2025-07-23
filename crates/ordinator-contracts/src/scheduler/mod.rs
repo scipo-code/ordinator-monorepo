@@ -36,12 +36,12 @@ enum PeriodStatus
 
 impl PeriodStatus
 {
-    pub fn status_for(period: &Period, periods: &[Period]) -> PeriodStatus
+    pub fn status_for(period: &Period, frozen_and_draft_periods: &[Period]) -> PeriodStatus
     {
         // NOTE: Is this also correct for other firms or is this Total Specific?
         match period {
-            p if *p == periods[0] => PeriodStatus::Frozen,
-            p if *p == periods[1] => PeriodStatus::Draft,
+            p if *p == frozen_and_draft_periods[0] => PeriodStatus::Frozen,
+            p if *p == frozen_and_draft_periods[1] => PeriodStatus::Draft,
             _ => PeriodStatus::Active,
         }
     }
