@@ -71,41 +71,41 @@ pub async fn get_scheduler_work_orders(
 #[utoipa::path(
     get,
     tag = "Scheduler",
-    path = "/period_for_work_order/{asset}",
+    path = "/work_orders_with_suggested_period/{asset}",
     params (
         ("asset" = AssetNames, Path),
     ),
     responses((status = 200, body = [HashMap<WorkOrderNumberDto, PeriodDto>]))
 )]
-pub async fn period_for_work_order<Ss>(
+pub async fn work_orders_with_suggested_period<Ss>(
     State(orchestrator): State<Arc<Orchestrator<Ss>>>,
     Path(asset): Path<Asset>,
 ) -> Result<Response, AppError>
 where
     Ss: SystemSolutions,
 {
-    let tactical_days = orchestrator
+    let strategic_periods = orchestrator
         .system_solutions
         .lock()
         .unwrap_or_else(|_| panic!("Could not lock the SystemSolution for Asset: {}", &asset));
-    let tactical_days = tactical_days
+    let strategic_periods = strategic_periods
         .get(&asset)
         .with_context(|| format!("SystemSolution for Asset: {} does not exist", &asset))
         .map_err(|e| AppError::Anyhow(e.to_string()))?
         .load();
-    let tactical_days = tactical_days
+    let strategic_periods = strategic_periods
         .strategic()
         .map_err(|_| {
             AppError::Anyhow(format!("No StrategicSolution exists for Asset: {}", &asset))
         })?
         .all_scheduled_tasks();
 
-    let tactical_days: Vec<_> = tactical_days
+    let strategic_periods: Vec<_> = strategic_periods
         .iter()
         .map(|f| (WorkOrderNumberDto(f.0.0), PeriodDto(f.1.period_string())))
         .collect();
 
-    Ok(Json(tactical_days).into_response())
+    Ok(Json(strategic_periods).into_response())
 }
 /// This handler updates the [`SchedulingEnvironment`] that the UnloadingPoint
 /// has been updated and sends a command
