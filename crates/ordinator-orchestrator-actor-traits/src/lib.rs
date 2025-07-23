@@ -366,7 +366,10 @@ pub trait StrategicInterface
 where
     Self: Clone + std::fmt::Debug + Eq + PartialEq,
 {
-    fn scheduled_task(&self, work_order_number: &WorkOrderNumber) -> Option<&Option<Period>>;
+    fn scheduled_task(
+        &self,
+        work_order_number: &WorkOrderNumber,
+    ) -> Option<&WhereIsWorkOrder<Period>>;
 
     fn supervisor_tasks(&self, periods: &[Period]) -> HashMap<WorkOrderNumber, Period>;
 
@@ -402,10 +405,15 @@ where
 // custom logic internally depending on where they know the
 // work order to be located. This is crucial to respect
 // business logic.
+//
+// ESSAY: 2025-07-21
+// It is crucial that these types are correctly aligned here. I think
+// that the best idea is to.. You should not use any resource if it
+// is not in the StrategicActor.
 #[derive(PartialEq, Eq, Debug, Default, Clone)]
 pub enum WhereIsWorkOrder<T>
 {
-    Strategic,
+    Strategic(Period),
     Tactical(T),
     #[default]
     NotScheduled,
@@ -415,6 +423,21 @@ impl<T> WhereIsWorkOrder<T>
     pub fn is_tactical(&self) -> bool
     {
         matches!(self, WhereIsWorkOrder::Tactical(_))
+    }
+
+    pub fn not_scheduled(&self) -> bool
+    {
+        matches!(self, WhereIsWorkOrder::NotScheduled)
+    }
+
+    pub fn is_strategic(&self) -> bool
+    {
+        matches!(self, WhereIsWorkOrder::Strategic(_))
+    }
+
+    pub fn is_strategic_or_tactical(&self) -> bool
+    {
+        self.is_tactical() || self.is_strategic()
     }
 }
 

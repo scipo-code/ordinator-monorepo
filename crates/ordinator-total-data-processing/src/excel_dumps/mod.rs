@@ -6,6 +6,7 @@ use arc_swap::Guard;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::TacticalInterface;
+use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::time_environment::day::OptionDay;
 use ordinator_scheduling_environment::time_environment::period::Period;
@@ -243,8 +244,9 @@ where
 
         let strategic_schedule = match strategic_period {
             Some(opt_period) => match opt_period {
-                Some(period) => ReasonForNotScheduling::Scheduled(period.clone()),
-                None => ReasonForNotScheduling::Unknown("Strategic Algorithm could not schedule the Work Order. If this is a mistake please not down why, and send a message to christian-brunbjerg.jespersen@external.totalenergies.com".to_string()),
+                WhereIsWorkOrder::Strategic(period) => ReasonForNotScheduling::Scheduled(period.clone()),
+                WhereIsWorkOrder::Tactical(period) => ReasonForNotScheduling::Scheduled(period.clone()),
+                WhereIsWorkOrder::NotScheduled => ReasonForNotScheduling::Unknown("Strategic Algorithm could not schedule the Work Order. If this is a mistake please not down why, and send a message to christian-brunbjerg.jespersen@external.totalenergies.com".to_string()),
             },
             None => ReasonForNotScheduling::Unknown("Work Order not part of scheduling process".to_string()),
         };

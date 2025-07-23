@@ -15,8 +15,8 @@ use ordinator_scheduling_environment::work_order::work_order_info::revision::Rev
 use ordinator_scheduling_environment::work_order::work_order_info::system_condition::SystemCondition;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_text::WorkOrderText;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
+use ordinator_scheduling_environment::worker_environment::ActorEnvironment;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
-use ordinator_scheduling_environment::worker_environment::WorkerEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 
 pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironment>>
@@ -34,7 +34,7 @@ pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironme
 
     // We do not want to test against data files. I think that the best approach
     // here will be to test against something else.
-    let worker_environment = WorkerEnvironment::builder()
+    let worker_environment = ActorEnvironment::builder()
         .actor_environment(Asset::Test, path_to_data)
         // What should be done here? I think that the best approach is to make
         // the system work.
@@ -44,9 +44,10 @@ pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironme
     // the best approach here is to do the same thing again.
 
     let time_input = TimeInput {
-        number_of_periods: 3,
+        number_of_periods: 5,
         number_of_days: 42,
     };
+
     let time_environment = create_time_environment(
         Utc.with_ymd_and_hms(2025, 1, 13, 7, 0, 0).unwrap(),
         &time_input,

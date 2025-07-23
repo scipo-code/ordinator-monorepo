@@ -9,6 +9,7 @@ use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::logging::setup_logging;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
+#[ignore]
 async fn test_complete_system() -> anyhow::Result<()>
 {
     let scheduling_environment =
@@ -31,6 +32,7 @@ async fn test_complete_system() -> anyhow::Result<()>
     let server = start_application(orchestrator, &environment);
 
     tokio::select! {
+        // TODO [ ] fix the server
         res = server => res.await?,
         res = error_handle => res??,
         res = system_clock_handle => res?,

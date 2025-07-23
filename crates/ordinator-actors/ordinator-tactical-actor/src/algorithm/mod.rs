@@ -137,13 +137,7 @@ where
                 .tactical_work_orders
                 .get(work_order_number)
                 .unwrap();
-            // FIX START HERE.
 
-            // What does it mean that the StrategicAgent does not have the work order yet
-            // What should we do to give him the correct state
-            //
-            // The goal here is to make the code function without the use of the
-            //
             let strategic_period = &self
                 .loaded_system_solution
                 // This should be an option instead
@@ -152,10 +146,25 @@ where
 
             // You need a thoughtful way of handling this. I think that the best approch
             // here is to make the
+            //
+            // ESSAY: Do you want the Tactical here? Ahh you are in the
+            // I think that the Tactical period should not make any sense here.
+            // Here you are relying on the StrategicActor to determine the
+            // tardiness. That is actually fine I think, it simply means that
+            // you have to take the
             let period_start_date: NaiveDate = strategic_period
                 .and_then(|period| period.scheduled_task(work_order_number))
-                .and_then(|d| d.as_ref().map(|e| e.start_date().date_naive()))
-                .unwrap_or(tactical_parameter.earliest_allowed_start_date);
+                .map(|where_is_work_order| {
+                    match where_is_work_order {
+                        WhereIsWorkOrder::Strategic(period) => period.start_date().date_naive(),
+                        WhereIsWorkOrder::Tactical(period) => period.start_date().date_naive(),
+                        // ISSUE #000 TODO [ ] 2025-07-22 fix the tactical objective
+                        WhereIsWorkOrder::NotScheduled => {
+                            tactical_parameter.earliest_allowed_start_date
+                        }
+                    }
+                })
+                .expect("All edge cases have been handled above");
 
             let mut activity_keys: Vec<ActivityNumber> = tactical_parameter
                 .tactical_operation_parameters
@@ -177,6 +186,8 @@ where
                 .date
                 .date_naive();
 
+            // Ahh this is completely wrong again. I think that the best approach here is to
+            // make the system work.
             let day_difference = (last_day - period_start_date).max(TimeDelta::zero());
 
             objective_value_from_tardiness +=
@@ -712,7 +723,7 @@ where
             .context("This means that the TacticalAlgorithm has been initialized wrong")?;
 
         match previous_solution {
-            WhereIsWorkOrder::Strategic => Ok(()),
+            WhereIsWorkOrder::Strategic(_) => Ok(()),
             WhereIsWorkOrder::Tactical(operation_solutions) => {
                 self.update_loadings(&operation_solutions.clone(), LoadOperation::Sub)
             }

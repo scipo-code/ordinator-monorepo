@@ -75,9 +75,10 @@ pub struct SystemStatusCodes
     #[arg(long)]
     pub gmco: bool,
 }
+
 impl SystemStatusCodes
 {
-    pub(crate) fn builder() -> SystemStatusCodesBuilder
+    pub fn builder() -> SystemStatusCodesBuilder
     {
         // QUESTION
         // How to handle this?
@@ -183,11 +184,24 @@ pub struct UserStatusCodes
     #[arg(long)]
     pub awpr: bool,
 }
+
 impl UserStatusCodes
 {
-    pub(crate) fn builder() -> UserStatusCodesBuilder
+    pub fn builder() -> UserStatusCodesBuilder
     {
         UserStatusCodesBuilder(UserStatusCodes::default())
+    }
+
+    pub fn schedule(&mut self)
+    {
+        self.sch = true;
+        self.awsc = false;
+    }
+
+    pub fn draft(&mut self)
+    {
+        self.sch = false;
+        self.awsc = true;
     }
 }
 

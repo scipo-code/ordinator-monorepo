@@ -127,7 +127,7 @@ impl Period {
         &self.start_date
     }
 
-    pub fn end_date(&self) -> &DateTime<Utc> {
+    pub fn finish_date(&self) -> &DateTime<Utc> {
         &self.end_date
     }
 
@@ -404,7 +404,7 @@ mod tests {
 
         let new_period = Period::new(
             period.start_date().to_owned() + Duration::weeks(2),
-            period.end_date().to_owned() + Duration::weeks(2),
+            period.finish_date().to_owned() + Duration::weeks(2),
             vec![]
 
 

@@ -1,8 +1,11 @@
 <!-- T
-TODO [ ] codelldb 
+TODO [x] codelldb 
+TODO [x] resize the nvim-dapui
+TODO [x] Add two different terminals
 
-TODO [ ] resize the nvim-dapui
-TODO [ ] Add two different terminals
+ISSUE #000 TODO [ ] 2025-07-23 make every field in `SchedulingEnvironment` `pub(crate)` or lower
+ISSUE #000 TODO [ ] 2025-07-23 move SAP logic and specifics out of `SchedulingEnvironment` and into the infrastructure layer
+ISSUE #000 TODO [ ] 2025-07-23 make a `just` command for running the `test_complete_system` 
 -->
 # Ordinator
 Ordinator is a multi-actor scheduling system. The system is based on actors
@@ -237,3 +240,5 @@ colors are used to standardize the understanding of the colors.
 
 Every error at runtime should ideally produce a single bug fix on every iteration. If this
 is not upheld it means that the error was created in a wrong way.
+
+

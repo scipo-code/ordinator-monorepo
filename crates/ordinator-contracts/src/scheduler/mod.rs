@@ -6,6 +6,7 @@ use anyhow::anyhow;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::TacticalInterface;
+use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::work_order::WorkOrder;
@@ -103,9 +104,10 @@ impl
 
             let strategic_schedule = match strategic_period {
                 Some(opt_period) => match opt_period {
-                    Some(period) => period.clone().to_string(),
+                    WhereIsWorkOrder::Strategic(period) => period.clone().to_string(),
                     // This does not have to be perfect.
-                    None => {
+                    WhereIsWorkOrder::Tactical(period) => period.clone().to_string(),
+                    WhereIsWorkOrder::NotScheduled => {
                         "Could not be scheduled under current business rules".to_string()
                         // ReasonForNotScheduling::Unknown(
                         //                     "Strategic Algorithm could
@@ -259,6 +261,9 @@ pub struct WorkOrderSingleRowSimpleDto
     main_work_center: ResourcesDto,
     operations: Vec<OperationDto>,
     functional_location: String,
+    sch: bool,
+    awsc: bool,
+    vendor: bool,
 }
 
 #[derive(Serialize, ToSchema)]
@@ -287,6 +292,9 @@ impl From<WorkOrder> for WorkOrderSingleRowSimpleDto
                 .map(|e| OperationDto::from(e.1.clone()))
                 .collect(),
             functional_location: value.functional_location().to_string(),
+            sch: value.work_order_analytic.user_status_codes.sch,
+            awsc: value.work_order_analytic.user_status_codes.awsc,
+            vendor: value.vendor(),
         }
     }
 }

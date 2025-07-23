@@ -1,6 +1,7 @@
 #![allow(dead_code, unused_variables)]
 
 use std::collections::HashMap;
+use std::option::Option;
 use std::path::Path;
 use std::sync::Arc;
 
@@ -20,10 +21,12 @@ use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SupervisorInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::TacticalInterface;
+use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::create_time_environment;
+use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
@@ -32,8 +35,8 @@ use ordinator_scheduling_environment::work_order::work_order_info::revision::Rev
 use ordinator_scheduling_environment::work_order::work_order_info::system_condition::SystemCondition;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_text::WorkOrderText;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
+use ordinator_scheduling_environment::worker_environment::ActorEnvironment;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
-use ordinator_scheduling_environment::worker_environment::WorkerEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
@@ -64,22 +67,17 @@ impl StrategicInterface for TestStrategic
     fn scheduled_task(
         &self,
         work_order_number: &WorkOrderNumber,
-    ) -> Option<&Option<ordinator_scheduling_environment::time_environment::period::Period>>
+    ) -> Option<&WhereIsWorkOrder<Period>>
     {
         todo!()
     }
 
-    fn supervisor_tasks(
-        &self,
-        periods: &[ordinator_scheduling_environment::time_environment::period::Period],
-    ) -> HashMap<WorkOrderNumber, ordinator_scheduling_environment::time_environment::period::Period>
+    fn supervisor_tasks(&self, periods: &[Period]) -> HashMap<WorkOrderNumber, Period>
     {
         todo!()
     }
 
-    fn all_scheduled_tasks(
-        &self,
-    ) -> HashMap<WorkOrderNumber, ordinator_scheduling_environment::time_environment::period::Period>
+    fn all_scheduled_tasks(&self) -> HashMap<WorkOrderNumber, Period>
     {
         todo!()
     }
@@ -101,8 +99,8 @@ impl TacticalInterface for TestTactical
     fn tactical_period<'a>(
         &self,
         work_order_number: &WorkOrderNumber,
-        periods: &'a [ordinator_scheduling_environment::time_environment::period::Period],
-    ) -> Option<&'a ordinator_scheduling_environment::time_environment::period::Period>
+        periods: &'a [Period],
+    ) -> Option<&'a Period>
     {
         todo!()
     }
@@ -250,7 +248,7 @@ fn start_operational_actor()
 
     // We do not want to test against data files. I think that the best approach
     // here will be to test against something else.
-    let worker_environment = WorkerEnvironment::builder()
+    let worker_environment = ActorEnvironment::builder()
         .actor_environment(Asset::Test, path_to_data)
         // What should be done here? I think that the best approach is to make
         // the system work.
