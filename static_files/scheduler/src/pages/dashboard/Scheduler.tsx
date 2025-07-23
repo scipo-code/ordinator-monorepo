@@ -1,11 +1,11 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
-import { SchedulingData, useTableColDefs } from './scheduler/ColDef';
-import { fetchPeriods, fetchSystemClock, fetchWorkOrders, useAssignWorkorderToPeriod } from './scheduler/ApiHandlers';
-import { PeriodDto } from '../../../../../crates/ordinator-contracts/bindings/PeriodDto';
+import { useTableColDefs } from './scheduler/ColDef';
 import { parseISO, format } from 'date-fns';
+import { fetchWorkOrders } from '@/api/workorders';
+import fetchSystemClock from '@/api/clock';
 
 
 // import { agGridThemeLight } from "./theme";
@@ -36,18 +36,6 @@ const Scheduler: React.FC = () => {
     staleTime: 60_000,              // cache 1 min
   });
 
-
-  const {
-    data: periods = [],
-    // isLoading: periodsLoading,
-    // isError: periodsError,
-  } = useQuery({
-    queryKey: ["periods"],
-    queryFn: fetchPeriods,
-    staleTime: Infinity,
-  });
-
-
   const {
     data: systemclock,
   } = useQuery({
@@ -56,25 +44,7 @@ const Scheduler: React.FC = () => {
     staleTime: Infinity,
   });
   
-  const assignMutation = useAssignWorkorderToPeriod();
-  const handleAssignPeriod = useCallback(
-    (row: SchedulingData, period?: PeriodDto) => {
-      const chosenPeriod = period ?? (row.suggested_scheduled_period as PeriodDto | undefined);
 
-      if (!chosenPeriod) return;
-      
-      assignMutation.mutate({
-        asset,
-        workorder: row.work_order_number,
-        period: chosenPeriod,
-      })
-    },
-    [asset, assignMutation],
-  )
-
-  console.log(periods);
-
-  
   if (!asset) return null;
   if (!systemclock) return;
 
@@ -98,6 +68,12 @@ const Scheduler: React.FC = () => {
       </div>
     );
 
+          // context={
+          // {
+          //   onAssignPeriod: handleAssignPeriod,
+          //   periods: periods
+          // }
+        // }
 
   return (
     <div className="p-4 flex flex-col flex-1 min-h-0 overflow-hidden">
@@ -107,12 +83,6 @@ const Scheduler: React.FC = () => {
           className='h-full w-full'
           rowData={workOrders}
           columnDefs={columns}
-          context={
-          {
-            onAssignPeriod: handleAssignPeriod,
-            periods: periods
-          }
-        }
           defaultColDef={{
             resizable: true,
             sortable: true,

@@ -1,13 +1,15 @@
 import { ColDef, ICellRendererParams, } from 'ag-grid-community';
-import { memo, useMemo } from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuPortal, DropdownMenuSubTrigger, DropdownMenuSubContent} from '@/components/ui/dropdown-menu.tsx';
+import { useMemo } from "react";
+import { DropdownMenu,
+   DropdownMenuContent,
+   DropdownMenuItem,
+   DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu.tsx';
 import { MoreHorizontal } from 'lucide-react';
 
 import { SingleRowDto } from "../../../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
-import { PeriodDto } from '../../../../../../crates/ordinator-contracts/bindings/PeriodDto.ts';
 import { PeriodStatus } from '../../../../../../crates/ordinator-contracts/bindings/PeriodStatus.ts';
-import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command.tsx';
-import { CommandEmpty } from 'cmdk';
+import { useNavigate } from 'react-router-dom';
 export type SchedulingData = SingleRowDto & {action: string | null};
 
 
@@ -20,7 +22,7 @@ const PeriodStatusColors: Record<PeriodStatus, string> = {
 
 type PeriodStatusBadgeProps = ICellRendererParams<{ period_status: PeriodStatus }>;
 
-const PeriodStatusBadge  = memo(({value}: PeriodStatusBadgeProps ) => {
+const PeriodStatusBadge  = ({value}: PeriodStatusBadgeProps ) => {
    if (!value) return;
 
    return (
@@ -32,60 +34,38 @@ const PeriodStatusBadge  = memo(({value}: PeriodStatusBadgeProps ) => {
       >{value}
       </span>
    )
-})
-
-interface ActionMenuParams extends ICellRendererParams<SchedulingData> {
-   context: {
-      onAssignPeriod: (row: SchedulingData, period?: PeriodDto) => void;
-      periods: PeriodDto[];
-   },
 }
 
+interface ActionMenuParams extends ICellRendererParams<SchedulingData> {}
 
-const ActionMenu: React.FC<ActionMenuParams> = memo((({ data, context}) => {
-   const { onAssignPeriod, periods } = context;
-   // const [chosenPeriod, setChosenPeriod] = useState<PeriodDto | null>(null);
+
+const ActionMenu: React.FC<ActionMenuParams> = (({ data }) => {
    if (!data) return null;
+   const navigate = useNavigate();
 
-   const acceptSuggested = () => {
-      if (data) onAssignPeriod(data);
-   };
-  
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button onClick={(e) => e.stopPropagation()} className='p-1'>
-          <MoreHorizontal size={14} />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent side='right' align='start' onClick={(e) => e.stopPropagation()}>
-        <DropdownMenuItem onClick={acceptSuggested} disabled={data?.suggested_scheduled_period === "Could not be scheduled under current business rules"}>
-           Accept {data?.suggested_scheduled_period}
-        </DropdownMenuItem>
-        <DropdownMenuSeparator/>
-        <DropdownMenuSub>
-           <DropdownMenuSubTrigger>Lock in period:</DropdownMenuSubTrigger>
-           <DropdownMenuSubContent>
-           <Command>
-              <CommandInput placeholder='Lock in period...' autoFocus={true}/>
-              <CommandList>
-                 <CommandEmpty>No period found.</CommandEmpty>
-                 <CommandGroup>
-                     {
-                     periods.map(p => (
-                        <CommandItem key={p} value={p} onSelect={() => onAssignPeriod(data, p)}>{p}</CommandItem>
-                     ))
-                  }
+   const goToEditWorkorder = (e: React.MouseEvent) => {
+      e.stopPropagation();
 
-            </CommandGroup>
-         </CommandList>
-      </Command>
-     </DropdownMenuSubContent>
-      </DropdownMenuSub>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}));
+      if (data?.work_order_number) {
+         navigate(`/workorder/${data.work_order_number}`);
+      }
+   }
+
+   return (
+      <DropdownMenu>
+         <DropdownMenuTrigger asChild>
+            <button onClick={(e) => e.stopPropagation()} className='p-1'>
+               <MoreHorizontal size={14} />
+            </button>
+         </DropdownMenuTrigger>
+         <DropdownMenuContent side='right' align='start' onClick={(e) => e.stopPropagation()}>
+            <DropdownMenuItem onClick={goToEditWorkorder}>
+               Edit Scheduling
+            </DropdownMenuItem>
+         </DropdownMenuContent>
+      </DropdownMenu>
+   );
+});
 
 
 
