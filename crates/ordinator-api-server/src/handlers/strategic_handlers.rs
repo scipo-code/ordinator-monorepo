@@ -146,9 +146,9 @@ pub async fn assign_work_order_to_period(
     let mut scheduling_environment = orchestrator.scheduling_environment.lock().unwrap();
 
     let work_order_number = WorkOrderNumber::from(work_order_number_dto);
-    let period_option = scheduling_environment
-        .time_environment
-        .periods
+    let periods = &scheduling_environment.time_environment.periods.clone();
+
+    let period_option = periods
         .iter()
         .find(|per| per.period_string() == period_dto.0)
         .cloned();
@@ -164,7 +164,7 @@ pub async fn assign_work_order_to_period(
 
     scheduling_environment
         .work_orders
-        .update_period_unloading_point(&work_order_number, &period)
+        .update_scheduled_period(&work_order_number, &period, periods)
         .with_context(|| {
             format!(
                 "Could assign work order {:#?} to period {}",

@@ -22,7 +22,7 @@ use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
-use ordinator_scheduling_environment::worker_environment::WorkerEnvironment;
+use ordinator_scheduling_environment::worker_environment::ActorEnvironment;
 use serde::Deserialize;
 use serde::de::DeserializeOwned;
 
@@ -75,7 +75,7 @@ impl IntoSchedulingEnvironment for TotalSap
 
         Ok(SchedulingEnvironment::builder()
             .worker_environment(
-                WorkerEnvironment::builder()
+                ActorEnvironment::builder()
                     .actor_environment(Asset::DF, path_to_data)?
                     .build(), // Add more assets here.
             )

@@ -187,14 +187,14 @@ where
                     })?;
 
                 self.algorithm.calculate_objective_value()?;
-                event!(Level::INFO, strategic_objective_value = ?self.algorithm.solution.objective_value);
+                event!(target: "research", Level::INFO, strategic_objective_value = ?self.algorithm.solution.objective_value());
                 Ok(StrategicResponseMessage::Scheduling(scheduling_output))
             }
             ordinator_actor_core::RequestMessage::Resource(resources_message) => {
                 let resources_output = self.algorithm.update_resources_state(resources_message);
 
                 self.algorithm.calculate_objective_value()?;
-                event!(Level::INFO, strategic_objective_value = ?self.algorithm.solution.objective_value);
+                event!(target: "research", Level::INFO, strategic_objective_value = ?self.algorithm.solution.objective_value());
                 Ok(StrategicResponseMessage::Resources(
                     resources_output.unwrap(),
                 ))
@@ -448,7 +448,7 @@ where
                         )?
                         .build();
                     // 1. Do not guess, attact the debugger.
-
+                    dbg!(&strategic_parameter);
                     drop(scheduling_environment_guard);
                     self.algorithm
                         .parameters

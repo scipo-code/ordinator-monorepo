@@ -138,7 +138,8 @@ pub struct TacticalParameter
     // pub forced_in_period: Option<Period>,
     pub weight: u64,
     pub relations: Vec<ActivityRelation>,
-    // TODO: These two should be moved out of the pa
+    // TODO: These two should be moved out of the parameters. You might end up implementing
+    // that on the these on the `SchedulingEnvironment`
     pub earliest_allowed_start_date: NaiveDate,
 }
 
@@ -177,6 +178,8 @@ impl TacticalParameter
 #[derive(Clone, Serialize, Debug)]
 pub struct OperationParameter
 {
+    // Okay here you need to add additional logic to the system. The most important thing is to
+    // make the system work correctly with the
     pub work_order_number: WorkOrderNumber,
     // ISSUE #300 TODO [ ] 2025-07-17 implement the `forced_schedule_*` in the tactical
     // pub forced_start_day: Option<Day>,

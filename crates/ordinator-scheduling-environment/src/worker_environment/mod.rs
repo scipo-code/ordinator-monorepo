@@ -22,7 +22,7 @@ pub type OperationalId = String;
 // approach is to create something that will allow us to better
 // forcast how the system will behave.
 #[derive(Default, Serialize, Deserialize, Debug)]
-pub struct WorkerEnvironment
+pub struct ActorEnvironment
 {
     // I think that the actor environment is the correct term here.
     // Changes to the parameters should be changable in the application
@@ -32,18 +32,18 @@ pub struct WorkerEnvironment
     pub actor_specification: HashMap<Asset, ActorSpecifications>,
 }
 
-pub struct WorkerEnvironmentBuilder
+pub struct ActorEnvironmentBuilder
 {
     pub actor_environment: HashMap<Asset, ActorSpecifications>,
 }
 
-impl WorkerEnvironment
+impl ActorEnvironment
 {
     // TODO [ ]
     // This should be refactored!
-    pub fn builder() -> WorkerEnvironmentBuilder
+    pub fn builder() -> ActorEnvironmentBuilder
     {
-        WorkerEnvironmentBuilder {
+        ActorEnvironmentBuilder {
             actor_environment: HashMap::default(),
         }
     }
@@ -55,11 +55,11 @@ pub enum EmptyFull
     Full,
 }
 
-impl WorkerEnvironmentBuilder
+impl ActorEnvironmentBuilder
 {
-    pub fn build(self) -> WorkerEnvironment
+    pub fn build(self) -> ActorEnvironment
     {
-        WorkerEnvironment {
+        ActorEnvironment {
             actor_specification: self.actor_environment,
         }
     }

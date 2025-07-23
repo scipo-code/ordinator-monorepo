@@ -62,13 +62,23 @@ async fn main() -> Result<()>
 
     let server = start_application(orchestrator, &environment);
 
+    let handle = tokio::spawn(async move {
+        signal::ctrl_c().await.expect("");
+
+        info!(target: "stdout", "Server shutting down");
+
+        panic!();
+        // server.await.unwrap().abort();
+    });
+
+    // => {
+    //    info!(target: "stdout", "System shutting down");
+    //    panic!();
     tokio::select! {
+        res = handle => res?,
         res = server => res.await?,
         res = error_handle => res??,
         res = system_clock_handle => res?,
-        _ = signal::ctrl_c() => {
-            info!(target: "stdout", "System shutting down");
-            }
     }
 
     Ok(())

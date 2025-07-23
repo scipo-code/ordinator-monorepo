@@ -139,7 +139,7 @@ impl TacticalSolution
     {
         self.tactical_work_orders
             .0
-            .insert(*work_order_number, WhereIsWorkOrder::Strategic);
+            .insert(*work_order_number, WhereIsWorkOrder::NotScheduled);
     }
 
     pub fn tactical_scheduled_days(
@@ -185,6 +185,10 @@ impl TacticalSolution
 // so that you can work with the
 #[derive(PartialEq, Eq, Debug, Default, Clone)]
 pub struct TacticalScheduledWorkOrders(
+    // ISSUE #000 TODO START HERE 2025-07-22.
+    // You should return an `WhereIsWorkOrder` here. That is what will
+    // allowk
+    // You need to respect the `WhereIsWorkOrder` here. The
     pub HashMap<WorkOrderNumber, WhereIsWorkOrder<TacticalScheduledOperations>>,
 );
 
@@ -208,7 +212,7 @@ impl TacticalWhereIsWorkOrder for WhereIsWorkOrder<TacticalScheduledOperations>
     fn tactical_operations(&self) -> Result<&TacticalScheduledOperations>
     {
         match self {
-            WhereIsWorkOrder::Strategic => bail!(
+            WhereIsWorkOrder::Strategic(_) => bail!(
                 "A call to extract the {} was made but received {}",
                 std::any::type_name::<TacticalScheduledOperations>(),
                 std::any::type_name_of_val(self),

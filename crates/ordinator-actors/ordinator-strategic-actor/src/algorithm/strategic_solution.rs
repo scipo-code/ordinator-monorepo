@@ -4,8 +4,10 @@ use std::fmt::Debug;
 use anyhow::Result;
 use colored::Colorize;
 use ordinator_orchestrator_actor_traits::Solution;
+use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
+use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
@@ -17,13 +19,101 @@ use super::strategic_parameters::StrategicParameters;
 use super::strategic_resources::OperationalResource;
 use super::strategic_resources::StrategicResources;
 
+// CRUCIAL INSIGHT
+// Do not ever make fields in a solution `pub` this is a huge sin. The solution
+// has the strongest need for business invariants in the whole system. You are
+// never supposed to do this.
 #[derive(PartialEq, Eq, Clone)]
 pub struct StrategicSolution
 {
-    pub objective_value: StrategicObjectiveValue,
-    pub strategic_scheduled_work_orders: HashMap<WorkOrderNumber, Option<Period>>,
+    objective_value: StrategicObjectiveValue,
+    strategic_scheduled_work_orders: HashMap<WorkOrderNumber, WhereIsWorkOrder<Period>>,
     pub strategic_loadings: StrategicResources,
 }
+
+impl StrategicSolution
+{
+    pub fn every_work_order(&self) -> &HashMap<WorkOrderNumber, WhereIsWorkOrder<Period>>
+    {
+        &self.strategic_scheduled_work_orders
+    }
+
+    pub fn set_work_order_to_unschedule(
+        &mut self,
+        work_order_number: WorkOrderNumber,
+    ) -> Option<WhereIsWorkOrder<Period>>
+    {
+        self.strategic_scheduled_work_orders
+            .insert(work_order_number, WhereIsWorkOrder::NotScheduled)
+    }
+
+    pub fn set_work_order_to_strategic(
+        &mut self,
+        work_order_number: WorkOrderNumber,
+        period: Period,
+    ) -> Option<WhereIsWorkOrder<Period>>
+    {
+        self.strategic_scheduled_work_orders
+            .insert(work_order_number, WhereIsWorkOrder::Strategic(period))
+    }
+
+    pub fn objective_value(&self) -> &StrategicObjectiveValue
+    {
+        &self.objective_value
+    }
+}
+
+impl StrategicInterface for StrategicSolution
+{
+    // Double `Option` is not a good idea. I am not sure what the best approach is
+    // forward here.
+    fn scheduled_task(
+        &self,
+        work_order_number: &WorkOrderNumber,
+    ) -> Option<&WhereIsWorkOrder<Period>>
+    {
+        self.strategic_scheduled_work_orders.get(work_order_number)
+    }
+
+    // You are doing everything correct. Coding fast with a vision is the best
+    // approach.
+    fn supervisor_tasks(
+        &self,
+        supervisor_periods: &[Period],
+    ) -> std::collections::HashMap<WorkOrderNumber, Period>
+    {
+        self.strategic_scheduled_work_orders
+            .clone()
+            .into_iter()
+            .filter_map(|(won, opt_str_per)| {
+                let period_option = match opt_str_per {
+                    WhereIsWorkOrder::Strategic(period) => Some(period),
+                    WhereIsWorkOrder::Tactical(period) => Some(period),
+                    WhereIsWorkOrder::NotScheduled => None,
+                };
+                period_option
+                    .and_then(|per| supervisor_periods.contains(&per).then_some((won, per)))
+            })
+            .collect()
+    }
+
+    fn all_scheduled_tasks(&self) -> std::collections::HashMap<WorkOrderNumber, Period>
+    {
+        self.strategic_scheduled_work_orders
+            .clone()
+            .into_iter()
+            .filter_map(|(won, where_is_work_order)| {
+                match where_is_work_order {
+                    WhereIsWorkOrder::Strategic(period) => Some(period),
+                    WhereIsWorkOrder::Tactical(period) => Some(period),
+                    WhereIsWorkOrder::NotScheduled => None,
+                }
+                .map(|v| (won, v))
+            })
+            .collect()
+    }
+}
+
 impl Debug for StrategicSolution
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
@@ -38,7 +128,7 @@ impl Debug for StrategicSolution
                     "Scheduled work orders: ",
                     self.strategic_scheduled_work_orders
                         .iter()
-                        .filter(|e| e.1.is_some())
+                        .filter(|e| e.1.is_strategic_or_tactical())
                         .count(),
                     "Total work orders: ",
                     self.strategic_scheduled_work_orders.len()
@@ -119,7 +209,7 @@ impl Solution for StrategicSolution
         let strategic_scheduled_work_orders = parameters
             .strategic_work_order_parameters
             .keys()
-            .map(|won| (*won, None))
+            .map(|won| (*won, WhereIsWorkOrder::NotScheduled))
             .collect();
 
         // Motherfucker. Should the parameters have the options or not? This is a

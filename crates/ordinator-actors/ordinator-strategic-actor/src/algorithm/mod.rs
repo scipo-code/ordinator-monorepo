@@ -1,11 +1,9 @@
 pub mod assert_functions;
-pub mod strategic_interface;
 pub mod strategic_parameters;
 pub mod strategic_resources;
 pub mod strategic_solution;
 
 use std::fmt::Debug;
-use std::any::type_name;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::ops::Deref;
@@ -27,7 +25,7 @@ use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::TacticalInterface;
-use ordinator_scheduling_environment::time_environment::TimeEnvironment;
+use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
@@ -39,7 +37,6 @@ use rand::prelude::SliceRandom;
 use rand::seq::IndexedRandom;
 use strategic_parameters::StrategicClustering;
 use strategic_parameters::StrategicParameters;
-use strategic_parameters::WorkOrderParameter;
 use strategic_resources::OperationalResource;
 use strategic_resources::StrategicResources;
 use strategic_solution::StrategicObjectiveValue;
@@ -121,9 +118,10 @@ where
         for (work_order_number, strategic_parameter) in
             self.parameters.strategic_work_order_parameters.iter()
         {
+
             let scheduled_period = self
                 .solution
-                .strategic_scheduled_work_orders
+                .every_work_order()
                 .get(work_order_number)
                 .with_context(|| {
                     format!(
@@ -131,9 +129,21 @@ where
                     )
                 })?;
 
-            if scheduled_period == &strategic_parameter.locked_in_period {
-                continue;
-            }
+            // Does the `locked_in_period` make sense? Yes it does but only
+            // if the code actually does the correct thing here. If you put the
+            // the code in the Tactical should this still hold? I am not really
+            // sure here? The 
+            // This is no longer true. If there is a WorkOrder in the
+            // Tactical then we should work on the 
+            // So the Tactical should only overwrite if the Tactical is forced.
+            // But if the Tactical is forced the forced day should align with the
+            // Strategic. What is the best approach forward here? 
+            // So now the `locked_in_period` comes from the `SchedulingEnvironment`
+            // and both the Strategic and the Tactical are corresponding.
+            //
+            // Under the new design I think that this is acceptable again. 
+            // Yes becaues if the `locked_in_period` is true it is by
+            // default the same as what is found in the `TacticalActor`
 
             // One of the most important things to understand is the trade off coming from
             // encapsulation. That is the most difficult thing in all this. I think that
@@ -148,24 +158,62 @@ where
                 .ok()
                 .and_then(|solution| solution.tactical_period(work_order_number, &self.parameters.strategic_periods));
 
-                
-            // If the work order is locked, that is respected. If it is not, then 
-            // the tactical takes precedence. This is actually good. You shoule simply 
-            // do the same in the tactical.
+            // Actually here you should simply update the Solution based on the
+            // Tactical 
+            //
+            // The Tactical should not be scheduled forced scheduled. It should be
+            // handled 
+            //
+            // I feel like this should be simplified as well. I do not see the
+            // path forward here. 
+            //
+            // What should be changed here? I am really not sure. I think that
+            // the best approach is to make the system work with. 
+            //
+            // CRUCIAL INSIGHT:
+            // 1. Use the forced,
+            // 2. Use the from the other actor solutions.
+            // 3. Use the free
+            //
+            // So 1. here is from the `SchedulingEnvironment` and it is the
+            // same for every actor. 2. is an interaction that exists between
+            // the `Tactical` and `Strategic` to divide work between them. 
+            //
+            // `WhereIsWorkOrder` is now only a type for handling interactions
+            // between the `Strategic` and the `Tactical`.
+            //
+            
+            if let WhereIsWorkOrder::Strategic(period)  = scheduled_period {
+                if Some(period) == strategic_parameter.locked_in_period.as_ref() {
+                    continue;
+                }
+            }
+
             if strategic_parameter.locked_in_period.is_some() {
                 work_order_numbers.push(ForcedWorkOrder::Locked(*work_order_number));
-            } else if let Some(tactical_period) = tactical_scheduled_period {
-                work_order_numbers.push(ForcedWorkOrder::FromTactical((
-                    *work_order_number,
-                    tactical_period.clone(),
-                )));
-            }
+            } else if let Some(tactical_period) =  tactical_scheduled_period {
+                // Here the solution should turn into a
+                //
+                // ESSAY: What should happen here? Being in here means that the
+                // Tactical has the solution. And that means that the Strategic
+                // should do nothing. It should not unschedule the WorkOrder.
+                //
+                // That is the job of the Tactical
+                // 
+                // We should do nothing. Then we should make the code work
+                // correctly with the 
+                // work_order_numbers.push(ForcedWorkOrder::FromTactical((
+                //     *work_order_number,
+                //     tactical_period.clone(),
+                // )));   
+            }            
         }
-
-        
         // [ ] I believe that you simply have to make this work now 
         // CRUCIAL: forced is always part of the `incorporate` shared state. This means that 
         // if a solution leaves the 
+        //
+        // You should look into the Tactical Solution and make sure that the code
+        // is performing as expected. 
         for forced_work_order_numbers in work_order_numbers.iter() {
             state_change = true;
             self.schedule_forced_strategic_work_order(forced_work_order_numbers)
@@ -221,7 +269,7 @@ where
         // This should not happen. We should always work on self and then
         // substitute out the remaining parts.
         // panic!();
-        if strategic_objective_value.objective_value < self.solution.objective_value.objective_value
+        if strategic_objective_value.objective_value < self.solution.objective_value().objective_value
         {
             event!(Level::INFO, strategic_objective_value_better = ?strategic_objective_value);
             Ok(ObjectiveValueType::Better(strategic_objective_value))
@@ -252,6 +300,7 @@ where
                     }
                 };
 
+
                 // You are a little overloaded! I think that you should forget about this for
                 // now, but remember about it.
                 let inf_work_order_number = self
@@ -277,7 +326,7 @@ where
 
     fn unschedule(&mut self) -> Result<()> {
         let mut rng = rand::rng();
-        let strategic_work_orders = &self.solution.strategic_scheduled_work_orders;
+        let strategic_work_orders = self.solution.every_work_order();
 
         let strategic_parameters = &self.parameters.strategic_work_order_parameters;
 
@@ -331,34 +380,7 @@ impl<Ss> StrategicAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    pub fn update_the_locked_in_period(
-        &mut self,
-        work_order_number: &WorkOrderNumber,
-        locked_in_period: &Period,
-    ) -> Result<()> {
-        self.solution
-            .strategic_scheduled_work_orders
-            .insert(*work_order_number, Some(locked_in_period.clone()));
-
-        let strategic_parameter = self
-            .parameters
-            .strategic_work_order_parameters
-            .get_mut(work_order_number)
-            .with_context(|| {
-                format!(
-                    "{:?} not found in {}",
-                    work_order_number,
-                    std::any::type_name::<StrategicParameters>()
-                )
-            })?;
-
-        strategic_parameter
-            .excluded_periods
-            .remove(locked_in_period);
-        strategic_parameter.locked_in_period = Some(locked_in_period.clone());
-        Ok(())
-    }
-
+    
     // pub fn swap_scheduled_work_orders(&mut self, rng: &mut impl rand::Rng) {
     //         let scheduled_work_orders: Vec<_> = self
     //             .strategic_solution
@@ -427,11 +449,18 @@ where
         &mut self,
         strategic_objective_value: &mut StrategicObjectiveValue,
     ) -> Result<()> {
-        for (work_order_number, scheduled_period) in &self.solution.strategic_scheduled_work_orders
+        for (work_order_number, scheduled_period) in self.solution.every_work_order()
         {
             let optimized_period = match scheduled_period {
-                Some(optimized_period) => optimized_period,
-                None => self
+
+                WhereIsWorkOrder::Strategic(optimized_period)=> optimized_period,
+                // Should the `objective` here be based on the Tactical? Yes it should!
+                // That is actually fundamental. Could this lead to monotone objective
+                // functions? 
+                // CRUCIAL INSIGHT 
+                WhereIsWorkOrder::Tactical(period) => period ,
+
+                WhereIsWorkOrder::NotScheduled => self
                     .parameters
                     .strategic_periods
                     .last()
@@ -472,15 +501,27 @@ where
             // Precompute scheduled work orders for the current period
             let scheduled_work_orders_by_period: Vec<_> = self
                 .solution
-                .strategic_scheduled_work_orders
+                .every_work_order()
                 .iter()
-                .filter_map(|(won, opt_per)| {
-                    if let Some(per) = opt_per {
-                        if per == period {
-                            return Some(won);
+                .filter_map(|(won, where_is_period)| {
+                    match where_is_period {
+                        WhereIsWorkOrder::Strategic(opt_per) => {
+                        if opt_per == period {
+                            Some(won)
+                        } else {
+                            None
                         }
+                        },
+                        WhereIsWorkOrder::Tactical(opt_per) => {
+                        if opt_per == period {
+                            Some(won)
+                        }else {
+                            None
+                        }
+                        },
+                        // This is the kind of code that you have to make to succeed
+                        WhereIsWorkOrder::NotScheduled => None,
                     }
-                    None
                 })
                 .collect();
 
@@ -702,11 +743,10 @@ where
 
         let previous_period = self
             .solution
-            .strategic_scheduled_work_orders
-            .insert(work_order_number, Some(period.clone()));
+            .set_work_order_to_strategic(work_order_number, period.clone());
 
         ensure!(
-            previous_period.as_ref().unwrap().is_none(),
+            previous_period.as_ref().unwrap().not_scheduled(),
             "Previous period: {:#?}\nNew period: {:#?}\nStrategicParameter: {:#?}\nfile: {}\nline: {}",
             &previous_period,
             period,
@@ -743,6 +783,9 @@ where
         &mut self,
         force_schedule_work_order: &ForcedWorkOrder,
     ) -> Result<()> {
+        // The [`StrategicActor`] can only schedule the WorkOrder if
+        // it has control over it. That means that we should not unschedule
+        // if the WorkOrder is at the TacticalActor. Is this simply silly?
         if self.is_scheduled(force_schedule_work_order.work_order_number()) {
             self.unschedule_specific_work_order(*force_schedule_work_order.work_order_number())
                 .with_context(|| {
@@ -755,20 +798,33 @@ where
                 })?;
         }
 
+        // The primary issue here is whether the locked in period should be overwritten. If the
+        // tactical says something that you simply overwrite the Stratigic... No forced WorkOrders
+        // and Operations are always the product of state in the SchedulingEnvironment. That means
+        // that we should look to there to find the correct solution.
         let locked_in_period = match &force_schedule_work_order {
             ForcedWorkOrder::Locked(work_order_number) => self
                 .parameters
                 .get_locked_in_period(work_order_number)
                 .clone(),
+            // The `loadings` comes from the TacticalActor naturally. If the
+            // Tactical has scheduled the work order that Strategic should do nothing.
+            // 
             ForcedWorkOrder::FromTactical((_, period)) => period.clone(),
         };
 
         // Should the update loadings also be included here? I do not think that is a
         // good idea. What other things could we do?
-        self.update_the_locked_in_period(
-            force_schedule_work_order.work_order_number(),
-            &locked_in_period.clone(),
-        )
+        // This should be done by the SchedulingEnvironment not the actor
+        
+        let work_order_number = force_schedule_work_order.work_order_number();
+
+        self.solution
+            // You need to move this interface higher up into the system. This is too low
+            // of a level to make this function correctly.
+            .set_work_order_to_strategic(*work_order_number,locked_in_period.clone())
+                
+        
         .with_context(|| {
             format!(
                 "Could not fully update {:#?} in {}",
@@ -795,12 +851,13 @@ where
         Ok(())
     }
 
+    // 
     fn is_scheduled(&self, work_order_number: &WorkOrderNumber) -> bool {
         self.solution
-            .strategic_scheduled_work_orders
+            .every_work_order()
             .get(work_order_number)
             .expect("This should always be initialized")
-            .is_some()
+            .is_strategic()
     }
 
     /// This function updates the StrategicResources based on the a provided
@@ -980,20 +1037,30 @@ where
                         // 
                         // 
                         // `work_load`
-                        ensure!(combined_loadings(&work_load, &strategic_loading_resources).iter().all(|(res, work)| work >= work_load.get(res).unwrap()), "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
-                            possible errors:\n\
-                            * Rounding error\n\
-                            * Calculation error\n\
-                            * Timing error in either pointer swaps or user-input message\n\
-                            combined_loadings: {:#?}\n\
-                            combined_work_load: {:#?}\n\
-                            work_load: {:#?}\n\
-                            Location: {}",
-                            combined_loadings(&work_load, &strategic_loading_resources),
-                            work_load.clone().into_values().sum::<Work>(),
-                            work_load,
-                            Location::caller(),
-                        );
+                        
+                        combined_loadings(&work_load, &strategic_loading_resources)
+                            .iter()
+                            .try_for_each(|(res, work)| {
+                                let allowed = 
+                                    work_load.get(res)
+                                        .with_context(||format!("Resource: {res} is missing from the work_load: {work_load:#?}"))?;                                
+                                ensure!( work >= allowed, "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
+                                    possible errors:\n\
+                                    * Rounding error\n\
+                                    * Calculation error\n\
+                                    * Timing error in either pointer swaps or user-input message\n\
+                                    combined_loadings: {:#?}\n\
+                                    combined_work_load: {:#?}\n\
+                                    work_load: {:#?}\n\
+                                    Location: {}",
+                                    combined_loadings(&work_load, &strategic_loading_resources),
+                                    work_load.clone().into_values().sum::<Work>(),
+                                    work_load,
+                                    Location::caller(),
+                                );
+                                Ok(())
+                            })?;
+
                         let order_map: HashMap<_, _> = technician_permutation
                             .clone()
                             .into_iter()
@@ -1572,8 +1639,8 @@ fn determine_difference_resources(
 }
 
 pub fn calculate_period_difference(scheduled_period: &Period, latest_period: &Period) -> i64 {
-    let scheduled_period_date = scheduled_period.end_date().to_owned();
-    let latest_date = latest_period.end_date();
+    let scheduled_period_date = scheduled_period.finish_date().to_owned();
+    let latest_date = latest_period.finish_date();
     let duration = scheduled_period_date.signed_duration_since(latest_date);
     let days = duration.num_days();
     std::cmp::max(days / 7, 0) as i64
@@ -1677,107 +1744,20 @@ where
                     period,
                 ))
             }
-            StrategicRequestScheduling::ExcludeFromPeriod(exclude_from_period) => {
-                let period = self
-                    .parameters
-                    .strategic_periods
-                    .iter()
-                    .find(|period| {
-                        period.period_string() == exclude_from_period.period_string().clone()
-                    })
-                    .with_context(|| {
-                        format!(
-                            "{} was not found in the {}",
-                            exclude_from_period.period_string,
-                            std::any::type_name::<TimeEnvironment>()
-                        )
-                    })
-                    .cloned()?;
-
-                let mut number_of_work_orders = 0;
-                for work_order_number in exclude_from_period.work_order_number {
-                    let solution = self
-                        .solution
-                        .strategic_scheduled_work_orders
-                        .get(&work_order_number)
-                        .as_ref()
-                        .unwrap()
-                        .as_ref()
-                        .unwrap()
-                        .clone();
-
-                    let strategic_parameter = self
-                            .parameters
-                            .strategic_work_order_parameters
-                            .get_mut(&work_order_number)
-                            .with_context(|| format!("The {:?} was not found in the {:#?}. The {:#?} should have been initialized at creation.", work_order_number, type_name::<WorkOrderParameter>(), type_name::<WorkOrderParameter>()))?;
-
-                    assert!(!strategic_parameter.excluded_periods.contains(&solution));
-
-                    strategic_parameter.excluded_periods.insert(period.clone());
-
-                    // assert!(!strategic_parameter.excluded_periods.contains(self.solution.
-                    // strategic_periods.get(&work_order_number).as_ref().unwrap().as_ref().
-                    // unwrap()));
-
-                    if let Some(locked_in_period) = &strategic_parameter.locked_in_period.clone() {
-                        if strategic_parameter
-                            .excluded_periods
-                            .contains(locked_in_period)
-                        {
-                            strategic_parameter.locked_in_period = None;
-                            event!(
-                                Level::INFO,
-                                "{:?} has been excluded from period {} and the locked in period has been removed",
-                                work_order_number,
-                                period.period_string()
-                            );
-                        }
-                    }
-
-                    let last_period = self.parameters.strategic_periods.iter().last().cloned();
-                    // This should actually be done by the algorithm and not this procedure. I am
-                    // not really sure what I should think or all this.
-                    self.solution
-                        .strategic_scheduled_work_orders
-                        .insert(work_order_number, last_period);
-
-                    // assert!(
-                    //     !strategic_parameter.excluded_periods.contains(
-                    //         self.solution
-                    //             .strategic_scheduled_work_orders
-                    //             .get(&work_order_number)
-                    //             .as_ref()
-                    //             .unwrap()
-                    //             .as_ref()
-                    //             .unwrap()
-                    //     )
-                    // );
-                    number_of_work_orders += 1;
+            StrategicRequestScheduling::ExcludeFromPeriod(_exclude_from_period) => {
+                todo!("We should never hit this point. All logic mutating the `Parameters` have
+                    moved on the `StateLink` handler`"); 
                 }
-
-                Ok(StrategicResponseScheduling::new(
-                    number_of_work_orders,
-                    period.clone(),
-                ))
-            }
         }
     }
 
     fn unschedule_specific_work_order(&mut self, work_order_number: WorkOrderNumber) -> Result<()> {
         let unschedule_from_period = self
             .solution
-            .strategic_scheduled_work_orders
-            .get_mut(&work_order_number)
-            .with_context(|| {
-                format!(
-                    "{work_order_number:?}: was not present in the strategic periods"
-                    
-                )
-            })?
-            .take();
-
-        if let Some(unschedule_from_period) = unschedule_from_period {
+            .set_work_order_to_unschedule(work_order_number)
+            .context("WorkOrder unschedule should never be called on a not scheduled WorkOrder")?;
+        
+        if let WhereIsWorkOrder::Strategic(unschedule_from_period) = unschedule_from_period {
             let strategic_parameter = self
                 .parameters
                 .strategic_work_order_parameters
@@ -1800,7 +1780,7 @@ where
     // FIX
     // Determine what to do with this
     pub fn populate_priority_queue(&mut self) {
-        for work_order_number in self.solution.strategic_scheduled_work_orders.clone().keys() {
+        for work_order_number in self.solution.every_work_order().clone().keys() {
             let strategic_parameter = self
                 .parameters
                 .strategic_work_order_parameters
@@ -1815,10 +1795,10 @@ where
 
             if self
                 .solution
-                .strategic_scheduled_work_orders
+                .every_work_order()
                 .get(work_order_number)
                 .unwrap()
-                .is_none()
+                .not_scheduled()
             {
                 let strategic_work_order_weight = strategic_parameter.weight;
                 self.solution_intermediate

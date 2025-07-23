@@ -19,20 +19,20 @@ use work_order::WorkOrders;
 use work_order::WorkOrdersBuilder;
 
 use self::time_environment::TimeEnvironment;
-use self::worker_environment::WorkerEnvironment;
+use self::worker_environment::ActorEnvironment;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct SchedulingEnvironment
 {
     pub work_orders: WorkOrders,
-    pub worker_environment: WorkerEnvironment,
+    pub worker_environment: ActorEnvironment,
     pub time_environment: TimeEnvironment,
     // material
 }
 pub struct SchedulingEnvironmentBuilder
 {
     work_orders: Option<WorkOrders>,
-    worker_environment: Option<WorkerEnvironment>,
+    worker_environment: Option<ActorEnvironment>,
     time_environment: Option<TimeEnvironment>,
 }
 
@@ -97,7 +97,7 @@ impl SchedulingEnvironmentBuilder
         self
     }
 
-    pub fn worker_environment(mut self, worker_environment: WorkerEnvironment) -> Self
+    pub fn worker_environment(mut self, worker_environment: ActorEnvironment) -> Self
     {
         self.worker_environment = Some(worker_environment);
         self

@@ -33,6 +33,7 @@ use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SupervisorInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::TacticalInterface;
+use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
 use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
@@ -572,7 +573,7 @@ where
                 value if value.0 >= 1 => activity_relations[value.0 - 1].clone(),
                 _ => ActivityRelation::FinishStart,
             };
-            debug!(target: "debug", work_order_activity = ?work_order_activity, assignmends = ?assignments);
+            debug!(target: "debug", work_order_activity = format!("{:#?}", work_order_activity), assignmends = format!("{:#?}", assignments) );
             self.solution
                 .try_insert(*work_order_activity, assignments, activity_relation);
         }
@@ -1082,43 +1083,47 @@ where
             // So the issue here is that the `StrategicActor` makes a period. That is
             // depend on a current time. This means that it is not working on the
             // correct `SystemClock`.
-            (Some(Some(period)), _) => (period.start_date(), period.end_date()),
-            (Some(None), _) => (
+            (Some(WhereIsWorkOrder::Strategic(period)), _) => {
+                (period.start_date(), period.finish_date())
+            }
+            (Some(WhereIsWorkOrder::NotScheduled), _) => (
                 &self.parameters.availability.start_date,
                 &self.parameters.availability.finish_date,
             ),
-            // WARN
-            // This kind of code should be made with `AppError`. You should have a centralized error
-            // strategy aimed at making quick iterations on the scheduling logic.
-            // _ => bail!(
-            //     "This means that there is no state in either the Tactical or the Strategic agent.
-            // This should not be possible as the \     OperationalActor gets its state
-            // from either of those. An exception is if the the WorkOrder has left the
-            // StrategicActor or \     the TacticalActor, and the supervisor still have
-            // the WorkOrderActivity in his state.\nSupervisorActor state: \
-            //     \nIs WorkOrder {:#?} present in StrategicActor: {:?} \
-            //     \nIs WorkOrder {:#?} present in TacticalActor : {:?} \
-            //     \nIs WorkOrderActivity {:?} present in SupervisorActor: {:?} \
-            //     \n{}:{}",
-            //     work_order_activity.0,
-            //     self.loaded_shared_solution
-            //         .strategic()
-            //         .unwrap()
-            //         .scheduled_task(&work_order_activity.0),
-            //     work_order_activity.0,
-            //     self.loaded_shared_solution
-            //         .tactical_actor_solution()
-            //         .unwrap()
-            //         .start_and_finish_dates(work_order_activity),
-            //     work_order_activity,
-            //     self.loaded_shared_solution
-            //         .supervisor_actor_solutions()
-            //         .unwrap()
-            //         .delegates_for_agent(&self.id)
-            //         .contains_key(work_order_activity),
-            //     file!(),
-            //     line!()
-            // ),
+            (Some(WhereIsWorkOrder::Tactical(_t)), _) => {
+                panic!("This should not happen. The `(_, Some(d))` branch should have been chosen")
+            } /* WARN
+               * This kind of code should be made with `AppError`. You should have a centralized
+               * error strategy aimed at making quick iterations on the scheduling
+               * logic. _ => bail!(
+               *     "This means that there is no state in either the Tactical or the Strategic
+               * agent. This should not be possible as the \     OperationalActor
+               * gets its state from either of those. An exception is if the the
+               * WorkOrder has left the StrategicActor or \     the TacticalActor,
+               * and the supervisor still have the WorkOrderActivity in his
+               * state.\nSupervisorActor state: \     \nIs WorkOrder {:#?} present
+               * in StrategicActor: {:?} \     \nIs WorkOrder {:#?} present in
+               * TacticalActor : {:?} \     \nIs WorkOrderActivity {:?} present in
+               * SupervisorActor: {:?} \     \n{}:{}",
+               *     work_order_activity.0,
+               *     self.loaded_shared_solution
+               *         .strategic()
+               *         .unwrap()
+               *         .scheduled_task(&work_order_activity.0),
+               *     work_order_activity.0,
+               *     self.loaded_shared_solution
+               *         .tactical_actor_solution()
+               *         .unwrap()
+               *         .start_and_finish_dates(work_order_activity),
+               *     work_order_activity,
+               *     self.loaded_shared_solution
+               *         .supervisor_actor_solutions()
+               *         .unwrap()
+               *         .delegates_for_agent(&self.id)
+               *         .contains_key(work_order_activity),
+               *     file!(),
+               *     line!()
+               * ), */
         };
 
         for operational_solution in self.solution.scheduled_work_order_activities.windows(2) {

@@ -20,6 +20,7 @@ use ordinator_scheduling_environment::worker_environment::StrategicOptions;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Serialize;
+use tracing::info;
 
 use super::StrategicResources;
 
@@ -292,6 +293,7 @@ impl WorkOrderParameterBuilder
             .1
             .unloading_point(periods);
 
+        dbg!(&unloading_point_period);
         if work_order.vendor()
             && (unloading_point_period.is_some()
                 || work_order.work_order_analytic.user_status_codes.awsc)
@@ -300,6 +302,7 @@ impl WorkOrderParameterBuilder
                 Some(unloading_point_period) => {
                     self.locked_in_period = Some(unloading_point_period.clone());
                     self.excluded_periods.remove(unloading_point_period);
+                    info!(target: "business_events", work_order_number = work_order.work_order_number.0, "vendor work order forced in UnloadingPoint");
                 }
                 None => {
                     let scheduled_period = periods
@@ -313,15 +316,18 @@ impl WorkOrderParameterBuilder
                         self.locked_in_period = Some(locked_in_period.clone());
                         self.excluded_periods.remove(&locked_in_period);
                     }
+                    info!(target: "business_events", work_order_number = work_order.work_order_number.0, "vendor work order forced in BasicStartDate");
                 }
             }
             return Ok(self);
         }
 
+        // This should be removed. We cannot determine if this is true or not.
         if work_order.vendor() {
-            self.locked_in_period = periods.last().cloned();
+            self.locked_in_period = None;
             self.excluded_periods
                 .remove(self.locked_in_period.as_ref().unwrap());
+            info!(target: "business_events", work_order_number = work_order.work_order_number.0, "vendor work order unscheduled (Make sure that this is what you actually want)");
             return Ok(self);
         };
 
@@ -333,6 +339,7 @@ impl WorkOrderParameterBuilder
                     .clone_from(&unloading_point_period.cloned());
                 self.excluded_periods
                     .remove(self.locked_in_period.as_ref().unwrap());
+                info!(target: "business_events", work_order_number = work_order.work_order_number.0, "normal work order scheduled with SCH and unloading point period");
             } else {
                 let scheduled_period = periods[0..=1].iter().find(|period| {
                     period.contains_date(work_order.work_order_dates.basic_start_date)
@@ -343,10 +350,13 @@ impl WorkOrderParameterBuilder
                     self.excluded_periods
                         .remove(self.locked_in_period.as_ref().unwrap());
                 }
+                info!(target: "business_events", work_order_number = work_order.work_order_number.0, "normal work order scheduled with SCH and BasicStartDate");
             }
             return Ok(self);
         }
 
+        // This is the kind of thing that we really want to avoid.
+        // Okay we should also move the `basic_start_date`
         if work_order.work_order_analytic.user_status_codes.awsc {
             let scheduled_period = periods
                 .iter()
@@ -357,6 +367,7 @@ impl WorkOrderParameterBuilder
                 self.excluded_periods
                     .remove(self.locked_in_period.as_ref().unwrap());
             }
+            info!(target: "business_events", work_order_number = work_order.work_order_number.0, "normal work order scheduled with AWSC and BasicStartDate");
             return Ok(self);
         }
 
@@ -376,6 +387,7 @@ impl WorkOrderParameterBuilder
                 self.excluded_periods
                     .remove(self.locked_in_period.as_ref().unwrap());
             }
+            info!(target: "business_events", work_order_number = work_order.work_order_number.0, "normal work order scheduled unloading point exclusively");
             return Ok(self);
         }
         Ok(self)

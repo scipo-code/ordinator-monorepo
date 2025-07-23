@@ -40,6 +40,8 @@ use super::time_environment::period::Period;
 use super::worker_environment::resources::Resources;
 use crate::Asset;
 use crate::time_environment::MaterialToPeriod;
+use crate::time_environment::day::Day;
+use crate::worker_environment::resources::Id;
 
 // TODO [ ]
 //
@@ -80,10 +82,14 @@ impl std::fmt::Display for WorkOrderNumber
 }
 // Everything in the `SchedulingEnvironment` should implement
 // `Serialize` it has to, to be able to go into the database.
+type SubnetworkNumber = u64;
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WorkOrders
 {
     pub inner: HashMap<WorkOrderNumber, WorkOrder>,
+    // TODO [ ] 2025-07-22 extend the `WorkOrders` to contain
+    // `Subnetwork`
+    _subnetwork: HashMap<SubnetworkNumber, Vec<WorkOrder>>,
     // Are these in the correct place in the code? Yes I think
     // that they are.
 }
@@ -94,6 +100,7 @@ pub struct WorkOrders
 pub struct WorkOrdersBuilder
 {
     inner: Option<HashMap<WorkOrderNumber, WorkOrder>>,
+    _subnetwork: Option<HashMap<SubnetworkNumber, Vec<WorkOrder>>>,
 }
 
 impl WorkOrdersBuilder
@@ -102,6 +109,7 @@ impl WorkOrdersBuilder
     {
         WorkOrders {
             inner: self.inner.unwrap_or_default(),
+            _subnetwork: HashMap::default(),
         }
     }
 
@@ -131,6 +139,23 @@ impl WorkOrdersBuilder
         }
         self
     }
+
+    pub fn work_orders_manual(self, work_orders_inner: HashMap<WorkOrderNumber, WorkOrder>)
+    -> Self
+    {
+        Self {
+            inner: Some(work_orders_inner),
+            _subnetwork: None,
+        }
+    }
+
+    pub fn subnetwork_manual(self, subnetwork: HashMap<SubnetworkNumber, Vec<WorkOrder>>) -> Self
+    {
+        Self {
+            inner: self.inner,
+            _subnetwork: Some(subnetwork),
+        }
+    }
 }
 
 impl WorkOrders
@@ -139,6 +164,7 @@ impl WorkOrders
     {
         WorkOrdersBuilder {
             inner: Some(HashMap::new()),
+            _subnetwork: None,
         }
     }
 
@@ -161,6 +187,37 @@ impl WorkOrders
     }
 }
 
+// TODO [ ] 2025-07-22 make a common locked functionality state
+// Also the `Scheduled` should be modelled in a different way than
+// using the status codes. The `WorkOrder` should flow through the
+// system towards the correct state. I think that using the `TypeState`
+// pattern here would be a good idea.
+//
+// ESSAY:
+// How should the code look here? Should you make a type? You
+// have originally thought that this should be handled in the
+// `Actors` but that is not the correct approach here. You
+// should strive to centralize the state required here.
+//
+// You should make a `method`! Great! That is the best path
+// forward here! You do not want to add any thing here.
+//
+// You need a single method returning the correct state!
+// And it should be defined on the `WorkOrder` what about
+// the `Subnetwork`
+//
+// ESSAY: WorkOrder and Subnetwork interaction.
+// This is a crucial point for later on. I bacically
+// means that there can be interactions between the
+// different WorkOrders. And this in turn means that
+// there can be interactions between different days
+// of the work order. The best approach for solving
+// this is probably to make the system work correctly.
+//
+// Remember that the `basic_start` migth have to
+// be a `Arc<Mutex<DateTime<Utc>>` so that when
+// you move a work order around all the different
+// days are changed!
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct WorkOrder
 {
@@ -317,13 +374,13 @@ pub struct ClusteringWeights
     pub equipment_tag: u64,
 }
 
-// You can remove all the initialization logic! So cool! I am not sure about the
-//
-// builder though.
-// FIX [ ]
-// Move all initialization into function calls.
-// FIX [ ]
-// Move the `latest_allowed_period` into a function as well.
+pub enum ForcedWorkOrder
+{
+    Period(Period),
+    Days(NaiveDate),
+    Technician(Id, Option<Day>),
+    FreeWorkOrder,
+}
 impl WorkOrder
 {
     pub fn builder(work_order_number: WorkOrderNumber) -> WorkOrderBuilder
@@ -336,6 +393,61 @@ impl WorkOrder
             work_order_dates: None,
             work_order_info: None,
         }
+    }
+
+    // How should this function be implemented? You need to look in the
+    // WorkOrderDates and the Operations and the StatusCodes. The idea
+    // here is that you should move the logic out of the `Actor`s and
+    // into the `SchedulingEnvironment` is this correct? Yes! You need
+    // a single source of truth here.
+    //
+    // For now simply make it simple. That is the most important! The
+    // crucial part here is scheduling the work order so that the
+    // system will scale. The logic cannot be in the parameters of the
+    // Actors that does simply not scale well enough.
+    // QUESTION: Should you make this a free function? Yes I actually think
+    // so. You are relying too much on `self` and it makes the dependencies
+    // of every method insanely big.
+    pub fn forced_work_order(&self, periods: &[Period]) -> Result<ForcedWorkOrder>
+    {
+        // QUESTION: What are the factors that can force a `WorkOrder`?
+        // 1. UnloadingPoint
+        // 2. AWSC
+        // 3. SCH
+        // 4. BasicStart
+        // 5. EASD & LAFD
+        if self.work_order_analytic.awaiting_scheduling() {
+            let basic_start = self.work_order_dates.basic_start_date;
+            return Ok(ForcedWorkOrder::Days(basic_start));
+        }
+
+        // Is this correct? I am not really sure here. What should you do
+        // if the `UnloadingPoint` and other does not match?
+        if self.work_order_analytic.scheduled() {
+            let basic_start = self.work_order_dates.basic_start_date;
+            return Ok(ForcedWorkOrder::Days(basic_start));
+        }
+
+        // TODO [ ] 2025-07-22 make the code work with the ForcedWorkORder::Technician
+        // You ideally need to split every operation so that they can
+        // be planned whenever.
+        if let Some(period_string) = &self
+            .operations
+            .0
+            .first_key_value()
+            .context("Every WorkOrder should have atleast one Operation")?
+            .1
+            .unloading_point
+            .period_string
+        {
+            let period = periods
+                .iter()
+                .find(|p| p.period_string() == *period_string)
+                .context("`periods: &[Period]` does not contain the `period_string`")?;
+
+            return Ok(ForcedWorkOrder::Period(period.clone()));
+        }
+        Ok(ForcedWorkOrder::FreeWorkOrder)
     }
 
     pub fn vendor(&self) -> bool
@@ -488,7 +600,7 @@ impl WorkOrder
     {
         let period: Option<&Period> = periods.iter().find(|period| {
             period.start_date().date_naive() <= *date_time
-                && period.end_date().date_naive() >= *date_time
+                && period.finish_date().date_naive() >= *date_time
         });
 
         // This is created in a horrible way. I think that the best approach here

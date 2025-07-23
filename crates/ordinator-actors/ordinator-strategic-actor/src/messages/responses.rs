@@ -92,7 +92,7 @@ where
             number_of_strategic_work_orders,
             number_of_periods,
             asset: asset.clone(),
-            strategic_objective_value: value.algorithm.solution.objective_value.objective_value
+            strategic_objective_value: value.algorithm.solution.objective_value().objective_value
                 as usize,
         }
     }

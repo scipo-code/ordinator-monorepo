@@ -3,6 +3,9 @@ use std::collections::BTreeMap;
 use chrono::DateTime;
 use chrono::Utc;
 use ordinator_orchestrator_actor_traits::TacticalInterface;
+use ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled;
+use ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Strategic;
+use ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Tactical;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
@@ -23,11 +26,9 @@ impl TacticalInterface for TacticalSolution
             .get(&work_order_activity.0)
             .unwrap();
         let scheduled_days = match &activities {
-            ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Strategic => return None,
-            ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Tactical(value) => {
-                &value.0.get(&work_order_activity.1).unwrap().scheduled
-            }
-            ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => return None,
+            Strategic(_) => return None,
+            Tactical(value) => &value.0.get(&work_order_activity.1).unwrap().scheduled,
+            NotScheduled => return None,
         };
 
         let start = &scheduled_days.first().unwrap().0.date;
@@ -44,13 +45,13 @@ impl TacticalInterface for TacticalSolution
     {
         match self.tactical_work_orders.0.get(_work_order_number) {
             Some(c) => match c {
-                ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Strategic => None,
-                ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Tactical(wo) => {
+                Strategic(_) => None,
+                Tactical(wo) => {
                     let first_activity = wo.0.first_key_value();
                     let first_date = first_activity?.1.scheduled.first()?.0.date;
                     Some(WorkOrder::date_to_period(periods, &first_date.date_naive()))
                 }
-                ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => None,
+                NotScheduled => None,
             },
             None => None,
         }
@@ -73,11 +74,9 @@ impl TacticalInterface for TacticalSolution
             .iter()
             .clone()
             .map(|(won, whe_opt)| match whe_opt {
-                ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Strategic => (won, None),
-                ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Tactical(value) => {
-                    (won, Some(value))
-                }
-                ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => (won, None),
+                Strategic(_) => (won, None),
+                Tactical(value) => (won, Some(value)),
+                NotScheduled => (won, None),
             })
             .filter(|e| e.1.is_some())
             .map(|(won, e)| {

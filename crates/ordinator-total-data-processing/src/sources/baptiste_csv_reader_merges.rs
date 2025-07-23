@@ -86,9 +86,11 @@ pub fn load_csv_data(file_path: &BaptisteToml) -> Result<WorkOrders> {
         )
     })?;
 
-    Ok(WorkOrders {
-        inner: work_orders_inner,
-    })
+    let work_orders = WorkOrders::builder()
+        .work_orders_manual(work_orders_inner)
+        .subnetwork_manual(HashMap::default())
+        .build();
+    Ok(work_orders)
 }
 
 #[allow(dead_code)]
