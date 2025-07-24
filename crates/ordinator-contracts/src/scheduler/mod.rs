@@ -11,6 +11,7 @@ use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::WorkOrder;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Operation;
 use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::MaterialStatus;
 use serde::Serialize;
@@ -19,6 +20,7 @@ use utoipa::ToSchema;
 
 use crate::PeriodDto;
 use crate::TotalSystemSolution;
+use crate::WorkOrderNumberDto;
 
 #[derive(Serialize, ToSchema, TS)]
 #[ts(export)]
@@ -310,6 +312,145 @@ pub struct WorkOrderSingleRowSimpleDto
 }
 
 #[derive(Serialize, ToSchema, TS)]
+#[ts(export)]
+pub struct WorkOrderInfoWithSchedulingDto
+{
+    asset: String,
+    work_order_number: u64,
+    main_work_center: ResourcesDto,
+    operations: Vec<OperationDto>,
+    functional_location: String,
+    sch: bool,
+    awsc: bool,
+    vendor: bool,
+    priority: String,
+    revision: String,
+    period_status: PeriodStatus,
+    suggested_scheduled_period: String,
+    basic_start_date: String,
+    basic_finish_date: String,
+}
+
+impl
+    TryFrom<(
+        Asset,
+        MutexGuard<'_, SchedulingEnvironment>,
+        arc_swap::Guard<Arc<TotalSystemSolution>>,
+        WorkOrderNumberDto,
+    )> for WorkOrderInfoWithSchedulingDto
+{
+    type Error = anyhow::Error;
+
+    fn try_from(
+        value: (
+            Asset,
+            MutexGuard<'_, SchedulingEnvironment>,
+            arc_swap::Guard<Arc<TotalSystemSolution>>,
+            WorkOrderNumberDto,
+        ),
+    ) -> Result<Self>
+    {
+        let work_order_number_requested = WorkOrderNumber::from(value.3);
+        let work_order = value.1.work_orders.inner.get(&work_order_number_requested);
+
+        let work_order = match work_order {
+            Some(wo) => wo.clone(),
+            None => {
+                return Err(anyhow!(
+                    "Work order {} does not exist",
+                    work_order_number_requested
+                ));
+            }
+        };
+
+        let system_solution = value.2;
+
+        let strategic_period = system_solution
+            .strategic()?
+            .scheduled_task(&work_order.work_order_number);
+
+        let strategic_schedule = match strategic_period {
+            Some(opt_period) => match opt_period {
+                WhereIsWorkOrder::Strategic(period) => period.clone().to_string(),
+                // This does not have to be perfect.
+                WhereIsWorkOrder::Tactical(period) => period.clone().to_string(),
+                WhereIsWorkOrder::NotScheduled => {
+                    "Could not be scheduled under current business rules".to_string()
+                    // ReasonForNotScheduling::Unknown(
+                    //                     "Strategic Algorithm could
+                    // not schedule the Work Order. If this is a mistake
+                    // please not down why, and send
+                    // a message to
+                    // christian-brunbjerg.jespersen@external.totalenergies.
+                    // com"
+                    // .to_string(),
+                    // )
+                }
+            },
+            None => "Work Order not part of scheduling process".to_string(),
+        };
+
+        let periods = value.1.time_environment.periods.clone();
+        let periods_for_frozen_and_draft = [periods[0].clone(), periods[1].clone()];
+        let period_status = match strategic_period {
+            Some(opt_period) => match opt_period {
+                WhereIsWorkOrder::Strategic(period) => {
+                    PeriodStatus::status_for(&period, &periods_for_frozen_and_draft)
+                }
+                WhereIsWorkOrder::Tactical(period) => {
+                    PeriodStatus::status_for(&period, &periods_for_frozen_and_draft)
+                }
+                WhereIsWorkOrder::NotScheduled => PeriodStatus::NotScheduled,
+            },
+            None => PeriodStatus::NotScheduled,
+        };
+
+        let operations_with_dates: Result<Vec<OperationDto>, anyhow::Error> = work_order
+            .operations
+            .0
+            .iter()
+            .map(|(activity_id, operation)| {
+                let tactical_date = &system_solution
+                    .tactical
+                    .as_ref()
+                    .ok_or(anyhow!("There is no TacticalAgent present"))?
+                    .start_and_finish_dates(&(work_order.work_order_number, *activity_id));
+
+                let scheduled_date = match tactical_date {
+                    Some(date) => date.0.to_string(),
+                    None => "No scheduled start date".to_string(),
+                };
+
+                let ac =
+                    OperationDto::from(operation.clone()).add_scheduled_start_date(scheduled_date);
+                Ok(ac)
+            })
+            .collect();
+
+        let operations = operations_with_dates?;
+
+        let work_order_info = WorkOrderInfoWithSchedulingDto {
+            asset: value.0.to_string(),
+            work_order_number: work_order.work_order_number.0,
+            main_work_center: work_order.main_work_center.to_string(),
+            operations,
+            functional_location: work_order.functional_location().to_string(),
+            sch: work_order.work_order_analytic.user_status_codes.sch,
+            awsc: work_order.work_order_analytic.user_status_codes.awsc,
+            vendor: work_order.vendor(),
+            priority: work_order.work_order_info.priority.to_string(),
+            revision: work_order.work_order_info.revision.to_string(),
+            period_status,
+            suggested_scheduled_period: strategic_schedule.clone(),
+            basic_start_date: work_order.work_order_dates.basic_start_date.to_string(),
+            basic_finish_date: work_order.work_order_dates.basic_finish_date.to_string(),
+        };
+
+        Ok(work_order_info)
+    }
+}
+
+#[derive(Serialize, ToSchema, TS)]
 struct OperationDto
 {
     activity: u64,
@@ -319,6 +460,7 @@ struct OperationDto
     number_of_people: u64,
     unloading_point_period: Option<PeriodDto>,
     unloading_point_string: String,
+    scheduled_start_date: Option<String>,
 }
 
 impl From<WorkOrder> for WorkOrderSingleRowSimpleDto
@@ -357,6 +499,16 @@ impl From<Operation> for OperationDto
                 None
             },
             unloading_point_string: value.unloading_point.string,
+            scheduled_start_date: None,
         }
+    }
+}
+
+impl OperationDto
+{
+    pub fn add_scheduled_start_date(mut self, date: String) -> Self
+    {
+        self.scheduled_start_date = Some(date);
+        self
     }
 }
