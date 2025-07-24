@@ -156,10 +156,10 @@ impl
             let period_status = match strategic_period {
                 Some(opt_period) => match opt_period {
                     WhereIsWorkOrder::Strategic(period) => {
-                        PeriodStatus::status_for(&period, &periods_for_frozen_and_draft)
+                        PeriodStatus::status_for(period, &periods_for_frozen_and_draft)
                     }
                     WhereIsWorkOrder::Tactical(period) => {
-                        PeriodStatus::status_for(&period, &periods_for_frozen_and_draft)
+                        PeriodStatus::status_for(period, &periods_for_frozen_and_draft)
                     }
                     WhereIsWorkOrder::NotScheduled => PeriodStatus::NotScheduled,
                 },
@@ -395,10 +395,10 @@ impl
         let period_status = match strategic_period {
             Some(opt_period) => match opt_period {
                 WhereIsWorkOrder::Strategic(period) => {
-                    PeriodStatus::status_for(&period, &periods_for_frozen_and_draft)
+                    PeriodStatus::status_for(period, &periods_for_frozen_and_draft)
                 }
                 WhereIsWorkOrder::Tactical(period) => {
-                    PeriodStatus::status_for(&period, &periods_for_frozen_and_draft)
+                    PeriodStatus::status_for(period, &periods_for_frozen_and_draft)
                 }
                 WhereIsWorkOrder::NotScheduled => PeriodStatus::NotScheduled,
             },

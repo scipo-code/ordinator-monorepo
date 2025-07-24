@@ -105,4 +105,9 @@ impl WorkOrderAnalytic
     {
         self.user_status_codes.sch
     }
+
+    pub fn released_for_scheduling(&self) -> bool
+    {
+        self.system_status_codes.rel
+    }
 }

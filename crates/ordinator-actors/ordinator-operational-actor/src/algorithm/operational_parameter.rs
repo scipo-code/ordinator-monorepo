@@ -137,7 +137,13 @@ impl Parameters for OperationalParameters
         let mut work_order_parameters = HashMap::default();
         let mut work_order_activity_relations = HashMap::default();
 
-        for (work_order_number, work_order) in &scheduling_environment.work_orders.inner {
+        for (&work_order_number, work_order) in &scheduling_environment
+            .work_orders
+            .inner
+            .iter()
+            .filter(|(_, wo)| wo.work_order_analytic.released_for_scheduling())
+            .collect::<HashMap<_, _>>()
+        {
             for (activity_number, operation) in &work_order.operations.0 {
                 let work_order_activity = (*work_order_number, *activity_number);
 

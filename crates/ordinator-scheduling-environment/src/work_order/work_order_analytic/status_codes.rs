@@ -57,6 +57,7 @@ pub struct SystemStatusCodes
     #[arg(long)]
     pub ncmp: bool,
     #[arg(long)]
+    /// Closed work order
     pub clsd: bool,
     #[arg(long)]
     pub pcnf: bool,
@@ -262,6 +263,12 @@ impl UserStatusCodesBuilder
     pub fn smat(mut self, smat: bool) -> Self
     {
         self.0.smat = smat;
+        self
+    }
+
+    pub fn rel(mut self, rel: bool) -> Self
+    {
+        self.0.rel = rel;
         self
     }
 

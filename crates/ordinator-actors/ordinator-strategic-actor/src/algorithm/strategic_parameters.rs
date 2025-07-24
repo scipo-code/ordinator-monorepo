@@ -20,7 +20,6 @@ use ordinator_scheduling_environment::worker_environment::StrategicOptions;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Serialize;
-use tracing::info;
 
 use super::StrategicResources;
 
@@ -65,6 +64,8 @@ impl Parameters for StrategicParameters
 
         let strategic_periods = &scheduling_environment.time_environment.periods;
 
+        // Ideally all this should be removed to a different place in the
+        // code.
         let actor_specifications = scheduling_environment
             .worker_environment
             .actor_specification
@@ -81,7 +82,8 @@ impl Parameters for StrategicParameters
         let filter = work_orders
             .inner
             .iter()
-            .filter(|(_, wo)| wo.functional_location().asset == *asset);
+            .filter(|(_, wo)| wo.functional_location().asset == *asset)
+            .filter(|(_, wo)| wo.work_order_analytic.released_for_scheduling());
 
         // ISSUE #000
         // This is crucial to fix correctly now
@@ -257,13 +259,63 @@ impl WorkOrderParameterBuilder
         work_order: &WorkOrder,
         periods: &[Period],
         work_order_configurations: &WorkOrderConfigurations,
+        // Then you can also move this one out of the system.
         material_to_period: &MaterialToPeriod,
     ) -> Result<Self>
     {
-        // FIX [ ]
+        // FIX [x]
         // This is horribly written and very error prone
         // Use a TypeState pattern if you are in doubt.
-        self.excluded_periods = work_order.find_excluded_periods(periods, material_to_period);
+        // todi!
+
+        let forced_work_order = work_order.forced_work_order(periods, material_to_period)?;
+
+        match forced_work_order {
+            ordinator_scheduling_environment::work_order::ForcedWorkOrder::Period(period) => {
+                self.locked_in_period = Some(period.0);
+                self.excluded_periods = period.1;
+            }
+            ordinator_scheduling_environment::work_order::ForcedWorkOrder::Days(days) => {
+                self.locked_in_period = periods
+                    .iter()
+                    .find(|per| {
+                        per.contains_date(
+                            days.0
+                                .first()
+                                .expect("A Day should always be contained in a period.")
+                                .date
+                                .date_naive(),
+                        )
+                    })
+                    .cloned();
+                // If the date is contained in a period the period should not be excluded. Or
+                // all days in a period should be excluded if the entire thing
+                // should be excluded.
+                //
+                // If this is true we should make the
+                let excluded_periods = periods
+                    .iter()
+                    .filter(|per| {
+                        days.1
+                            .iter()
+                            .flatten()
+                            .all(|f| per.day_indices.contains(&(f.day_index as u64)))
+                    })
+                    .cloned()
+                    .collect::<HashSet<Period>>();
+                // CRUCIAL INSIGHT! You are using the wrong data structure here.
+                self.excluded_periods = excluded_periods;
+            }
+            ordinator_scheduling_environment::work_order::ForcedWorkOrder::Technician(
+                _technician_include,
+                _technician_exclude,
+            ) => todo!(),
+            ordinator_scheduling_environment::work_order::ForcedWorkOrder::FreeWorkOrder => {
+                self.locked_in_period = None;
+                self.excluded_periods =
+                    work_order.find_excluded_periods(periods, material_to_period)
+            }
+        }
 
         self.weight = Some(
             work_order
@@ -278,118 +330,6 @@ impl WorkOrderParameterBuilder
             .context("Could not determine the work order load")?;
 
         self.latest_period = Some(work_order.latest_allowed_finish_period(periods).clone());
-        // FIX
-
-        // Ideally we should split the work orders by the operations in the code. I
-        // think that is the best approach going forward. For now simply take
-        // the first element of the code.
-        let unloading_point_period = work_order
-            .operations
-            .0
-            // This is a whole new nightmare
-            .iter()
-            .nth(0)
-            .unwrap()
-            .1
-            .unloading_point(periods);
-
-        dbg!(&unloading_point_period);
-        if work_order.vendor()
-            && (unloading_point_period.is_some()
-                || work_order.work_order_analytic.user_status_codes.awsc)
-        {
-            match unloading_point_period {
-                Some(unloading_point_period) => {
-                    self.locked_in_period = Some(unloading_point_period.clone());
-                    self.excluded_periods.remove(unloading_point_period);
-                    info!(target: "business_events", work_order_number = work_order.work_order_number.0, "vendor work order forced in UnloadingPoint");
-                }
-                None => {
-                    let scheduled_period = periods
-                        .iter()
-                        .find(|period| {
-                            period.contains_date(work_order.work_order_dates.basic_start_date)
-                        })
-                        .cloned();
-
-                    if let Some(locked_in_period) = scheduled_period {
-                        self.locked_in_period = Some(locked_in_period.clone());
-                        self.excluded_periods.remove(&locked_in_period);
-                    }
-                    info!(target: "business_events", work_order_number = work_order.work_order_number.0, "vendor work order forced in BasicStartDate");
-                }
-            }
-            return Ok(self);
-        }
-
-        // This should be removed. We cannot determine if this is true or not.
-        if work_order.vendor() {
-            self.locked_in_period = None;
-            self.excluded_periods
-                .remove(self.locked_in_period.as_ref().unwrap());
-            info!(target: "business_events", work_order_number = work_order.work_order_number.0, "vendor work order unscheduled (Make sure that this is what you actually want)");
-            return Ok(self);
-        };
-
-        if work_order.work_order_analytic.user_status_codes.sch {
-            if unloading_point_period.is_some()
-                && periods[0..=1].contains(unloading_point_period.unwrap())
-            {
-                self.locked_in_period
-                    .clone_from(&unloading_point_period.cloned());
-                self.excluded_periods
-                    .remove(self.locked_in_period.as_ref().unwrap());
-                info!(target: "business_events", work_order_number = work_order.work_order_number.0, "normal work order scheduled with SCH and unloading point period");
-            } else {
-                let scheduled_period = periods[0..=1].iter().find(|period| {
-                    period.contains_date(work_order.work_order_dates.basic_start_date)
-                });
-
-                if let Some(locked_in_period) = scheduled_period {
-                    self.locked_in_period = Some(locked_in_period.clone());
-                    self.excluded_periods
-                        .remove(self.locked_in_period.as_ref().unwrap());
-                }
-                info!(target: "business_events", work_order_number = work_order.work_order_number.0, "normal work order scheduled with SCH and BasicStartDate");
-            }
-            return Ok(self);
-        }
-
-        // This is the kind of thing that we really want to avoid.
-        // Okay we should also move the `basic_start_date`
-        if work_order.work_order_analytic.user_status_codes.awsc {
-            let scheduled_period = periods
-                .iter()
-                .find(|period| period.contains_date(work_order.work_order_dates.basic_start_date));
-
-            if let Some(locked_in_period) = scheduled_period {
-                self.locked_in_period = Some(locked_in_period.clone());
-                self.excluded_periods
-                    .remove(self.locked_in_period.as_ref().unwrap());
-            }
-            info!(target: "business_events", work_order_number = work_order.work_order_number.0, "normal work order scheduled with AWSC and BasicStartDate");
-            return Ok(self);
-        }
-
-        if work_order
-            .operations
-            .0
-            .iter()
-            .nth(0)
-            .unwrap()
-            .1
-            .unloading_point(periods)
-            .is_some()
-        {
-            let locked_in_period = unloading_point_period.unwrap();
-            if !periods[0..=1].contains(unloading_point_period.as_ref().unwrap()) {
-                self.locked_in_period = Some(locked_in_period.clone());
-                self.excluded_periods
-                    .remove(self.locked_in_period.as_ref().unwrap());
-            }
-            info!(target: "business_events", work_order_number = work_order.work_order_number.0, "normal work order scheduled unloading point exclusively");
-            return Ok(self);
-        }
         Ok(self)
     }
 

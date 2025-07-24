@@ -20,6 +20,7 @@ use chrono::TimeDelta;
 use colored::Colorize;
 use serde::Deserialize;
 use serde::Serialize;
+use tracing::info;
 use work_order_dates::WorkOrderDatesBuilder;
 
 use self::operation::ActivityNumber;
@@ -229,6 +230,13 @@ pub struct WorkOrder
     pub work_order_info: WorkOrderInfo,
 }
 
+// Should you work on this now? No! Practice skills and read.
+// #[derive(Serialize, Deserialize, Clone, Debug)]
+// pub struct ManuallyInputtedInformation
+// {
+//     excluded_periods: HashSet<Rc<Period>>,
+// }
+
 pub struct WorkOrderBuilder
 {
     work_order_number: WorkOrderNumber,
@@ -374,13 +382,92 @@ pub struct ClusteringWeights
     pub equipment_tag: u64,
 }
 
+// ESSAY: Should this type handle both forced and excluded?
+// I think that is a good idea. Maybe a better option would
+// be to make two types,
+//
+// ESSAY: In operation research is there really only:
+// 1. The required decisions
+// 2. The not allowed decisions
+// 3. The open solution space of the decisions that can be optimized
+// these three types?
+//
+// Effectively they are all constraints. For the network flow problems
+// there is the the flows that needs to be satisfied, the paths that cannot
+// be taken, and then there is the decisions that are up for the model to
+// decide.
+//
+// For the graph coloring problem. All vertices needs a color (required), two
+// vercies cannot share an edge and have the same color (not allowed), find the
+// least amount of colors.
+// Does this cover everything that the code needs to do here? You will need
+// to add a rules engine at somepoint, and you will need the hexagonal
+// architecture from the start.
 pub enum ForcedWorkOrder
 {
-    Period(Period),
-    Days(NaiveDate),
-    Technician(Id, Option<Day>),
+    Period((Period, HashSet<Period>)),
+    Days((Vec<Day>, Vec<HashSet<Day>>)),
+    Technician(TechnicianInclude, TechnicianExclude),
     FreeWorkOrder,
 }
+
+#[allow(dead_code)]
+pub struct TechnicianInclude
+{
+    id: Id,
+    interval: Option<(Day, Day)>,
+}
+
+#[allow(dead_code)]
+pub struct TechnicianExclude
+{
+    ids: HashSet<Id>,
+    intervals: HashSet<Option<(Day, Day)>>,
+}
+
+// pub enum SchedulePlan
+// {
+//     ForcedPeriod,
+//     ForcedDays,
+//     ForcedTechnician,
+//     // Remember that the only thing that you want here is
+//     // 1. Required Decisions (Include)
+//     // 2. Disallowed Decisions (Exclude)
+//     // 3. Optimizable Desisions (Weight and optimize)
+//     //
+//     // Rules have to determine the first and the second, weight have to
+//     // determine the third. Yes I think that we have the approach going
+// forward. }
+
+// pub struct ScheduleContribution
+// {
+//     vendor: bool,
+//     sch: bool,
+//     aswc: bool,
+// }
+
+// pub trait ScheduleRule
+// {
+//     fn is_applicable(&self, work_order: &WorkOrder) -> bool;
+//     fn contribution(&self, work_order: &WorkOrder) -> ScheduleContribution;
+// }
+
+// Is this a good idea? No
+// struct Vendor;
+
+// impl ScheduleRule for Vendor
+// {
+//     fn is_applicable(&self, _work_order: &WorkOrder) -> bool
+//     {
+//         todo!()
+//     }
+
+//     fn contribution(&self, _work_order: &WorkOrder) -> ScheduleContribution
+//     {
+//         todo!()
+//     }
+// }
+
 impl WorkOrder
 {
     pub fn builder(work_order_number: WorkOrderNumber) -> WorkOrderBuilder
@@ -408,45 +495,240 @@ impl WorkOrder
     // QUESTION: Should you make this a free function? Yes I actually think
     // so. You are relying too much on `self` and it makes the dependencies
     // of every method insanely big.
-    pub fn forced_work_order(&self, periods: &[Period]) -> Result<ForcedWorkOrder>
+    //
+    // You need to think very carefully about constructing this type. It is
+    // crucial that the code is each to understand. You will also need to
+    // have additional fields in the `SchedulingEnvironment` to accomdate the
+    // new informations.
+    //
+    // 0. Use value objects
+    // 0. Use a single constructor
+    // 1. Centralize first
+    // 2. List new options
+    // 3. Choose approach forward
+    // 4. Make enum
+    // 5. Make applicable rules
+    // 6. Implement typestate pattern
+    // 7. Implement runtime rules engine
+    pub fn forced_work_order(
+        &self,
+        periods: &[Period],
+        material_to_periods: &MaterialToPeriod,
+    ) -> Result<ForcedWorkOrder>
     {
+        // Okay so the working idea is that every actor should call this. The actor
+        // might need certain other informations
+
+        // Ideally we should split the work orders by the operations in the code. I
+        // think that is the best approach going forward. For now simply take
+        // the first element of the code.
+        let unloading_point_period = self
+            .operations
+            .0
+            // This is a whole new nightmare
+            .iter()
+            .nth(0)
+            .unwrap()
+            .1
+            .unloading_point(periods);
+
+        // So the whole thing is now about returning a single object that works for
+        // every Actor that means that we should focus on returning the simplest
+        // object possible. That encompass everything.
+        //
+        // This type
+        // The obstacle is the way here.
+        if self.vendor()
+            && (unloading_point_period.is_some() || self.work_order_analytic.user_status_codes.awsc)
+        {
+            // This needs to be corrected as well.
+            let forced_work_order = match unloading_point_period {
+                Some(unloading_point_period) => {
+                    let mut excluded_periods =
+                        self.find_excluded_periods(periods, material_to_periods);
+
+                    // You have to determine a `Vec<Day>` for each of the workorders.
+                    excluded_periods.remove(unloading_point_period);
+                    // Okay first make the type, then extend it
+                    info!(target: "business_events", work_order_number = self.work_order_number.0, "vendor work order forced in UnloadingPoint");
+
+                    // You should use the basic start dates here.
+                    Some(ForcedWorkOrder::Period((
+                        unloading_point_period.clone(),
+                        excluded_periods,
+                    )))
+                }
+                None => {
+                    let scheduled_period = periods
+                        .iter()
+                        .find(|period| period.contains_date(self.work_order_dates.basic_start_date))
+                        .cloned();
+
+                    if let Some(locked_in_period) = scheduled_period {
+                        let mut excluded_periods =
+                            self.find_excluded_periods(periods, material_to_periods);
+                        excluded_periods.remove(&locked_in_period);
+                        // Okay first make the type, then extend it
+                        info!(target: "business_events", work_order_number = self.work_order_number.0, "vendor work order forced in BasicStartDate");
+                        Some(ForcedWorkOrder::Period((
+                            locked_in_period.clone(),
+                            excluded_periods,
+                        )))
+                    } else {
+                        None
+                    }
+                }
+            };
+            // CRUCIAL INSIGHT! You were not using value objects and the newtype pattern.
+            // This is a mistake.
+            if let Some(forced_work_order) = forced_work_order {
+                return Ok(forced_work_order);
+            }
+        }
+
+        // This should be removed. We cannot determine if this is true or not.
+        // if self.vendor() {
+        //     self.locked_in_period = None;
+        //     self.excluded_periods
+        //         .remove(self.locked_in_period.as_ref().unwrap());
+        //     info!(target: "business_events", work_order_number =
+        // work_order.work_order_number.0, "vendor work order unscheduled (Make sure
+        // that this is what you actually want)");     return Ok(self);
+        // };
+
+        // Okay make it work first.
+        // RULE 5: Only change one thing at a time.
+        if self.work_order_analytic.user_status_codes.sch {
+            // TODO [ ]
+            // This really ought to be made in a completely different way here.
+            let forced_work_order = if let Some(unloading_point_period) = unloading_point_period {
+                if periods[0..=1].contains(unloading_point_period) {
+                    let mut excluded_periods =
+                        self.find_excluded_periods(periods, material_to_periods);
+                    excluded_periods.remove(unloading_point_period);
+                    info!(target: "business_events", work_order_number = self.work_order_number.0, "normal work order scheduled with SCH and unloading point period");
+                    Some(ForcedWorkOrder::Period((
+                        unloading_point_period.clone(),
+                        excluded_periods,
+                    )))
+                } else {
+                    let scheduled_period = periods[0..=1].iter().find(|period| {
+                        period.contains_date(self.work_order_dates.basic_start_date)
+                    });
+
+                    if let Some(locked_in_period) = scheduled_period {
+                        let mut excluded_periods =
+                            self.find_excluded_periods(periods, material_to_periods);
+                        excluded_periods.remove(&unloading_point_period.clone());
+                        info!(target: "business_events", work_order_number = self.work_order_number.0, "normal work order scheduled with SCH and BasicStartDate");
+                        Some(ForcedWorkOrder::Period((
+                            locked_in_period.clone(),
+                            excluded_periods,
+                        )))
+                    } else {
+                        None
+                    }
+                }
+            } else {
+                None
+            };
+            if let Some(forced_work_order) = forced_work_order {
+                return Ok(forced_work_order);
+            }
+        }
+
+        // This is the kind of thing that we really want to avoid.
+        // Okay we should also move the `basic_start_date`
+        if self.work_order_analytic.user_status_codes.awsc {
+            let scheduled_period = periods
+                .iter()
+                .find(|period| period.contains_date(self.work_order_dates.basic_start_date));
+
+            let forced_work_order = if let Some(locked_in_period) = scheduled_period {
+                let mut excluded_periods = self.find_excluded_periods(periods, material_to_periods);
+                excluded_periods.remove(&locked_in_period.clone());
+                info!(target: "business_events", work_order_number = self.work_order_number.0, "normal work order scheduled with SCH and BasicStartDate");
+                Some(ForcedWorkOrder::Period((
+                    locked_in_period.clone(),
+                    excluded_periods,
+                )))
+            } else {
+                None
+            };
+            info!(target: "business_events", work_order_number = self.work_order_number.0, "normal work order scheduled with AWSC and BasicStartDate");
+            if let Some(forced_work_order) = forced_work_order {
+                return Ok(forced_work_order);
+            }
+        }
+
+        if self
+            .operations
+            .0
+            .iter()
+            .nth(0)
+            .unwrap()
+            .1
+            .unloading_point(periods)
+            .is_some()
+        {
+            let locked_in_period = unloading_point_period.unwrap();
+            let forced_work_order = if !periods[0..=1]
+                .contains(unloading_point_period.as_ref().unwrap())
+            {
+                let mut excluded_periods = self.find_excluded_periods(periods, material_to_periods);
+                excluded_periods.remove(&locked_in_period.clone());
+                info!(target: "business_events", work_order_number = self.work_order_number.0, "normal work order scheduled with SCH and BasicStartDate");
+                Some(ForcedWorkOrder::Period((
+                    locked_in_period.clone(),
+                    excluded_periods,
+                )))
+            } else {
+                None
+            };
+            info!(target: "business_events", work_order_number = self.work_order_number.0, "normal work order scheduled unloading point exclusively");
+            if let Some(forced_work_order) = forced_work_order {
+                return Ok(forced_work_order);
+            }
+        }
+
         // QUESTION: What are the factors that can force a `WorkOrder`?
         // 1. UnloadingPoint
         // 2. AWSC
         // 3. SCH
         // 4. BasicStart
         // 5. EASD & LAFD
-        if self.work_order_analytic.awaiting_scheduling() {
-            let basic_start = self.work_order_dates.basic_start_date;
-            return Ok(ForcedWorkOrder::Days(basic_start));
-        }
+        // if self.work_order_analytic.awaiting_scheduling() {
+        //     let basic_start = self.work_order_dates.basic_start_date;
+        //     return Ok(ForcedWorkOrder::Days(basic_start));
+        // }
 
         // Is this correct? I am not really sure here. What should you do
         // if the `UnloadingPoint` and other does not match?
-        if self.work_order_analytic.scheduled() {
-            let basic_start = self.work_order_dates.basic_start_date;
-            return Ok(ForcedWorkOrder::Days(basic_start));
-        }
+        // if self.work_order_analytic.scheduled() {
+        //     let basic_start = self.work_order_dates.basic_start_date;
+        //     return Ok(ForcedWorkOrder::Days(basic_start));
+        // }
 
         // TODO [ ] 2025-07-22 make the code work with the ForcedWorkORder::Technician
         // You ideally need to split every operation so that they can
         // be planned whenever.
-        if let Some(period_string) = &self
-            .operations
-            .0
-            .first_key_value()
-            .context("Every WorkOrder should have atleast one Operation")?
-            .1
-            .unloading_point
-            .period_string
-        {
-            let period = periods
-                .iter()
-                .find(|p| p.period_string() == *period_string)
-                .context("`periods: &[Period]` does not contain the `period_string`")?;
+        // if let Some(period_string) = &self
+        //     .operations
+        //     .0
+        //     .first_key_value()
+        //     .context("Every WorkOrder should have atleast one Operation")?
+        //     .1
+        //     .unloading_point
+        //     .period_string
+        // {
+        //     let period = periods
+        //         .iter()
+        //         .find(|p| p.period_string() == *period_string)
+        //         .context("`periods: &[Period]` does not contain the
+        // `period_string`")?;
 
-            return Ok(ForcedWorkOrder::Period(period.clone()));
-        }
+        //     return Ok(ForcedWorkOrder::Period(period.clone()));
+        // }
         Ok(ForcedWorkOrder::FreeWorkOrder)
     }
 
@@ -568,14 +850,14 @@ impl WorkOrder
     pub fn find_excluded_periods(
         &self,
         periods: &[Period],
-        material_to_periods: &MaterialToPeriod,
+        material_to_period: &MaterialToPeriod,
     ) -> HashSet<Period>
     {
         periods
             .iter()
             .enumerate()
             .filter(|(i, per)| {
-                *per < self.earliest_allowed_start_period(periods, material_to_periods)
+                *per < self.earliest_allowed_start_period(periods, material_to_period)
                     || (self.vendor() && *i <= 3)
                     || (self.work_order_info.revision.shutdown() && *i <= 3)
             })

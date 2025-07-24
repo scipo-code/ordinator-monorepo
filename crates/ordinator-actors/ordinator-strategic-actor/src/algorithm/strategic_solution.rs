@@ -27,7 +27,7 @@ use super::strategic_resources::StrategicResources;
 pub struct StrategicSolution
 {
     objective_value: StrategicObjectiveValue,
-    strategic_scheduled_work_orders: HashMap<WorkOrderNumber, WhereIsWorkOrder<Period>>,
+    pub(crate) strategic_scheduled_work_orders: HashMap<WorkOrderNumber, WhereIsWorkOrder<Period>>,
     pub strategic_loadings: StrategicResources,
 }
 

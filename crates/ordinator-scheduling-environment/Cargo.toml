@@ -21,3 +21,4 @@ strum = "*"
 strum_macros = "*"
 toml = "*"
 ts-rs = "*"
+tracing.workspace=true

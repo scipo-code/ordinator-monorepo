@@ -133,7 +133,6 @@ mod tests
 
         let functional_location_string_2 = "TEST  / A / 09 /  RA-REA";
         let functional_location_2 = FunctionalLocation::new(functional_location_string_2);
-        dbg!(&functional_location_2);
 
         assert_eq!(functional_location_2.asset, Asset::Test);
         assert_eq!(functional_location_2.sector(), Some("A"));

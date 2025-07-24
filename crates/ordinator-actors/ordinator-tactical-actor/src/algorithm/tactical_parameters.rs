@@ -62,7 +62,8 @@ impl Parameters for TacticalParameters
             .iter()
             // WARN: Unwrap accepted. Every agent should always be connected to an Asset
             // QUESTION: Is this actually true?
-            .filter(|(_, wo)| &wo.functional_location().asset == id.2.first().unwrap());
+            .filter(|(_, wo)| &wo.functional_location().asset == id.2.first().unwrap())
+            .filter(|(_, wo)| wo.work_order_analytic.released_for_scheduling());
 
         let tactical_capacity = TacticalResources::from((scheduling_environment, id));
 
