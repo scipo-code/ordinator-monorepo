@@ -96,16 +96,6 @@ export function AppSidebar() {
     }
     setWorkspace(ws);
   }
-
-  // const handleNavigation = (url: string) => {
-  //   if (!asset) {
-  //     // If no asset is selected, show a message or handle it appropriately
-  //     alert('Please select a workspace first');
-  //     return;
-  //   }
-  //   navigate(url.replace(':asset', asset));
-  // }
-
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
