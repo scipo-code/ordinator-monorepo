@@ -8,38 +8,20 @@ import { DropdownMenu,
 import { MoreHorizontal } from 'lucide-react';
 
 import { SingleRowDto } from "../../../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
-import { PeriodStatus } from '../../../../../../crates/ordinator-contracts/bindings/PeriodStatus.ts';
 import { useNavigate } from 'react-router-dom';
+import { PeriodStatusICellRenderer } from '@/components/ui/period_status_badge.tsx';
 export type SchedulingData = SingleRowDto & {action: string | null};
 
 
-const PeriodStatusColors: Record<PeriodStatus, string> = {
-   Frozen: '#fcba03',
-   Draft: '#000080',
-   Active: '#ffffff',
-   NotScheduled: '#8c1212',
+
+interface ActionMenuParams extends ICellRendererParams<SchedulingData> {
+   context: {
+      asset: string
+   }
 }
 
-type PeriodStatusBadgeProps = ICellRendererParams<{ period_status: PeriodStatus }>;
 
-const PeriodStatusBadge  = ({value}: PeriodStatusBadgeProps ) => {
-   if (!value) return;
-
-   return (
-      <span
-         className='inline-block rounded-full px-2.5 py-0.5 text-xs text-white'
-         style={{
-            background: PeriodStatusColors[value as PeriodStatus] ?? '#ccc',
-         }}
-      >{value}
-      </span>
-   )
-}
-
-interface ActionMenuParams extends ICellRendererParams<SchedulingData> {}
-
-
-const ActionMenu: React.FC<ActionMenuParams> = (({ data }) => {
+const ActionMenu: React.FC<ActionMenuParams> = (({ data, context }) => {
    if (!data) return null;
    const navigate = useNavigate();
 
@@ -47,7 +29,7 @@ const ActionMenu: React.FC<ActionMenuParams> = (({ data }) => {
       e.stopPropagation();
 
       if (data?.work_order_number) {
-         navigate(`/workorder/${data.work_order_number}`);
+         navigate(`/dashboard/${context.asset}/${data.work_order_number}`);
       }
    }
 
@@ -95,7 +77,7 @@ export function useTableColDefs(): ColDef<SchedulingData>[] {
         headerName: 'period status',
         pinned: "left",
         minWidth: 20,
-        cellRenderer: PeriodStatusBadge,
+        cellRenderer: PeriodStatusICellRenderer,
       },
       {
         field: 'action',
