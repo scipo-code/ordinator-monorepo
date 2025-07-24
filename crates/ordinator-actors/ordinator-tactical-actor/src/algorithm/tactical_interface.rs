@@ -20,11 +20,7 @@ impl TacticalInterface for TacticalSolution
         work_order_activity: &WorkOrderActivity,
     ) -> Option<(&DateTime<Utc>, &DateTime<Utc>)>
     {
-        let activities = self
-            .tactical_work_orders
-            .0
-            .get(&work_order_activity.0)
-            .unwrap();
+        let activities = self.tactical_work_orders.0.get(&work_order_activity.0)?;
         let scheduled_days = match &activities {
             Strategic(_) => return None,
             Tactical(value) => &value.0.get(&work_order_activity.1).unwrap().scheduled,

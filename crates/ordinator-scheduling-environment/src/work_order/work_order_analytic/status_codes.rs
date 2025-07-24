@@ -266,6 +266,12 @@ impl UserStatusCodesBuilder
         self
     }
 
+    pub fn rel(mut self, rel: bool) -> Self
+    {
+        self.0.rel = rel;
+        self
+    }
+
     pub fn from_str(self, user_status_string: &str) -> Self
     {
         let appr_pattern = regex::Regex::new(r"APPR").unwrap();

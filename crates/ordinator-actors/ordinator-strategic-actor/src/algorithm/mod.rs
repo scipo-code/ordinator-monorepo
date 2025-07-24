@@ -109,7 +109,7 @@ where
         // This function makes the code work correctly with the 
         // 
         let mut work_order_numbers: Vec<ForcedWorkOrder> = vec![];
-        let mut state_change = false;
+        let mut state_change = true;
 
         // This is the problem. What is the best way around it?
         // We should create a method to update the
@@ -164,6 +164,7 @@ where
 
 
             if let Some(tactical_period) = tactical_scheduled_period {
+
                 *scheduled_period = WhereIsWorkOrder::Tactical(tactical_period.clone())
             }
             // Actually here you should simply update the Solution based on the

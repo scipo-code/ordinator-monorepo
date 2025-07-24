@@ -3,9 +3,7 @@ mod routes;
 use std::net::SocketAddr;
 use std::sync::Arc;
 
-use axum::http::StatusCode;
 use axum::routing::get;
-use axum::routing::get_service;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Environment;
 use ordinator_orchestrator::Orchestrator;
@@ -25,8 +23,8 @@ pub async fn start_application(
 ) -> impl Future<Output = std::result::Result<(), std::io::Error>>
 {
     // let index_service =
-    // get_service(ServeDir::new("./static_files/index")).handle_error(     |err: std::io::Error| async move {
-    //         (
+    // get_service(ServeDir::new("./static_files/index")).handle_error(     |err:
+    // std::io::Error| async move {         (
     //             StatusCode::INTERNAL_SERVER_ERROR,
     //             format!("Unhandled internal server error: {err}"),
     //         )
