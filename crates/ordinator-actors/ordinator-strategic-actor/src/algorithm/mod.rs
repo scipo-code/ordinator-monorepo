@@ -192,14 +192,12 @@ where
             // between the `Strategic` and the `Tactical`.
             //
             
-            if let WhereIsWorkOrder::Strategic(period)  = scheduled_period.clone() {
-                if Some(period) == strategic_parameter.locked_in_period {
+            if strategic_parameter.locked_in_period == scheduled_period.clone() {
                     continue;
-                }
             } else if let WhereIsWorkOrder::Tactical(_period) = scheduled_period {
             }
           
-            if strategic_parameter.locked_in_period.is_some() {
+            if strategic_parameter.locked_in_period.is_strategic() {
                 work_order_numbers.push(ForcedWorkOrder::Locked(*work_order_number));
             } else if let Some(_tactical_period) =  tactical_scheduled_period {
                 
@@ -353,7 +351,7 @@ where
                     .get(won)
                     .unwrap()
                     .locked_in_period
-                    .is_none()
+                    .not_scheduled()
             })
             .map(|(&won, _)| won)
             .collect();
@@ -1805,7 +1803,7 @@ where
                     "The StrategicParameter should always be available for the StrategicSolution",
                 );
 
-            if strategic_parameter.locked_in_period.is_some() {
+            if strategic_parameter.locked_in_period.is_strategic() {
                 continue;
             }
 
@@ -1855,7 +1853,7 @@ mod tests {
 
     impl WorkOrderParameter {
         pub fn new(
-            locked_in_period: Option<Period>,
+            locked_in_period: WhereIsWorkOrder<Period>,
             excluded_periods: HashSet<Period>,
             latest_period: Period,
             weight: i64,

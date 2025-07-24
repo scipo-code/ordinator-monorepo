@@ -6,11 +6,15 @@ use anyhow::Context;
 use anyhow::Result;
 use anyhow::bail;
 use ordinator_orchestrator_actor_traits::Parameters;
+use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::MaterialToPeriod;
+use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::ClusteringWeights;
+use ordinator_scheduling_environment::work_order::ForcedWorkOrder;
+use ordinator_scheduling_environment::work_order::TacticalForceType;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderConfigurations;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
@@ -20,6 +24,7 @@ use ordinator_scheduling_environment::worker_environment::StrategicOptions;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Serialize;
+use tracing::info;
 
 use super::StrategicResources;
 
@@ -63,6 +68,7 @@ impl Parameters for StrategicParameters
         let work_orders = &scheduling_environment.work_orders;
 
         let strategic_periods = &scheduling_environment.time_environment.periods;
+        let days = &scheduling_environment.time_environment.days;
 
         // Ideally all this should be removed to a different place in the
         // code.
@@ -102,6 +108,7 @@ impl Parameters for StrategicParameters
                         .with_scheduling_environment(
                             wo,
                             strategic_periods,
+                            days,
                             work_order_configurations,
                             material_to_period,
                         )?
@@ -161,7 +168,7 @@ pub struct StrategicClustering
 #[derive(Debug, PartialEq, Clone, Serialize)]
 pub struct WorkOrderParameter
 {
-    pub locked_in_period: Option<Period>,
+    pub locked_in_period: WhereIsWorkOrder<Period>,
     pub excluded_periods: HashSet<Period>,
     pub latest_period: Period,
 
@@ -183,7 +190,7 @@ pub struct WorkOrderParameter
 #[derive(Debug)]
 pub struct WorkOrderParameterBuilder
 {
-    pub locked_in_period: Option<Period>,
+    pub locked_in_period: WhereIsWorkOrder<Period>,
     pub excluded_periods: HashSet<Period>,
     pub latest_period: Option<Period>,
     pub weight: Option<u64>,
@@ -212,8 +219,9 @@ impl StrategicParameters
             }
         };
         match option_period {
-            Some(period) => period,
-            None => panic!(
+            WhereIsWorkOrder::Strategic(period) => period,
+            WhereIsWorkOrder::Tactical(_) => panic!("This should not happen"),
+            WhereIsWorkOrder::NotScheduled => panic!(
                 "Work order number {work_order_number:?} does not have a locked in period, but it is being called by the optimized_work_orders.schedule_forced_work_order",
             ),
         }
@@ -235,7 +243,7 @@ impl StrategicParameters
                 work_order_number
             ),
         };
-        optimized_work_order.locked_in_period = Some(period);
+        optimized_work_order.locked_in_period = WhereIsWorkOrder::Strategic(period);
         Ok(())
     }
 }
@@ -253,11 +261,12 @@ impl WorkOrderParameterBuilder
     // The higher level Parameters implementation includes the
     // `SchedulingEnvironment` that means that it should be possible to include
     // the `WorkOrderConfigurations` here.
-    //
+
     pub fn with_scheduling_environment(
         mut self,
         work_order: &WorkOrder,
         periods: &[Period],
+        days: &[Day],
         work_order_configurations: &WorkOrderConfigurations,
         // Then you can also move this one out of the system.
         material_to_period: &MaterialToPeriod,
@@ -268,26 +277,30 @@ impl WorkOrderParameterBuilder
         // Use a TypeState pattern if you are in doubt.
         // todi!
 
-        let forced_work_order = work_order.forced_work_order(periods, material_to_period)?;
+        let forced_work_order = work_order.forced_work_order(periods, days, material_to_period)?;
 
+        info!(target: "developer", forced_work_order = ?forced_work_order);
         match forced_work_order {
-            ordinator_scheduling_environment::work_order::ForcedWorkOrder::Period(period) => {
-                self.locked_in_period = Some(period.0);
+            ForcedWorkOrder::Period(period) => {
+                self.locked_in_period = WhereIsWorkOrder::Strategic(period.0);
                 self.excluded_periods = period.1;
             }
-            ordinator_scheduling_environment::work_order::ForcedWorkOrder::Days(days) => {
-                self.locked_in_period = periods
-                    .iter()
-                    .find(|per| {
-                        per.contains_date(
-                            days.0
-                                .first()
-                                .expect("A Day should always be contained in a period.")
-                                .date
-                                .date_naive(),
-                        )
-                    })
-                    .cloned();
+            // What should happen here? I think that the best approach is to
+            // structure the code so that it will
+            // If this happens complete control should be given to the tactical, correct? Yes
+            // What should happen here? The Strategic should make the WhereIsWorkOrder::Tactical.
+            ForcedWorkOrder::Days(days) => {
+                match &days {
+                    TacticalForceType::OnlyStartDay(day) => {
+                        let period = periods
+                            .iter()
+                            .find(|per| per.contains_date(day.date.date_naive()))
+                            .context("day should always be contained in the period")?
+                            .clone();
+                        self.locked_in_period = WhereIsWorkOrder::Tactical(period);
+                    }
+                    TacticalForceType::IndividualActivities(_items, _hash_sets) => todo!(),
+                }
                 // If the date is contained in a period the period should not be excluded. Or
                 // all days in a period should be excluded if the entire thing
                 // should be excluded.
@@ -295,23 +308,15 @@ impl WorkOrderParameterBuilder
                 // If this is true we should make the
                 let excluded_periods = periods
                     .iter()
-                    .filter(|per| {
-                        days.1
-                            .iter()
-                            .flatten()
-                            .all(|f| per.day_indices.contains(&(f.day_index as u64)))
-                    })
+                    .filter(|per| days.excluded_days(per))
                     .cloned()
                     .collect::<HashSet<Period>>();
                 // CRUCIAL INSIGHT! You are using the wrong data structure here.
                 self.excluded_periods = excluded_periods;
             }
-            ordinator_scheduling_environment::work_order::ForcedWorkOrder::Technician(
-                _technician_include,
-                _technician_exclude,
-            ) => todo!(),
-            ordinator_scheduling_environment::work_order::ForcedWorkOrder::FreeWorkOrder => {
-                self.locked_in_period = None;
+            ForcedWorkOrder::Technician(_technician_include, _technician_exclude) => todo!(),
+            ForcedWorkOrder::FreeWorkOrder => {
+                self.locked_in_period = WhereIsWorkOrder::NotScheduled;
                 self.excluded_periods =
                     work_order.find_excluded_periods(periods, material_to_period)
             }
@@ -335,7 +340,7 @@ impl WorkOrderParameterBuilder
 
     pub fn build(self) -> WorkOrderParameter
     {
-        if let Some(ref locked_in_period) = self.locked_in_period {
+        if let WhereIsWorkOrder::Strategic(ref locked_in_period) = self.locked_in_period {
             assert!(!self.excluded_periods.contains(locked_in_period));
         }
 
@@ -360,7 +365,7 @@ impl WorkOrderParameter
     {
         // SHould we accept a
         WorkOrderParameterBuilder {
-            locked_in_period: None,
+            locked_in_period: WhereIsWorkOrder::NotScheduled,
             excluded_periods: HashSet::default(),
             latest_period: None,
             weight: None,

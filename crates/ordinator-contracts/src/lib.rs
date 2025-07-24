@@ -1,4 +1,5 @@
 use anyhow::Context;
+use chrono::NaiveDate;
 use ordinator_operational_actor::algorithm::operational_solution::OperationalSolution;
 use ordinator_orchestrator_actor_traits::SystemSolution;
 use ordinator_scheduling_environment::Asset;
@@ -26,6 +27,10 @@ pub struct AssetNames(String);
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
 #[ts(export)]
 pub struct PeriodDto(pub String);
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
+#[ts(export)]
+pub struct NaiveDateDto(pub String);
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
 pub struct WorkOrderNumberDto(pub u64);
@@ -67,6 +72,25 @@ impl TryFrom<AssetNames> for Asset
     {
         Asset::new_from_string(&value.0)
             .with_context(|| format!("This operation should never fail\nAssetNames: {value:#?}"))
+    }
+}
+
+impl From<NaiveDate> for NaiveDateDto
+{
+    fn from(value: NaiveDate) -> Self
+    {
+        Self(value.to_string())
+    }
+}
+
+impl TryFrom<NaiveDateDto> for NaiveDate
+{
+    type Error = chrono::ParseError;
+
+    fn try_from(value: NaiveDateDto) -> Result<Self, Self::Error>
+    {
+        let naive_date = NaiveDate::parse_from_str(&value.0, "%y-%m-%s")?;
+        Ok(naive_date)
     }
 }
 

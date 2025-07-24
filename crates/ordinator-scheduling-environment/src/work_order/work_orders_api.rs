@@ -26,6 +26,11 @@ impl WorkOrders
             work_order.work_order_analytic.user_status_codes.schedule();
         } else if period == periods.get(1).context("There is no second period")? {
             work_order.work_order_analytic.user_status_codes.draft();
+        } else {
+            work_order
+                .work_order_analytic
+                .user_status_codes
+                .out_of_scheduled_or_draft();
         }
 
         work_order.work_order_dates.basic_start_date = period.start_date().date_naive();

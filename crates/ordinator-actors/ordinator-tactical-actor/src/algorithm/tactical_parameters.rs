@@ -13,6 +13,7 @@ use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::work_order::ActivityRelation;
+use ordinator_scheduling_environment::work_order::FixedWorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderConfigurations;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
@@ -136,7 +137,10 @@ pub struct TacticalParameter
     pub main_work_center: Resources,
     pub tactical_operation_parameters: HashMap<ActivityNumber, OperationParameter>,
     // ISSUE #300 TODO [ ] 2025-07-17 implement the `forced_schedule_*` in the tactical
+    //
     // pub forced_in_period: Option<Period>,
+    // You have to make a force schedule function. You are getting a
+    pub(crate) fixed_by: FixedWorkOrder,
     pub weight: u64,
     pub relations: Vec<ActivityRelation>,
     // TODO: These two should be moved out of the parameters. You might end up implementing
@@ -168,6 +172,9 @@ impl TacticalParameter
             weight: work_order.work_order_value(work_order_configuration)?,
             relations: work_order.operations.relations(),
             earliest_allowed_start_date: work_order.work_order_dates.earliest_allowed_start_date,
+            // So we have to create something that will let us fix the tactical work_orders. The
+            // enum here is a great bet.
+            fixed_by: work_order.fixed_by.clone(),
         })
     }
 }

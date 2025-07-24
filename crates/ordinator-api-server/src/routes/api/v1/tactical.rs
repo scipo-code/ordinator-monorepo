@@ -19,6 +19,9 @@ pub async fn tactical_route(
             crate::handlers::tactical_handlers::start_days_for_activities,
         ))
         .routes(routes!(crate::handlers::tactical_handlers::daily_loadings,))
+        .routes(routes!(
+            crate::handlers::tactical_handlers::assign_start_day_for_work_order
+        ))
         .with_state(state)
 }
 

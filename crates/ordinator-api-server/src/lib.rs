@@ -47,7 +47,7 @@ pub async fn start_application(
     // Here you can modify the the 'OpenApi' specification
     let swagger_ui_name = match environment {
         Environment::Prod => "Ordinator API Specification (Production Environment)",
-        Environment::Test(_) => "Ordinator API Specifivation (Test Environment)",
+        Environment::Test(_) => "Ordinator API Specification (Test Environment)",
     };
     let openapi = OpenApiBuilder::from(app.1)
         .info(Info::new(swagger_ui_name, "0.2.2"))

@@ -7,9 +7,13 @@ use axum::extract::State;
 use axum::response::IntoResponse;
 use axum::response::Response;
 use axum::response::Result;
+use chrono::NaiveDate;
 use ordinator_contracts::AssetNames;
+use ordinator_contracts::NaiveDateDto;
+use ordinator_contracts::WorkOrderNumberDto;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
+use ordinator_orchestrator::StateLink;
 use ordinator_orchestrator::SystemSolutions;
 use ordinator_orchestrator::TacticalRequestMessage;
 use ordinator_orchestrator::TacticalStatusMessage;
@@ -103,6 +107,46 @@ where
 }
 
 #[utoipa::path(
+    post,
+    tag = "Scheduler",
+    path = "/assign_start_day_for_work_order/{asset}/{work_order_number}/{basic_start_date}",
+    params (
+        ("asset" = AssetNames, Path),
+        ("work_order_number" = WorkOrderNumberDto, Path),
+        ("basic_start_date" = NaiveDateDto, Path),
+    ),
+    responses((status = 200, body = [Vec<String>]))
+)]
+pub async fn assign_start_day_for_work_order<Ss>(
+    State(orchestrator): State<Arc<Orchestrator<Ss>>>,
+    // TODO [ ] `asset` should be used for authentication.
+    Path((_asset, work_order_number, basic_start_date)): Path<(Asset, WorkOrderNumber, NaiveDate)>,
+) -> Result<Response, AppError>
+where
+    Ss: SystemSolutions,
+{
+    orchestrator
+        .scheduling_environment
+        .lock()
+        .unwrap()
+        .work_orders
+        .inner
+        .get_mut(&work_order_number)
+        .with_context(|| format!("{work_order_number:#?} not found in SchedulingEnvironment"))
+        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .set_basic_start_date(basic_start_date);
+
+    orchestrator
+        .state_link_bus
+        .lock()
+        .unwrap()
+        .broadcast(StateLink::WorkOrders(vec![work_order_number]));
+    Ok(format!(
+        "Command successfully processed in the system\nWork order {work_order_number} was correctly set to basic start date {basic_start_date}"
+    ).into_response())
+}
+
+#[utoipa::path(
     get,
     tag = "Scheduler",
     path = "/daily_loadings/{asset}",
@@ -134,5 +178,6 @@ where
 }
 
 use ordinator_orchestrator::TacticalInterface;
+use ordinator_orchestrator::WorkOrderNumber;
 
 use crate::routes::api::AppError;

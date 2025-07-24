@@ -443,6 +443,7 @@ where
                         .with_scheduling_environment(
                             work_order,
                             &scheduling_environment_guard.time_environment.periods,
+                            &scheduling_environment_guard.time_environment.days,
                             work_order_configurations,
                             material_to_period,
                         )?
