@@ -6,6 +6,7 @@ TODO [x] Add two different terminals
 ISSUE #000 TODO [ ] 2025-07-23 make every field in `SchedulingEnvironment` `pub(crate)` or lower
 ISSUE #000 TODO [ ] 2025-07-23 move SAP logic and specifics out of `SchedulingEnvironment` and into the infrastructure layer
 ISSUE #000 TODO [ ] 2025-07-23 make a `just` command for running the `test_complete_system` 
+ISSUE #000 TODO [ ] 2025-07-23 Implement the applicative rules and rule engine.
 -->
 # Ordinator
 Ordinator is a multi-actor scheduling system. The system is based on actors

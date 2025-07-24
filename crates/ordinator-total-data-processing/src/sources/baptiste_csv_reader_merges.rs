@@ -230,7 +230,7 @@ fn create_work_orders(
             .get(&work_order_csv.WO_Status_ID)
             .expect("Should always be present");
 
-        if status_codes_string.contains("REL") {
+        if !status_codes_string.contains("REL") {
             return;
         }; 
 

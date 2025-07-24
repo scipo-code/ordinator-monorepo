@@ -162,7 +162,8 @@ pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironme
                                 .latest_allowed_finish_date(NaiveDate::from_ymd_opt(2025, 5, 1).expect("This date is required for constructing a WorkOrderDates object"))
                         })
                         .work_order_analytic_builder(|woab| {
-                            woab.user_status_codes(|user| user.smat(true))
+                            woab.user_status_codes(|user| user
+                                .smat(true))
                         })
                 })
         })

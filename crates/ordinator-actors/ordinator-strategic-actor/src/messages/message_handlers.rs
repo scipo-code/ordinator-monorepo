@@ -448,7 +448,6 @@ where
                         )?
                         .build();
                     // 1. Do not guess, attact the debugger.
-                    dbg!(&strategic_parameter);
                     drop(scheduling_environment_guard);
                     self.algorithm
                         .parameters

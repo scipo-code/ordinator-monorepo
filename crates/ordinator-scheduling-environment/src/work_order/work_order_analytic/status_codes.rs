@@ -57,6 +57,7 @@ pub struct SystemStatusCodes
     #[arg(long)]
     pub ncmp: bool,
     #[arg(long)]
+    /// Closed work order
     pub clsd: bool,
     #[arg(long)]
     pub pcnf: bool,

@@ -114,15 +114,24 @@ where
         // This is the problem. What is the best way around it?
         // We should create a method to update the
         
+        let periods = self.parameters.strategic_periods.clone();
         // So the strategic actually loops over all the parameters.
         for (work_order_number, strategic_parameter) in
-            self.parameters.strategic_work_order_parameters.iter()
+            self.parameters.strategic_work_order_parameters.clone().iter()
         {
+
+            let tactical_scheduled_period = self
+                .loaded_system_solution
+                .tactical_actor_solution()
+                .ok()
+                .and_then(|solution| {
+                    solution.tactical_period(work_order_number, &periods)
+                });
 
             let scheduled_period = self
                 .solution
-                .every_work_order()
-                .get(work_order_number)
+                .strategic_scheduled_work_orders
+                .get_mut(work_order_number)
                 .with_context(|| {
                     format!(
                         "{work_order_number:?}\nis not found in the StrategicAlgorithm"
@@ -152,12 +161,11 @@ where
             //
             // If this value is some. It means that the Tactical Algorithm has scheduled the
             // work order.
-            let tactical_scheduled_period = self
-                .loaded_system_solution
-                .tactical_actor_solution()
-                .ok()
-                .and_then(|solution| solution.tactical_period(work_order_number, &self.parameters.strategic_periods));
 
+
+            if let Some(tactical_period) = tactical_scheduled_period {
+                *scheduled_period = WhereIsWorkOrder::Tactical(tactical_period.clone())
+            }
             // Actually here you should simply update the Solution based on the
             // Tactical 
             //
@@ -183,15 +191,20 @@ where
             // between the `Strategic` and the `Tactical`.
             //
             
-            if let WhereIsWorkOrder::Strategic(period)  = scheduled_period {
-                if Some(period) == strategic_parameter.locked_in_period.as_ref() {
+            if let WhereIsWorkOrder::Strategic(period)  = scheduled_period.clone() {
+                if Some(period) == strategic_parameter.locked_in_period {
                     continue;
                 }
+            } else if let WhereIsWorkOrder::Tactical(_period) = scheduled_period {
             }
-
+          
             if strategic_parameter.locked_in_period.is_some() {
                 work_order_numbers.push(ForcedWorkOrder::Locked(*work_order_number));
-            } else if let Some(tactical_period) =  tactical_scheduled_period {
+            } else if let Some(_tactical_period) =  tactical_scheduled_period {
+                
+
+
+                
                 // Here the solution should turn into a
                 //
                 // ESSAY: What should happen here? Being in here means that the
@@ -206,7 +219,9 @@ where
                 //     *work_order_number,
                 //     tactical_period.clone(),
                 // )));   
-            }            
+            }  
+
+            
         }
         // [ ] I believe that you simply have to make this work now 
         // CRUCIAL: forced is always part of the `incorporate` shared state. This means that 
