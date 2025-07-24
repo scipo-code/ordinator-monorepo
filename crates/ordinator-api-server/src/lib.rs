@@ -3,7 +3,9 @@ mod routes;
 use std::net::SocketAddr;
 use std::sync::Arc;
 
+use axum::http::StatusCode;
 use axum::routing::get;
+use axum::routing::get_service;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Environment;
 use ordinator_orchestrator::Orchestrator;
@@ -22,11 +24,21 @@ pub async fn start_application(
     environment: &Environment,
 ) -> impl Future<Output = std::result::Result<(), std::io::Error>>
 {
+    // let index_service =
+    // get_service(ServeDir::new("./static_files/index")).handle_error(     |err: std::io::Error| async move {
+    //         (
+    //             StatusCode::INTERNAL_SERVER_ERROR,
+    //             format!("Unhandled internal server error: {err}"),
+    //         )
+    //     },
+    // );
+
     let scheduler_files = ServeDir::new("./static_files/scheduler/dist");
     let supervisor_files =
         ServeDir::new("./static_files/supervisor/dist/supervisor-calendar/browser");
 
     let app = OpenApiRouter::new()
+        // .route_service("/", index_service)
         .nest("/api/v1", api_scope(orchestrator.clone()).await)
         .nest_service("/scheduler", scheduler_files)
         .nest_service("/supervisor", supervisor_files)

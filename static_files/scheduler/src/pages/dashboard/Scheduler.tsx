@@ -1,104 +1,26 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef, ValueFormatterParams,  } from 'ag-grid-community';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
-
-import { SchedulerWorkOrderDto } from "../../../../../crates/ordinator-contracts/bindings/SchedulerWorkOrderDto.ts";
-import { SingleRowDto } from "../../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
+import { useTableColDefs } from './scheduler/ColDef';
+import { parseISO, format } from 'date-fns';
+import { fetchWorkOrders } from '@/api/workorders';
+import fetchSystemClock from '@/api/clock';
 
 
 // import { agGridThemeLight } from "./theme";
 // https://www.youtube.com/watch?v=TrKlKF5au6c&ab_channel=m6io
 /** snake_case → "Title Case" */
-const toTitle = (s: string): string =>
-  s.replace(/_/g, " ").replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1));
-
-/** Detect "YYYY-MM-DD…" and pretty-print, otherwise echo. */
-const tryFmtDate = (v: unknown): string => {
-  if (typeof v !== "string" || v.length < 8) return String(v ?? "");
-  const match = v.match(/^(\d{4})[-/](\d{2})[-/](\d{2})/);
-  if (!match) return v;
-  const d = new Date(match[0]);
-  return isNaN(d.getTime()) ? v : d.toLocaleDateString();
-};
-
-export const useSchedulerColumns = () =>
-  useMemo<ColDef<SingleRowDto>[]>(() => {
-    const fields: (keyof SingleRowDto)[] = [
-      "scheduled_period",
-      "scheduled_start_date",
-      "priority",
-      "revision",
-      "work_order_type",
-      "main_work_ctr",
-      "operation_work_center",
-      "work_order_number",
-      "description_work_order",
-      "operation_short_text",
-      "material_status",
-      "system_status",
-      "user_status",
-      "work",
-      "actual_work",
-      "unloading_point",
-      "basic_start_date",
-      "basic_finish_date",
-      "earliest_start_date",
-      "earliest_finish_date",
-      "earliest_allowed_start_date",
-      "latest_allowed_finish_date",
-      "activity",
-      "functional_location",
-      "description_operation",
-      "subnetwork_of",
-      "system_condition",
-      "maintenance_plan",
-      "planner_group",
-      "maintenance_plant",
-      "pm_collective",
-      "room",
-    ];
-    return fields.map<ColDef<SingleRowDto>>(field => ({
-      field,
-      headerName: toTitle(field),
-      pinned: ["scheduled_period", "work_order_number"].includes(field)
-        ? "left"
-        : undefined,
-      width: 150,
-      valueFormatter: (
-        p: ValueFormatterParams<SingleRowDto, string> /* value is string */
-      ) => tryFmtDate(p.value),
-    }));
-  }, []);
-  
-const fetchWorkOrders = async (
-  asset: string,
-): Promise<SingleRowDto[]> => {
-  const res = await fetch(
-    `/api/v1/scheduler/scheduler/work_orders_with_scheduling/${asset}`,
-  );
-
-  if (!res.ok) {
-    // propagate a rejected promise so React Query sets "error"
-    const body = await res.text();
-    throw new Error(`(${res.status}) ${body}`);
-  }
-
-  // The Rust DTO is `Vec<SingleRowDto>` => serialises to a bare JSON array
-  return (await res.json()) as SchedulerWorkOrderDto;
-};
 
 const Scheduler: React.FC = () => {
   const { asset } = useParams<{ asset: string }>();
-  const navigate = useNavigate();
-  
+  const columns = useTableColDefs();
+    
   /* Safeguard against missing /asset */
-  React.useEffect(() => {
-    if (!asset) navigate("/dashboard/DF");
-  }, [asset, navigate]);
+  if (!asset) {
+    return <Navigate to="/dashboard/DF" replace />;
+  }
 
-  const columnDefs = useSchedulerColumns();
   /* Fetch with React Query */
   const {
     data: workOrders = [],          // default ↠ empty array
@@ -114,8 +36,19 @@ const Scheduler: React.FC = () => {
     staleTime: 60_000,              // cache 1 min
   });
 
-  if (!asset) return null;
+  const {
+    data: systemclock,
+  } = useQuery({
+    queryKey: ["systemclock"],
+    queryFn: fetchSystemClock,
+    staleTime: Infinity,
+  });
+  
 
+  if (!asset) return null;
+  if (!systemclock) return;
+
+  // Handling Scheduling data varians
   if (isLoading)
     return (
       <div className="p-4">
@@ -134,21 +67,24 @@ const Scheduler: React.FC = () => {
         </p>
       </div>
     );
+
   return (
     <div className="p-4 flex flex-col flex-1 min-h-0 overflow-hidden">
-      <h2 className="text-2xl font-bold mb-4 shrink-0">Work Orders - {asset}</h2>
+      <h2 className="text-2xl font-bold mb-4 shrink-0">Work Orders - {asset}: {format(parseISO(systemclock), "PPP p")}</h2>
       <div className="flex-1 min-h-0">
         <AgGridReact
           className='h-full w-full'
           rowData={workOrders}
-          // theme={agGridThemeLight}
-          columnDefs={columnDefs}
+          columnDefs={columns}
+          context={{
+            asset: asset
+            
+          }}
           defaultColDef={{
             resizable: true,
             sortable: true,
             filter: true,
             flex: 1,
-            minWidth: 100
           }}
         />
       </div>

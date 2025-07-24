@@ -89,7 +89,7 @@ pub async fn periods(State(orchestrator): State<Arc<Orchestrator<TotalSystemSolu
     let periods: Vec<_> = orchestrator
         .scheduling_environment
         .lock()
-        .expect("Should ever happen")
+        .expect("Should never happen")
         .time_environment
         .periods
         .iter()
@@ -133,7 +133,7 @@ pub async fn days(State(orchestrator): State<Arc<Orchestrator<TotalSystemSolutio
 pub async fn work_order_info(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     Path(work_order_number): Path<u64>,
-) -> Result<Response, AppError>
+) -> Result<Json<WorkOrderSingleRowSimpleDto>, AppError>
 {
     let lock = orchestrator
         .scheduling_environment
@@ -146,7 +146,7 @@ pub async fn work_order_info(
         .with_context(||format!("{work_order_number} does not exist. Either:\n1. Typo in the WO number\n2. Wrong or old data\n3. Bug in the system: Call 004528433974")).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
     let work_order_dto = WorkOrderSingleRowSimpleDto::from(work_order.clone());
-    Ok(Json(work_order_dto).into_response())
+    Ok(Json(work_order_dto))
 }
 
 #[utoipa::path(

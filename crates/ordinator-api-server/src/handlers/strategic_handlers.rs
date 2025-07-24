@@ -13,6 +13,7 @@ use ordinator_contracts::PeriodDto;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::WorkOrderNumberDto;
 use ordinator_contracts::scheduler::SchedulerWorkOrderDto;
+use ordinator_contracts::scheduler::WorkOrderInfoWithSchedulingDto;
 use ordinator_contracts::scheduler::WorkOrderSingleRowSimpleDto;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
@@ -27,7 +28,7 @@ use crate::routes::api::AppError;
 #[debug_handler]
 #[utoipa::path(
     get,
-    path = "/scheduler/work_orders_with_scheduling/{asset}",
+    path = "/work_orders_with_scheduling/{asset}",
 
     tag = "Scheduler",
     params (
@@ -44,11 +45,6 @@ pub async fn get_scheduler_work_orders(
     Path(asset): Path<AssetNames>,
 ) -> Result<Json<SchedulerWorkOrderDto>, AppError>
 {
-    // This should go into the handler, directory. There is no other way around it
-    // REMEMBER: You should only wrap method calls that the Orchestrator exposes.
-    //
-    // WARN: You are beginning to feel drained again. You should grap something to
-    // eat again.
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
     let system_solution = orchestrator
         .system_solutions
@@ -64,56 +60,108 @@ pub async fn get_scheduler_work_orders(
         SchedulerWorkOrderDto::try_from((asset.clone(), scheduling_environment, system_solution))
             .expect("This should never fail"),
     ))
-    // TODO [ ] M
-    // orchestrator.get_work_order(id)
+}
+
+#[debug_handler]
+#[utoipa::path(
+    get,
+    path = "/work_orders_with_scheduling/{asset}/{work_order}",
+
+    tag = "Scheduler",
+    params (
+        ("asset" = AssetNames, Path),
+        ("work_order" = WorkOrderNumberDto, Path),
+    ),
+    responses(
+        (status = 200, body = WorkOrderSingleRowSimpleDto),
+        (status = 404, body = AppError),
+        (status = 500, body = AppError),
+    )
+)]
+pub async fn get_single_work_order_with_schedule(
+    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    Path((asset, work_order)): Path<(AssetNames, WorkOrderNumberDto)>,
+) -> Result<Json<WorkOrderInfoWithSchedulingDto>, AppError>
+{
+    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
+    let system_solution = orchestrator
+        .system_solutions
+        .lock()
+        .unwrap()
+        .get(&asset.clone())
+        .with_context(|| format!("Asset {:?} is not present in the ActorRegistry", &asset))
+        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .load();
+
+    let scheduling_environment = orchestrator.scheduling_environment.lock().unwrap();
+
+    let work_order_payload = WorkOrderInfoWithSchedulingDto::try_from((
+        asset.clone(),
+        scheduling_environment,
+        system_solution,
+        work_order,
+    ))
+    .map_err(|e| AppError::Anyhow(e.to_string()))?;
+
+    Ok(Json(work_order_payload))
 }
 
 #[utoipa::path(
     get,
     tag = "Scheduler",
-    path = "/period_for_work_order/{asset}",
+    path = "/work_orders_with_suggested_period/{asset}",
     params (
         ("asset" = AssetNames, Path),
     ),
     responses((status = 200, body = [HashMap<WorkOrderNumberDto, PeriodDto>]))
 )]
-pub async fn period_for_work_order<Ss>(
+pub async fn work_orders_with_suggested_period<Ss>(
     State(orchestrator): State<Arc<Orchestrator<Ss>>>,
     Path(asset): Path<Asset>,
 ) -> Result<Response, AppError>
 where
     Ss: SystemSolutions,
 {
-    let tactical_days = orchestrator
+    let strategic_periods = orchestrator
         .system_solutions
         .lock()
         .unwrap_or_else(|_| panic!("Could not lock the SystemSolution for Asset: {}", &asset));
-    let tactical_days = tactical_days
+    let strategic_periods = strategic_periods
         .get(&asset)
         .with_context(|| format!("SystemSolution for Asset: {} does not exist", &asset))
         .map_err(|e| AppError::Anyhow(e.to_string()))?
         .load();
-    let tactical_days = tactical_days
+    let strategic_periods = strategic_periods
         .strategic()
         .map_err(|_| {
             AppError::Anyhow(format!("No StrategicSolution exists for Asset: {}", &asset))
         })?
         .all_scheduled_tasks();
 
-    let tactical_days: Vec<_> = tactical_days
+    let strategic_periods: Vec<_> = strategic_periods
         .iter()
         .map(|f| (WorkOrderNumberDto(f.0.0), PeriodDto(f.1.period_string())))
         .collect();
 
-    Ok(Json(tactical_days).into_response())
+    Ok(Json(strategic_periods).into_response())
 }
+
+// pub async fn scheduling_status_for_workorder<Ss>(
+//     State(orchestrator): State<Arc<Orchestrator<Ss>>>,
+//     Path(work_order_number_dto): Path<WorkOrderNumberDto>,
+// ) where
+//     Ss: SystemSolutions,
+// {
+// }
+
 /// This handler updates the [`SchedulingEnvironment`] that the UnloadingPoint
 /// has been updated and sends a command
 /// to every `Actor` that the [`SchedulignEnvironment`] has changed.
 #[debug_handler]
 #[utoipa::path(
     post,
-    path = "/scheduler/{asset}/assign_work_order_to_period/{work_order_number}/{period}",
+    path = "/{asset}/assign_work_order_to_period/{work_order_number}/{period}",
     tag = "Scheduler",
     params (
         ("asset" = AssetNames, Path),
