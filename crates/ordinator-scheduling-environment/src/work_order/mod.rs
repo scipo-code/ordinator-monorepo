@@ -17,6 +17,7 @@ use anyhow::ensure;
 use chrono::DateTime;
 use chrono::NaiveDate;
 use chrono::TimeDelta;
+use chrono::Utc;
 use colored::Colorize;
 use serde::Deserialize;
 use serde::Serialize;
@@ -228,6 +229,16 @@ pub struct WorkOrder
     pub work_order_analytic: WorkOrderAnalytic,
     pub work_order_dates: WorkOrderDates,
     pub work_order_info: WorkOrderInfo,
+    pub fixed_by: FixedWorkOrder,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub enum FixedWorkOrder
+{
+    Period(Period),
+    BasicStart(NaiveDate),
+    Operational(DateTime<Utc>),
+    BusinessLogic,
 }
 
 // Should you work on this now? No! Practice skills and read.
@@ -248,6 +259,7 @@ pub struct WorkOrderBuilder
     work_order_analytic: Option<WorkOrderAnalytic>,
     work_order_dates: Option<WorkOrderDates>,
     work_order_info: Option<WorkOrderInfo>,
+    _fixed_by: Option<FixedWorkOrder>,
 }
 
 impl WorkOrderBuilder
@@ -269,6 +281,7 @@ impl WorkOrderBuilder
             work_order_info: self
                 .work_order_info
                 .expect("Missing field initializations on the WorkOrderBuilder"),
+            fixed_by: FixedWorkOrder::BusinessLogic,
         }
     }
 
@@ -403,15 +416,51 @@ pub struct ClusteringWeights
 // Does this cover everything that the code needs to do here? You will need
 // to add a rules engine at somepoint, and you will need the hexagonal
 // architecture from the start.
+#[derive(Debug)]
 pub enum ForcedWorkOrder
 {
     Period((Period, HashSet<Period>)),
-    Days((Vec<Day>, Vec<HashSet<Day>>)),
+    Days(TacticalForceType),
     Technician(TechnicianInclude, TechnicianExclude),
     FreeWorkOrder,
 }
 
+#[derive(Debug)]
+pub enum TacticalForceType
+{
+    OnlyStartDay(Day),
+    IndividualActivities(Vec<Day>, Vec<HashSet<Day>>),
+}
+impl TacticalForceType
+{
+    pub fn get_contained_date(&self) -> NaiveDate
+    {
+        match self {
+            TacticalForceType::OnlyStartDay(day) => day.date.date_naive(),
+            TacticalForceType::IndividualActivities(start_days_per_activity, _) => {
+                start_days_per_activity
+                    .first()
+                    .expect("A Day should always be contained in a period.")
+                    .date
+                    .date_naive()
+            }
+        }
+    }
+
+    pub fn excluded_days(&self, per: &Period) -> bool
+    {
+        match self {
+            TacticalForceType::OnlyStartDay(_day) => false,
+            TacticalForceType::IndividualActivities(_, excluded_days) => excluded_days
+                .iter()
+                .flatten()
+                .all(|f| per.day_indices.contains(&(f.day_index as u64))),
+        }
+    }
+}
+
 #[allow(dead_code)]
+#[derive(Debug)]
 pub struct TechnicianInclude
 {
     id: Id,
@@ -419,6 +468,7 @@ pub struct TechnicianInclude
 }
 
 #[allow(dead_code)]
+#[derive(Debug)]
 pub struct TechnicianExclude
 {
     ids: HashSet<Id>,
@@ -479,6 +529,7 @@ impl WorkOrder
             work_order_analytic: None,
             work_order_dates: None,
             work_order_info: None,
+            _fixed_by: None,
         }
     }
 
@@ -513,6 +564,7 @@ impl WorkOrder
     pub fn forced_work_order(
         &self,
         periods: &[Period],
+        days: &[Day],
         material_to_periods: &MaterialToPeriod,
     ) -> Result<ForcedWorkOrder>
     {
@@ -538,6 +590,23 @@ impl WorkOrder
         //
         // This type
         // The obstacle is the way here.
+        match &self.fixed_by {
+            FixedWorkOrder::Period(_period) => (),
+            FixedWorkOrder::BasicStart(naive_date) => {
+                // TODO [ ] include
+                let day = days
+                    .iter()
+                    .find(|f| f.date.date_naive() == *naive_date)
+                    .context("naive_date not found in TimeEnvironment")?
+                    .clone();
+                // You need more complex logic to fix more of the code here.
+                // What you are doing here is wrong. You should fix it in a
+                // different way.
+                return Ok(ForcedWorkOrder::Days(TacticalForceType::OnlyStartDay(day)));
+            }
+            FixedWorkOrder::Operational(_date_time) => (),
+            FixedWorkOrder::BusinessLogic => (),
+        }
         if self.vendor()
             && (unloading_point_period.is_some() || self.work_order_analytic.user_status_codes.awsc)
         {
@@ -738,6 +807,13 @@ impl WorkOrder
             .0
             .values()
             .any(|opr| opr.resource.is_ven_variant())
+    }
+
+    //TODO [ ] 2025-07-24 a lot of invariants have to be enforced on this.
+    pub fn set_basic_start_date(&mut self, basic_start_date: NaiveDate)
+    {
+        self.work_order_dates.basic_start_date = basic_start_date;
+        self.fixed_by = FixedWorkOrder::BasicStart(self.work_order_dates.basic_start_date);
     }
 
     pub fn work_order_value(

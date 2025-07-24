@@ -29,6 +29,7 @@ use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use serde::Serialize;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -410,7 +411,7 @@ where
 // It is crucial that these types are correctly aligned here. I think
 // that the best idea is to.. You should not use any resource if it
 // is not in the StrategicActor.
-#[derive(PartialEq, Eq, Debug, Default, Clone)]
+#[derive(PartialEq, Eq, Debug, Default, Clone, Serialize)]
 pub enum WhereIsWorkOrder<T>
 {
     Strategic(Period),

@@ -1517,6 +1517,7 @@ dependencies = [
  "flume",
  "ordinator-configuration",
  "ordinator-scheduling-environment",
+ "serde",
  "thiserror 2.0.12",
 ]
 

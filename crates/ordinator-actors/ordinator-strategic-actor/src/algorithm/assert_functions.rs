@@ -160,7 +160,7 @@ where
                     excluded_periods,
                 );
             }
-            if let Some(locked_in_period) = locked_in_period {
+            if let WhereIsWorkOrder::Strategic(locked_in_period) = locked_in_period {
                 ensure!(!excluded_periods.contains(locked_in_period))
             }
         }

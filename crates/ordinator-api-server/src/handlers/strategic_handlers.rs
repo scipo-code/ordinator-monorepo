@@ -181,7 +181,7 @@ pub async fn assign_work_order_to_period(
         WorkOrderNumberDto,
         PeriodDto,
     )>,
-) -> Result<String, AppError>
+) -> Result<Response, AppError>
 {
     // This should go into the handler, directory. There is no other way around it
     // REMEMBER: You should only wrap method calls that the Orchestrator exposes.
@@ -246,7 +246,7 @@ pub async fn assign_work_order_to_period(
         "Command successfully processed in the system\nWork order {} was correctly scheduled into period {}",
         work_order_number,
         period.period_string()
-    ))
+    ).into_response())
     // TODO [ ] M
     // orchestrator.get_work_order(id)
 }

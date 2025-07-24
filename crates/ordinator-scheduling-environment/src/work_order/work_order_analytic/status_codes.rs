@@ -204,6 +204,12 @@ impl UserStatusCodes
         self.sch = false;
         self.awsc = true;
     }
+
+    pub fn out_of_scheduled_or_draft(&mut self)
+    {
+        self.sch = false;
+        self.awsc = false;
+    }
 }
 
 pub struct UserStatusCodesBuilder(UserStatusCodes);
