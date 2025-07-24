@@ -1,11 +1,11 @@
 import { ICellRendererParams } from 'ag-grid-community';
 import { PeriodStatus } from '../../../../../crates/ordinator-contracts/bindings/PeriodStatus.ts';
 
-const PeriodStatusColors: Record<PeriodStatus, string> = {
-   Frozen: '#fcba03',
-   Draft: '#000080',
-   Active: '#ffffff',
-   NotScheduled: '#8c1212',
+const PeriodStatusColors: Record<PeriodStatus, {background: string, textColor: string}> = {
+   Frozen: { background: '#fcba03', textColor: "text-black"},
+   Draft: { background: '#000080', textColor: "text-white"},
+   Active: { background: '#adadac', textColor: "text-black"},
+   NotScheduled: { background: '#8c1212', textColor: "text-white"},
 }
 
 interface PeriodStatusBadgeProps {
@@ -15,14 +15,15 @@ interface PeriodStatusBadgeProps {
 
 
 export const PeriodStatusBadge: React.FC<PeriodStatusBadgeProps>  = ({ status, className = ''}) => {
-   return (
-      <span
-         className={`inline-block rounded-full px-2.5 py-0.5 text-xs text-white ${className}`}
-         style={{
-            background: PeriodStatusColors[status as PeriodStatus] ?? '#ccc',
-         }}
-      >{status}
-      </span>
+  const styles = PeriodStatusColors[status];
+  return (
+    <span
+       className={`inline-block rounded-full px-2.5 py-0.5 text-xs ${className} ${styles.textColor}`}
+       style={{
+          background: styles.background,
+       }}
+    >{status}
+    </span>
    )
 }
 
