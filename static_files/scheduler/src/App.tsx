@@ -15,7 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="/dashboard/:asset" element={<Scheduler />} />
-            <Route path="/workorder/:workorder" element={<WorkorderOverview/>} />
+            <Route path="/dashboard/:asset/:workorder" element={<WorkorderOverview/>} />
           </Route>
         </Routes>
     </HashRouter>
