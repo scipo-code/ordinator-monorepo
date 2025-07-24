@@ -2,13 +2,13 @@ import { fetchWorkorderInfo } from "@/api/workorders";
 import { useParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { WorkOrderInfoWithScheduling } from "../../../../../crates/ordinator-contracts/bindings/WorkOrderInfoWithScheduling";
+import { WorkOrderInfoWithSchedulingDto } from "../../../../../crates/ordinator-contracts/bindings/WorkOrderInfoWithSchedulingDto";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PeriodStatusBadge } from "@/components/ui/period_status_badge";
 
 
-function WorkorderCard({ wo }: { wo: WorkOrderInfoWithScheduling  }) {
+function WorkorderCard({ wo }: { wo: WorkOrderInfoWithSchedulingDto  }) {
   const renderFlag = (label: string, active: boolean) => 
     <Badge className="mr-1" variant={active ? "default" : "secondary"}>{label}</Badge>;
   

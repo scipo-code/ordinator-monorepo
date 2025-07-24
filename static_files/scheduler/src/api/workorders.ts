@@ -1,5 +1,5 @@
 import type { PeriodDto } from "../../../../crates/ordinator-contracts/bindings/PeriodDto.ts";
-import type { WorkOrderInfoWithScheduling } from "../../../../crates/ordinator-contracts/bindings/WorkOrderInfoWithScheduling.ts";
+import type { WorkOrderInfoWithSchedulingDto } from "../../../../crates/ordinator-contracts/bindings/WorkOrderInfoWithSchedulingDto.ts";
 import type { SchedulingData } from "../pages/dashboard/scheduler/ColDef.tsx";
 
 export async function fetchWorkOrders(
@@ -40,7 +40,7 @@ export async function assignWorkordertoPeriod(
 export async function fetchWorkorderInfo(
   asset: string,
   work_order_number: string,
-): Promise<WorkOrderInfoWithScheduling> {
+): Promise<WorkOrderInfoWithSchedulingDto> {
   const res = await fetch(
     `/api/v1/scheduler/work_orders_with_scheduling/${asset}/${work_order_number}`,
   );
@@ -49,5 +49,5 @@ export async function fetchWorkorderInfo(
     throw new Error(await res.text());
   }
 
-  return (await res.json()) as WorkOrderInfoWithScheduling;
+  return (await res.json()) as WorkOrderInfoWithSchedulingDto;
 }
