@@ -68,13 +68,6 @@ const Scheduler: React.FC = () => {
       </div>
     );
 
-          // context={
-          // {
-          //   onAssignPeriod: handleAssignPeriod,
-          //   periods: periods
-          // }
-        // }
-
   return (
     <div className="p-4 flex flex-col flex-1 min-h-0 overflow-hidden">
       <h2 className="text-2xl font-bold mb-4 shrink-0">Work Orders - {asset}: {format(parseISO(systemclock), "PPP p")}</h2>
@@ -83,6 +76,10 @@ const Scheduler: React.FC = () => {
           className='h-full w-full'
           rowData={workOrders}
           columnDefs={columns}
+          context={{
+            asset: asset
+            
+          }}
           defaultColDef={{
             resizable: true,
             sortable: true,
