@@ -10,6 +10,7 @@ import fetchPeriods from "@/api/periods";
 import { PeriodDto } from "../../../../../crates/ordinator-contracts/bindings/PeriodDto";
 import { PeriodAssignment } from "@/components/PeriodAssignment";
 import { useCallback } from "react";
+import { TacticalDayAssignment } from "@/components/TacticalDayAssignment";
 
 
 function WorkorderCard({
@@ -87,6 +88,17 @@ function WorkorderCard({
         <div>
           <h3 className="font-semibold mb-2">Schedule to period</h3>
           <PeriodAssignment
+            periods={periods}
+            suggestedPeriod={wo.suggested_scheduled_period}
+            workOrderNumber={wo.work_order_number.toString()}
+            asset={asset}
+            onAssign={onAssignPeriod}
+            isAssigning={isAssigning}
+          />
+        </div>
+        <div>
+          <h3 className="font-semibold mb-2">Schedule to date (TODO)</h3>
+          <TacticalDayAssignment
             periods={periods}
             suggestedPeriod={wo.suggested_scheduled_period}
             workOrderNumber={wo.work_order_number.toString()}
