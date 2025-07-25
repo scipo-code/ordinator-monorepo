@@ -9,6 +9,7 @@ ordinator-orchestrator = { path = "../ordinator-orchestrator" }
 ordinator-contracts = { path = "../ordinator-contracts" }
 
 axum = {version = "*", features = ["macros", "tokio"]}
+axum-extra = {version = "*", features = ["query"]}
 axum-server = "*"
 chrono.workspace = true
 tower = "*"
