@@ -7,19 +7,29 @@
     rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
-  outputs = { nixpkgs, rust-overlay, flake-utils, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      nixpkgs,
+      rust-overlay,
+      flake-utils,
+      ...
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
-        overlays = [(import rust-overlay)];
+        overlays = [ (import rust-overlay) ];
         pkgs = import nixpkgs {
           inherit system overlays;
         };
-        pythonEnv = pkgs.python3.withPackages (ps: with ps; [
-          pandas
-          openpyxl
-          matplotlib
-        ]);
-      in {
+        pythonEnv = pkgs.python3.withPackages (
+          ps: with ps; [
+            pandas
+            openpyxl
+            matplotlib
+          ]
+        );
+      in
+      {
         devShells.default = pkgs.mkShell {
           buildInputs = [
             (pkgs.gnuplot.override {
@@ -37,29 +47,33 @@
             pkgs.libxlsxwriter
             pkgs.linuxKernel.packages.linux_zen.perf
             pkgs.bugstalker
+            pkgs.bfg-repo-cleaner
             pkgs.nushell
             pkgs.openssl_3
             pkgs.pkg-config
             pkgs.taplo
             (pkgs.rust-bin.nightly.latest.default.override {
-              extensions = ["rust-src" "rust-analyzer" ];
+              extensions = [
+                "rust-src"
+                "rust-analyzer"
+              ];
             })
             pkgs.zellij
             pythonEnv
-	    (pkgs.writeShellScriptBin "lldb-dap" ''
+            (pkgs.writeShellScriptBin "lldb-dap" ''
 
-		exec ${pkgs.lldb}/bin/lldb-dap \ 
-			--one-line-before-file \ 
-			"command script import \"$(rustc --print sysroot)/lib/rustlib/etc/lldb_lookup.py\"" \
-			--one-line-before-file "type category enable Rust" \
-			"$@"
-	    '')
+              		exec ${pkgs.lldb}/bin/lldb-dap \ 
+              			--one-line-before-file \ 
+              			"command script import \"$(rustc --print sysroot)/lib/rustlib/etc/lldb_lookup.py\"" \
+              			--one-line-before-file "type category enable Rust" \
+              			"$@"
+              	    '')
 
           ];
-	 shellHook = ''
-	    export RUST_LLDB_PRINTERS="$(rustc --print sysroot)/lib/rustlib/etc/lldb_lookup.py"
-	 '';       
-	};
+          shellHook = ''
+            	    export RUST_LLDB_PRINTERS="$(rustc --print sysroot)/lib/rustlib/etc/lldb_lookup.py"
+            	 '';
+        };
 
         packages.default = pkgs.buildRustPackage {
           pname = "ordinator";
@@ -69,13 +83,14 @@
             lockFile = ./Cargo.lock;
           };
           buildInputs = [
-              pkgs.openssl_3
-              pkgs.pkg-config
+            pkgs.openssl_3
+            pkgs.pkg-config
           ];
           nativeBuildInputs = [
-              pkgs.openssl_3
-              pkgs.pkg-config
+            pkgs.openssl_3
+            pkgs.pkg-config
           ];
         };
-      });
-} 
+      }
+    );
+}
