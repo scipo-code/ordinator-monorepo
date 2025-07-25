@@ -29,7 +29,7 @@ const ActionMenu: React.FC<ActionMenuParams> = (({ data, context }) => {
       e.stopPropagation();
 
       if (data?.work_order_number) {
-         navigate(`/dashboard/${context.asset}/${data.work_order_number}`);
+         navigate(`/${context.asset}/dashboard/${data.work_order_number}`);
       }
    }
 

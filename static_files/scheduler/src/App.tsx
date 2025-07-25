@@ -14,8 +14,8 @@ function App() {
     <HashRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route path="/dashboard/:asset" element={<Scheduler />} />
-            <Route path="/dashboard/:asset/:workorder" element={<WorkorderOverview/>} />
+            <Route path="/:asset/dashboard" element={<Scheduler />} />
+            <Route path="/:asset/dashboard/:workorder" element={<WorkorderOverview/>} />
           </Route>
         </Routes>
     </HashRouter>
