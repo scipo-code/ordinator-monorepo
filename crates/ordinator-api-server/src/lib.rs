@@ -32,8 +32,7 @@ pub async fn start_application(
     // );
 
     let scheduler_files = ServeDir::new("./static_files/scheduler/dist");
-    let supervisor_files =
-        ServeDir::new("./static_files/supervisor/dist/supervisor-calendar/browser");
+    let supervisor_files = ServeDir::new("./static_files/supervisor/dist/");
 
     let app = OpenApiRouter::new()
         // .route_service("/", index_service)

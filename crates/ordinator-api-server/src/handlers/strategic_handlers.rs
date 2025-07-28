@@ -8,6 +8,8 @@ use axum::extract::State;
 use axum::response::IntoResponse;
 use axum::response::Response;
 use axum::response::Result;
+// use axum::extract::Query;
+use axum_extra::extract::Query;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::PeriodDto;
 use ordinator_contracts::TotalSystemSolution;
@@ -21,10 +23,19 @@ use ordinator_orchestrator::StateLink;
 use ordinator_orchestrator::StrategicInterface;
 use ordinator_orchestrator::SystemSolutions;
 use ordinator_orchestrator::WorkOrderNumber;
+use serde::Deserialize;
+use utoipa::IntoParams;
+use utoipa::ToSchema;
 
 use crate::routes::api::AppError;
 
 // This is a handler. Not a `Route` you should change that. Keep working.
+#[derive(Deserialize, IntoParams, ToSchema)]
+pub struct WorkOrdersWithSchedulingQueryParams
+{
+    #[serde(default)]
+    periods: Vec<PeriodDto>,
+}
 #[debug_handler]
 #[utoipa::path(
     get,
@@ -33,6 +44,7 @@ use crate::routes::api::AppError;
     tag = "Scheduler",
     params (
         ("asset" = AssetNames, Path),
+        WorkOrdersWithSchedulingQueryParams,
     ),
     responses(
         (status = 200, body = WorkOrderSingleRowSimpleDto),
@@ -43,9 +55,11 @@ use crate::routes::api::AppError;
 pub async fn get_scheduler_work_orders(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     Path(asset): Path<AssetNames>,
+    Query(query): Query<WorkOrdersWithSchedulingQueryParams>,
 ) -> Result<Json<SchedulerWorkOrderDto>, AppError>
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
     let system_solution = orchestrator
         .system_solutions
         .lock()
@@ -56,10 +70,24 @@ pub async fn get_scheduler_work_orders(
         .load();
 
     let scheduling_environment = orchestrator.scheduling_environment.lock().unwrap();
-    Ok(Json(
+
+    let work_order_schedule =
         SchedulerWorkOrderDto::try_from((asset.clone(), scheduling_environment, system_solution))
-            .expect("This should never fail"),
-    ))
+            .expect("This should never fail");
+
+    let periods = query.periods;
+    let work_order_schedule = if periods.len() > 0 {
+        let work_order_schedule: Vec<_> = work_order_schedule
+            .0
+            .into_iter()
+            .filter(|wo| periods.contains(&PeriodDto(wo.get_suggested_period())))
+            .collect();
+        SchedulerWorkOrderDto(work_order_schedule)
+    } else {
+        work_order_schedule
+    };
+
+    Ok(Json(work_order_schedule))
 }
 
 #[debug_handler]

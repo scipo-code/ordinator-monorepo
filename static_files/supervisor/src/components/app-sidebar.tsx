@@ -17,8 +17,8 @@ export function AppSidebar() {
   const { asset } = useParams();
   const items = [
     {
-      title: "Planning",
-      url: `/${asset}/planning`,
+      title: "Schedule",
+      url: `/${asset}/schedule`,
       icon: Calendar,
     },
     {

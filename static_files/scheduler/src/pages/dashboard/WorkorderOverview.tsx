@@ -1,14 +1,31 @@
-import { fetchWorkorderInfo } from "@/api/workorders";
+import { assignWorkordertoPeriod, fetchWorkorderInfo } from "@/api/workorders";
 import { useParams } from "react-router-dom"
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { WorkOrderInfoWithSchedulingDto } from "../../../../../crates/ordinator-contracts/bindings/WorkOrderInfoWithSchedulingDto";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PeriodStatusBadge } from "@/components/ui/period_status_badge";
+import fetchPeriods from "@/api/periods";
+import { PeriodDto } from "../../../../../crates/ordinator-contracts/bindings/PeriodDto";
+import { PeriodAssignment } from "@/components/PeriodAssignment";
+import { useCallback } from "react";
+import { TacticalDayAssignment } from "@/components/TacticalDayAssignment";
 
 
-function WorkorderCard({ wo }: { wo: WorkOrderInfoWithSchedulingDto  }) {
+function WorkorderCard({
+  wo,
+  periods,
+  asset,
+  onAssignPeriod,
+  isAssigning
+}: {
+    wo: WorkOrderInfoWithSchedulingDto,
+    periods: PeriodDto[],
+    asset: string,
+    onAssignPeriod: (workOrderNumber: string, asset: string, period: PeriodDto) => void;
+    isAssigning: boolean,
+  }) {
   const renderFlag = (label: string, active: boolean) => 
     <Badge className="mr-1" variant={active ? "default" : "secondary"}>{label}</Badge>;
   
@@ -57,8 +74,40 @@ function WorkorderCard({ wo }: { wo: WorkOrderInfoWithSchedulingDto  }) {
         </Table>
       <br />
       
-      <h3 className="font-semibold">Schedule to period</h3>
-      <PeriodStatusBadge status={wo.period_status} />   <span>{wo.suggested_scheduled_period}</span>
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <h3 className="font-semibold">Current Suggestion:</h3>
+          <PeriodStatusBadge status={wo.period_status} />
+          {wo.suggested_scheduled_period && (
+            <span className="text-sm text-muted-foreground">
+              Suggested: {wo.suggested_scheduled_period}
+            </span>
+          )}
+        </div>
+      
+        <div>
+          <h3 className="font-semibold mb-2">Schedule to period</h3>
+          <PeriodAssignment
+            periods={periods}
+            suggestedPeriod={wo.suggested_scheduled_period}
+            workOrderNumber={wo.work_order_number.toString()}
+            asset={asset}
+            onAssign={onAssignPeriod}
+            isAssigning={isAssigning}
+          />
+        </div>
+        <div>
+          <h3 className="font-semibold mb-2">Schedule to date (TODO)</h3>
+          <TacticalDayAssignment
+            periods={periods}
+            suggestedPeriod={wo.suggested_scheduled_period}
+            workOrderNumber={wo.work_order_number.toString()}
+            asset={asset}
+            onAssign={onAssignPeriod}
+            isAssigning={isAssigning}
+          />
+        </div>
+      </div>
       </CardContent>
     </Card>
   )
@@ -68,6 +117,7 @@ function WorkorderCard({ wo }: { wo: WorkOrderInfoWithSchedulingDto  }) {
 
 export default function WorkorderOverview() {
   const { asset, workorder } = useParams<{ asset: string, workorder: string }>();
+  const queryClient = useQueryClient();
 
   const {
     data: woInfo, isLoading, error
@@ -77,16 +127,65 @@ export default function WorkorderOverview() {
     enabled: !!workorder && !!asset,
   })
 
-  console.log(woInfo?.work_order_number);
+
+  const {
+    data: periods = [], isLoading: isPeriodsLoading, error: errorPeriod
+  } = useQuery({
+    queryKey: ['periods'],
+    queryFn: fetchPeriods,
+    staleTime: Infinity,
+  });
+
+  const assignMutation = useMutation({
+    mutationFn: ({asset, workorder, period}: {
+      asset: string,
+      workorder: string,
+      period: PeriodDto,
+    }) => assignWorkordertoPeriod(asset,workorder, period),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['workorderInfo', {workorder, asset}]
+      });
+    },
+
+    onError: (error: Error) => {
+      console.error("Failed to assign period: ", error);
+    },
+  });
+
+
+  const handleAssignPeriod = useCallback((
+    workOrderNumber: string,
+    assetParam: string,
+    Period: PeriodDto,
+  ) => {
+      assignMutation.mutate({
+        asset: assetParam,
+        workorder: workOrderNumber,
+        period: Period,
+      });
+    }, [assignMutation]);
+
+  
+  
+  console.log('Periods Debug:', {
+    periods,
+    isArray: Array.isArray(periods),
+    length: periods?.length,
+    type: typeof periods,
+    firstItem: periods?.[0],
+    keys: periods?.[0] ? Object.keys(periods[0]) : 'no first item'
+  });
 
   if (!workorder || !asset) return null;
-  if (isLoading) {
+  if (isLoading || isPeriodsLoading) {
     return (
       <span>Loading...</span>
     )
   }
 
-  if (error) {
+  if (error || errorPeriod) {
     return (
       <span className="color-red-600">{(error as Error).message}</span>
     )
@@ -94,33 +193,33 @@ export default function WorkorderOverview() {
   }
   
   return (
-    <WorkorderCard wo={woInfo!} />
+    <div className="px-4">
+      <WorkorderCard
+         wo={woInfo!}
+         periods={periods}
+         asset={asset}
+         onAssignPeriod={handleAssignPeriod}
+         isAssigning={assignMutation.isPending}
+      />
+
+      {assignMutation.error && (
+        <div className="max-w-4xl mt-4 p-4 bg-red-50 border border-red-200 rounded">
+          <p className="text-red-800">
+            Failed to assign period: {assignMutation.error.message}
+          </p>
+        </div>
+      )}
+
+
+      {assignMutation.isSuccess && (
+        <div className="max-w-4xl mt-4 p-4 bg-green-50 border border-green-200 rounded">
+          <p className="text-green-800">Period assigned successfully!</p>
+        </div>
+      )}
+    </div>
+
   )}
 
-  // const assignMutation = useAssignWorkorderToPeriod();
-  // const handleAssignPeriod = useCallback(
-  //   (row: SchedulingData, period?: PeriodDto) => {
-  //     const chosenPeriod = period ?? (row.suggested_scheduled_period as PeriodDto | undefined);
-
-  //     if (!chosenPeriod) return;
-      
-  //     assignMutation.mutate({
-  //       asset,
-  //       workorder: row.work_order_number,
-  //       period: chosenPeriod,
-  //     })
-  //   },
-  //   [asset, assignMutation],
-  // )
 
 
-  // const {
-  //   data: periods = [],
-  //   // isLoading: periodsLoading,
-  //   // isError: periodsError,
-  // } = useQuery({
-  //   queryKey: ["periods"],
-  //   queryFn: fetchPeriods,
-  //   staleTime: Infinity,
-  // });
 
