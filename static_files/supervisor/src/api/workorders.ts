@@ -1,12 +1,18 @@
-import type { PeriodDto } from "../../../../crates/ordinator-contracts/bindings/PeriodDto.ts";
-import type { WorkOrderInfoWithSchedulingDto } from "../../../../crates/ordinator-contracts/bindings/WorkOrderInfoWithSchedulingDto.ts";
-import type { SchedulingData } from "../pages/dashboard/scheduler/ColDef.tsx";
+import type { SchedulingData } from "../pages/ScheduleView.tsx";
 
 export async function fetchWorkOrders(
   asset: string,
+  periods?: string[],
 ): Promise<SchedulingData[]> {
+  const params = new URLSearchParams();
+
+  if (periods) {
+    periods.forEach((p) => params.append("periods", p));
+  }
+
+  const url = `/api/v1/scheduler/work_orders_with_scheduling/${asset}?`;
   const res = await fetch(
-    `/api/v1/scheduler/work_orders_with_scheduling/${asset}`,
+    url + params.toString(),
   );
 
   if (!res.ok) {
@@ -17,37 +23,4 @@ export async function fetchWorkOrders(
 
   // The Rust DTO is `Vec<SingleRowDto>` => serialises to a bare JSON array
   return (await res.json()) as SchedulingData[];
-}
-
-export async function assignWorkordertoPeriod(
-  asset: string,
-  workorder: string,
-  period: PeriodDto,
-): Promise<string> {
-  const url = `/api/v1/scheduler/${encodeURIComponent(asset)}` +
-    `/assign_work_order_to_period/${encodeURIComponent(workorder)}` +
-    `/${encodeURIComponent(period)}`;
-
-  const res = await fetch(url, { method: "POST" });
-
-  if (!res.ok) {
-    throw new Error(await res.text());
-  }
-
-  return res.text();
-}
-
-export async function fetchWorkorderInfo(
-  asset: string,
-  work_order_number: string,
-): Promise<WorkOrderInfoWithSchedulingDto> {
-  const res = await fetch(
-    `/api/v1/scheduler/work_orders_with_scheduling/${asset}/${work_order_number}`,
-  );
-
-  if (!res.ok) {
-    throw new Error(await res.text());
-  }
-
-  return (await res.json()) as WorkOrderInfoWithSchedulingDto;
 }

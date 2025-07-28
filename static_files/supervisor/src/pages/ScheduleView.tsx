@@ -5,57 +5,14 @@ import { useQuery } from "@tanstack/react-query";
 import { parseISO, format } from 'date-fns';
 import { fetchWorkOrders } from '@/api/workorders';
 import fetchSystemClock from '@/api/clock';
-import { ColDef, ICellRendererParams, } from 'ag-grid-community';
+import { ColDef } from 'ag-grid-community';
 import { useMemo } from "react";
-import { DropdownMenu,
-   DropdownMenuContent,
-   DropdownMenuItem,
-   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu.tsx';
-import { MoreHorizontal } from 'lucide-react';
 
 import { SingleRowDto } from "../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
-import { useNavigate } from 'react-router-dom';
 import { PeriodStatusICellRenderer } from '@/components/ui/period_status_badge.tsx';
 import fetchPeriods from '@/api/periods.ts';
-export type SchedulingData = SingleRowDto & {action: string | null};
 
-
-
-interface ActionMenuParams extends ICellRendererParams<SchedulingData> {
-   context: {
-      asset: string
-   }
-}
-
-
-const ActionMenu: React.FC<ActionMenuParams> = (({ data, context }) => {
-   if (!data) return null;
-   const navigate = useNavigate();
-
-   const goToEditWorkorder = (e: React.MouseEvent) => {
-      e.stopPropagation();
-
-      if (data?.work_order_number) {
-         navigate(`/${context.asset}/dashboard/${data.work_order_number}`);
-      }
-   }
-
-   return (
-      <DropdownMenu>
-         <DropdownMenuTrigger asChild>
-            <button onClick={(e) => e.stopPropagation()} className='p-1'>
-               <MoreHorizontal size={14} />
-            </button>
-         </DropdownMenuTrigger>
-         <DropdownMenuContent side='right' align='start' onClick={(e) => e.stopPropagation()}>
-            <DropdownMenuItem onClick={goToEditWorkorder}>
-               Edit Scheduling
-            </DropdownMenuItem>
-         </DropdownMenuContent>
-      </DropdownMenu>
-   );
-});
+export type SchedulingData = SingleRowDto;
 
 
 
@@ -86,18 +43,6 @@ export function useTableColDefs(): ColDef<SchedulingData>[] {
         pinned: "left",
         minWidth: 20,
         cellRenderer: PeriodStatusICellRenderer,
-      },
-      {
-        field: 'action',
-        headerName: "",
-        minWidth: 15,
-        cellStyle: {textAlign: "center"},
-        sortable: false,
-        filter: false,
-        editable: false,
-        suppressSizeToFit: true,
-        pinned: "left",
-        cellRenderer: ActionMenu,         
       },
       {
          field: 'priority',
@@ -255,20 +200,6 @@ const SchedulerView: React.FC = () => {
     
   /* Fetch with React Query */
   const {
-    data: workOrders = [],          // default ↠ empty array
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["workOrders", asset],
-    // don’t run until we have a real asset
-    enabled: !!asset,
-    queryFn: () => fetchWorkOrders(asset!),
-    retry: 2,                       // exponential-backoff retries
-    staleTime: 60_000,              // cache 1 min
-  });
-
-  const {
     data: systemclock,
   } = useQuery({
     queryKey: ["systemclock"],
@@ -284,14 +215,28 @@ const SchedulerView: React.FC = () => {
      staleTime: Infinity,
   });
   
-
-  if (!asset) return null;
-  if (!systemclock) return;
   if (!periods) return;
-
 
   const query_periods = [0,1].map(x => periods[x]);
 
+
+  const {
+    data: workOrders = [],          // default ↠ empty array
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["workOrders", asset, query_periods],
+    // don’t run until we have a real asset
+    enabled: !!asset && !!periods,
+    queryFn: () => fetchWorkOrders(asset!, query_periods),
+    retry: 2,                       // exponential-backoff retries
+    staleTime: 60_000,              // cache 1 min
+  });
+
+
+  if (!asset) return null;
+  if (!systemclock) return;
 
   // Handling Scheduling data varians
   if (isLoading)
