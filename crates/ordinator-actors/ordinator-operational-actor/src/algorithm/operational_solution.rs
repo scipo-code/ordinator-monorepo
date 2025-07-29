@@ -6,6 +6,7 @@ use anyhow::Context;
 use anyhow::Result;
 use anyhow::ensure;
 use chrono::DateTime;
+use chrono::NaiveDate;
 use chrono::Utc;
 use colored::Colorize;
 use ordinator_actor_core::traits::ObjectiveValue;
@@ -35,16 +36,22 @@ pub struct OperationalObjectiveValue
 {
     /// utilization
     hands_on_tool_time: u64,
+    assess: u64,
+    assign: u64,
+    total_work_order_activities: u64,
 }
 
 impl ObjectiveValue for OperationalObjectiveValue {}
 
-impl From<u64> for OperationalObjectiveValue
+impl From<(u64, u64, u64, u64)> for OperationalObjectiveValue
 {
-    fn from(value: u64) -> Self
+    fn from(value: (u64, u64, u64, u64)) -> Self
     {
         Self {
-            hands_on_tool_time: value,
+            hands_on_tool_time: value.0,
+            assess: value.1,
+            assign: value.2,
+            total_work_order_activities: value.3,
         }
     }
 }
@@ -111,6 +118,9 @@ impl Solution for OperationalSolution
         Ok(Self {
             objective_value: OperationalObjectiveValue {
                 hands_on_tool_time: 0,
+                assess: 0,
+                assign: 0,
+                total_work_order_activities: 0,
             },
             scheduled_work_order_activities,
             non_productive: vec![],
@@ -357,6 +367,14 @@ impl OperationalAssignment
     pub fn start_time(&self) -> DateTime<Utc>
     {
         self.assignments.first().unwrap().start
+    }
+
+    pub fn active_datetimes(&self) -> Vec<NaiveDate>
+    {
+        self.assignments
+            .iter()
+            .map(|e| e.start.date_naive())
+            .collect()
     }
 
     pub fn finish_time(&self) -> DateTime<Utc>

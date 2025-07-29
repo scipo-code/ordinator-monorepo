@@ -150,6 +150,17 @@ impl SupervisorSolution
             .collect()
     }
 
+    // This is implemented incorrectly. You should make the code work correctly with
+    // the. This means that each Id can only have a single WorkOrderActivity.
+    pub fn assess_and_assign_activities(&self) -> Vec<(Id, WorkOrderActivity)>
+    {
+        self.operational_state_machine
+            .iter()
+            .filter(|e| (e.1.is_assign() || e.1.is_assess()))
+            .map(|(e, _)| (e.0.clone(), e.1))
+            .collect()
+    }
+
     pub fn turn_work_order_into_delegate_assess(&mut self, work_order_number: WorkOrderNumber)
     {
         self.operational_state_machine

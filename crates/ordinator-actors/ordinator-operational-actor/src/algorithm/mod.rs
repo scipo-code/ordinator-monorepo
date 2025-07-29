@@ -28,6 +28,7 @@ use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::AbLNSUtils;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
+use ordinator_orchestrator_actor_traits::OperationalInterface;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SupervisorInterface;
@@ -482,10 +483,42 @@ where
         break_time = ?break_time,
         toolbox_time = ?toolbox_time,
         non_productive_time = ?non_productive_time);
-        let new_objective_value: OperationalObjectiveValue = (((wrench_time).num_seconds() * 100)
-            as u64
-            / (wrench_time + break_time + toolbox_time + non_productive_time).num_seconds() as u64)
-            .into();
+        let hands_on_tool_time = ((wrench_time).num_seconds() * 100) as u64
+            / (wrench_time + break_time + toolbox_time + non_productive_time).num_seconds() as u64;
+
+        let delegates = self
+            .loaded_system_solution
+            .supervisor_actor_solutions()?
+            .delegates_for_agent(&self.id);
+
+        let counts = delegates.iter().fold((0, 0, 0), |acc, ele| {
+            let (mut count_assess, mut count_assign, mut count_total_work_order_activities) = acc;
+            if ele.1.is_assess()
+                && self
+                    .solution
+                    .scheduled_activities_for_operational_actor()
+                    .contains(ele.0)
+            {
+                count_assess += 1
+            } else if ele.1.is_assign()
+                && self
+                    .solution
+                    .scheduled_activities_for_operational_actor()
+                    .contains(ele.0)
+            {
+                count_assign += 1
+            }
+
+            count_total_work_order_activities += 1;
+            (
+                count_assess,
+                count_assign,
+                count_total_work_order_activities,
+            )
+        });
+
+        let new_objective_value: OperationalObjectiveValue =
+            (hands_on_tool_time, counts.0, counts.1, counts.2).into();
 
         let old_objective_value = self.solution.objective_value;
 
