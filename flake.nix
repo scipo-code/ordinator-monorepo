@@ -50,6 +50,7 @@
             pkgs.bfg-repo-cleaner
             pkgs.nushell
             pkgs.openssl_3
+            pkgs.rustup
             pkgs.pkg-config
             pkgs.taplo
             (pkgs.rust-bin.nightly.latest.default.override {

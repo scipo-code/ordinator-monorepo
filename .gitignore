@@ -1,13 +1,17 @@
+# Editor settings
 .helix
 
 # Rust executables.
 /target/
 
+# Distribution directory
+/dist/
+
 # Logging
 **/logging/logs/*.log.*
 **/logging/logs/*.log
 
-**.log
+**.log*
 
 *.folded
 

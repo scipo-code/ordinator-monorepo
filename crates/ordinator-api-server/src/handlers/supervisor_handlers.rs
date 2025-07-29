@@ -185,7 +185,6 @@ pub async fn supervisor_main_table(
             })?;
     // let lock = orchestrator.actor_registries.lock().unwrap();
 
-    dbg!(&supervisor_main_table_dto);
     Ok(Json(supervisor_main_table_dto))
 }
 // _ISSUE_ #000 means unassigned
