@@ -216,7 +216,7 @@ impl
                         .clone()
                         .unwrap_or("WE DO NOT HAVE THIS FIELD FROM SAP YET".to_string()),
                     material_status: MaterialStatus::from(
-                        work_order.work_order_analytic.user_status_codes.clone(),
+                        &work_order.work_order_analytic.user_status_codes,
                     )
                     .to_string(),
                     system_status: work_order

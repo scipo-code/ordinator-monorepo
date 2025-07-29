@@ -289,11 +289,7 @@ where
                     .operation_description
                     .clone()
                     .unwrap_or("WE DO NOT HAVE THIS FIELD FROM SAP YET".to_string()),
-                material_status: work_order
-                    .work_order_analytic
-                    .user_status_codes
-                    .clone()
-                    .into(),
+                material_status: (&work_order.work_order_analytic.user_status_codes).into(),
                 system_status: work_order.work_order_analytic.system_status_codes.clone(),
                 user_status: work_order.work_order_analytic.user_status_codes.clone(),
                 work: activity.1.operation_info.work_remaining,

@@ -2,6 +2,7 @@ pub mod status_codes;
 
 use serde::Deserialize;
 use serde::Serialize;
+use status_codes::MaterialStatus;
 use status_codes::SystemStatusCodes;
 use status_codes::SystemStatusCodesBuilder;
 use status_codes::UserStatusCodes;
@@ -109,5 +110,10 @@ impl WorkOrderAnalytic
     pub fn released_for_scheduling(&self) -> bool
     {
         self.system_status_codes.rel
+    }
+
+    pub fn material(&self) -> MaterialStatus
+    {
+        MaterialStatus::from(&self.user_status_codes)
     }
 }

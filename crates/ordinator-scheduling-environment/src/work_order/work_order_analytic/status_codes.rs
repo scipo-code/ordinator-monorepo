@@ -486,9 +486,9 @@ pub struct StrategicUserStatusCodes
     pub sece: Option<bool>,
 }
 
-impl From<UserStatusCodes> for MaterialStatus
+impl From<&UserStatusCodes> for MaterialStatus
 {
-    fn from(value: UserStatusCodes) -> Self
+    fn from(value: &UserStatusCodes) -> Self
     {
         assert!(value.smat as u8 + value.pmat as u8 + value.wmat as u8 + value.cmat as u8 <= 1);
 

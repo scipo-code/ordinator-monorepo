@@ -5,6 +5,7 @@ use ordinator_orchestrator_actor_traits::SystemSolution;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::MaterialStatus;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
@@ -21,7 +22,9 @@ pub mod supervisor;
 pub mod technician;
 // This is a DTO object, it should be moved out of the
 // `scheduling-environment`
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
+#[derive(
+    Hash, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS,
+)]
 pub struct AssetNames(String);
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
@@ -34,6 +37,32 @@ pub struct NaiveDateDto(pub String);
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
 pub struct WorkOrderNumberDto(pub u64);
+
+#[derive(Debug, ToSchema, Serialize)]
+pub enum MaterialStatusDto
+{
+    Smat,
+    Nmat,
+    Cmat,
+    Wmat,
+    Pmat,
+    Unknown,
+}
+
+impl From<MaterialStatus> for MaterialStatusDto
+{
+    fn from(value: MaterialStatus) -> Self
+    {
+        match value {
+            MaterialStatus::Smat => MaterialStatusDto::Smat,
+            MaterialStatus::Nmat => MaterialStatusDto::Nmat,
+            MaterialStatus::Cmat => MaterialStatusDto::Cmat,
+            MaterialStatus::Wmat => MaterialStatusDto::Wmat,
+            MaterialStatus::Pmat => MaterialStatusDto::Pmat,
+            MaterialStatus::Unknown => MaterialStatusDto::Unknown,
+        }
+    }
+}
 
 impl From<WorkOrderNumberDto> for WorkOrderNumber
 {
@@ -94,12 +123,21 @@ impl TryFrom<NaiveDateDto> for NaiveDate
     }
 }
 
-// TODO [ ]
-// Add dependencies for each of these
 pub type TotalSystemSolution =
     SystemSolution<StrategicSolution, TacticalSolution, SupervisorSolution, OperationalSolution>;
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, ToSchema, Serialize)]
+#[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, ToSchema, Serialize)]
+pub struct IdStringDto(String);
+
+impl From<Id> for IdStringDto
+{
+    fn from(value: Id) -> Self
+    {
+        IdStringDto(value.0)
+    }
+}
+
+#[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, ToSchema, Serialize)]
 pub struct IdDto
 {
     id: String,

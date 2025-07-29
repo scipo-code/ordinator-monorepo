@@ -996,7 +996,8 @@ impl WorkOrder
         // );
         let period =
             Self::date_to_period(periods, &self.work_order_dates.earliest_allowed_start_date);
-        match &self.work_order_analytic.user_status_codes.clone().into() {
+
+        match (&self.work_order_analytic.user_status_codes).into() {
             MaterialStatus::Nmat => (&periods[material_to_periods.nmat]).max(period),
             MaterialStatus::Smat => (&periods[material_to_periods.smat]).max(period),
             MaterialStatus::Cmat => (&periods[material_to_periods.cmat]).max(period),
