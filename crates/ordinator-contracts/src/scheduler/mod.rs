@@ -24,7 +24,7 @@ use crate::WorkOrderNumberDto;
 
 #[derive(Serialize, ToSchema, TS)]
 #[ts(export)]
-pub struct SchedulerWorkOrderDto(Vec<SingleRowDto>);
+pub struct SchedulerWorkOrderDto(pub Vec<SingleRowDto>);
 
 #[derive(Serialize, ToSchema, TS, Clone)]
 #[ts(export)]
@@ -89,6 +89,14 @@ pub struct SingleRowDto
     maintenance_plant: String,
     pm_collective: String,
     room: String,
+}
+
+impl SingleRowDto
+{
+    pub fn get_suggested_period(&self) -> String
+    {
+        self.suggested_scheduled_period.to_string()
+    }
 }
 
 impl

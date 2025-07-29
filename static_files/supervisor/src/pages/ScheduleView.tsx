@@ -1,53 +1,18 @@
-import { ColDef, ICellRendererParams, } from 'ag-grid-community';
+import React from 'react';
+import { AgGridReact } from 'ag-grid-react';
+import { useParams } from 'react-router-dom';
+import { useQuery } from "@tanstack/react-query";
+import { parseISO, format } from 'date-fns';
+import { fetchWorkOrders } from '@/api/workorders';
+import fetchSystemClock from '@/api/clock';
+import { ColDef } from 'ag-grid-community';
 import { useMemo } from "react";
-import { DropdownMenu,
-   DropdownMenuContent,
-   DropdownMenuItem,
-   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu.tsx';
-import { MoreHorizontal } from 'lucide-react';
 
-import { SingleRowDto } from "../../../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
-import { useNavigate } from 'react-router-dom';
+import { SingleRowDto } from "../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
 import { PeriodStatusICellRenderer } from '@/components/ui/period_status_badge.tsx';
-export type SchedulingData = SingleRowDto & {action: string | null};
+import fetchPeriods from '@/api/periods.ts';
 
-
-
-interface ActionMenuParams extends ICellRendererParams<SchedulingData> {
-   context: {
-      asset: string
-   }
-}
-
-
-const ActionMenu: React.FC<ActionMenuParams> = (({ data, context }) => {
-   if (!data) return null;
-   const navigate = useNavigate();
-
-   const goToEditWorkorder = (e: React.MouseEvent) => {
-      e.stopPropagation();
-
-      if (data?.work_order_number) {
-         navigate(`/${context.asset}/dashboard/${data.work_order_number}`);
-      }
-   }
-
-   return (
-      <DropdownMenu>
-         <DropdownMenuTrigger asChild>
-            <button onClick={(e) => e.stopPropagation()} className='p-1'>
-               <MoreHorizontal size={14} />
-            </button>
-         </DropdownMenuTrigger>
-         <DropdownMenuContent side='right' align='start' onClick={(e) => e.stopPropagation()}>
-            <DropdownMenuItem onClick={goToEditWorkorder}>
-               Edit Scheduling
-            </DropdownMenuItem>
-         </DropdownMenuContent>
-      </DropdownMenu>
-   );
-});
+export type SchedulingData = SingleRowDto;
 
 
 
@@ -78,18 +43,6 @@ export function useTableColDefs(): ColDef<SchedulingData>[] {
         pinned: "left",
         minWidth: 20,
         cellRenderer: PeriodStatusICellRenderer,
-      },
-      {
-        field: 'action',
-        headerName: "",
-        minWidth: 15,
-        cellStyle: {textAlign: "center"},
-        sortable: false,
-        filter: false,
-        editable: false,
-        suppressSizeToFit: true,
-        pinned: "left",
-        cellRenderer: ActionMenu,         
       },
       {
          field: 'priority',
@@ -235,3 +188,98 @@ export function useTableColDefs(): ColDef<SchedulingData>[] {
     return base;
   }), [])
 };
+
+
+// import { agGridThemeLight } from "./theme";
+// https://www.youtube.com/watch?v=TrKlKF5au6c&ab_channel=m6io
+/** snake_case → "Title Case" */
+
+const SchedulerView: React.FC = () => {
+  const { asset } = useParams<{ asset: string }>();
+  const columns = useTableColDefs();
+    
+  /* Fetch with React Query */
+  const {
+    data: systemclock,
+  } = useQuery({
+    queryKey: ["systemclock"],
+    queryFn: fetchSystemClock,
+    staleTime: Infinity,
+  });
+
+  const {
+     data: periods = [],
+  } = useQuery({
+     queryKey: ["periods"],
+     queryFn: fetchPeriods,
+     staleTime: Infinity,
+  });
+  
+  if (!periods) return;
+
+  const query_periods = [0,1].map(x => periods[x]);
+
+
+  const {
+    data: workOrders = [],          // default ↠ empty array
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["workOrders", asset, query_periods],
+    // don’t run until we have a real asset
+    enabled: !!asset && !!periods,
+    queryFn: () => fetchWorkOrders(asset!, query_periods),
+    retry: 2,                       // exponential-backoff retries
+    staleTime: 60_000,              // cache 1 min
+  });
+
+
+  if (!asset) return null;
+  if (!systemclock) return;
+
+  // Handling Scheduling data varians
+  if (isLoading)
+    return (
+      <div className="p-4">
+        <h2 className="text-2xl font-bold mb-4">Work Orders – {asset}</h2>
+        <p className="text-gray-700">Loading…</p>
+      </div>
+    );
+
+  if (isError)
+    return (
+      <div className="p-4">
+        <h2 className="text-2xl font-bold mb-4">Work Orders – {asset}</h2>
+        <p className="text-red-600">
+          Couldn’t fetch work orders.<br />
+          <code>{(error as Error).message}</code>
+        </p>
+      </div>
+    );
+
+  return (
+    <div className="p-4 flex flex-col flex-1 min-h-0 overflow-hidden">
+      <h2 className="text-2xl font-bold mb-4 shrink-0">Work Orders - {asset}: {format(parseISO(systemclock), "PPP p")}</h2>
+      <div className="flex-1 min-h-0">
+        <AgGridReact
+          className='h-full w-full'
+          rowData={workOrders}
+          columnDefs={columns}
+          context={{
+            asset: asset
+            
+          }}
+          defaultColDef={{
+            resizable: true,
+            sortable: true,
+            filter: true,
+            flex: 1,
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default SchedulerView;
