@@ -45,8 +45,8 @@ list-all-work-orders:
     let work_order_state = imperium status work-orders work-order-state df normal | from json
     $work_order_state | get Orchestrator | get WorkOrderStatus | get Multiple | columns | hx
 
-call-create-all-plot-for-ablns: call-strategic-inclusion-script call-strategic-exclusion-script call-strategic-resources-addition-script call-strategic-resources-subtraction-script call-strategic-work-order-value-script
-    echo "All 5 simulation scripts have been called"
+# call-create-all-plot-for-ablns: call-strategic-inclusion-script call-strategic-exclusion-script call-strategic-resources-addition-script call-strategic-resources-subtraction-script call-strategic-work-order-value-script
+#     echo "All 5 simulation scripts have been called"
 
 profile-thread TID DURATION:
     #!/usr/bin/env bash

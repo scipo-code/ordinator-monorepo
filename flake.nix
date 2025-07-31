@@ -43,6 +43,7 @@
             pkgs.git
             pkgs.just
             pkgs.jq
+            pkgs.git-bug
             pkgs.libunwind
             pkgs.libxlsxwriter
             pkgs.linuxKernel.packages.linux_zen.perf
