@@ -43,6 +43,7 @@
             pkgs.git
             pkgs.just
             pkgs.jq
+            pkgs.git-bug
             pkgs.libunwind
             pkgs.libxlsxwriter
             pkgs.linuxKernel.packages.linux_zen.perf
@@ -50,6 +51,7 @@
             pkgs.bfg-repo-cleaner
             pkgs.nushell
             pkgs.openssl_3
+            pkgs.rustup
             pkgs.pkg-config
             pkgs.taplo
             (pkgs.rust-bin.nightly.latest.default.override {

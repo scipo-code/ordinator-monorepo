@@ -1,8 +1,30 @@
 run:
     cargo run --release --bin ordinator-api-server 2> temp_output_from_program.log
 
-zellij:
-    zellij --layout ordinator.kdl --session "ordinator-api"
+build-ordinator-frontends:
+    mkdir -p dist/static_files/scheduler
+    mkdir -p dist/static_files/supervisor
+    cd static_files/scheduler/ && npm install && npm run build && cp -r dist/ ../../dist/static_files/scheduler/
+    cd static_files/scheduler && npm install && npm run build && cp -r dist/ ../../dist/static_files/scheduler/
+
+build-ordinator-api-windows:
+    cross build --target x86_64-pc-windows-gnu --release && cp target/x86_64-pc-windows-gnu/release/ordinator-api-server.exe ./dist/
+
+build-ordinator-api-linux:
+    cargo build --release && cp target/release/ordinator-api-server ./dist/ 
+
+create-required-directories:
+    mkdir -p dist/logging/logs/
+    mkdir -p dist/benches
+    mkdir -p dist/profiling
+    mkdir -p dist/xlsx_dumps
+    cp -r configuration dist/configuration
+    cp .env.example dist/.env.example
+    cp -r temp_scheduling_environment_database dist/temp_scheduling_environment_database
+
+build-ordinator-for-deployment-windows: (build-ordinator-frontends) (build-ordinator-api-windows) (create-required-directories)
+
+build-ordinator-for-deployment-linux: (build-ordinator-frontends) (build-ordinator-api-linux) (create-required-directories)
 
 version-bump SEMVER EXECUTE="":
     #!/usr/bin/env fish
@@ -11,12 +33,6 @@ version-bump SEMVER EXECUTE="":
 release-on-github VERSION:    
     gh release create {{VERSION}} ./target/release/imperium --title "Release {{VERSION}}" --notes "download the imperium executable with: ```curl -L --output imperium https://github.com/scipo-code/ordinator-api/releases/download/v0.2.2/imperium```"  
 
-build-windows:
-    cross build --target x86_64-pc-windows-gnu --release
-
-build-linux:
-    cargo build --release
-
 bs:
     #!/usr/bin/env nu
     cargo build --release | ~/.cargo/bin/bs target/release/ordinator-api-server
@@ -24,33 +40,13 @@ bs:
 tr REGEX:
     tail -F logging/logs/ordinator.operational.log | rg {{ REGEX }} | jq
     
-call-strategic-inclusion-script:
-    #!/usr/bin/env nu
-    nu imperium/scripts/strategic/simulate_scheduling_inclusion.nu
-
-call-strategic-exclusion-script:
-    #!/usr/bin/env nu
-    nu imperium/scripts/strategic/simulate_scheduling_exclusion.nu 
-
-call-strategic-resources-addition-script:
-    #!/usr/bin/env nu
-    nu imperium/scripts/strategic/simulate_resources_addition.nu
-
-call-strategic-resources-subtraction-script:
-    #!/usr/bin/env nu
-    nu imperium/scripts/strategic/simulate_resources_subtraction.nu
-
-call-strategic-work-order-value-script:
-    #!/usr/bin/env nu
-    nu imperium/scripts/strategic/simulate_weight_update.nu
-
 list-all-work-orders: 
     #!/usr/bin/env nu
     let work_order_state = imperium status work-orders work-order-state df normal | from json
     $work_order_state | get Orchestrator | get WorkOrderStatus | get Multiple | columns | hx
 
-call-create-all-plot-for-ablns: call-strategic-inclusion-script call-strategic-exclusion-script call-strategic-resources-addition-script call-strategic-resources-subtraction-script call-strategic-work-order-value-script
-    echo "All 5 simulation scripts have been called"
+# call-create-all-plot-for-ablns: call-strategic-inclusion-script call-strategic-exclusion-script call-strategic-resources-addition-script call-strategic-resources-subtraction-script call-strategic-work-order-value-script
+#     echo "All 5 simulation scripts have been called"
 
 profile-thread TID DURATION:
     #!/usr/bin/env bash
@@ -87,3 +83,25 @@ profile-thread TID DURATION:
 
     echo "Done. Opening svg file"
     firefox "$SVG"
+
+
+# call-strategic-inclusion-script:
+#     #!/usr/bin/env nu
+#     nu imperium/scripts/strategic/simulate_scheduling_inclusion.nu
+
+# call-strategic-exclusion-script:
+#     #!/usr/bin/env nu
+#     nu imperium/scripts/strategic/simulate_scheduling_exclusion.nu 
+
+# call-strategic-resources-addition-script:
+#     #!/usr/bin/env nu
+#     nu imperium/scripts/strategic/simulate_resources_addition.nu
+
+# call-strategic-resources-subtraction-script:
+#     #!/usr/bin/env nu
+#     nu imperium/scripts/strategic/simulate_resources_subtraction.nu
+
+# call-strategic-work-order-value-script:
+#     #!/usr/bin/env nu
+#     nu imperium/scripts/strategic/simulate_weight_update.nu
+

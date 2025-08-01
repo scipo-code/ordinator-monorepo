@@ -3,12 +3,12 @@ use std::collections::BTreeSet;
 use std::collections::HashMap;
 
 use ordinator_scheduling_environment::time_environment::TimeEnvironment;
+use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrders;
-use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
-use ordinator_supervisor_actor::messages::SupervisorResponseMessage;
 use ordinator_supervisor_actor::messages::responses::SupervisorResponseStatus;
+use ordinator_supervisor_actor::messages::SupervisorResponseMessage;
 use serde::Serialize;
 use utoipa::ToSchema;
 
@@ -133,7 +133,6 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
                 let operational_solutions = &value.1.operational;
 
                 let operation_solution = operational_solutions.get(id).expect("Should");
-                dbg!(operation_solution);
 
                 let operational_assignments_by_day = operation_solution
                     .scheduled_work_order_activities
@@ -142,7 +141,6 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
                     .filter(|f| f.1.active_datetimes().contains(&day.date.date_naive()))
                     .find(|e| e.0 == *work_order_activity);
 
-                dbg!(&operational_assignments_by_day);
                 if let Some(_operational_assignment) = operational_assignments_by_day {
                     let work_order_supervisor_row = WorkOrderSupervisorRow::from((
                         value
