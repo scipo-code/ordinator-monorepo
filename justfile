@@ -8,8 +8,9 @@ export-ts-bindings:
 build-ordinator-frontends:
     mkdir -p dist/static_files/scheduler
     mkdir -p dist/static_files/supervisor
-    cd static_files/scheduler/ && npm install && npm run build && cp -r dist/ ../../dist/static_files/scheduler/
-    cd static_files/scheduler && npm install && npm run build && cp -r dist/ ../../dist/static_files/scheduler/
+    cd static_files/ && pnpm -r build
+    cp -r packages/scheduler/dist/ ../../dist/static_files/scheduler/
+    cp -r packages/supervisor/dist/ ../../dist/static_files/scheduler/
 
 build-ordinator-api-windows:
     cross build --target x86_64-pc-windows-gnu --release && cp target/x86_64-pc-windows-gnu/release/ordinator-api-server.exe ./dist/
