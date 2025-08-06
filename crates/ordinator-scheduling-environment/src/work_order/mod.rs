@@ -230,17 +230,18 @@ pub struct WorkOrder
     pub work_order_dates: WorkOrderDates,
     pub work_order_info: WorkOrderInfo,
     pub fixed_by: FixedWorkOrder,
+    // This is not acceptable. You should move it out
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum FixedWorkOrder
 {
+    // You are mixing workers and `time`
     Period(Period),
     BasicStart(NaiveDate),
     Operational(DateTime<Utc>),
     BusinessLogic,
 }
-
 // Should you work on this now? No! Practice skills and read.
 // #[derive(Serialize, Deserialize, Clone, Debug)]
 // pub struct ManuallyInputtedInformation

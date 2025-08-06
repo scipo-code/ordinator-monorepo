@@ -9,6 +9,7 @@ use axum::extract::State;
 use axum::response::Result;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::TotalSystemSolution;
+use ordinator_contracts::WorkOrderNumberDto;
 use ordinator_contracts::supervisor::SupervisorMainTableDto;
 use ordinator_contracts::supervisor::SupervisorResourcesDto;
 use ordinator_contracts::supervisor::SupervisorResponseMessageDto;
@@ -16,6 +17,9 @@ use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::SupervisorRequestMessage;
 use ordinator_orchestrator::SupervisorStatusMessage::General;
+use serde::Deserialize;
+use serde::Serialize;
+use utoipa::ToSchema;
 
 use crate::routes::api::AppError;
 
@@ -159,6 +163,70 @@ pub async fn supervisor_main_table(
     // TODO [ ]
     // The `_supervisor_id` should be used in the future when we have additional
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
+) -> Result<Json<SupervisorMainTableDto>, AppError>
+{
+    let asset = Asset::try_from(asset)
+        .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
+    let schedulingenvironment_lock = &orchestrator.scheduling_environment.lock().unwrap();
+    let work_orders = &schedulingenvironment_lock.work_orders;
+    let time_environment = &schedulingenvironment_lock.time_environment;
+    let system_solution = &(**orchestrator
+        .system_solutions
+        .lock()
+        .unwrap()
+        .get(&asset)
+        .with_context(|| format!("Asset: {asset} is not present in the SystemSolution"))
+        .map_err(|e| AppError::Anyhow(e.to_string() + "could not extract the SystemSolution"))?
+        .load());
+
+    let supervisor_main_table_dto =
+        SupervisorMainTableDto::try_from((work_orders, system_solution, time_environment))
+            .with_context(|| {
+                format!("SupervisorMainTable could not be constructed for {_supervisor_id}")
+            })
+            .map_err(|e| {
+                AppError::Anyhow(e.to_string() + "could not create the SupervisorMainTableDto")
+            })?;
+    // let lock = orchestrator.actor_registries.lock().unwrap();
+
+    Ok(Json(supervisor_main_table_dto))
+}
+
+// TODO [ ] - assert that number is equal to the number of assignments.
+#[derive(Serialize, Deserialize, ToSchema)]
+struct WorkOrderActivityToTechnicianDto
+{
+    #[schema(example = "2100001234")]
+    work_order_number: WorkOrderNumberDto,
+    #[schema(example = "20")]
+    activity_number: u64,
+    #[schema(example = "l1234567")]
+    technicians: Vec<String>,
+}
+#[debug_handler]
+#[utoipa::path(
+    post,
+    path = "/assign_to_technicians/{asset}/{supervisor_id}",
+    tag = "Supervisor",
+    params (
+        ("asset" = AssetNames, Path),
+        ("supervisor_id" = String, Path),
+    ),
+    request_body(
+        content = WorkOrderActivityToTechnicianDto,
+    ),
+    responses(
+        (status = 201, description = "Work order activity assigned to technicians"),
+        (status = 404, body = AppError),
+        (status = 500, body = AppError),
+    )
+)]
+pub async fn assign_to_technicians(
+    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    // TODO [ ]
+    // The `_supervisor_id` should be used in the future when we have additional
+    Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
+    Json(payload): Json<WorkOrderActivityToTechnicianDto>,
 ) -> Result<Json<SupervisorMainTableDto>, AppError>
 {
     let asset = Asset::try_from(asset)
