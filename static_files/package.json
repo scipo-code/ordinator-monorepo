@@ -1,0 +1,18 @@
+{
+  "name": "ordinator-frontend",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm --parallel --filter './packages/{scheduler,supervisor}' dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "dev:scheduler": "pnpm --filter scheduler dev",
+    "dev:supervisor": "pnpm --filter supervisor dev",
+    "dev:shared": "pnpm --filter shared dev"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
