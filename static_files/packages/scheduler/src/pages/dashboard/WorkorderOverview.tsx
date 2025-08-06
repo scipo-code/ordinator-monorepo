@@ -1,4 +1,4 @@
-import { assignWorkordertoPeriod, fetchWorkorderInfo } from "@/api/workorders";
+import { assignWorkordertoPeriod, fetchWorkorderInfo } from "@scipo-code/shared";
 import { useParams } from "react-router-dom"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

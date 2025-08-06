@@ -1,12 +1,20 @@
-import { PeriodDto } from "@scipo-code/shared";
-import type { WorkOrderInfoWithSchedulingDto } from "@scipo-code/shared";
-import type { SchedulingData } from "../pages/dashboard/scheduler/ColDef.tsx";
+import { PeriodDto } from "../types/PeriodDto.ts";
+import type { WorkOrderInfoWithSchedulingDto } from "../types/WorkOrderInfoWithSchedulingDto.ts";
+import type { SchedulingData } from "../types/SchedulingData.ts";
 
 export async function fetchWorkOrders(
   asset: string,
+  periods?: string[],
 ): Promise<SchedulingData[]> {
+  const params = new URLSearchParams();
+
+  if (periods) {
+    periods.forEach((p) => params.append("periods", p));
+  }
+
+  const url = `/api/v1/scheduler/work_orders_with_scheduling/${asset}?`;
   const res = await fetch(
-    `/api/v1/scheduler/work_orders_with_scheduling/${asset}`,
+    url + params.toString(),
   );
 
   if (!res.ok) {

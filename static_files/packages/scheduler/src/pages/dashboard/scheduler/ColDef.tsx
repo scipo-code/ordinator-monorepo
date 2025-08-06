@@ -7,10 +7,9 @@ import { DropdownMenu,
 } from '@/components/ui/dropdown-menu.tsx';
 import { MoreHorizontal } from 'lucide-react';
 
-import { SingleRowDto } from "@scipo-code/shared";
 import { useNavigate } from 'react-router-dom';
 import { PeriodStatusICellRenderer } from "@scipo-code/shared";
-export type SchedulingData = SingleRowDto & {action: string | null};
+import { SchedulingData } from "@scipo-code/shared";
 
 
 

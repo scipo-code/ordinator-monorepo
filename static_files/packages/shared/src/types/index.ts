@@ -9,3 +9,4 @@ export * from "./SingleRowDto.ts";
 export * from "./WorkOrderInfoWithSchedulingDto.ts";
 export * from "./WorkOrderNumberDto.ts";
 export * from "./WorkOrderSingleRowSimpleDto.ts";
+export * from "./SchedulingData.ts";

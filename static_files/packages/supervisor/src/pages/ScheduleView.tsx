@@ -3,14 +3,14 @@ import { AgGridReact } from 'ag-grid-react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 import { parseISO, format } from 'date-fns';
-import { fetchWorkOrders } from '@/api/workorders';
-import fetchSystemClock from '@/api/clock';
+import { fetchWorkOrders } from "@scipo-code/shared";
+import { fetchSystemClock  }from "@scipo-code/shared";
 import { ColDef } from 'ag-grid-community';
 import { useMemo } from "react";
 
-import { SingleRowDto } from "../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
-import { PeriodStatusICellRenderer } from '@/components/ui/period_status_badge.tsx';
-import fetchPeriods from '@/api/periods.ts';
+import { SingleRowDto } from "@scipo-code/shared";
+import { PeriodStatusICellRenderer } from "@scipo-code/shared";
+import { fetchPeriods } from "@scipo-code/shared";
 
 export type SchedulingData = SingleRowDto;
 

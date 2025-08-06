@@ -4,7 +4,7 @@ import { useParams, Navigate } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 import { useTableColDefs } from './scheduler/ColDef';
 import { parseISO, format } from 'date-fns';
-import { fetchWorkOrders } from '@/api/workorders';
+import { fetchWorkOrders } from "@scipo-code/shared";
 import { fetchSystemClock } from '@scipo-code/shared';
 
 
