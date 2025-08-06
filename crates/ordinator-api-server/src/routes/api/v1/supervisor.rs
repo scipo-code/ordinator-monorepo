@@ -15,6 +15,9 @@ pub async fn supervisor_routes(
             crate::handlers::supervisor_handlers::all_available_technicians
         ))
         .routes(routes!(
+            crate::handlers::supervisor_handlers::assign_to_technicians
+        ))
+        .routes(routes!(
             crate::handlers::supervisor_handlers::supervisor_main_table
         ))
         // .route("/{asset}/{supervisor_id}", get(status))

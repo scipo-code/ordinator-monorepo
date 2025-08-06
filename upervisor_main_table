@@ -1,0 +1,453 @@
+
+[34mΔ crates/ordinator-api-server/Cargo.toml[0m
+[34m─────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+[34m──────────────────────[0m[34m┐[0m
+[34m•[0m [34m7[0m:[38;5;231m [38;5;203medition[38;5;231m = [38;5;186m"2024"[38;5;231m [0m[34m│[0m
+[34m──────────────────────[0m[34m┘[0m
+[38;5;231m[[38;5;149mdependencies[38;5;231m][0m
+[38;5;203mordinator-orchestrator[38;5;231m = { [38;5;203mpath[38;5;231m = [38;5;186m"../ordinator-orchestrator"[38;5;231m }[0m
+[38;5;203mordinator-contracts[38;5;231m = { [38;5;203mpath[38;5;231m = [38;5;186m"../ordinator-contracts"[38;5;231m }[0m
+[48;5;22;38;5;203mordinator-scheduling-environment[38;5;231m = { [38;5;203mpath[38;5;231m = [38;5;186m"../ordinator-scheduling-environment"[38;5;231m }[0m[48;5;22m[0K[0m
+
+[38;5;203maxum[38;5;231m = {[38;5;203mversion[38;5;231m = [38;5;186m"*"[38;5;231m, [38;5;203mfeatures[38;5;231m = [[38;5;186m"macros"[38;5;231m, [38;5;186m"tokio"[38;5;231m]}[0m
+[38;5;203maxum-extra[38;5;231m = {[38;5;203mversion[38;5;231m = [38;5;186m"*"[38;5;231m, [38;5;203mfeatures[38;5;231m = [[38;5;186m"query"[38;5;231m]}[0m
+
+[34m───────────────────────────────────────────────────────────────[0m[34m┐[0m
+[34m•[0m [34m31[0m:[38;5;231m [38;5;203mutoipa-swagger-ui[38;5;231m = {[38;5;203mversion[38;5;231m = [38;5;186m"*"[38;5;231m, [38;5;203mfeatures[38;5;231m = [[38;5;186m"axum"[38;5;231m]} [0m[34m│[0m
+[34m───────────────────────────────────────────────────────────────[0m[34m┘[0m
+[38;5;203mchrono-tz[38;5;231m.[38;5;203mworkspace[38;5;231m = [38;5;141mtrue[0m
+
+[38;5;231m[[38;5;149mdev-dependencies[38;5;231m][0m
+[48;5;52mordinator-scheduling-environment.path = "../ordinator-scheduling-environment"[0m[48;5;52m[0K[0m
+
+[38;5;242m# [target.'cfg(not(target_env = "msvc"))'.dependencies][0m
+[38;5;242m# tikv-jemallocator = {version = "0.6"}[0m
+
+[34mΔ crates/ordinator-api-server/src/handlers/supervisor_handlers.rs[0m
+[34m─────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+[34m─────[0m[34m┐[0m
+[34m•[0m [34m1[0m: [34m│[0m
+[34m─────[0m[34m┘[0m
+[38;5;203muse[38;5;231m std::sync::Arc;[0m
+[48;5;22;38;5;203muse[38;5;231m std::collections::HashSet;[0m[48;5;22m[0K[0m
+
+[38;5;203muse[38;5;231m anyhow::Context;[0m
+[38;5;203muse[38;5;231m anyhow::anyhow;[0m
+
+[34m─────────────────────────────────────────[0m[34m┐[0m
+[34m•[0m [34m18[0m:[38;5;231m [38;5;203muse[38;5;231m ordinator_orchestrator::Asset; [0m[34m│[0m
+[34m─────────────────────────────────────────[0m[34m┘[0m
+[38;5;203muse[38;5;231m ordinator_orchestrator::Orchestrator;[0m
+[38;5;203muse[38;5;231m ordinator_orchestrator::SupervisorRequestMessage;[0m
+[38;5;203muse[38;5;231m ordinator_orchestrator::SupervisorStatusMessage::General;[0m
+[48;5;22;38;5;203muse[38;5;231m ordinator_orchestrator::WorkOrderNumber;[0m[48;5;22m[0K[0m
+[48;5;22;38;5;203muse[38;5;231m ordinator_orchestrator::ActivityNumber;[0m[48;5;22m[0K[0m
+[48;5;22;38;5;203muse[38;5;231m ordinator_orchestrator::Id;[0m[48;5;22m[0K[0m
+[48;5;22;38;5;203muse[38;5;231m ordinator_scheduling_environment::Assignment;[0m[48;5;22m[0K[0m
+[38;5;203muse[38;5;231m serde::Deserialize;[0m
+[38;5;203muse[38;5;231m serde::Serialize;[0m
+[38;5;203muse[38;5;231m utoipa::ToSchema;[0m
+[48;5;22;38;5;203muse[38;5;231m chrono::Utc;[0m[48;5;22m[0K[0m
+[48;5;22;38;5;203muse[38;5;231m tracing;[0m[48;5;22m[0K[0m
+
+[38;5;203muse[38;5;231m [38;5;203mcrate[38;5;231m::routes::api::AppError;[0m
+
+[48;5;22;38;5;242m// Type aliases[0m[48;5;22m[0K[0m
+[48;5;22;38;5;203mpub[38;5;231m [38;5;81mtype[38;5;231m [38;5;149mWorkOrderActivity[38;5;231m [38;5;203m=[38;5;231m (WorkOrderNumber, ActivityNumber);[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;242m// State Machine and Command Pattern for WorkOrder Assignment[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m#[derive(Debug, Clone, PartialEq, Eq)][0m[48;5;22m[0K[0m
+[48;5;22;38;5;203mpub[38;5;231m [38;5;81menum[38;5;231m [38;5;149mWorkOrderAssignmentState[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    Unassigned,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    Assigned(HashSet<Id>),[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    InProgress,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    Completed,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m}[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;231m#[derive(Debug, Clone)][0m[48;5;22m[0K[0m
+[48;5;22;38;5;203mpub[38;5;231m [38;5;81menum[38;5;231m [38;5;149mWorkOrderCommand[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    AssignTechnicians {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        work_order_number: WorkOrderNumber,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        activity_number: ActivityNumber,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        technician_ids: [38;5;149mVec[38;5;231m<Id>,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    },[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    UnassignTechnicians {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        work_order_number: WorkOrderNumber,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        activity_number: ActivityNumber,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        technician_ids: [38;5;149mVec[38;5;231m<Id>,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    },[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    UpdateAssignment {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        work_order_number: WorkOrderNumber,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        activity_number: ActivityNumber,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        old_technicians: [38;5;149mVec[38;5;231m<Id>,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        new_technicians: [38;5;149mVec[38;5;231m<Id>,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    },[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m}[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;203mpub[38;5;231m [38;5;81mstruct[38;5;231m [38;5;149mWorkOrderStateMachine[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    current_state: WorkOrderAssignmentState,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    work_order_activity: WorkOrderActivity,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m}[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;81mimpl[38;5;231m [38;5;149mWorkOrderStateMachine[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;203mpub[38;5;231m [38;5;81mfn[38;5;231m [38;5;149mnew[38;5;231m([38;5;208mwork_order_activity[38;5;231m: WorkOrderActivity) -> [38;5;81mSelf[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        [38;5;81mSelf[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            current_state: WorkOrderAssignmentState::Unassigned,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            work_order_activity,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    }[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;203mpub[38;5;231m [38;5;81mfn[38;5;231m [38;5;149mtransition[38;5;231m([38;5;203m&mut[38;5;231m [38;5;208mself[38;5;231m, [38;5;208mcommand[38;5;231m: [38;5;203m&[38;5;231mWorkOrderCommand) -> [38;5;149mResult[38;5;231m<[38;5;149mVec[38;5;231m<WorkOrderCommand>, [38;5;149mString[38;5;231m> {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        [38;5;203mmatch[38;5;231m ([38;5;203m&[38;5;231mself.current_state, command) {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            (WorkOrderAssignmentState::Unassigned, WorkOrderCommand::AssignTechnicians { technician_ids, [38;5;203m..[38;5;231m }) [38;5;203m=>[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;81mlet[38;5;231m [38;5;203mmut[38;5;231m technician_set [38;5;203m=[38;5;231m HashSet::new();[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;203mfor[38;5;231m id [38;5;203min[38;5;231m technician_ids {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    technician_set.[38;5;81minsert[38;5;231m(id.[38;5;81mclone[38;5;231m());[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                self.current_state [38;5;203m=[38;5;231m WorkOrderAssignmentState::Assigned(technician_set);[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;149mOk[38;5;231m(vec![command.[38;5;81mclone[38;5;231m()])[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            (WorkOrderAssignmentState::Assigned(current_technicians), WorkOrderCommand::AssignTechnicians { technician_ids, [38;5;203m..[38;5;231m }) [38;5;203m=>[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;81mlet[38;5;231m [38;5;203mmut[38;5;231m new_technicians [38;5;203m=[38;5;231m current_technicians.[38;5;81mclone[38;5;231m();[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;203mfor[38;5;231m id [38;5;203min[38;5;231m technician_ids {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    new_technicians.[38;5;81minsert[38;5;231m(id.[38;5;81mclone[38;5;231m());[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                self.current_state [38;5;203m=[38;5;231m WorkOrderAssignmentState::Assigned(new_technicians);[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;149mOk[38;5;231m(vec![command.[38;5;81mclone[38;5;231m()])[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            (WorkOrderAssignmentState::Assigned([38;5;203m_[38;5;231m), WorkOrderCommand::UnassignTechnicians { technician_ids, [38;5;203m..[38;5;231m }) [38;5;203m=>[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;203mif[38;5;231m [38;5;81mlet[38;5;231m WorkOrderAssignmentState::Assigned(current_technicians) [38;5;203m=[38;5;231m [38;5;203m&[38;5;231mself.current_state {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    [38;5;81mlet[38;5;231m [38;5;203mmut[38;5;231m remaining_technicians [38;5;203m=[38;5;231m current_technicians.[38;5;81mclone[38;5;231m();[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    [38;5;203mfor[38;5;231m id [38;5;203min[38;5;231m technician_ids {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        remaining_technicians.[38;5;81mremove[38;5;231m(id);[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    }[0m[48;5;22m[0K[0m
+[7;35m                    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    [38;5;203mif[38;5;231m remaining_technicians.[38;5;81mis_empty[38;5;231m() {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        self.current_state [38;5;203m=[38;5;231m WorkOrderAssignmentState::Unassigned;[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    } [38;5;203melse[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        self.current_state [38;5;203m=[38;5;231m WorkOrderAssignmentState::Assigned(remaining_technicians);[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;149mOk[38;5;231m(vec![command.[38;5;81mclone[38;5;231m()])[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            [38;5;203m_[38;5;231m [38;5;203m=>[38;5;231m [38;5;149mErr[38;5;231m(format!([38;5;186m"Invalid state transition from [38;5;141m{:?}[38;5;186m with command [38;5;141m{:?}[38;5;186m"[38;5;231m, self.current_state, command))[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    }[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;203mpub[38;5;231m [38;5;81mfn[38;5;231m [38;5;149mcurrent_state[38;5;231m([38;5;203m&[38;5;208mself[38;5;231m) -> [38;5;203m&[38;5;231mWorkOrderAssignmentState {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        [38;5;203m&[38;5;231mself.current_state[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m}[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;203mpub[38;5;231m [38;5;81mstruct[38;5;231m [38;5;149mSchedulingContext[38;5;231m<[38;5;203m'a[38;5;231m> {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;203mpub[38;5;231m orchestrator: [38;5;203m&'a[38;5;231m Orchestrator<TotalSystemSolution>,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;203mpub[38;5;231m asset: [38;5;203m&'a[38;5;231m Asset,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m}[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;81mimpl[38;5;231m<[38;5;203m'a[38;5;231m> [38;5;149mSchedulingContext[38;5;231m<[38;5;203m'a[38;5;231m> {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;203mpub[38;5;231m [38;5;81mfn[38;5;231m [38;5;149mexecute_command[38;5;231m([38;5;203m&[38;5;208mself[38;5;231m, [38;5;208mcommand[38;5;231m: WorkOrderCommand) -> [38;5;149mResult[38;5;231m<(), AppError> {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        tracing::info[38;5;203m![38;5;231m([38;5;186m"execute_command called with: {:?}"[38;5;231m, command);[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        println!([38;5;186m"DEBUG: execute_command called with: [38;5;141m{:?}[38;5;186m"[38;5;231m, command);[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        [38;5;203mmatch[38;5;231m command {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            WorkOrderCommand::AssignTechnicians { work_order_number, activity_number, technician_ids } [38;5;203m=>[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;81mlet[38;5;231m [38;5;203mmut[38;5;231m scheduling_env [38;5;203m=[38;5;231m self.orchestrator.scheduling_environment.[38;5;81mlock[38;5;231m()[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    .[38;5;81mmap_err[38;5;231m(|[38;5;208me[38;5;231m| AppError::Anyhow(format!([38;5;186m"Failed to acquire lock: [38;5;141m{}[38;5;186m"[38;5;231m, e)))[38;5;203m?[38;5;231m;[0m[48;5;22m[0K[0m
+[7;35m                [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;81mlet[38;5;231m now [38;5;203m=[38;5;231m Utc::now();[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;81mlet[38;5;231m [38;5;203mmut[38;5;231m found [38;5;203m=[38;5;231m [38;5;141mfalse[38;5;231m;[0m[48;5;22m[0K[0m
+[7;35m                [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;242m// Update the assignment in the scheduling environment[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;203mfor[38;5;231m (work_order_num, activity_num, assignment) [38;5;203min[38;5;231m scheduling_env.assignments.[38;5;81mget_mut[38;5;231m() {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    [38;5;203mif[38;5;231m [38;5;203m*[38;5;231mwork_order_num [38;5;203m==[38;5;231m work_order_number [38;5;203m&&[38;5;231m [38;5;203m*[38;5;231mactivity_num [38;5;203m==[38;5;231m [38;5;149mSome[38;5;231m(activity_number) {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        [38;5;203mfor[38;5;231m tech_id [38;5;203min[38;5;231m [38;5;203m&[38;5;231mtechnician_ids {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                            assignment.technician.[38;5;81minsert[38;5;231m((tech_id.[38;5;81mclone[38;5;231m(), now));[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        found [38;5;203m=[38;5;231m [38;5;141mtrue[38;5;231m;[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        [38;5;203mbreak[38;5;231m;[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                }[0m[48;5;22m[0K[0m
+[7;35m                [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;242m// If no existing assignment found, create a new one[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;203mif[38;5;231m [38;5;203m![38;5;231mfound {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    println!([38;5;186m"DEBUG: Creating new assignment for work_order=[38;5;141m{}[38;5;186m, activity=[38;5;141m{}[38;5;186m"[38;5;231m, work_order_number.[38;5;141m0[38;5;231m, activity_number);[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    [38;5;81mlet[38;5;231m [38;5;203mmut[38;5;231m technician_set [38;5;203m=[38;5;231m HashSet::new();[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    [38;5;203mfor[38;5;231m tech_id [38;5;203min[38;5;231m [38;5;203m&[38;5;231mtechnician_ids {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        technician_set.[38;5;81minsert[38;5;231m((tech_id.[38;5;81mclone[38;5;231m(), now));[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        println!([38;5;186m"DEBUG: Added technician: [38;5;141m{:?}[38;5;186m"[38;5;231m, tech_id.[38;5;141m0[38;5;231m);[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    }[0m[48;5;22m[0K[0m
+[7;35m                    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    [38;5;81mlet[38;5;231m new_assignment [38;5;203m=[38;5;231m Assignment {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        period: [38;5;149mNone[38;5;231m,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        day: [38;5;149mNone[38;5;231m,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        technician: technician_set,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    };[0m[48;5;22m[0K[0m
+[7;35m                    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    println!([38;5;186m"DEBUG: About to push assignment to scheduling_env.assignments"[38;5;231m);[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    scheduling_env.assignments.[38;5;81mget_mut[38;5;231m().[38;5;81mpush[38;5;231m(([0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        work_order_number,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        [38;5;149mSome[38;5;231m(activity_number),[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        new_assignment[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    ));[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    println!([38;5;186m"DEBUG: Assignment pushed. Total assignments now: [38;5;141m{}[38;5;186m"[38;5;231m, scheduling_env.assignments.[38;5;81mget[38;5;231m().[38;5;81mlen[38;5;231m());[0m[48;5;22m[0K[0m
+[7;35m                    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    tracing::info[38;5;203m![38;5;231m([0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        [38;5;186m"New assignment created: work_order={}, activity={}, technicians={:?}"[38;5;231m,[0m[7;35m [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        work_order_number.[38;5;141m0[38;5;231m,[0m[7;35m [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        activity_number,[0m[7;35m [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        technician_ids.[38;5;81miter[38;5;231m().[38;5;81mmap[38;5;231m(|[38;5;208mid[38;5;231m| [38;5;203m&[38;5;231mid.[38;5;141m0[38;5;231m).collect::<[38;5;149mVec[38;5;231m<[38;5;203m_[38;5;231m>>()[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    );[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                } [38;5;203melse[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    println!([38;5;186m"DEBUG: Found existing assignment, updated it"[38;5;231m);[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                }[0m[48;5;22m[0K[0m
+[7;35m                [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;242m// TODO: Send message to supervisor actor for state coordination[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;242m// This would involve using the actor registry to send a message[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;149mOk[38;5;231m(())[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            WorkOrderCommand::UnassignTechnicians { work_order_number, activity_number, technician_ids } [38;5;203m=>[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;81mlet[38;5;231m [38;5;203mmut[38;5;231m scheduling_env [38;5;203m=[38;5;231m self.orchestrator.scheduling_environment.[38;5;81mlock[38;5;231m()[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    .[38;5;81mmap_err[38;5;231m(|[38;5;208me[38;5;231m| AppError::Anyhow(format!([38;5;186m"Failed to acquire lock: [38;5;141m{}[38;5;186m"[38;5;231m, e)))[38;5;203m?[38;5;231m;[0m[48;5;22m[0K[0m
+[7;35m                [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;242m// Remove technician assignments[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;203mfor[38;5;231m (work_order_num, _activity, assignment) [38;5;203min[38;5;231m scheduling_env.assignments.[38;5;81mget_mut[38;5;231m() {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    [38;5;203mif[38;5;231m [38;5;203m*[38;5;231mwork_order_num [38;5;203m==[38;5;231m work_order_number {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        assignment.technician.[38;5;81mretain[38;5;231m(|([38;5;208mid[38;5;231m, _)| [38;5;203m![38;5;231mtechnician_ids.[38;5;81mcontains[38;5;231m(id));[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                        [38;5;203mbreak[38;5;231m;[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;149mOk[38;5;231m(())[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            WorkOrderCommand::UpdateAssignment { work_order_number, activity_number, old_technicians, new_technicians } [38;5;203m=>[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;242m// Execute unassign then assign[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                self.[38;5;81mexecute_command[38;5;231m(WorkOrderCommand::UnassignTechnicians {[0m[7;35m [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    work_order_number,[0m[7;35m [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    activity_number,[0m[7;35m [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    technician_ids: old_technicians[0m[7;35m [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                })[38;5;203m?[38;5;231m;[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                self.[38;5;81mexecute_command[38;5;231m(WorkOrderCommand::AssignTechnicians {[0m[7;35m [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    work_order_number,[0m[7;35m [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    activity_number,[0m[7;35m [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                    technician_ids: new_technicians[0m[7;35m [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                })[38;5;203m?[38;5;231m;[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;149mOk[38;5;231m(())[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m}[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[38;5;231m#[debug_handler][0m
+[38;5;231m#[utoipa::path([0m
+[38;5;231m    get,[0m
+
+[34m───────────────────────────────────────────[0m[34m┐[0m
+[34m•[0m [34m383[0m:[38;5;231m [38;5;203mpub[38;5;231m async [38;5;81mfn[38;5;231m [38;5;149msupervisor_main_table[38;5;231m( [0m[34m│[0m
+[34m───────────────────────────────────────────[0m[34m┘[0m
+[38;5;231m}[0m
+
+[38;5;242m// TODO [ ] - assert that number is equal to the number of assignments.[0m
+[48;5;52m#[derive(Serialize, Deserialize, ToSchema)][0m[48;5;52m[0K[0m
+[48;5;52mstruct WorkOrderActivityToTechnicianDto[0m[48;5;52m[0K[0m
+[48;5;22;38;5;231m#[derive(Serialize, Deserialize, ToSchema[48;5;28m, Debug[48;5;22m)][0m[48;5;22m[0K[0m
+[48;5;28;38;5;203mpub[38;5;231m [48;5;22;38;5;81mstruct[38;5;231m [38;5;149mWorkOrderActivityToTechnicianDto[0m[48;5;22m[0K[0m
+[38;5;231m{[0m
+[38;5;231m    #[schema(example [38;5;203m=[38;5;231m [38;5;186m"2100001234"[38;5;231m)][0m
+[38;5;231m    work_order_number: WorkOrderNumberDto,[0m
+
+[34m───────────────────────────────────────────[0m[34m┐[0m
+[34m•[0m [34m419[0m:[38;5;231m [38;5;203mpub[38;5;231m async [38;5;81mfn[38;5;231m [38;5;149massign_to_technicians[38;5;231m( [0m[34m│[0m
+[34m───────────────────────────────────────────[0m[34m┘[0m
+[38;5;231m    Json(payload): Json<WorkOrderActivityToTechnicianDto>,[0m
+[38;5;231m) -> [38;5;149mResult[38;5;231m<Json<SupervisorMainTableDto>, AppError>[0m
+[38;5;231m{[0m
+[48;5;22;38;5;231m    println!([38;5;186m"DEBUG: assign_to_technicians called with payload: [38;5;141m{:?}[38;5;186m"[38;5;231m, payload);[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    tracing::info[38;5;203m![38;5;231m([38;5;186m"assign_to_technicians called with payload: {:?}"[38;5;231m, payload);[0m[48;5;22m[0K[0m
+[7;35m    [0m[48;5;22m[0K[0m
+[38;5;231m    [38;5;81mlet[38;5;231m asset [38;5;203m=[38;5;231m Asset::try_from(asset)[0m
+[38;5;231m        .[38;5;81mmap_err[38;5;231m(|[38;5;208me[38;5;231m| AppError::Anyhow(e.[38;5;81mto_string[38;5;231m() [38;5;203m+[38;5;231m [38;5;186m"Could not parse the Asset parameter"[38;5;231m))[38;5;203m?[38;5;231m;[0m
+[48;5;52m    let [48;5;124mschedulingenvironment_lock[48;5;52m = [48;5;124m&[48;5;52morchestrator.scheduling_environment.lock()[48;5;124m.unwrap();[0m[48;5;52m[0K[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;242m// Create the work order number and activity from the payload[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m work_order_number [38;5;203m=[38;5;231m WorkOrderNumber(payload.work_order_number.[38;5;141m0[38;5;231m);[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m activity_number [38;5;203m=[38;5;231m payload.activity_number;[0m[48;5;22m[0K[0m
+[7;35m    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;242m// First, get available technicians from the worker environment[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m [48;5;28mscheduling_env_lock[48;5;22m [38;5;203m=[38;5;231m orchestrator.scheduling_environment.[38;5;81mlock[38;5;231m()[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        .[38;5;81mmap_err[38;5;231m(|[38;5;208me[38;5;231m| AppError::Anyhow(format!([38;5;186m"Failed to acquire scheduling environment lock: [38;5;141m{}[38;5;186m"[38;5;231m, e)))[38;5;203m?[38;5;231m;[0m[48;5;22m[0K[0m
+[7;35m    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m worker_env [38;5;203m=[38;5;231m [38;5;203m&[38;5;231mscheduling_env_lock.worker_environment;[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m available_technicians: [38;5;149mVec[38;5;231m<Id> [38;5;203m=[38;5;231m worker_env[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        .actor_specification[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        .[38;5;81mget[38;5;231m([38;5;203m&[38;5;231masset)[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        .[38;5;81mmap[38;5;231m(|[38;5;208mspecs[38;5;231m| specs.operational.[38;5;81miter[38;5;231m().[38;5;81mmap[38;5;231m(|[38;5;208mop[38;5;231m| op.id.[38;5;81mclone[38;5;231m()).[38;5;81mcollect[38;5;231m())[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        .[38;5;81munwrap_or_default[38;5;231m();[0m[48;5;22m[0K[0m
+[7;35m    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    println!([38;5;186m"DEBUG: Available technicians: [38;5;141m{:?}[38;5;186m"[38;5;231m, available_technicians);[0m[48;5;22m[0K[0m
+[7;35m    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;242m// Validate and convert technician string IDs to actual Id types[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m [38;5;203mmut[38;5;231m technician_ids: [38;5;149mVec[38;5;231m<Id> [38;5;203m=[38;5;231m [38;5;149mVec[38;5;231m::new();[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;203mfor[38;5;231m tech_str [38;5;203min[38;5;231m payload.technicians {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        [38;5;242m// Find matching technician from available technicians[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        [38;5;203mif[38;5;231m [38;5;81mlet[38;5;231m [38;5;149mSome[38;5;231m(valid_tech) [38;5;203m=[38;5;231m available_technicians.[38;5;81miter[38;5;231m().[38;5;81mfind[38;5;231m(|[38;5;208mt[38;5;231m| t.[38;5;141m0[38;5;231m [38;5;203m==[38;5;231m tech_str) {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            technician_ids.[38;5;81mpush[38;5;231m(valid_tech.[38;5;81mclone[38;5;231m());[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            println!([38;5;186m"DEBUG: Valid technician found: [38;5;141m{:?}[38;5;186m"[38;5;231m, valid_tech);[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        } [38;5;203melse[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            [38;5;203mreturn[38;5;231m [38;5;149mErr[38;5;231m(AppError::Anyhow(format!([0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                [38;5;186m"Technician '[38;5;141m{}[38;5;186m' not found in worker environment. Available technicians: [38;5;141m{:?}[38;5;186m"[38;5;231m,[0m[7;35m [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                tech_str,[0m[7;35m [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m                available_technicians.[38;5;81miter[38;5;231m().[38;5;81mmap[38;5;231m(|[38;5;208mt[38;5;231m| [38;5;203m&[38;5;231mt.[38;5;141m0[38;5;231m).collect::<[38;5;149mVec[38;5;231m<[38;5;203m_[38;5;231m>>()[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            )));[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    }[0m[48;5;22m[0K[0m
+[7;35m    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;242m// Release the lock before proceeding[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mdrop[38;5;231m(scheduling_env_lock);[0m[48;5;22m[0K[0m
+[7;35m    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;242m// Create the assignment command[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m command [38;5;203m=[38;5;231m WorkOrderCommand::AssignTechnicians {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        work_order_number,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        activity_number,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        technician_ids,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    };[0m[48;5;22m[0K[0m
+[7;35m    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;242m// Create state machine for this work order activity[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m [38;5;203mmut[38;5;231m state_machine [38;5;203m=[38;5;231m WorkOrderStateMachine::new((work_order_number, activity_number));[0m[48;5;22m[0K[0m
+[7;35m    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;242m// Create scheduling context[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m context [38;5;203m=[38;5;231m SchedulingContext {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        orchestrator: [38;5;203m&[38;5;231morchestrator,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        asset: [38;5;203m&[38;5;231masset,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    };[0m[48;5;22m[0K[0m
+[7;35m    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;242m// Transition the state machine and get commands to execute[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m commands [38;5;203m=[38;5;231m state_machine.[38;5;81mtransition[38;5;231m([38;5;203m&[38;5;231mcommand)[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        .[38;5;81mmap_err[38;5;231m(|[38;5;208me[38;5;231m| AppError::Anyhow(format!([38;5;186m"State transition failed: [38;5;141m{}[38;5;186m"[38;5;231m, e)))[38;5;203m?[38;5;231m;[0m[48;5;22m[0K[0m
+[7;35m    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;242m// Execute the commands[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;203mfor[38;5;231m cmd [38;5;203min[38;5;231m commands {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        context.[38;5;81mexecute_command[38;5;231m(cmd)[38;5;203m?[38;5;231m;[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    }[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;242m// Now get the updated state and return the main table[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m schedulingenvironment_lock [38;5;203m=[38;5;231m [38;5;203m&[38;5;231morchestrator.scheduling_environment.[38;5;81mlock[38;5;231m()[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        .[38;5;81mmap_err[38;5;231m(|[38;5;208me[38;5;231m| AppError::Anyhow(format!([38;5;186m"Failed to acquire scheduling environment lock: [38;5;141m{}[38;5;186m"[38;5;231m, e)))[38;5;203m?[38;5;231m;[0m[48;5;22m[0K[0m
+[38;5;231m    [38;5;81mlet[38;5;231m work_orders [38;5;203m=[38;5;231m [38;5;203m&[38;5;231mschedulingenvironment_lock.work_orders;[0m
+[38;5;231m    [38;5;81mlet[38;5;231m time_environment [38;5;203m=[38;5;231m [38;5;203m&[38;5;231mschedulingenvironment_lock.time_environment;[0m
+[38;5;231m    [38;5;81mlet[38;5;231m system_solution [38;5;203m=[38;5;231m [38;5;203m&[38;5;231m([38;5;203m**[38;5;231morchestrator[0m
+
+[34m───────────────────────────────────────────[0m[34m┐[0m
+[34m•[0m [34m508[0m:[38;5;231m [38;5;203mpub[38;5;231m async [38;5;81mfn[38;5;231m [38;5;149massign_to_technicians[38;5;231m( [0m[34m│[0m
+[34m───────────────────────────────────────────[0m[34m┘[0m
+[38;5;231m            .[38;5;81mmap_err[38;5;231m(|[38;5;208me[38;5;231m| {[0m
+[38;5;231m                AppError::Anyhow(e.[38;5;81mto_string[38;5;231m() [38;5;203m+[38;5;231m [38;5;186m"could not create the SupervisorMainTableDto"[38;5;231m)[0m
+[38;5;231m            })[38;5;203m?[38;5;231m;[0m
+[48;5;52m    // let lock = orchestrator.actor_registries.lock().unwrap();[0m[48;5;52m[0K[0m
+
+[38;5;231m    [38;5;149mOk[38;5;231m(Json(supervisor_main_table_dto))[0m
+[38;5;231m}[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;231m#[debug_handler][0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m#[utoipa::path([0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    get,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    path [38;5;203m=[38;5;231m [38;5;186m"/assignments/{asset}"[38;5;231m,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    tag [38;5;203m=[38;5;231m [38;5;186m"Supervisor"[38;5;231m,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    params ([0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        ([38;5;186m"asset"[38;5;231m [38;5;203m=[38;5;231m AssetNames, Path),[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    ),[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    responses([0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        (status [38;5;203m=[38;5;231m 200, description [38;5;203m=[38;5;231m [38;5;186m"Get all raw assignments data"[38;5;231m),[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        (status [38;5;203m=[38;5;231m 404, body [38;5;203m=[38;5;231m AppError),[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        (status [38;5;203m=[38;5;231m 500, body [38;5;203m=[38;5;231m AppError),[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    )[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m)][0m[48;5;22m[0K[0m
+[48;5;22;38;5;203mpub[38;5;231m async [38;5;81mfn[38;5;231m [38;5;149mget_raw_assignments[38;5;231m([0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    State([38;5;208morchestrator[38;5;231m): State<Arc<Orchestrator<TotalSystemSolution>>>,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    Path([38;5;208masset[38;5;231m): Path<AssetNames>,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m) -> [38;5;149mResult[38;5;231m<Json<serde_json::Value>, AppError>[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m{[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m _asset [38;5;203m=[38;5;231m Asset::try_from(asset)[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        .[38;5;81mmap_err[38;5;231m(|[38;5;208me[38;5;231m| AppError::Anyhow(e.[38;5;81mto_string[38;5;231m() [38;5;203m+[38;5;231m [38;5;186m"Could not parse the Asset parameter"[38;5;231m))[38;5;203m?[38;5;231m;[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m scheduling_env_lock [38;5;203m=[38;5;231m orchestrator.scheduling_environment.[38;5;81mlock[38;5;231m()[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        .[38;5;81mmap_err[38;5;231m(|[38;5;208me[38;5;231m| AppError::Anyhow(format!([38;5;186m"Failed to acquire scheduling environment lock: [38;5;141m{}[38;5;186m"[38;5;231m, e)))[38;5;203m?[38;5;231m;[0m[48;5;22m[0K[0m
+[7;35m    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;242m// Convert assignments to JSON for inspection[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m assignments [38;5;203m=[38;5;231m [38;5;203m&[38;5;231mscheduling_env_lock.assignments;[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    println!([38;5;186m"DEBUG: get_raw_assignments called. Assignment count: [38;5;141m{}[38;5;186m"[38;5;231m, assignments.[38;5;81mget[38;5;231m().[38;5;81mlen[38;5;231m());[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;81mlet[38;5;231m json_value [38;5;203m=[38;5;231m serde_json::to_value(assignments)[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        .[38;5;81mmap_err[38;5;231m(|[38;5;208me[38;5;231m| AppError::Anyhow(format!([38;5;186m"Failed to serialize assignments: [38;5;141m{}[38;5;186m"[38;5;231m, e)))[38;5;203m?[38;5;231m;[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;149mOk[38;5;231m(Json(json_value))[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m}[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[38;5;242m// _ISSUE_ #000 means unassigned[0m
+[38;5;242m// TODO [ ] ISSUE #000[0m
+[38;5;242m// You should craft the needed requests here. You should not be working on the[0m
+
+[34mΔ crates/ordinator-api-server/src/routes/api/v1/supervisor.rs[0m
+[34m─────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+[34m──────────────────────────────────────[0m[34m┐[0m
+[34m•[0m [34m17[0m:[38;5;231m [38;5;203mpub[38;5;231m async [38;5;81mfn[38;5;231m [38;5;149msupervisor_routes[38;5;231m( [0m[34m│[0m
+[34m──────────────────────────────────────[0m[34m┘[0m
+[38;5;231m        .[38;5;81mroutes[38;5;231m(routes!([0m
+[38;5;231m            [38;5;203mcrate[38;5;231m::handlers::supervisor_handlers::supervisor_main_table[0m
+[38;5;231m        ))[0m
+[48;5;22;38;5;231m        .[38;5;81mroutes[38;5;231m(routes!([0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            [38;5;203mcrate[38;5;231m::handlers::supervisor_handlers::assign_to_technicians[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        ))[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        .[38;5;81mroutes[38;5;231m(routes!([0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m            [38;5;203mcrate[38;5;231m::handlers::supervisor_handlers::get_raw_assignments[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        ))[0m[48;5;22m[0K[0m
+[38;5;231m        [38;5;242m// .route("/{asset}/{supervisor_id}", get(status))[0m
+[38;5;231m        .[38;5;81mwith_state[38;5;231m(state)[0m
+
+
+[34mΔ crates/ordinator-scheduling-environment/src/lib.rs[0m
+[34m─────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+
+[34m───────────────────────────────────────[0m[34m┐[0m
+[34m•[0m [34m34[0m:[38;5;231m [38;5;203mpub[38;5;231m [38;5;81mstruct[38;5;231m [38;5;149mSchedulingEnvironment[38;5;231m [0m[34m│[0m
+[34m───────────────────────────────────────[0m[34m┘[0m
+[38;5;231m    [38;5;203mpub[38;5;231m worker_environment: ActorEnvironment,[0m
+[38;5;231m    [38;5;203mpub[38;5;231m time_environment: TimeEnvironment,[0m
+
+[48;5;22;38;5;231m    #[serde(default)][0m[48;5;22m[0K[0m
+[38;5;231m    [38;5;203mpub[38;5;231m assignments: SavedAssignment,[0m
+[38;5;231m    [38;5;242m// material[0m
+[38;5;231m}[0m
+
+[48;5;52m#[derive(Deserialize, Serialize, Debug)][0m[48;5;52m[0K[0m
+[48;5;52mpub struct SavedAssignment(Vec<(WorkOrderNumber, Option<ActivityNumber>, Assignment)>);[0m[48;5;52m[0K[0m
+[48;5;22;38;5;231m#[derive(Deserialize, Serialize, Debug[48;5;28m, Default[48;5;22m)][0m[48;5;22m[0K[0m
+[48;5;22;38;5;203mpub[38;5;231m [38;5;81mstruct[38;5;231m [38;5;149mSavedAssignment[38;5;231m([48;5;28mpub [48;5;22;38;5;149mVec[38;5;231m<(WorkOrderNumber, [38;5;149mOption[38;5;231m<ActivityNumber>, Assignment)[38;5;203m>[38;5;231m);[0m[48;5;22m[0K[0m
+[48;5;22m[0K[0m
+[48;5;22;38;5;81mimpl[38;5;231m [38;5;149mSavedAssignment[38;5;231m {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;203mpub[38;5;231m [38;5;81mfn[38;5;231m [38;5;149mget_mut[38;5;231m([38;5;203m&mut[38;5;231m [38;5;208mself[38;5;231m) -> [38;5;203m&mut[38;5;231m [38;5;149mVec[38;5;231m<(WorkOrderNumber, [38;5;149mOption[38;5;231m<ActivityNumber>, Assignment)> {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        [38;5;203m&mut[38;5;231m self.[38;5;141m0[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    }[0m[48;5;22m[0K[0m
+[7;35m    [0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [38;5;203mpub[38;5;231m [38;5;81mfn[38;5;231m [38;5;149mget[38;5;231m([38;5;203m&[38;5;208mself[38;5;231m) -> [38;5;203m&[38;5;149mVec[38;5;231m<(WorkOrderNumber, [38;5;149mOption[38;5;231m<ActivityNumber>, Assignment)> {[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m        [38;5;203m&[38;5;231mself.[38;5;141m0[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    }[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m}[0m[48;5;22m[0K[0m
+
+[38;5;242m// FORGET:[0m
+[38;5;242m// * Exclude[0m
+
+[34m───────────────────────────────────────────────────────────────────────────────────────[0m[34m┐[0m
+[34m•[0m [34m60[0m:[38;5;231m [38;5;203mpub[38;5;231m [38;5;81mstruct[38;5;231m [38;5;149mSavedAssignment[38;5;231m([38;5;149mVec[38;5;231m<(WorkOrderNumber, [38;5;149mOption[38;5;231m<ActivityNumber>, Assignm [0m[34m│[0m
+[34m───────────────────────────────────────────────────────────────────────────────────────[0m[34m┘[0m
+[38;5;231m#[derive(Deserialize, Serialize, Debug)][0m
+[38;5;203mpub[38;5;231m [38;5;81mstruct[38;5;231m [38;5;149mAssignment[0m
+[38;5;231m{[0m
+[48;5;52m    period: Option<Period>,[0m[48;5;52m[0K[0m
+[48;5;52m    day: Option<Day>,[0m[48;5;52m[0K[0m
+[48;5;52m    technician: HashSet<(Id, DateTime<Utc>)>,[0m[48;5;52m[0K[0m
+[48;5;22;38;5;231m    [48;5;28;38;5;203mpub[38;5;231m [48;5;22mperiod: [38;5;149mOption[38;5;231m<Period>,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [48;5;28;38;5;203mpub[38;5;231m [48;5;22mday: [38;5;149mOption[38;5;231m<Day>,[0m[48;5;22m[0K[0m
+[48;5;22;38;5;231m    [48;5;28;38;5;203mpub[38;5;231m [48;5;22mtechnician: HashSet<(Id, DateTime<Utc>)>,[0m[48;5;22m[0K[0m
+[38;5;231m}[0m
+
+[38;5;81mimpl[38;5;231m [38;5;149mAssignment[0m

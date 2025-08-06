@@ -11,6 +11,7 @@ use std::sync::Mutex;
 
 use anyhow::Result;
 use chrono::DateTime;
+use chrono::NaiveDate;
 use chrono::Utc;
 use serde::Deserialize;
 use serde::Serialize;
@@ -18,6 +19,7 @@ use strum_macros::EnumIter;
 use time_environment::TimeEnvironmentBuilder;
 use time_environment::day::Day;
 use time_environment::period::Period;
+use work_order::ForcedWorkOrder;
 use work_order::WorkOrderNumber;
 use work_order::WorkOrders;
 use work_order::WorkOrdersBuilder;
@@ -38,8 +40,68 @@ pub struct SchedulingEnvironment
     // material
 }
 
+pub enum TimeType
+{
+    Period(Period),
+    Day(NaiveDate),
+    SpecificTime(DateTime<Utc>),
+}
+
 #[derive(Deserialize, Serialize, Debug)]
 pub struct SavedAssignment(Vec<(WorkOrderNumber, Option<ActivityNumber>, Assignment)>);
+
+impl SavedAssignment
+{
+    // Why:
+    // To make it possible to assign a [`WorkOrderActivity`] to a single technician.
+    //
+    //
+    pub fn make_assignment_for_technician(
+        &mut self,
+        work_order_number: WorkOrderNumber,
+        work_order: &ForcedWorkOrder,
+        activity_number: &ActivityNumber,
+        id: &[Id],
+    ) -> Result<()>
+    {
+        // TODO [ ] - you have to create the correct structure to hold the data.
+        //
+        // Yes this is the way! You are now using the `WorkOrder` has a mechanism to
+        // overwrite the what ever is in the `SavedAssignments`.
+        let assignment = match work_order {
+            ForcedWorkOrder::Period(period) => {
+                let technicians = id.iter().map(|e| (e.clone(), None)).collect::<HashSet<_>>();
+                // Should we make an assignment for each of the technicians? Yes.
+                Assignment::new(Some(period.0.clone()), None, technicians)
+            }
+            ForcedWorkOrder::Days(tactical_force_type) => match tactical_force_type {
+                work_order::TacticalForceType::OnlyStartDay(day) => {
+                    let technicians = id.iter().map(|e| (e.clone(), None)).collect::<HashSet<_>>();
+                    Assignment::new(None, Some(day.clone()), technicians)
+                }
+                work_order::TacticalForceType::IndividualActivities(_vec, _vec1) => todo!(),
+            },
+            ForcedWorkOrder::Technician(technician_include, _technician_exclude) => {
+                let date_time_option = technician_include.interval.as_ref().map(|day| day.0.date);
+                let technicians = id
+                    .iter()
+                    // WARN [ ] modifying Technicians in almost impossible as ID is FAT.
+                    .map(|e| (e.clone(), date_time_option))
+                    .collect::<HashSet<_>>();
+                Assignment::new(None, None, technicians)
+            }
+            ForcedWorkOrder::FreeWorkOrder => {
+                let technicians = id.iter().map(|e| (e.clone(), None)).collect::<HashSet<_>>();
+                Assignment::new(None, None, technicians)
+            }
+        };
+
+        let assignment = (work_order_number, Some(*activity_number), assignment);
+        self.0.push(assignment);
+
+        Ok(())
+    }
+}
 
 // FORGET:
 // * Exclude
@@ -51,7 +113,7 @@ pub struct Assignment
 {
     period: Option<Period>,
     day: Option<Day>,
-    technician: HashSet<(Id, DateTime<Utc>)>,
+    technician: HashSet<(Id, Option<DateTime<Utc>>)>,
 }
 
 impl Assignment
@@ -59,7 +121,7 @@ impl Assignment
     fn new(
         period: Option<Period>,
         day: Option<Day>,
-        technician: HashSet<(Id, DateTime<Utc>)>,
+        technician: HashSet<(Id, Option<DateTime<Utc>>)>,
     ) -> Self
     {
         Self {

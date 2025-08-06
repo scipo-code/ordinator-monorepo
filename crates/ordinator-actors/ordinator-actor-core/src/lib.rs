@@ -97,7 +97,7 @@ where
     // from there.
     //
     // One thing is for sure. Now is not the time to fix this.
-    pub fn run(&mut self) -> ()
+    pub fn run(&mut self)
     {
         let mut schedule_iteration = ScheduleIteration::default();
 

@@ -464,8 +464,8 @@ impl TacticalForceType
 #[derive(Debug)]
 pub struct TechnicianInclude
 {
-    id: Id,
-    interval: Option<(Day, Day)>,
+    pub id: Id,
+    pub interval: Option<(Day, Day)>,
 }
 
 #[allow(dead_code)]

@@ -194,13 +194,13 @@ pub async fn supervisor_main_table(
 
 // TODO [ ] - assert that number is equal to the number of assignments.
 #[derive(Serialize, Deserialize, ToSchema)]
-struct WorkOrderActivityToTechnicianDto
+pub struct WorkOrderActivityToTechnicianDto
 {
     #[schema(example = "2100001234")]
     work_order_number: WorkOrderNumberDto,
     #[schema(example = "20")]
     activity_number: u64,
-    #[schema(example = "l1234567")]
+    #[schema(example = "[l1113333, l1112222]")]
     technicians: Vec<String>,
 }
 #[debug_handler]
@@ -208,6 +208,7 @@ struct WorkOrderActivityToTechnicianDto
     post,
     path = "/assign_to_technicians/{asset}/{supervisor_id}",
     tag = "Supervisor",
+    description = "This endpoint is for assigning a technicians to a work order activity.",
     params (
         ("asset" = AssetNames, Path),
         ("supervisor_id" = String, Path),
@@ -227,33 +228,61 @@ pub async fn assign_to_technicians(
     // The `_supervisor_id` should be used in the future when we have additional
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
     Json(payload): Json<WorkOrderActivityToTechnicianDto>,
-) -> Result<Json<SupervisorMainTableDto>, AppError>
+) -> Result<(), AppError>
 {
-    let asset = Asset::try_from(asset)
-        .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
-    let schedulingenvironment_lock = &orchestrator.scheduling_environment.lock().unwrap();
-    let work_orders = &schedulingenvironment_lock.work_orders;
-    let time_environment = &schedulingenvironment_lock.time_environment;
-    let system_solution = &(**orchestrator
-        .system_solutions
+    let WorkOrderActivityToTechnicianDto {
+        work_order_number,
+        activity_number,
+        technicians,
+    } = payload;
+
+    let mut map_err = orchestrator
+        .scheduling_environment
         .lock()
-        .unwrap()
+        .map_err(|e| AppError::Anyhow(e.to_string()))?;
+
+    let days = &map_err.time_environment.days;
+    let periods = &map_err.time_environment.periods;
+    let asset: Asset = asset
+        .try_into()
+        .map_err(|_| AppError::Anyhow("Could not convert into error".to_string()))?;
+
+    let actor_specification = &map_err
+        .worker_environment
+        .actor_specification
         .get(&asset)
-        .with_context(|| format!("Asset: {asset} is not present in the SystemSolution"))
-        .map_err(|e| AppError::Anyhow(e.to_string() + "could not extract the SystemSolution"))?
-        .load());
+        .ok_or(AppError::Anyhow(
+            "ActorSpecification not found for Asset".to_string(),
+        ))?;
 
-    let supervisor_main_table_dto =
-        SupervisorMainTableDto::try_from((work_orders, system_solution, time_environment))
-            .with_context(|| {
-                format!("SupervisorMainTable could not be constructed for {_supervisor_id}")
-            })
-            .map_err(|e| {
-                AppError::Anyhow(e.to_string() + "could not create the SupervisorMainTableDto")
-            })?;
-    // let lock = orchestrator.actor_registries.lock().unwrap();
+    let technician = actor_specification
+        .operational
+        .iter()
+        .filter(|e| technicians.contains(&e.id.0))
+        .map(|e| e.id.clone())
+        .collect::<Vec<_>>();
 
-    Ok(Json(supervisor_main_table_dto))
+    let material_to_period = &actor_specification.material_to_period;
+
+    let forced_work_order = map_err
+        .work_orders
+        .inner
+        .get(&work_order_number.clone().into())
+        .ok_or(AppError::Anyhow("WorkOrder not found".to_string()))?
+        .forced_work_order(periods, days, material_to_period)
+        .map_err(|e| AppError::Anyhow(e.to_string()))?;
+
+    map_err
+        .assignments
+        .make_assignment_for_technician(
+            work_order_number.into(),
+            &forced_work_order,
+            &activity_number,
+            &technician,
+        )
+        .map_err(|e| AppError::Anyhow(e.to_string()))?;
+
+    Ok(())
 }
 // _ISSUE_ #000 means unassigned
 // TODO [ ] ISSUE #000
