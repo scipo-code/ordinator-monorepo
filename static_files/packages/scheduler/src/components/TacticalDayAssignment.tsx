@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PeriodDto } from "../../../../../crates/ordinator-contracts/bindings/PeriodDto";
+import { PeriodDto } from '@scipo-code/shared';
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import { Check, ChevronsUpDown } from "lucide-react";

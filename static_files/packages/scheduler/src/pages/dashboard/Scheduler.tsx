@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTableColDefs } from './scheduler/ColDef';
 import { parseISO, format } from 'date-fns';
 import { fetchWorkOrders } from '@/api/workorders';
-import fetchSystemClock from '@/api/clock';
+import { fetchSystemClock } from '@scipo-code/shared';
 
 
 // import { agGridThemeLight } from "./theme";

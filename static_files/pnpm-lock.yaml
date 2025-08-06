@@ -162,6 +162,9 @@ importers:
 
   packages/shared:
     dependencies:
+      ag-grid-community:
+        specifier: '>=30.0.0'
+        version: 33.3.2
       react:
         specifier: '>=18.0.0'
         version: 19.1.1

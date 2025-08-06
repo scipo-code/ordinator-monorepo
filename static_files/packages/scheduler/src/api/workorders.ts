@@ -1,5 +1,5 @@
-import type { PeriodDto } from "../../../../crates/ordinator-contracts/bindings/PeriodDto.ts";
-import type { WorkOrderInfoWithSchedulingDto } from "../../../../crates/ordinator-contracts/bindings/WorkOrderInfoWithSchedulingDto.ts";
+import { PeriodDto } from "@scipo-code/shared";
+import type { WorkOrderInfoWithSchedulingDto } from "@scipo-code/shared";
 import type { SchedulingData } from "../pages/dashboard/scheduler/ColDef.tsx";
 
 export async function fetchWorkOrders(

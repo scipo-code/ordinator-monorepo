@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { PeriodDto } from "../../../../crates/ordinator-contracts/bindings/PeriodDto.ts";
+import { PeriodDto } from "@scipo-code/shared";
 import { assignWorkordertoPeriod } from "../api/workorders.ts";
 
 export function useAssignWorkorderToPeriod() {

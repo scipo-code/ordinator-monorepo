@@ -7,9 +7,9 @@ import { DropdownMenu,
 } from '@/components/ui/dropdown-menu.tsx';
 import { MoreHorizontal } from 'lucide-react';
 
-import { SingleRowDto } from "../../../../../../crates/ordinator-contracts/bindings/SingleRowDto.ts";
+import { SingleRowDto } from "@scipo-code/shared";
 import { useNavigate } from 'react-router-dom';
-import { PeriodStatusICellRenderer } from '@/components/ui/period_status_badge.tsx';
+import { PeriodStatusICellRenderer } from "@scipo-code/shared";
 export type SchedulingData = SingleRowDto & {action: string | null};
 
 

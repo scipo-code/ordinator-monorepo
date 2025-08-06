@@ -1,6 +1,6 @@
 type SystemClock = string;
 
-export default async function fetchSystemClock(): Promise<SystemClock> {
+export async function fetchSystemClock(): Promise<SystemClock> {
   const res = await fetch("/api/v1/system_clock");
 
   if (!res.ok) {

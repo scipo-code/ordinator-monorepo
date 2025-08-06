@@ -2,12 +2,12 @@ import { assignWorkordertoPeriod, fetchWorkorderInfo } from "@/api/workorders";
 import { useParams } from "react-router-dom"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { WorkOrderInfoWithSchedulingDto } from "../../../../../crates/ordinator-contracts/bindings/WorkOrderInfoWithSchedulingDto";
+import { WorkOrderInfoWithSchedulingDto } from "@scipo-code/shared";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PeriodStatusBadge } from "@/components/ui/period_status_badge";
-import fetchPeriods from "@/api/periods";
-import { PeriodDto } from "../../../../../crates/ordinator-contracts/bindings/PeriodDto";
+import { PeriodStatusBadge } from "@scipo-code/shared";
+import { fetchPeriods } from "@scipo-code/shared";
+import { PeriodDto } from "@scipo-code/shared";
 import { PeriodAssignment } from "@/components/PeriodAssignment";
 import { useCallback } from "react";
 import { TacticalDayAssignment } from "@/components/TacticalDayAssignment";

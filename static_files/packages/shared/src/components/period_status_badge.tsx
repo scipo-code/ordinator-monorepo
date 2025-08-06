@@ -1,5 +1,6 @@
+import React from 'react';
 import { ICellRendererParams } from 'ag-grid-community';
-import { PeriodStatus } from '../../../../../bindings/PeriodStatus';
+import { PeriodStatus } from '../types/PeriodStatus';
 
 
 const PeriodStatusColors: Record<PeriodStatus, {background: string, textColor: string}> = {

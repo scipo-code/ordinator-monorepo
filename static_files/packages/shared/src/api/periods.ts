@@ -1,6 +1,6 @@
-import type { PeriodDto } from "../../../../crates/ordinator-contracts/bindings/PeriodDto.ts";
+import { PeriodDto } from "../types/PeriodDto.ts";
 
-export default async function fetchPeriods(): Promise<PeriodDto[]> {
+export async function fetchPeriods(): Promise<PeriodDto[]> {
   const res = await fetch(
     "/api/v1/periods",
   );
