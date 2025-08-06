@@ -1,6 +1,10 @@
 run:
     cargo run --release --bin ordinator-api-server 2> temp_output_from_program.log
 
+
+export-ts-bindings:
+    cargo +nightly test export_bindings
+    
 build-ordinator-frontends:
     mkdir -p dist/static_files/scheduler
     mkdir -p dist/static_files/supervisor
