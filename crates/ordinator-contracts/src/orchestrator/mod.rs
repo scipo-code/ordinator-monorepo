@@ -26,8 +26,7 @@ use crate::AssetNames;
 
 #[derive(Serialize)]
 #[allow(clippy::large_enum_variant)]
-pub enum OrchestratorResponse
-{
+pub enum OrchestratorResponse {
     WorkOrderStatus(WorkOrdersStatus),
     RequestStatus(String),
     Periods(Vec<Period>),
@@ -39,16 +38,14 @@ pub enum OrchestratorResponse
 
 #[derive(Serialize)]
 #[allow(clippy::large_enum_variant)]
-pub enum WorkOrdersStatus
-{
+pub enum WorkOrdersStatus {
     Single(WorkOrderResponse),
     SingleSolution(StrategicApiSolution),
     Multiple(HashMap<WorkOrderNumber, WorkOrderResponse>),
 }
 
 #[derive(Serialize)]
-pub struct WorkOrderResponse
-{
+pub struct WorkOrderResponse {
     earliest_period: Period,
     work_order_info: WorkOrderInfo,
     vendor: bool,
@@ -60,8 +57,7 @@ pub struct WorkOrderResponse
 }
 
 #[derive(Serialize)]
-pub struct ApiSolution
-{
+pub struct ApiSolution {
     pub strategic: String,   //ApiStrategic,
     pub tactical: String,    //ApiTactical,
     pub supervisor: String,  //HashMap<Id, ApiSupervisor>,
@@ -69,8 +65,7 @@ pub struct ApiSolution
 }
 
 #[derive(Serialize)]
-pub struct StrategicApiSolution
-{
+pub struct StrategicApiSolution {
     pub solution: Option<Period>,
     pub locked_in_period: Option<Period>,
     pub excluded_from_period: HashSet<Period>,
@@ -78,29 +73,25 @@ pub struct StrategicApiSolution
 
 #[derive(Serialize)]
 #[allow(dead_code)]
-struct ApiStrategic
-{
+struct ApiStrategic {
     solution_data: String,
 }
 
 #[derive(Serialize)]
 #[allow(dead_code)]
-struct ApiTactical
-{
+struct ApiTactical {
     solution_data: String,
 }
 
 #[derive(Serialize)]
 #[allow(dead_code)]
-struct ApiSupervisor
-{
+struct ApiSupervisor {
     solution_data: String,
 }
 
 #[derive(Serialize)]
 #[allow(dead_code)]
-struct ApiOperational
-{
+struct ApiOperational {
     solution_data: String,
 }
 
@@ -111,23 +102,20 @@ struct ApiOperational
 // Yes
 
 #[derive(Serialize)]
-pub struct OptimizedWorkOrderResponse
-{
+pub struct OptimizedWorkOrderResponse {
     scheduled_period: Period,
     locked_in_period: Option<Period>,
     excluded_periods: HashSet<Period>,
     latest_period: Period,
 }
 
-impl OptimizedWorkOrderResponse
-{
+impl OptimizedWorkOrderResponse {
     pub fn new(
         scheduled_period: Period,
         locked_in_period: Option<Period>,
         excluded_periods: HashSet<Period>,
         latest_period: Period,
-    ) -> Self
-    {
+    ) -> Self {
         Self {
             scheduled_period,
             locked_in_period,
@@ -138,15 +126,12 @@ impl OptimizedWorkOrderResponse
 }
 
 #[derive(Clone, Debug)]
-pub struct OrchestratorMessage<T>
-{
+pub struct OrchestratorMessage<T> {
     pub message_from_orchestrator: T,
 }
 
-impl<T> OrchestratorMessage<T>
-{
-    pub fn new(message_from_orchestrator: T) -> Self
-    {
+impl<T> OrchestratorMessage<T> {
+    pub fn new(message_from_orchestrator: T) -> Self {
         Self {
             message_from_orchestrator,
         }
@@ -154,8 +139,7 @@ impl<T> OrchestratorMessage<T>
 }
 
 #[derive(TS)]
-#[ts(export)]
-pub struct AvailableAssets
-{
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+pub struct AvailableAssets {
     pub assets: Vec<AssetNames>,
 }

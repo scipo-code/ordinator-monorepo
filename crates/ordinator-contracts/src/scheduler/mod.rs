@@ -23,23 +23,20 @@ use crate::TotalSystemSolution;
 use crate::WorkOrderNumberDto;
 
 #[derive(Serialize, ToSchema, TS)]
-#[ts(export)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct SchedulerWorkOrderDto(pub Vec<SingleRowDto>);
 
 #[derive(Serialize, ToSchema, TS, Clone)]
-#[ts(export)]
-enum PeriodStatus
-{
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+enum PeriodStatus {
     Frozen,
     Draft,
     Active,
     NotScheduled,
 }
 
-impl PeriodStatus
-{
-    pub fn status_for(period: &Period, frozen_and_draft_periods: &[Period]) -> PeriodStatus
-    {
+impl PeriodStatus {
+    pub fn status_for(period: &Period, frozen_and_draft_periods: &[Period]) -> PeriodStatus {
         // NOTE: Is this also correct for other firms or is this Total Specific?
         match period {
             p if *p == frozen_and_draft_periods[0] => PeriodStatus::Frozen,
@@ -52,8 +49,8 @@ impl PeriodStatus
 // This should all be strings. You should reuse the logic from the other
 // component. I do not see what other aspect that we have.
 #[derive(Serialize, ToSchema, TS)]
-pub struct SingleRowDto
-{
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+pub struct SingleRowDto {
     suggested_scheduled_period: String,
     scheduled_start_date: String,
     period_status: PeriodStatus,
@@ -91,10 +88,8 @@ pub struct SingleRowDto
     room: String,
 }
 
-impl SingleRowDto
-{
-    pub fn get_suggested_period(&self) -> String
-    {
+impl SingleRowDto {
+    pub fn get_suggested_period(&self) -> String {
         self.suggested_scheduled_period.to_string()
     }
 }
@@ -114,8 +109,7 @@ impl
             MutexGuard<'_, SchedulingEnvironment>,
             arc_swap::Guard<Arc<TotalSystemSolution>>,
         ),
-    ) -> Result<Self>
-    {
+    ) -> Result<Self> {
         let mut all_rows: Vec<SingleRowDto> = Vec::new();
 
         let system_solution = value.2;
@@ -307,9 +301,8 @@ impl
 type ResourcesDto = String;
 
 #[derive(Serialize, ToSchema, TS)]
-#[ts(export)]
-pub struct WorkOrderSingleRowSimpleDto
-{
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+pub struct WorkOrderSingleRowSimpleDto {
     work_order_number: u64,
     main_work_center: ResourcesDto,
     operations: Vec<OperationDto>,
@@ -320,9 +313,8 @@ pub struct WorkOrderSingleRowSimpleDto
 }
 
 #[derive(Serialize, ToSchema, TS)]
-#[ts(export)]
-pub struct WorkOrderInfoWithSchedulingDto
-{
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+pub struct WorkOrderInfoWithSchedulingDto {
     asset: String,
     work_order_number: u64,
     main_work_center: ResourcesDto,
@@ -356,8 +348,7 @@ impl
             arc_swap::Guard<Arc<TotalSystemSolution>>,
             WorkOrderNumberDto,
         ),
-    ) -> Result<Self>
-    {
+    ) -> Result<Self> {
         let work_order_number_requested = WorkOrderNumber::from(value.3);
         let work_order = value.1.work_orders.inner.get(&work_order_number_requested);
 
@@ -459,8 +450,8 @@ impl
 }
 
 #[derive(Serialize, ToSchema, TS)]
-struct OperationDto
-{
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+struct OperationDto {
     activity: u64,
     work_remaining: f64,
 
@@ -471,10 +462,8 @@ struct OperationDto
     scheduled_start_date: Option<String>,
 }
 
-impl From<WorkOrder> for WorkOrderSingleRowSimpleDto
-{
-    fn from(value: WorkOrder) -> Self
-    {
+impl From<WorkOrder> for WorkOrderSingleRowSimpleDto {
+    fn from(value: WorkOrder) -> Self {
         Self {
             work_order_number: value.work_order_number.0,
             main_work_center: value.main_work_center.to_string(),
@@ -492,10 +481,8 @@ impl From<WorkOrder> for WorkOrderSingleRowSimpleDto
     }
 }
 
-impl From<Operation> for OperationDto
-{
-    fn from(value: Operation) -> Self
-    {
+impl From<Operation> for OperationDto {
+    fn from(value: Operation) -> Self {
         Self {
             activity: value.activity,
             work_remaining: value.operation_info.work_remaining.to_f64(),
@@ -512,10 +499,8 @@ impl From<Operation> for OperationDto
     }
 }
 
-impl OperationDto
-{
-    pub fn add_scheduled_start_date(mut self, date: String) -> Self
-    {
+impl OperationDto {
+    pub fn add_scheduled_start_date(mut self, date: String) -> Self {
         self.scheduled_start_date = Some(date);
         self
     }
