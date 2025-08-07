@@ -40,6 +40,7 @@ pub struct NaiveDateDto(pub String);
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct WorkOrderNumberDto(pub u64);
 
+
 #[derive(Debug, ToSchema, Serialize)]
 pub enum MaterialStatusDto
 {
