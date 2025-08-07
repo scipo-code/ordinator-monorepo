@@ -1,6 +1,7 @@
 {
   "name": "ordinator-frontend",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],
