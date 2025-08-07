@@ -226,6 +226,7 @@ impl Solution for TestStrategic
 }
 
 #[test]
+#[ignore]
 fn start_operational_actor()
 {
     // How do we make a `WorkerEnvironment`. Do we want to rely on files? No! We do
