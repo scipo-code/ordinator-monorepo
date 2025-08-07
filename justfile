@@ -1,11 +1,16 @@
 run:
     cargo run --release --bin ordinator-api-server 2> temp_output_from_program.log
 
+
+export-ts-bindings:
+    cargo +nightly test export_bindings
+    
 build-ordinator-frontends:
     mkdir -p dist/static_files/scheduler
     mkdir -p dist/static_files/supervisor
-    cd static_files/scheduler/ && npm install && npm run build && cp -r dist/ ../../dist/static_files/scheduler/
-    cd static_files/scheduler && npm install && npm run build && cp -r dist/ ../../dist/static_files/scheduler/
+    cd static_files/ && pnpm install && pnpm -r build
+    cp -r static_files/packages/scheduler/dist/* dist/static_files/scheduler/
+    cp -r static_files/packages/supervisor/dist/* dist/static_files/supervisor/
 
 build-ordinator-api-windows:
     cross build --target x86_64-pc-windows-gnu --release && cp target/x86_64-pc-windows-gnu/release/ordinator-api-server.exe ./dist/
