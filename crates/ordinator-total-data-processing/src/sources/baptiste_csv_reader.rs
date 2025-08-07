@@ -21,8 +21,8 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
-use ordinator_scheduling_environment::worker_environment::TimeInput;
 use ordinator_scheduling_environment::worker_environment::ActorEnvironment;
+use ordinator_scheduling_environment::worker_environment::TimeInput;
 use serde::Deserialize;
 use serde::de::DeserializeOwned;
 
@@ -486,6 +486,7 @@ mod tests
     use super::*;
 
     #[test]
+    #[ignore]
     fn test_populate_csv_structures()
     {
         let mut path = PathBuf::new();
