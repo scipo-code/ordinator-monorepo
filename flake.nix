@@ -49,6 +49,7 @@
             pkgs.linuxKernel.packages.linux_zen.perf
             pkgs.bugstalker
             pkgs.bfg-repo-cleaner
+            pkgs.pnpm # For building frontends
             pkgs.nushell
             pkgs.openssl_3
             pkgs.rustup

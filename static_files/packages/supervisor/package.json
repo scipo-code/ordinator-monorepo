@@ -1,0 +1,25 @@
+{
+  "name": "supervisor-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@scipo-code/shared": "workspace:*"
+  },
+  "devDependencies": {
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  },
+  "overrides": {
+    "react-is": "^19.0.0-rc-69d4b800-20241021"
+  }
+}

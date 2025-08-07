@@ -1,0 +1,20 @@
+{
+  "name": "@scipo-code/shared",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "dev": "tsc --build --watch"
+  },
+  "peerDependencies": {
+    "ag-grid-community": ">=33.0.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.1.8",
+    "tailwindcss-animate": "^1.0.7"
+  }
+}
