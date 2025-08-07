@@ -11,6 +11,7 @@ use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSoluti
 use ordinator_supervisor_actor::messages::responses::SupervisorResponseStatus;
 use ordinator_supervisor_actor::messages::SupervisorResponseMessage;
 use serde::Serialize;
+use ts_rs::TS;
 use utoipa::ToSchema;
 
 use crate::IdDto;
@@ -28,13 +29,15 @@ pub struct SupervisorResourcesDto
     assigned_activities: BTreeMap<IdDto, WorkOrderActivityDto>,
 }
 
-#[derive(ToSchema, Serialize, Debug)]
+#[derive(ToSchema, Serialize, Debug, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct SupervisorMainTableDto
 {
     days: BTreeMap<NaiveDateDto, DaySubtable>,
 }
 
-#[derive(ToSchema, Debug, Serialize)]
+#[derive(ToSchema, Debug, Serialize, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct DaySubtable
 {
     // Each person should be mentioned once.
@@ -45,9 +48,9 @@ type Area = Option<String>;
 type Permit = Option<String>;
 type Description = String;
 type Icc = Option<String>;
-#[derive(Debug, ToSchema, Serialize)]
-pub struct WorkOrderSupervisorRow
-{
+#[derive(Debug, ToSchema, Serialize, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+pub struct WorkOrderSupervisorRow {
     id: IdStringDto,
     area: Area,
     work_order_number: WorkOrderNumberDto,
@@ -104,7 +107,8 @@ impl From<(&WorkOrder, ActivityNumber, IdStringDto)> for WorkOrderSupervisorRow
     }
 }
 
-#[derive(Debug, ToSchema, Serialize)]
+#[derive(Debug, ToSchema, Serialize, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct Percentage(f64);
 
 // This should be a trait as well. You should not do it like this I believe
@@ -192,7 +196,8 @@ pub enum SupervisorResponseMessageDto
 
 // CRUCIAL INSIGHT
 // You are getting more mature here! You should simply keep it up.
-#[derive(Serialize, ToSchema)]
+#[derive(Serialize, ToSchema, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct SupervisorResponseStatusDto
 {
     pub supervisor_resource: Vec<IdDto>,
