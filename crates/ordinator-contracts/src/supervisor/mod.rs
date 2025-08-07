@@ -35,7 +35,7 @@ pub struct SupervisorResourcesDto
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct SupervisorMainTableDto
 {
-    days: BTreeMap<NaiveDateDto, DaySubtable>,
+    pub days: BTreeMap<NaiveDateDto, DaySubtable>,
 }
 
 #[derive(ToSchema, Debug, Serialize, TS)]
@@ -133,7 +133,7 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
             .unwrap()
             .assess_and_assign_activities();
 
-        for day in value.2.days.iter().take(14) {
+        for day in value.2.frozen_days() {
             let mut work_order_activities_per_work_center: HashMap<
                 String,
                 Vec<WorkOrderSupervisorRow>,
