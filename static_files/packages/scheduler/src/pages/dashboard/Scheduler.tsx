@@ -46,7 +46,16 @@ const Scheduler: React.FC = () => {
   
 
   if (!asset) return null;
-  if (!systemclock) return;
+  if (!systemclock)
+    return (
+      <div className="p-4">
+        <h2 className="text-2xl font-bold mb-4">Work Orders – {asset}</h2>
+        <p className="text-red-600">
+          Could not fetch system clock. Server is non-responding.
+        </p>
+      </div>
+      
+    );
 
   // Handling Scheduling data varians
   if (isLoading)
