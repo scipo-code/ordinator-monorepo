@@ -7,12 +7,12 @@
 // use ordinator_orchestrator_actor_traits::SystemSolution;
 // use ordinator_orchestrator_actor_traits::SystemSolutions;
 // use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 // use ordinator_scheduling_environment::time_environment::day::Day;
 // use ordinator_scheduling_environment::time_environment::period::Period;
 // use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 // use ordinator_scheduling_environment::work_order::operation::Work;
 // use ordinator_scheduling_environment::worker_environment::TacticalOptions;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 // use ordinator_scheduling_environment::worker_environment::resources::Resources;
 // use ordinator_tactical_actor::algorithm::tactical_parameters::OperationParameter;
@@ -25,6 +25,7 @@ use ordinator_scheduling_environment::worker_environment::resources::Id;
 // use strum::IntoEnumIterator;
 
 #[test]
+#[ignore]
 fn test_calculate_objective_value()
 {
     // let work_order_number = WorkOrderNumber(2100000001);

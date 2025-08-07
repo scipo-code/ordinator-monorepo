@@ -1,5 +1,5 @@
-use anyhow::Result;
 use anyhow::ensure;
+use anyhow::Result;
 use chrono::DateTime;
 use chrono::Datelike;
 use chrono::Days;
@@ -8,10 +8,10 @@ use chrono::NaiveTime;
 use chrono::TimeDelta;
 use chrono::Timelike;
 use chrono::Utc;
+use serde::de;
 use serde::Deserialize;
 use serde::Deserializer;
 use serde::Serialize;
-use serde::de;
 
 use self::day::Day;
 use self::period::Period;
@@ -113,7 +113,7 @@ impl TimeInterval
     }
 
     pub fn from_date_times(start_date_time: DateTime<Utc>, finish_date_time: DateTime<Utc>)
-    -> Self
+        -> Self
     {
         Self {
             start: start_date_time.time(),
@@ -185,7 +185,7 @@ pub fn create_time_environment(
     TimeEnvironment::new(strategic_periods, days)
 }
 fn create_periods(current_time: DateTime<Utc>, number_of_periods: u64, days: &[Day])
--> Vec<Period>
+    -> Vec<Period>
 {
     let mut periods: Vec<Period> = Vec::<Period>::new();
     // TODO

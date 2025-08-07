@@ -4,26 +4,26 @@ use std::fs::File;
 use std::io::BufWriter;
 use std::path::PathBuf;
 
-use file_rotate::ContentLimit;
-use file_rotate::FileRotate;
 use file_rotate::compression::Compression;
 use file_rotate::suffix::AppendCount;
-use tracing::Level;
+use file_rotate::ContentLimit;
+use file_rotate::FileRotate;
 use tracing::event;
+use tracing::Level;
 use tracing_appender::non_blocking;
 use tracing_appender::non_blocking::NonBlocking;
 use tracing_flame::FlameLayer;
-use tracing_subscriber::Registry;
 use tracing_subscriber::filter::EnvFilter;
 use tracing_subscriber::filter::Filtered;
 use tracing_subscriber::filter::Targets;
-use tracing_subscriber::fmt::Layer;
 use tracing_subscriber::fmt::format::Format;
 use tracing_subscriber::fmt::format::Json;
 use tracing_subscriber::fmt::format::JsonFields;
+use tracing_subscriber::fmt::Layer;
 use tracing_subscriber::fmt::{self};
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::reload::Handle;
+use tracing_subscriber::Registry;
 
 type LogLayer = Handle<
     Filtered<Layer<Registry, JsonFields, Format<Json>, NonBlocking>, EnvFilter, Registry>,

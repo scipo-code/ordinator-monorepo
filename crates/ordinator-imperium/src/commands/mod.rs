@@ -11,59 +11,74 @@ pub mod tactical;
 use orchestrator::OrchestratorCommands;
 use reqwest::blocking::Client;
 use sap::SapCommands;
-use shared_types::{orchestrator::OrchestratorRequest, Asset, SystemMessages};
-use status::{StatusCommands, WorkOrders};
+use shared_types::orchestrator::OrchestratorRequest;
+use shared_types::Asset;
+use shared_types::SystemMessages;
+use status::StatusCommands;
+use status::WorkOrders;
 use strategic::StrategicCommands;
 use tactical::TacticalCommands;
 
+use self::operational::OperationalCommands;
+use self::supervisor::SupervisorCommands;
 use crate::Cli;
 
-use self::{operational::OperationalCommands, supervisor::SupervisorCommands};
-
-/// Imperium: The command line interface to access the Ordinator scheduling system API.
-/// All commands return a JSON unless otherwise specified.
+/// Imperium: The command line interface to access the Ordinator scheduling
+/// system API. All commands return a JSON unless otherwise specified.
 #[derive(Subcommand)]
-pub enum Commands {
+pub enum Commands
+{
     /// Access general status command for imperium
-    Status {
+    Status
+    {
         #[clap(subcommand)]
         status_commands: StatusCommands,
     },
     /// Access the orchestrator agent (controls the scheduling environment)
-    Orchestrator {
+    Orchestrator
+    {
         #[clap(subcommand)]
         orchestrator_commands: OrchestratorCommands,
     },
     /// Access the strategic agent
-    Strategic {
+    Strategic
+    {
         #[clap(subcommand)]
         strategic_commands: StrategicCommands,
     },
     /// Access the tactical agent
-    Tactical {
+    Tactical
+    {
         #[clap(subcommand)]
         tactical_commands: TacticalCommands,
     },
     /// Access the supervisor agents
-    Supervisor {
+    Supervisor
+    {
         #[clap(subcommand)]
         supervisor_commands: SupervisorCommands,
     },
     /// Access the operational agents
-    Operational {
+    Operational
+    {
         #[clap(subcommand)]
         operational_commands: OperationalCommands,
     },
     /// Access the SAP integration (Requires user authorization)
-    Sap {
+    Sap
+    {
         #[clap(subcommand)]
         sap_commands: SapCommands,
     },
     /// Running this command will export an XLSX file for the chosen Asset
-    Export { asset: Asset },
+    Export
+    {
+        asset: Asset
+    },
 }
 
-pub fn handle_command(cli: Cli, client: &Client) -> SystemMessages {
+pub fn handle_command(cli: Cli, client: &Client) -> SystemMessages
+{
     match cli.command {
         Commands::Status { status_commands } => match status_commands {
             StatusCommands::WorkOrders { work_orders } => match work_orders {

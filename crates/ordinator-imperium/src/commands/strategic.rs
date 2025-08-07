@@ -15,28 +15,34 @@ use shared_types::Asset;
 use shared_types::SystemMessages;
 
 #[derive(Subcommand, Debug)]
-pub enum StrategicCommands {
+pub enum StrategicCommands
+{
     /// overview of the strategic agent
-    Status {
+    Status
+    {
         asset: Asset,
         #[clap(subcommand)]
         status_commands: Option<StatusCommands>,
     },
     /// Scheduling commands
-    Scheduling {
+    Scheduling
+    {
         asset: Asset,
         #[clap(subcommand)]
         scheduling_commands: SchedulingCommands,
     },
     /// Resources commands
-    Resources {
+    Resources
+    {
         asset: Asset,
         #[clap(subcommand)]
         resource_commands: ResourceCommands,
     },
 
-    /// Access the Scheduling Environment with the options that the StrategicAgent can change
-    StrategicSchedulingEnvironmentCommands {
+    /// Access the Scheduling Environment with the options that the
+    /// StrategicAgent can change
+    StrategicSchedulingEnvironmentCommands
+    {
         asset: Asset,
         #[clap(subcommand)]
         strategic_scheduling_environment_commands: StrategicSchedulingEnvironmentCommands,
@@ -44,26 +50,31 @@ pub enum StrategicCommands {
 }
 
 #[derive(Subcommand, Debug)]
-pub enum ResourceCommands {
+pub enum ResourceCommands
+{
     /// Get the loading of the resources
-    Loading {
+    Loading
+    {
         periods_end: String,
         select_resources: Option<Vec<String>>,
     },
 
     /// Get the capacity of the resources
-    Capacity {
+    Capacity
+    {
         periods_end: String,
         select_resources: Option<Vec<String>>,
     },
 
     /// Get the percentage loading
-    PercentageLoading {
+    PercentageLoading
+    {
         periods_end: String,
         select_resources: Option<Vec<String>>,
     },
     /// Set the capacity of a resource
-    SetCapacity {
+    SetCapacity
+    {
         /// Format YYYY-Wxx-xx (e.g. 2024-W41-42)
         period: String,
         resource: Vec<Resources>,
@@ -72,31 +83,45 @@ pub enum ResourceCommands {
 }
 
 #[derive(Subcommand, Debug)]
-pub enum StatusCommands {
+pub enum StatusCommands
+{
     /// List all work orders in a given period
-    WorkOrders { period: String },
+    WorkOrders
+    {
+        period: String
+    },
     /// List relevant information about a specific work order
-    WorkOrder { work_order_number: u64 },
+    WorkOrder
+    {
+        work_order_number: u64
+    },
 }
 
 #[derive(Subcommand, Debug)]
-pub enum SchedulingCommands {
+pub enum SchedulingCommands
+{
     /// Schedule a specific work order in a given period
     Schedule(ScheduleChange),
     /// Lock a period from any scheduling changes
-    PeriodLock { period: String },
+    PeriodLock
+    {
+        period: String
+    },
     /// Exclude a work order from a period
     Exclude(ScheduleChange),
 }
 
 #[derive(Debug, Args)]
-pub struct WorkOrderSchedule {
+pub struct WorkOrderSchedule
+{
     pub work_order: u64,
     pub period: String,
 }
 
-impl StrategicCommands {
-    pub fn execute(self) -> SystemMessages {
+impl StrategicCommands
+{
+    pub fn execute(self) -> SystemMessages
+    {
         match self {
             StrategicCommands::Status {
                 asset,

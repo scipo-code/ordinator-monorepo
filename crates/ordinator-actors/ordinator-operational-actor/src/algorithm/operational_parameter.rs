@@ -14,21 +14,21 @@ use std::collections::HashMap;
 use std::fmt::Debug;
 use std::sync::MutexGuard;
 
+use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
-use anyhow::ensure;
 use chrono::TimeDelta;
 use colored::Colorize;
 use ordinator_orchestrator_actor_traits::Parameters;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
+use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::OperationalOptions;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 
 // Again there are here multiple ways of doing things. You should be careful
 // I think that the best approach is to put the... You could reformulate

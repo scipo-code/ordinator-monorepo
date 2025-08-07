@@ -4,17 +4,17 @@ use std::sync::MutexGuard;
 use anyhow::Context;
 use anyhow::Result;
 use ordinator_orchestrator_actor_traits::Parameters;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::period::Period;
-use ordinator_scheduling_environment::work_order::WorkOrderActivity;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Operation;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
-use ordinator_scheduling_environment::worker_environment::SupervisorOptions;
+use ordinator_scheduling_environment::work_order::WorkOrderActivity;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::SupervisorOptions;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 
 pub struct SupervisorParameters
 {

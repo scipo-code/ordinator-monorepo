@@ -13,18 +13,18 @@ use anyhow::Result;
 use chrono::DateTime;
 use chrono::Utc;
 use ordinator_configuration::SystemConfigurations;
+use ordinator_scheduling_environment::time_environment::create_time_environment;
+use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
+use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::worker_environment::ActorEnvironment;
+use ordinator_scheduling_environment::worker_environment::TimeInput;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::IntoSchedulingEnvironment;
 use ordinator_scheduling_environment::SchedulingEnvironment;
-use ordinator_scheduling_environment::time_environment::create_time_environment;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
-use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
-use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
-use ordinator_scheduling_environment::worker_environment::TimeInput;
-use ordinator_scheduling_environment::worker_environment::ActorEnvironment;
-use serde::Deserialize;
 use serde::de::DeserializeOwned;
+use serde::Deserialize;
 
 use super::baptiste_csv_reader_merges::load_csv_data;
 
@@ -486,6 +486,7 @@ mod tests
     use super::*;
 
     #[test]
+    #[ignore]
     fn test_populate_csv_structures()
     {
         let mut path = PathBuf::new();

@@ -1,19 +1,19 @@
 use std::collections::HashMap;
 
+use anyhow::ensure;
 // You cannot know what the right thing is here as you do not know the state of the
 // program. You have to continuously have to work on
 use anyhow::Context;
 use anyhow::Result;
-use anyhow::ensure;
 use chrono::DateTime;
 use chrono::NaiveDate;
 use chrono::Utc;
 use colored::Colorize;
 use ordinator_actor_core::traits::ObjectiveValue;
+use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
 use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
@@ -22,12 +22,12 @@ use ordinator_scheduling_environment::worker_environment::availability::Availabi
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use serde::Serialize;
 
-// This is for the `constracts`, `conversions`, and the `orchstrator` to handle.
-use super::ContainOrNextOrNone;
-use super::Unavailability;
 use super::no_overlap_by_ref;
 use super::operational_events::OperationalEvents;
 use super::operational_parameter::OperationalParameters;
+// This is for the `constracts`, `conversions`, and the `orchstrator` to handle.
+use super::ContainOrNextOrNone;
+use super::Unavailability;
 
 /// You want this to be a struct so that you can implement methods and
 /// formatting and logging.
@@ -249,8 +249,8 @@ impl OperationalSolution
             let latest_work_order_activity_in_solution = self
                 .scheduled_work_order_activities
                 .iter()
-                .filter(|f| f.0.0 == work_order_activity.0)
-                .filter(|f| f.0.1 < work_order_activity.1)
+                .filter(|f| f.0 .0 == work_order_activity.0)
+                .filter(|f| f.0 .1 < work_order_activity.1)
                 .max_by(|d, e| {
                     // If the relation between work_order `operational_solution.0` and key.1 is
                     // start-start we should take the start time of the two. This means that there
@@ -446,7 +446,7 @@ impl Assignment
     }
 
     pub fn make_unavailable_event(kind: Unavailability, availability: &Availability)
-    -> Result<Self>
+        -> Result<Self>
     {
         match kind {
             Unavailability::Beginning => {

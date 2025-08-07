@@ -16,11 +16,11 @@ use rust_xlsxwriter::IntoExcelData;
 use serde::Deserialize;
 use serde::Serialize;
 
-
 // Clap should not be in the `SchedulingEnvironment`
 
-#[derive( Serialize, Deserialize, Eq, PartialEq, Hash, Clone, PartialOrd, Ord)]
-pub struct Period {
+#[derive(Serialize, Deserialize, Eq, PartialEq, Hash, Clone, PartialOrd, Ord)]
+pub struct Period
+{
     period_string: String,
     start_date: DateTime<Utc>,
     end_date: DateTime<Utc>,
@@ -30,8 +30,10 @@ pub struct Period {
     pub finish_week: u32,
 }
 
-impl std::fmt::Debug for Period {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+impl std::fmt::Debug for Period
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+    {
         if f.alternate() {
             write!(
                 f,
@@ -67,8 +69,11 @@ impl std::fmt::Debug for Period {
 }
 
 #[allow(dead_code)]
-impl Period {
-    pub fn new(start_date: DateTime<Utc>, end_date: DateTime<Utc>, day_indices: Vec<u64>) -> Period {
+impl Period
+{
+    pub fn new(start_date: DateTime<Utc>, end_date: DateTime<Utc>, day_indices: Vec<u64>)
+        -> Period
+    {
         let mut year = start_date.year();
 
         if is_last_three_days_of_year(start_date.naive_utc().date()) {
@@ -84,7 +89,6 @@ impl Period {
 
         let period_string = format!("{year}-W{start_week}-{end_week}");
 
-
         Period {
             period_string,
             start_date,
@@ -96,14 +100,16 @@ impl Period {
         }
     }
 
-    pub fn contains_date(&self, date: NaiveDate) -> bool {
+    pub fn contains_date(&self, date: NaiveDate) -> bool
+    {
         self.start_date.date_naive() <= date && date <= self.end_date.date_naive()
     }
 
     pub(crate) fn count_overlapping_days(
         &self,
         availability: &crate::worker_environment::availability::Availability,
-    ) -> i64 {
+    ) -> i64
+    {
         let first = std::cmp::max(
             self.start_date.date_naive(),
             availability.start_date.date_naive(),
@@ -118,55 +124,69 @@ impl Period {
     }
 }
 
-impl Period {
-    pub fn period_string(&self) -> String {
+impl Period
+{
+    pub fn period_string(&self) -> String
+    {
         self.period_string.clone()
     }
 
-    pub fn start_date(&self) -> &DateTime<Utc> {
+    pub fn start_date(&self) -> &DateTime<Utc>
+    {
         &self.start_date
     }
 
-    pub fn finish_date(&self) -> &DateTime<Utc> {
+    pub fn finish_date(&self) -> &DateTime<Utc>
+    {
         &self.end_date
     }
-
 }
 
-impl Add<Duration> for Period {
+impl Add<Duration> for Period
+{
     type Output = Self;
 
-    fn add(self, rhs: Duration) -> Self::Output {
+    fn add(self, rhs: Duration) -> Self::Output
+    {
         let start_date = self.start_date + rhs;
         let end_date = self.end_date + rhs;
-        let day_indices = self.day_indices.iter().map(|i| i + rhs.num_days() as u64).collect();
+        let day_indices = self
+            .day_indices
+            .iter()
+            .map(|i| i + rhs.num_days() as u64)
+            .collect();
         Period::new(start_date, end_date, day_indices)
     }
 }
 
-impl Sub<Duration> for Period {
+impl Sub<Duration> for Period
+{
     type Output = Period;
 
-    fn sub(self, rhs: Duration) -> Self::Output {
+    fn sub(self, rhs: Duration) -> Self::Output
+    {
         let start_date = self.start_date - rhs;
         let end_date = self.end_date - rhs;
-        let day_indices = self.day_indices.iter().map(|i|i+14).collect();
-        Period::new( start_date, end_date, day_indices)
+        let day_indices = self.day_indices.iter().map(|i| i + 14).collect();
+        Period::new(start_date, end_date, day_indices)
     }
 }
 
-impl Add<Duration> for &Period {
+impl Add<Duration> for &Period
+{
     type Output = Period;
 
-    fn add(self, rhs: Duration) -> Self::Output {
+    fn add(self, rhs: Duration) -> Self::Output
+    {
         let start_date = self.start_date + rhs;
         let end_date = self.end_date + rhs;
-        let day_indices = self.day_indices.iter().map(|i|i+14).collect();
-        Period::new( start_date, end_date, day_indices)
+        let day_indices = self.day_indices.iter().map(|i| i + 14).collect();
+        Period::new(start_date, end_date, day_indices)
     }
 }
 
-fn is_last_three_days_of_year(date: NaiveDate) -> bool {
+fn is_last_three_days_of_year(date: NaiveDate) -> bool
+{
     let year = date.year();
     let dec_29 = NaiveDate::from_ymd_opt(year, 12, 29);
     let dec_30 = NaiveDate::from_ymd_opt(year, 12, 30);
@@ -175,20 +195,23 @@ fn is_last_three_days_of_year(date: NaiveDate) -> bool {
     date == dec_29.unwrap() || date == dec_30.unwrap() || date == dec_31.unwrap()
 }
 
-impl Display for Period {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl Display for Period
+{
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result
+    {
         let print_string = self.period_string.clone();
         write!(f, "{print_string}")
     }
 }
 
-
 // This is then no longer possible. What should you do instead? I think
 // that the best approach would be to make the systems.
-impl FromStr for Period {
+impl FromStr for Period
+{
     type Err = String;
 
-    fn from_str(period_string: &str) -> Result<Self, Self::Err> {
+    fn from_str(period_string: &str) -> Result<Self, Self::Err>
+    {
         // Parse the string
         let parts: Vec<&str> = period_string.split('-').collect();
         if parts.len() != 3 {
@@ -248,13 +271,15 @@ impl FromStr for Period {
     }
 }
 
-impl IntoExcelData for Period {
+impl IntoExcelData for Period
+{
     fn write(
         self,
         worksheet: &mut rust_xlsxwriter::Worksheet,
         row: rust_xlsxwriter::RowNum,
         col: rust_xlsxwriter::ColNum,
-    ) -> Result<&mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError> {
+    ) -> Result<&mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError>
+    {
         let value = self.period_string;
         worksheet.write_string(row, col, value)
     }
@@ -265,14 +290,16 @@ impl IntoExcelData for Period {
         row: rust_xlsxwriter::RowNum,
         col: rust_xlsxwriter::ColNum,
         format: &rust_xlsxwriter::Format,
-    ) -> Result<&'a mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError> {
+    ) -> Result<&'a mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError>
+    {
         let value = self.period_string;
         worksheet.write_string_with_format(row, col, value, format)
     }
 }
 
 #[cfg(test)]
-mod tests {
+mod tests
+{
 
     use chrono::TimeZone;
     use chrono::Utc;
@@ -280,11 +307,12 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_period_add_duration_1() {
+    fn test_period_add_duration_1()
+    {
         // Setup initial period
         let initial_start_date = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
         let initial_end_date = Utc.with_ymd_and_hms(2023, 1, 14, 23, 59, 59).unwrap();
-        let period = Period::new( initial_start_date, initial_end_date, vec![]);
+        let period = Period::new(initial_start_date, initial_end_date, vec![]);
 
         // Define the duration to add (e.g., 1 month)
         let duration_to_add = Duration::weeks(2); // Adjust as per your Duration type
@@ -298,11 +326,12 @@ mod tests {
     }
 
     #[test]
-    fn test_period_add_duration_2() {
+    fn test_period_add_duration_2()
+    {
         // Setup initial period
         let initial_start_date = Utc.with_ymd_and_hms(2023, 12, 18, 0, 0, 0).unwrap();
         let initial_end_date = Utc.with_ymd_and_hms(2023, 12, 31, 23, 59, 59).unwrap();
-        let period = Period::new( initial_start_date, initial_end_date, vec![]);
+        let period = Period::new(initial_start_date, initial_end_date, vec![]);
 
         // Define the duration to add (e.g., 1 month)
         let duration_to_add = Duration::weeks(2); // Adjust as per your Duration type
@@ -317,14 +346,16 @@ mod tests {
     }
 
     #[test]
-    fn test_new_from_string_0() {
+    fn test_new_from_string_0()
+    {
         let period = Period::from_str("2021-W01-02");
 
         assert_eq!(period.unwrap().period_string, "2021-W01-02".to_string());
     }
 
     #[test]
-    fn test_new_from_string_1() {
+    fn test_new_from_string_1()
+    {
         let period = Period::from_str("2023-W49-50");
 
         assert_eq!(
@@ -342,7 +373,8 @@ mod tests {
     }
 
     #[test]
-    fn test_new_from_string_2() {
+    fn test_new_from_string_2()
+    {
         let period = Period::from_str("2023-W51-52");
 
         assert_eq!(
@@ -360,7 +392,8 @@ mod tests {
     }
 
     #[test]
-    fn test_new_from_string_3() {
+    fn test_new_from_string_3()
+    {
         let period = Period::from_str("2023-W1-2");
 
         assert_eq!(
@@ -378,7 +411,8 @@ mod tests {
     }
 
     #[test]
-    fn test_from_isoywd_opt() {
+    fn test_from_isoywd_opt()
+    {
         let year = 2023;
         let week = 52;
 
@@ -391,7 +425,8 @@ mod tests {
     }
 
     #[test]
-    fn test_parse() {
+    fn test_parse()
+    {
         match "01".parse::<u32>() {
             Ok(n) => assert_eq!(n, 1),
             Err(_) => panic!(),
@@ -399,16 +434,14 @@ mod tests {
     }
 
     #[test]
-    fn test_period_new() {
+    fn test_period_new()
+    {
         let period = Period::from_str("2024-W51-52").unwrap();
 
         let new_period = Period::new(
             period.start_date().to_owned() + Duration::weeks(2),
             period.finish_date().to_owned() + Duration::weeks(2),
-            vec![]
-
-
-
+            vec![],
         );
 
         assert_eq!(new_period.period_string, "2025-W1-2".to_string());

@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
-use ordinator_orchestrator_actor_traits::OperationalInterface;
 use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
+use ordinator_orchestrator_actor_traits::OperationalInterface;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 
 use super::operational_solution::OperationalSolution;

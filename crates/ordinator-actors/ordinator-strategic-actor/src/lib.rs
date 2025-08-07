@@ -9,27 +9,27 @@ use std::ops::DerefMut;
 use std::sync::Arc;
 use std::sync::Mutex;
 
-use algorithm::StrategicAlgorithm;
 use algorithm::strategic_parameters::StrategicParameters;
 use algorithm::strategic_solution::StrategicSolution;
+use algorithm::StrategicAlgorithm;
 use anyhow::Result;
 use arc_swap::ArcSwap;
 use bus::BusReader;
 use flume::Sender;
 use messages::StrategicRequestMessage;
 use messages::StrategicResponseMessage;
-use ordinator_actor_core::Actor;
 use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
+use ordinator_actor_core::Actor;
 use ordinator_configuration::SystemConfigurations;
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 use priority_queue::PriorityQueue;
 
 pub struct StrategicActor<Ss: Debug>(

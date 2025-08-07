@@ -6,16 +6,16 @@ use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SupervisorInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use tracing::Level;
 use tracing::event;
+use tracing::Level;
 
-use super::OperationalRequestMessage;
-use super::OperationalResponseMessage;
 use super::requests::OperationalSchedulingRequest;
 use super::responses::OperationalResponseStatus;
-use crate::algorithm::OperationalAlgorithm;
+use super::OperationalRequestMessage;
+use super::OperationalResponseMessage;
 use crate::algorithm::operational_parameter::OperationalParameter;
 use crate::algorithm::operational_solution::OperationalSolution;
+use crate::algorithm::OperationalAlgorithm;
 // Was this actually needed? I am not really sure here I believe that
 // the best approach is to make something.
 impl<Ss> CommandHandler<OperationalRequestMessage, OperationalResponseMessage>

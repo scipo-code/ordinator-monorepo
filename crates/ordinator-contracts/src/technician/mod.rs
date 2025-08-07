@@ -1,6 +1,6 @@
 use ordinator_operational_actor::algorithm::operational_solution::OperationalAssignment;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use serde::Serialize;
 use utoipa::ToSchema;
 
@@ -18,7 +18,7 @@ impl From<((WorkOrderNumber, ActivityNumber), OperationalAssignment)> for Operat
     {
         // TODO Start here.
         Self {
-            work_order_activity: (value.0.0.0, value.0.1),
+            work_order_activity: (value.0 .0 .0, value.0 .1),
             start: value.1.start_time().to_rfc3339(),
             finish: value.1.finish_time().to_rfc3339(),
         }

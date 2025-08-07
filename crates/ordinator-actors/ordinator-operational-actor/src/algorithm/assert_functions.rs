@@ -1,5 +1,5 @@
-use anyhow::Result;
 use anyhow::ensure;
+use anyhow::Result;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 
 use super::OperationalAlgorithm;

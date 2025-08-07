@@ -3,21 +3,22 @@ use std::collections::HashMap;
 use clap::Subcommand;
 use clap::{self};
 use reqwest::blocking::Client;
+use shared_types::orchestrator::OrchestratorRequest;
 use shared_types::scheduling_environment::time_environment::day::Day;
 use shared_types::scheduling_environment::time_environment::period::Period;
-
 use shared_types::scheduling_environment::work_order::work_order_analytic::status_codes::UserStatusCodes;
 use shared_types::scheduling_environment::work_order::work_order_dates::unloading_point::UnloadingPoint;
 use shared_types::scheduling_environment::work_order::WorkOrderNumber;
-use shared_types::scheduling_environment::worker_environment::resources::{Resources, Shift};
-use shared_types::{
-    orchestrator::OrchestratorRequest, scheduling_environment::worker_environment::resources::Id,
-    SystemMessages,
-};
-use shared_types::{ActorSpecifications, Asset};
+use shared_types::scheduling_environment::worker_environment::resources::Id;
+use shared_types::scheduling_environment::worker_environment::resources::Resources;
+use shared_types::scheduling_environment::worker_environment::resources::Shift;
+use shared_types::ActorSpecifications;
+use shared_types::Asset;
+use shared_types::SystemMessages;
 
 #[derive(Subcommand, Debug)]
-pub enum OrchestratorCommands {
+pub enum OrchestratorCommands
+{
     /// Status and changes to the scheduling environment
     #[clap(subcommand)]
     SchedulingEnvironment(SchedulingEnvironmentCommands),
@@ -30,30 +31,37 @@ pub enum OrchestratorCommands {
     #[clap(subcommand)]
     OperationalAgent(OperationalAgentCommands),
     /// Load a default setup
-    InitializeCrewFromFile {
+    InitializeCrewFromFile
+    {
         asset: Asset,
         resource_configuration_file: String,
     },
 }
 
 #[derive(Subcommand, Debug)]
-pub enum SchedulingEnvironmentCommands {
-    /// Access the commands to change the work orders (The Orchestrator will ensure that each relevant agent updates its state)
-    WorkOrders {
+pub enum SchedulingEnvironmentCommands
+{
+    /// Access the commands to change the work orders (The Orchestrator will
+    /// ensure that each relevant agent updates its state)
+    WorkOrders
+    {
         work_order_number: WorkOrderNumber,
         #[clap(subcommand)]
         work_order_commands: WorkOrderCommands,
     },
-    /// Access the commands to change the present workers (The Orchestrator will initilize and deinitialize the relevant agents)
+    /// Access the commands to change the present workers (The Orchestrator will
+    /// initilize and deinitialize the relevant agents)
     #[clap(subcommand)]
     WorkerEnvironment(WorkerEnvironmentCommands),
-    /// Access the commands to change the time environment. Period size, draft periods, time interval for each agent algorithm
+    /// Access the commands to change the time environment. Period size, draft
+    /// periods, time interval for each agent algorithm
     #[clap(subcommand)]
     TimeEnvironment(TimeEnvironmentCommands),
 }
 
 #[derive(Subcommand, Debug)]
-pub enum WorkOrderCommands {
+pub enum WorkOrderCommands
+{
     /// Change the status codes of a work order
     ModifyStatusCodes(UserStatusCodes),
 
@@ -65,7 +73,8 @@ pub enum WorkOrderCommands {
 pub enum WorkerEnvironmentCommands {}
 
 #[derive(Subcommand, Debug)]
-pub enum TimeEnvironmentCommands {
+pub enum TimeEnvironmentCommands
+{
     /// Get all the available periods in the TimeEnvironment
     GetPeriods,
 }
@@ -74,9 +83,11 @@ pub enum TimeEnvironmentCommands {
 pub enum AgentCommands {}
 
 #[derive(Subcommand, Debug)]
-pub enum SupervisorAgentCommands {
+pub enum SupervisorAgentCommands
+{
     /// Create a new SupervisorAgent
-    Create {
+    Create
+    {
         asset: Asset,
         shift: Shift,
         supervisor_id: String,
@@ -85,12 +96,17 @@ pub enum SupervisorAgentCommands {
     },
 
     /// Delete a SupervisorAgent
-    Delete { asset: Asset, id_supervisor: String },
+    Delete
+    {
+        asset: Asset, id_supervisor: String
+    },
 }
 #[derive(Subcommand, Debug)]
-pub enum OperationalAgentCommands {
+pub enum OperationalAgentCommands
+{
     /// Create a new OperationalAgent
-    Create {
+    Create
+    {
         asset: Asset,
         id_operational: String,
         shift: Shift,
@@ -98,14 +114,17 @@ pub enum OperationalAgentCommands {
     },
 
     /// Delete an OperationalAgent
-    Delete {
+    Delete
+    {
         asset: Asset,
         id_operational: String,
     },
 }
 
-impl OrchestratorCommands {
-    pub fn execute(self) -> SystemMessages {
+impl OrchestratorCommands
+{
+    pub fn execute(self) -> SystemMessages
+    {
         match self {
             OrchestratorCommands::SchedulingEnvironment(scheduling_environment_commands) => {
                 match scheduling_environment_commands {
@@ -128,7 +147,6 @@ impl OrchestratorCommands {
                     SchedulingEnvironmentCommands::TimeEnvironment(time_environment_commands) => {
                         match time_environment_commands {
                             TimeEnvironmentCommands::GetPeriods => {
-                                
                                 println!("Debug message");
                                 SystemMessages::Orchestrator(OrchestratorRequest::GetPeriods)
                             }
@@ -183,7 +201,8 @@ impl OrchestratorCommands {
                         resource: _,
                     } => {
                         todo!();
-                        // let create_operational_agent = OrchestratorRequest::CreateOperationalAgent(
+                        // let create_operational_agent =
+                        // OrchestratorRequest::CreateOperationalAgent(
                         //     asset.clone(),
                         //     Id::new(id.clone(), resource.clone(), None),
                         //     OperationalConfiguration::new(Availability::default, TimeInterval::new(NaiveTime::), TimeInterval::new(), TimeInterval::new()),
@@ -221,7 +240,8 @@ impl OrchestratorCommands {
     }
 }
 
-pub fn strategic_periods(client: &Client) -> Vec<Period> {
+pub fn strategic_periods(client: &Client) -> Vec<Period>
+{
     let orchestrator_request = OrchestratorRequest::GetPeriods;
 
     let system_message = SystemMessages::Orchestrator(orchestrator_request);
@@ -239,7 +259,8 @@ pub fn strategic_periods(client: &Client) -> Vec<Period> {
         .to_owned()
 }
 
-pub fn tactical_days(client: &Client) -> Vec<Day> {
+pub fn tactical_days(client: &Client) -> Vec<Day>
+{
     let orchestrator_request = OrchestratorRequest::GetDays;
 
     let system_message = SystemMessages::Orchestrator(orchestrator_request);

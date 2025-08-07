@@ -1,19 +1,19 @@
-use std::collections::HashMap;
 use std::collections::hash_map::Entry;
+use std::collections::HashMap;
 
-use anyhow::Result;
 use anyhow::bail;
 use anyhow::ensure;
+use anyhow::Result;
 use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use priority_queue::PriorityQueue;
 use strum::IntoEnumIterator;
-use tracing::Level;
 use tracing::event;
+use tracing::Level;
 
 use super::strategic_parameters::StrategicParameters;
 use super::strategic_resources::StrategicResources;
