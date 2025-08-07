@@ -32,7 +32,9 @@ pub struct AssetNames(String);
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct PeriodDto(pub String);
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
+#[derive(
+    Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS, Default,
+)]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct NaiveDateDto(pub String);
 

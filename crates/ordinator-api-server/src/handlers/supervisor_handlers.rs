@@ -8,8 +8,10 @@ use axum::debug_handler;
 use axum::extract::Path;
 use axum::extract::State;
 use axum::response::Result;
+use axum_extra::extract::Query;
 use chrono::DateTime;
 use ordinator_contracts::AssetNames;
+use ordinator_contracts::NaiveDateDto;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::WorkOrderNumberDto;
 use ordinator_contracts::supervisor::SupervisorMainTableDto;
@@ -29,6 +31,7 @@ use ordinator_orchestrator::WorkOrderNumber;
 // This should be moved away from here.
 use serde::Deserialize;
 use serde::Serialize;
+use utoipa::IntoParams;
 use utoipa::ToSchema;
 
 use crate::routes::api::AppError;
@@ -51,8 +54,7 @@ use crate::routes::api::AppError;
 pub async fn status(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     Path((asset, supervisor_id)): Path<(Asset, String)>,
-) -> Result<Json<SupervisorResponseMessageDto>, AppError>
-{
+) -> Result<Json<SupervisorResponseMessageDto>, AppError> {
     let lock = orchestrator.actor_registries.lock().unwrap();
     let supervisor_agent_senders = &lock
         .get(&asset)
@@ -100,8 +102,7 @@ pub async fn all_available_technicians(
     // TODO [ ]
     // The `_supervisor_id` should be used in the future when we have additional
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
-) -> Result<Json<SupervisorResourcesDto>, AppError>
-{
+) -> Result<Json<SupervisorResourcesDto>, AppError> {
     // let lock = orchestrator.actor_registries.lock().unwrap();
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
@@ -153,6 +154,12 @@ pub async fn all_available_technicians(
     Ok(Json(supervisor_resources))
 }
 
+#[derive(Deserialize, IntoParams, ToSchema)]
+pub struct MainTableQueryParams {
+    #[serde(default)]
+    pub day: NaiveDateDto,
+}
+
 #[debug_handler]
 #[utoipa::path(
     get,
@@ -161,6 +168,7 @@ pub async fn all_available_technicians(
     params (
         ("asset" = AssetNames, Path),
         ("supervisor_id" = String, Path),
+        MainTableQueryParams,
     ),
     responses(
         (status = 200, body = SupervisorMainTableDto),
@@ -173,13 +181,14 @@ pub async fn supervisor_main_table(
     // TODO [ ]
     // The `_supervisor_id` should be used in the future when we have additional
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
-) -> Result<Json<SupervisorMainTableDto>, AppError>
-{
+    Query(query): Query<MainTableQueryParams>,
+) -> Result<Json<SupervisorMainTableDto>, AppError> {
     let asset = Asset::try_from(asset)
         .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
     let schedulingenvironment_lock = &orchestrator.scheduling_environment.lock().unwrap();
     let work_orders = &schedulingenvironment_lock.work_orders;
     let time_environment = &schedulingenvironment_lock.time_environment;
+
     let system_solution = &(**orchestrator
         .system_solutions
         .lock()
@@ -189,7 +198,7 @@ pub async fn supervisor_main_table(
         .map_err(|e| AppError::Anyhow(e.to_string() + "could not extract the SystemSolution"))?
         .load());
 
-    let supervisor_main_table_dto =
+    let mut supervisor_main_table_dto =
         SupervisorMainTableDto::try_from((work_orders, system_solution, time_environment))
             .with_context(|| {
                 format!("SupervisorMainTable could not be constructed for {_supervisor_id}")
@@ -198,14 +207,24 @@ pub async fn supervisor_main_table(
                 AppError::Anyhow(e.to_string() + "could not create the SupervisorMainTableDto")
             })?;
     // let lock = orchestrator.actor_registries.lock().unwrap();
+    //
+
+    let query_day = query.day;
+
+    if !query_day.0.is_empty() {
+        supervisor_main_table_dto.days = supervisor_main_table_dto
+            .days
+            .into_iter()
+            .filter(|(day_key, _)| day_key == &query_day)
+            .collect();
+    };
 
     Ok(Json(supervisor_main_table_dto))
 }
 
 // TODO [ ] - assert that number is equal to the number of assignments.
 #[derive(Serialize, Deserialize, ToSchema)]
-pub struct WorkOrderActivityToTechnicianDto
-{
+pub struct WorkOrderActivityToTechnicianDto {
     #[schema(example = 2100001234)]
     work_order_number: WorkOrderNumberDto,
     #[schema(example = 20)]
@@ -238,8 +257,7 @@ pub async fn assign_to_technicians(
     // The `_supervisor_id` should be used in the future when we have additional
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
     Json(payload): Json<WorkOrderActivityToTechnicianDto>,
-) -> Result<(), AppError>
-{
+) -> Result<(), AppError> {
     let WorkOrderActivityToTechnicianDto {
         work_order_number,
         activity_number,
@@ -303,8 +321,7 @@ pub async fn assign_to_technicians(
 }
 
 #[derive(Serialize, Deserialize, ToSchema)]
-pub struct CreateTechnicianDto
-{
+pub struct CreateTechnicianDto {
     #[schema(example = "l1112233")]
     id: String,
     #[schema(example = "[\"MTN-MECH\"]")]
@@ -338,8 +355,7 @@ pub async fn add_technician(
     // The `_supervisor_id` should be used in the future when we have additional
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
     Json(payload): Json<CreateTechnicianDto>,
-) -> Result<(), AppError>
-{
+) -> Result<(), AppError> {
     let CreateTechnicianDto {
         id,
         resources_string,
