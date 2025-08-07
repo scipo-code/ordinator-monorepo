@@ -116,6 +116,18 @@ impl WorkOrders
 
         Ok(())
     }
+
+    pub fn resource(&self, work_order_activity: &(WorkOrderNumber, u64)) -> Option<Resources>
+    {
+        Some(
+            self.inner
+                .get(&work_order_activity.0)?
+                .operations
+                .0
+                .get(&work_order_activity.1)?
+                .resource,
+        )
+    }
 }
 
 // WARN

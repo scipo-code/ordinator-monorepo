@@ -38,7 +38,7 @@ pub struct NaiveDateDto(pub String);
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
 pub struct WorkOrderNumberDto(pub u64);
 
-#[derive(Debug, ToSchema, Serialize)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, ToSchema, Serialize)]
 pub enum MaterialStatusDto
 {
     Smat,
