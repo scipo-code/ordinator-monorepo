@@ -21,6 +21,7 @@ use ordinator_tactical_actor::TacticalApi;
 use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
 
 use crate::Orchestrator;
+use crate::StartError;
 
 type ActorFactoryDependencies<Ss> = (
     Arc<Mutex<SchedulingEnvironment>>,
@@ -159,12 +160,15 @@ where
     // the `SchedulingEnvironment` This actor is different. We have to insert a
     // different component into the system here. The best approach would
     // probably be to
-    pub fn start_operational_actor(&mut self, id: &Id) -> Result<()>
+    //
+    // Use this to
+    pub fn start_operational_actor(&self, id: &Id) -> Result<(), StartError>
     {
-        // TODO [ ] - Insert entry into the `SchedulingEnvironment`
-        let build_dependencies = self.extract_factory_dependencies(id.asset())?;
+        // Here you should have typed Errors instead of what you are doing here.
+        let build_dependencies = self
+            .extract_factory_dependencies(id.asset())
+            .map_err(|_e| StartError::CouldNotCreateDependencies)?;
 
-        // TODO [ ] - Determine what to do about the `ID` here.
         let communication = <OperationalApi as ActorFactory<Ss>>::construct_actor(
             id.clone(),
             build_dependencies.0,
@@ -173,13 +177,19 @@ where
             self.state_link_bus.lock().unwrap().add_rx(),
             self.error_channels.0.clone(),
         )
-        .with_context(|| format!("Could not create OperationalActor for Asset {}", id.asset()))?;
+        .with_context(|| format!("Could not create OperationalActor for Asset {}", id.asset()))
+        .map_err(|_e| StartError::CouldNotConstruct)?;
 
-        self.actor_registries
-            .lock()
-            .unwrap()
+        let mut binding = self.actor_registries.lock().unwrap();
+        let hash_map = binding
             .get_mut(id.asset())
-            .expect("The ActorRegistry for asset should exist before creating Actors on it")
+            .expect("The ActorRegistry for asset should exist before creating Actors on it");
+
+        if hash_map.operational_agent_senders.contains_key(id) {
+            return Err(StartError::AlreadyRunning);
+        }
+
+        hash_map
             .operational_agent_senders
             .insert(id.clone(), communication);
         Ok(())

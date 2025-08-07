@@ -208,69 +208,72 @@ impl FromStr for Resources
     }
 }
 
+impl Display for Resources
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        let value = match self {
+            Resources::Medic => "MEDIC",
+            Resources::MtnCran => "MTN-CRAN",
+            Resources::MtnElec => "MTN-ELEC",
+            Resources::MtnInst => "MTN-INST",
+            Resources::MtnLagg => "MTN-LAGG",
+            Resources::MtnMech => "MTN-MECH",
+            Resources::MtnPain => "MTN-PAIN",
+            Resources::MtnPipf => "MTN-PIPF",
+            Resources::MtnRigg => "MTN-RIGG",
+            Resources::MtnRope => "MTN-ROPE",
+            Resources::MtnRous => "MTN-ROUS",
+            Resources::MtnSat => "MTN-SAT",
+            Resources::MtnScaf => "MTN-SCAF",
+            Resources::MtnTele => "MTN-TELE",
+            Resources::MtnTurb => "MTN-TURB",
+            Resources::InpSite => "INP-SITE",
+            Resources::Prodlabo => "PRODLABO",
+            Resources::Prodtech => "PRODTECH",
+            Resources::VenAcco => "VEN-ACCO",
+            Resources::VenComm => "VEN-COMM",
+            Resources::VenCran => "VEN-CRAN",
+            Resources::VenElec => "VEN-ELEC",
+            Resources::VenHvac => "VEN-HVAC",
+            Resources::VenInsp => "VEN-INSP",
+            Resources::VenInst => "VEN-INST",
+            Resources::VenMech => "VEN-MECH",
+            Resources::VenMete => "VEN-METE",
+            Resources::VenRope => "VEN-ROPE",
+            Resources::VenScaf => "VEN-SCAF",
+            Resources::VenSubs => "VEN-SUBS",
+            Resources::Qaqcelec => "QAQCELEC",
+            Resources::Qaqcmech => "QAQCMECH",
+            Resources::Qaqcpain => "QAQCPAIN",
+            Resources::Wellsupv => "WELLSUPV",
+            Resources::VenTurb => "VEN-TURB",
+            Resources::ConVen => "CON-VEN",
+            Resources::Mainonsh => "MAINONSH",
+            Resources::Drilling => "DRILLING",
+            Resources::Wellmain => "WELLMAIN",
+            Resources::Welltech => "WELLTECH",
+            Resources::ConElec => "CON-ELEC",
+            Resources::ConInpf => "CON-INPF",
+            Resources::ConInst => "CON-INST",
+            Resources::ConLagg => "CON-LAGG",
+            Resources::ConNdti => "CON-NDTI",
+            Resources::ConScaf => "CON-SCAF",
+            Resources::ConPain => "CON-PAIN",
+            Resources::ConRigg => "CON-RIGG",
+            Resources::ConRope => "CON-ROPE",
+            Resources::ConWeld => "CON-WELD",
+            Resources::Prodccr => "PRODCCR",
+            Resources::VenFfeq => "VEN-FFEQ",
+            Resources::CmpRigg => "CMP-RIGG",
+            Resources::CmpScaf => "CMP-SCAF",
+            Resources::ConNpt => "CON-NPT",
+        };
+        write!(f, "{}", value)
+    }
+}
 impl Resources
 {
-    pub fn variant_name(&self) -> String
-    {
-        match self {
-            Resources::Medic => "MEDIC".to_string(),
-            Resources::MtnCran => "MTN-CRAN".to_string(),
-            Resources::MtnElec => "MTN-ELEC".to_string(),
-            Resources::MtnInst => "MTN-INST".to_string(),
-            Resources::MtnLagg => "MTN-LAGG".to_string(),
-            Resources::MtnMech => "MTN-MECH".to_string(),
-            Resources::MtnPain => "MTN-PAIN".to_string(),
-            Resources::MtnPipf => "MTN-PIPF".to_string(),
-            Resources::MtnRigg => "MTN-RIGG".to_string(),
-            Resources::MtnRope => "MTN-ROPE".to_string(),
-            Resources::MtnRous => "MTN-ROUS".to_string(),
-            Resources::MtnSat => "MTN-SAT".to_string(),
-            Resources::MtnScaf => "MTN-SCAF".to_string(),
-            Resources::MtnTele => "MTN-TELE".to_string(),
-            Resources::MtnTurb => "MTN-TURB".to_string(),
-            Resources::InpSite => "INP-SITE".to_string(),
-            Resources::Prodlabo => "PRODLABO".to_string(),
-            Resources::Prodtech => "PRODTECH".to_string(),
-            Resources::VenAcco => "VEN-ACCO".to_string(),
-            Resources::VenComm => "VEN-COMM".to_string(),
-            Resources::VenCran => "VEN-CRAN".to_string(),
-            Resources::VenElec => "VEN-ELEC".to_string(),
-            Resources::VenHvac => "VEN-HVAC".to_string(),
-            Resources::VenInsp => "VEN-INSP".to_string(),
-            Resources::VenInst => "VEN-INST".to_string(),
-            Resources::VenMech => "VEN-MECH".to_string(),
-            Resources::VenMete => "VEN-METE".to_string(),
-            Resources::VenRope => "VEN-ROPE".to_string(),
-            Resources::VenScaf => "VEN-SCAF".to_string(),
-            Resources::VenSubs => "VEN-SUBS".to_string(),
-            Resources::Qaqcelec => "QAQCELEC".to_string(),
-            Resources::Qaqcmech => "QAQCMECH".to_string(),
-            Resources::Qaqcpain => "QAQCPAIN".to_string(),
-            Resources::Wellsupv => "WELLSUPV".to_string(),
-            Resources::VenTurb => "VEN-TURB".to_string(),
-            Resources::ConVen => "CON-VEN".to_string(),
-            Resources::Mainonsh => "MAINONSH".to_string(),
-            Resources::Drilling => "DRILLING".to_string(),
-            Resources::Wellmain => "WELLMAIN".to_string(),
-            Resources::Welltech => "WELLTECH".to_string(),
-            Resources::ConElec => "CON-ELEC".to_string(),
-            Resources::ConInpf => "CON-INPF".to_string(),
-            Resources::ConInst => "CON-INST".to_string(),
-            Resources::ConLagg => "CON-LAGG".to_string(),
-            Resources::ConNdti => "CON-NDTI".to_string(),
-            Resources::ConScaf => "CON-SCAF".to_string(),
-            Resources::ConPain => "CON-PAIN".to_string(),
-            Resources::ConRigg => "CON-RIGG".to_string(),
-            Resources::ConRope => "CON-ROPE".to_string(),
-            Resources::ConWeld => "CON-WELD".to_string(),
-            Resources::Prodccr => "PRODCCR".to_string(),
-            Resources::VenFfeq => "VEN-FFEQ".to_string(),
-            Resources::CmpRigg => "CMP-RIGG".to_string(),
-            Resources::CmpScaf => "CMP-SCAF".to_string(),
-            Resources::ConNpt => "CON-NPT".to_string(),
-        }
-    }
-
     pub fn is_ven_variant(&self) -> bool
     {
         matches!(
@@ -301,14 +304,6 @@ impl Resources
                 | Self::MtnPipf
                 | Self::MtnPain
         )
-    }
-}
-
-impl Display for Resources
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
-    {
-        write!(f, "{}", self.variant_name())
     }
 }
 
@@ -395,7 +390,7 @@ impl IntoExcelData for Resources
         col: rust_xlsxwriter::ColNum,
     ) -> Result<&mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError>
     {
-        let value = self.variant_name();
+        let value = self.to_string();
         worksheet.write_string(row, col, value)
     }
 
@@ -407,7 +402,7 @@ impl IntoExcelData for Resources
         format: &rust_xlsxwriter::Format,
     ) -> Result<&'a mut rust_xlsxwriter::Worksheet, rust_xlsxwriter::XlsxError>
     {
-        let value = self.variant_name();
+        let value = self.to_string();
         worksheet.write_string_with_format(row, col, value, format)
     }
 }

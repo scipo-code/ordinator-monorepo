@@ -96,6 +96,40 @@ pub struct WorkOrders
     // that they are.
 }
 
+impl WorkOrders
+{
+    pub fn update_material_checked(
+        &mut self,
+        work_order_number: &WorkOrderNumber,
+        checked: bool,
+    ) -> anyhow::Result<()>
+    {
+        self.inner
+            .get_mut(work_order_number)
+            .with_context(|| {
+                format!(
+                    "work order {:#?} not present in WorkOrder",
+                    work_order_number
+                )
+            })?
+            .material_checked = checked;
+
+        Ok(())
+    }
+
+    pub fn resource(&self, work_order_activity: &(WorkOrderNumber, u64)) -> Option<Resources>
+    {
+        Some(
+            self.inner
+                .get(&work_order_activity.0)?
+                .operations
+                .0
+                .get(&work_order_activity.1)?
+                .resource,
+        )
+    }
+}
+
 // WARN
 // Configurations should only be used during initialization not the
 // remaining parts of the code.
@@ -226,21 +260,23 @@ pub struct WorkOrder
     pub work_order_number: WorkOrderNumber,
     pub main_work_center: Resources,
     pub operations: Operations,
+    pub material_checked: bool,
     pub work_order_analytic: WorkOrderAnalytic,
     pub work_order_dates: WorkOrderDates,
     pub work_order_info: WorkOrderInfo,
+    // This is not acceptable. You should move it out
     pub fixed_by: FixedWorkOrder,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum FixedWorkOrder
 {
+    // You are mixing workers and `time`
     Period(Period),
     BasicStart(NaiveDate),
     Operational(DateTime<Utc>),
     BusinessLogic,
 }
-
 // Should you work on this now? No! Practice skills and read.
 // #[derive(Serialize, Deserialize, Clone, Debug)]
 // pub struct ManuallyInputtedInformation
@@ -282,6 +318,7 @@ impl WorkOrderBuilder
                 .work_order_info
                 .expect("Missing field initializations on the WorkOrderBuilder"),
             fixed_by: FixedWorkOrder::BusinessLogic,
+            material_checked: false,
         }
     }
 
@@ -463,8 +500,8 @@ impl TacticalForceType
 #[derive(Debug)]
 pub struct TechnicianInclude
 {
-    id: Id,
-    interval: Option<(Day, Day)>,
+    pub id: Id,
+    pub interval: Option<(Day, Day)>,
 }
 
 #[allow(dead_code)]

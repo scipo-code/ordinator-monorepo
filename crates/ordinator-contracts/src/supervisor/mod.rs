@@ -2,6 +2,7 @@ use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 use std::collections::HashMap;
 
+use anyhow::Context;
 use ordinator_scheduling_environment::time_environment::TimeEnvironment;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrders;
@@ -34,7 +35,7 @@ pub struct SupervisorMainTableDto {
 #[derive(ToSchema, Debug, Serialize)]
 pub struct DaySubtable {
     // Each person should be mentioned once.
-    work_order_activities_per_id: HashMap<IdStringDto, Vec<WorkOrderSupervisorRow>>,
+    work_order_activities_per_work_center: HashMap<String, Vec<WorkOrderSupervisorRow>>,
 }
 
 type Area = Option<String>;
@@ -42,7 +43,9 @@ type Permit = Option<String>;
 type Description = String;
 type Icc = Option<String>;
 #[derive(Debug, ToSchema, Serialize)]
-pub struct WorkOrderSupervisorRow {
+pub struct WorkOrderSupervisorRow
+{
+    id: IdStringDto,
     area: Area,
     work_order_number: WorkOrderNumberDto,
     activity_number: ActivityNumber,
@@ -55,8 +58,11 @@ pub struct WorkOrderSupervisorRow {
     percentage_complete: Percentage,
 }
 
-impl From<(&WorkOrder, ActivityNumber)> for WorkOrderSupervisorRow {
-    fn from(value: (&WorkOrder, ActivityNumber)) -> Self {
+impl From<(&WorkOrder, ActivityNumber, IdStringDto)> for WorkOrderSupervisorRow
+{
+    fn from(value: (&WorkOrder, ActivityNumber, IdStringDto)) -> Self
+    {
+
         let hours_worked = 0.0;
         let hours_planned = value
             .0
@@ -71,6 +77,7 @@ impl From<(&WorkOrder, ActivityNumber)> for WorkOrderSupervisorRow {
         let percentage = Percentage(hours_worked / hours_planned);
 
         Self {
+            id: value.2,
             area: None,
             work_order_number: WorkOrderNumberDto(value.0.work_order_number.0),
             activity_number: value.1,
@@ -117,10 +124,11 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
             .assess_and_assign_activities();
 
         for day in value.2.days.iter().take(14) {
-            let mut work_order_activities_per_id: HashMap<
-                IdStringDto,
+            let mut work_order_activities_per_work_center: HashMap<
+                String,
                 Vec<WorkOrderSupervisorRow>,
             > = HashMap::default();
+
             for (id, work_order_activity) in assigned_activities {
                 let operational_solutions = &value.1.operational;
 
@@ -141,16 +149,25 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
                             .get(&work_order_activity.0)
                             .expect("WorkOrder should always be present here"),
                         work_order_activity.1,
+                        IdStringDto::from(id.clone()),
                     ));
 
-                    work_order_activities_per_id
-                        .entry(IdStringDto::from(id.clone()))
+                    let resource = value
+                        .0
+                        .resource(work_order_activity)
+                        .context("Could not find the work order and corresponding activity")?
+                        .to_string();
+                    work_order_activities_per_work_center
+                        .entry(resource)
                         .or_default()
                         .push(work_order_supervisor_row);
                 }
             }
+            work_order_activities_per_work_center
+                .iter_mut()
+                .for_each(|e| e.1.sort_by(|a, b| a.id.cmp(&b.id)));
             let day_subtable = DaySubtable {
-                work_order_activities_per_id,
+                work_order_activities_per_work_center,
             };
             days.insert(NaiveDateDto::from(day.date.date_naive()), day_subtable);
         }

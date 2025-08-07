@@ -8,6 +8,10 @@ use std::path::PathBuf;
 
 use anyhow::Context;
 use anyhow::Result;
+use availability::Availability;
+use chrono::DateTime;
+use chrono::NaiveTime;
+use chrono::Utc;
 use crew::OperationalConfiguration;
 use resources::Id;
 use serde::Deserialize;
@@ -15,6 +19,7 @@ use serde::Serialize;
 
 use crate::Asset;
 use crate::time_environment::MaterialToPeriod;
+use crate::time_environment::TimeInterval;
 use crate::work_order::WorkOrderConfigurations;
 
 pub type OperationalId = String;
@@ -155,6 +160,22 @@ pub struct ActorSpecifications
     pub material_to_period: MaterialToPeriod,
 }
 
+impl ActorSpecifications
+{
+    pub fn add_operational(
+        &mut self,
+        id: &Id,
+        start_date: DateTime<Utc>,
+        finish_date: DateTime<Utc>,
+    )
+    {
+        let availability = Availability::new(start_date, finish_date);
+        let input_operational = InputOperational::new(id.clone(), 6.0, availability);
+
+        self.operational.push(input_operational);
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TimeInput
 {
@@ -201,6 +222,39 @@ pub struct InputOperational
     pub hours_per_day: f64,
     pub operational_configuration: OperationalConfiguration,
     pub operational_options: OperationalOptions,
+}
+
+impl InputOperational
+{
+    pub fn new(id: Id, hours_per_day: f64, availability: Availability) -> Self
+    {
+        let operational_configuration = OperationalConfiguration::new(
+            availability,
+            TimeInterval {
+                start: NaiveTime::from_hms_opt(11, 0, 0).unwrap(),
+                end: NaiveTime::from_hms_opt(12, 0, 0).unwrap(),
+            },
+            TimeInterval {
+                start: NaiveTime::from_hms_opt(19, 0, 0).unwrap(),
+                end: NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
+            },
+            TimeInterval {
+                start: NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
+                end: NaiveTime::from_hms_opt(8, 0, 0).unwrap(),
+            },
+        );
+
+        let operational_options = OperationalOptions {
+            number_of_removed_activities: 15,
+        };
+
+        Self {
+            id,
+            hours_per_day,
+            operational_configuration,
+            operational_options,
+        }
+    }
 }
 /// This type is for loading in the `Strategic` configurations
 /// so that the `StrategicOptions` can be loaded in to the `Agent`

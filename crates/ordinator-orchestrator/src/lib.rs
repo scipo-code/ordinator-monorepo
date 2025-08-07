@@ -43,6 +43,7 @@ pub use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrders;
 pub use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 pub use ordinator_scheduling_environment::worker_environment::resources::Id;
+pub use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use ordinator_strategic_actor::StrategicApi;
 use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
 pub use ordinator_strategic_actor::messages::StrategicRequestMessage;
@@ -100,6 +101,13 @@ pub enum OrchestratorRequest
     // CreateOperationalAgent(Asset, Id, f64, OperationalConfiguration),
     DeleteOperationalAgent(Asset, String),
     Export(Asset),
+}
+
+pub enum StartError
+{
+    AlreadyRunning,
+    CouldNotConstruct,
+    CouldNotCreateDependencies,
 }
 
 // These are basically handlers on the `Orchestrator` I think that they

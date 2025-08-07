@@ -97,7 +97,7 @@ where
     // from there.
     //
     // One thing is for sure. Now is not the time to fix this.
-    pub fn run(&mut self) -> ()
+    pub fn run(&mut self)
     {
         let mut schedule_iteration = ScheduleIteration::default();
 
@@ -157,7 +157,7 @@ where
                     self.error_channel
                         .send(err)
                         .expect("If error channel is down, everything is down");
-                    panic!("{}", &self.actor_id.0)
+                    9999
                 }
             };
 

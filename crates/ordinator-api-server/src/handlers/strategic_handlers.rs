@@ -76,7 +76,7 @@ pub async fn get_scheduler_work_orders(
             .expect("This should never fail");
 
     let periods = query.periods;
-    let work_order_schedule = if periods.len() > 0 {
+    let work_order_schedule = if !periods.is_empty() {
         let work_order_schedule: Vec<_> = work_order_schedule
             .0
             .into_iter()

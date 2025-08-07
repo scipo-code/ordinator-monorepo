@@ -40,6 +40,7 @@ pub struct NaiveDateDto(pub String);
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct WorkOrderNumberDto(pub u64);
 
+
 #[derive(Debug, ToSchema, Serialize)]
 pub enum MaterialStatusDto {
     Smat,
@@ -116,9 +117,12 @@ pub type TotalSystemSolution =
 #[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, ToSchema, Serialize)]
 pub struct IdStringDto(String);
 
-impl From<Id> for IdStringDto {
-    fn from(value: Id) -> Self {
-        IdStringDto(value.0)
+impl From<Id> for IdStringDto
+{
+    fn from(value: Id) -> Self
+    {
+        Self(value.0)
+
     }
 }
 
