@@ -5,6 +5,7 @@ import Layout from "./Layout";
 // import PlanningView from "./pages/PlanningView";
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'; 
 import ScheduleView from "./pages/ScheduleView";
+import MainTable from "./pages/MainTable";
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -15,7 +16,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route path="/:asset/schedule" element={<ScheduleView />} />
-
+              <Route path="/:asset/workschedule" element={<MainTable/>} />
             </Route>
           </Routes>
       </HashRouter>
