@@ -131,7 +131,8 @@
 // allow us to live in the past and     // // test on old data. You need to work
 // like this if you want to make this     // work. let
 // operational_configuration_all =     //
-// OperationalConfigurationAll::new(id.clone(), 6.0,     // operational_configuration);
+// OperationalConfigurationAll::new(id.clone(), 6.0,     //
+// operational_configuration);
 //
 
 //     // scheduling_environment

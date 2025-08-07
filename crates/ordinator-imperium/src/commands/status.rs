@@ -2,8 +2,10 @@ use clap::Subcommand;
 use ordinator_scheduling_environment;
 
 #[derive(Subcommand, Debug)]
-pub enum StatusCommands {
-    WorkOrders {
+pub enum StatusCommands
+{
+    WorkOrders
+    {
         #[clap(subcommand)]
         work_orders: WorkOrders,
     },
@@ -13,10 +15,17 @@ pub enum StatusCommands {
 
 /// We should put a lot of thought into the subcommand of the work orders.
 #[derive(Subcommand, Debug)]
-pub enum WorkOrders {
+pub enum WorkOrders
+{
     /// Get the aggregated state of all work orders
-    WorkOrderState { asset: Asset },
+    WorkOrderState
+    {
+        asset: Asset
+    },
 
     /// Get all details of a specific work order
-    WorkOrder { work_order_number: u64 },
+    WorkOrder
+    {
+        work_order_number: u64
+    },
 }

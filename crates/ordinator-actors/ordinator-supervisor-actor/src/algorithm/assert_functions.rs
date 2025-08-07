@@ -2,21 +2,24 @@ use std::collections::HashSet;
 
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use tracing::Level;
 use tracing::event;
+use tracing::Level;
 
 use super::SupervisorSolution;
 
 #[allow(dead_code)]
-pub trait OperationalStateMachineAssertions {
+pub trait OperationalStateMachineAssertions
+{
     fn assert_that_unassigned_woas_are_valid(&self);
     fn assert_that_operational_state_machine_for_each_work_order_is_either_delegate_assign_and_unassign_or_all_assess(
         &self,
     );
 }
 
-impl OperationalStateMachineAssertions for SupervisorSolution {
-    fn assert_that_unassigned_woas_are_valid(&self) {
+impl OperationalStateMachineAssertions for SupervisorSolution
+{
+    fn assert_that_unassigned_woas_are_valid(&self)
+    {
         for work_order_activity in self
             .operational_state_machine
             .keys()
@@ -45,11 +48,12 @@ impl OperationalStateMachineAssertions for SupervisorSolution {
 
     fn assert_that_operational_state_machine_for_each_work_order_is_either_delegate_assign_and_unassign_or_all_assess(
         &self,
-    ) {
+    )
+    {
         let work_order_numbers: HashSet<WorkOrderNumber> = self
             .operational_state_machine
             .keys()
-            .map(|d| d.1.0)
+            .map(|d| d.1 .0)
             .collect();
 
         for work_order_number in work_order_numbers {
@@ -58,7 +62,7 @@ impl OperationalStateMachineAssertions for SupervisorSolution {
 
             self.operational_state_machine
                 .iter()
-                .filter(|(id_woa, _)| id_woa.1.0 == work_order_number)
+                .filter(|(id_woa, _)| id_woa.1 .0 == work_order_number)
                 .for_each(|osm| {
                     let delegate = osm.1;
 

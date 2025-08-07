@@ -1,17 +1,17 @@
-use std::collections::HashMap;
 use std::collections::hash_map::Entry;
+use std::collections::HashMap;
 use std::sync::MutexGuard;
 
+use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
-use anyhow::ensure;
 use ordinator_actor_core::algorithm::LoadOperation;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::OperationalId;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::OperationalId;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 use serde::Deserialize;
 use serde::Serialize;
 

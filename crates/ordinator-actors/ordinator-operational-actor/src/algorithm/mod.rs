@@ -9,9 +9,9 @@ use std::ops::Deref;
 use std::ops::DerefMut;
 use std::sync::Arc;
 
+use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
-use anyhow::ensure;
 use assert_functions::OperationalAlgorithmAsserts;
 use chrono::DateTime;
 use chrono::TimeDelta;
@@ -28,6 +28,8 @@ use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::AbLNSUtils;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
+use ordinator_orchestrator_actor_traits::delegate::Delegate;
+use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_orchestrator_actor_traits::OperationalInterface;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
@@ -35,20 +37,18 @@ use ordinator_orchestrator_actor_traits::SupervisorInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::TacticalInterface;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
-use ordinator_orchestrator_actor_traits::delegate::Delegate;
-use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
+use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
-use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
+use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use rand::seq::IndexedRandom;
-use tracing::Level;
 use tracing::debug;
 use tracing::event;
+use tracing::Level;
 
 #[derive(Debug)]
 pub struct OperationalAlgorithm<Ss>(Algorithm<OperationalSolution, OperationalParameters, (), Ss>)
@@ -756,7 +756,7 @@ where
             .solution
             .scheduled_work_order_activities
             .iter()
-            .map(|e| e.0.0)
+            .map(|e| e.0 .0)
             .collect::<HashSet<_>>();
 
         ensure!(
@@ -805,7 +805,7 @@ where
                 .first()
                 .unwrap()
                 .0
-                .0
+                 .0
                 == WorkOrderNumber(0))
         );
         ensure!(
@@ -815,7 +815,7 @@ where
                 .last()
                 .unwrap()
                 .0
-                .0
+                 .0
                 == WorkOrderNumber(0))
         );
         for operational_solution in &operational_solutions_filtered {
@@ -928,24 +928,21 @@ where
         work_order_and_activity_number: WorkOrderActivity,
     ) -> Result<()>
     {
-        ensure!(
-            self.solution
-                .scheduled_work_order_activities
-                .iter()
-                .any(|os| os.0 == work_order_and_activity_number)
-        );
+        ensure!(self
+            .solution
+            .scheduled_work_order_activities
+            .iter()
+            .any(|os| os.0 == work_order_and_activity_number));
 
         self.solution
             .scheduled_work_order_activities
             .retain(|os| os.0 != work_order_and_activity_number);
 
-        ensure!(
-            !self
-                .solution
-                .scheduled_work_order_activities
-                .iter()
-                .any(|os| os.0 == work_order_and_activity_number)
-        );
+        ensure!(!self
+            .solution
+            .scheduled_work_order_activities
+            .iter()
+            .any(|os| os.0 == work_order_and_activity_number));
         Ok(())
     }
 

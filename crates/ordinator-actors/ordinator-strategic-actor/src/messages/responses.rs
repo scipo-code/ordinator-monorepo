@@ -58,8 +58,8 @@ impl StrategicResponseScheduling
 }
 use ordinator_scheduling_environment::Asset;
 
-use crate::StrategicActor;
 use crate::algorithm::strategic_solution::StrategicSolution;
+use crate::StrategicActor;
 
 #[derive(Debug, Serialize)]
 pub struct StrategicResponseStatus

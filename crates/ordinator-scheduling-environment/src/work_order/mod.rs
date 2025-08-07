@@ -10,10 +10,10 @@ use std::collections::HashSet;
 use std::num::ParseIntError;
 use std::str::FromStr;
 
-use anyhow::Context;
-use anyhow::Result;
 use anyhow::bail;
 use anyhow::ensure;
+use anyhow::Context;
+use anyhow::Result;
 use chrono::DateTime;
 use chrono::NaiveDate;
 use chrono::TimeDelta;
@@ -29,21 +29,21 @@ use self::operation::Operation;
 use self::operation::OperationBuilder;
 use self::operation::Operations;
 use self::operation::Work;
+use self::work_order_analytic::status_codes::MaterialStatus;
 use self::work_order_analytic::WorkOrderAnalytic;
 use self::work_order_analytic::WorkOrderAnalyticBuilder;
-use self::work_order_analytic::status_codes::MaterialStatus;
 use self::work_order_dates::WorkOrderDates;
-use self::work_order_info::WorkOrderInfo;
-use self::work_order_info::WorkOrderInfoBuilder;
 use self::work_order_info::functional_location::FunctionalLocation;
 use self::work_order_info::priority::Priority;
 use self::work_order_info::work_order_type::WorkOrderType;
+use self::work_order_info::WorkOrderInfo;
+use self::work_order_info::WorkOrderInfoBuilder;
 use super::time_environment::period::Period;
 use super::worker_environment::resources::Resources;
-use crate::Asset;
-use crate::time_environment::MaterialToPeriod;
 use crate::time_environment::day::Day;
+use crate::time_environment::MaterialToPeriod;
 use crate::worker_environment::resources::Id;
+use crate::Asset;
 
 // TODO [ ]
 //
@@ -177,7 +177,7 @@ impl WorkOrdersBuilder
     }
 
     pub fn work_orders_manual(self, work_orders_inner: HashMap<WorkOrderNumber, WorkOrder>)
-    -> Self
+        -> Self
     {
         Self {
             inner: Some(work_orders_inner),

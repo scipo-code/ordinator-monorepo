@@ -7,9 +7,9 @@ use std::iter::Sum;
 use std::num::ParseFloatError;
 use std::str::FromStr;
 
+use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
-use anyhow::ensure;
 use chrono::DateTime;
 use chrono::Utc;
 use colored::Colorize;
@@ -17,17 +17,17 @@ use operation_analytic::OperationAnalyticBuilder;
 use operation_info::OperationInfoBuilder;
 use rust_decimal::prelude::*;
 use rust_xlsxwriter::IntoExcelData;
-use serde::Deserialize;
-use serde::Serialize;
 use serde::de::MapAccess;
 use serde::de::Visitor;
 use serde::de::{self};
 use serde::ser::SerializeStruct;
+use serde::Deserialize;
+use serde::Serialize;
 
 use self::operation_analytic::OperationAnalytic;
 use self::operation_info::OperationInfo;
-use super::ActivityRelation;
 use super::work_order_dates::unloading_point::UnloadingPoint;
+use super::ActivityRelation;
 use crate::time_environment::day::Day;
 use crate::time_environment::period::Period;
 use crate::worker_environment::resources::Resources;
@@ -153,7 +153,7 @@ impl OperationsBuilder
 {
     pub fn build(self) -> Operations
     {
-        Operations(self.0.0)
+        Operations(self.0 .0)
     }
 
     // This should insert values into the `Operations` if there are no one there.
@@ -170,7 +170,7 @@ impl OperationsBuilder
 
         f(&mut operations_builder);
 
-        self.0.0.insert(
+        self.0 .0.insert(
             operations_builder.operations_number,
             operations_builder.build(),
         );

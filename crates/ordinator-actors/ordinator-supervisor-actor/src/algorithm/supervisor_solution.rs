@@ -6,12 +6,12 @@ use std::sync::Arc;
 
 use anyhow::Result;
 use arc_swap::Guard;
+use ordinator_orchestrator_actor_traits::delegate::Delegate;
+use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_orchestrator_actor_traits::OperationalInterface;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_orchestrator_actor_traits::delegate::Delegate;
-use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
@@ -165,7 +165,7 @@ impl SupervisorSolution
     {
         self.operational_state_machine
             .iter_mut()
-            .filter(|(key, _)| key.1.0 == work_order_number)
+            .filter(|(key, _)| key.1 .0 == work_order_number)
             .for_each(|(_, delegate)| *delegate = Delegate::Assess)
     }
 
@@ -248,7 +248,7 @@ impl SupervisorSolution
             .filter(|(_, delegate)| {
                 **delegate == Delegate::Assign || **delegate == Delegate::Unassign
             })
-            .map(|(id_woa, _)| id_woa.1.0)
+            .map(|(id_woa, _)| id_woa.1 .0)
             .collect()
     }
 

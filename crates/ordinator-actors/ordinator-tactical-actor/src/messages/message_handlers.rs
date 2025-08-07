@@ -9,11 +9,11 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 
 use super::TacticalRequestMessage;
 use super::TacticalResponseMessage;
-use crate::algorithm::TacticalAlgorithm;
-use crate::algorithm::tactical_parameters::TacticalParameters;
 use crate::algorithm::tactical_parameters::create_tactical_parameter;
+use crate::algorithm::tactical_parameters::TacticalParameters;
 use crate::algorithm::tactical_resources::TacticalResources;
 use crate::algorithm::tactical_solution::TacticalSolution;
+use crate::algorithm::TacticalAlgorithm;
 
 // TODO [ ]
 // Make a TacticalAgent here! I believe that this is the best appraoch. The only

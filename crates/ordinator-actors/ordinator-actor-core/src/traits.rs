@@ -6,9 +6,9 @@ use anyhow::Result;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use serde::Serialize;
-use tracing::Level;
 use tracing::event;
 use tracing::info;
+use tracing::Level;
 
 pub type ActorLinkToSchedulingEnvironment<'a> = MutexGuard<'a, SchedulingEnvironment>;
 

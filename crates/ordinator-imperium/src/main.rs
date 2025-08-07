@@ -1,17 +1,25 @@
 pub mod commands;
 
-use std::{fs::File, io::Write};
+use std::fs::File;
+use std::io::Write;
 
-use anyhow::{Context, Result, bail};
-use clap::{Command, CommandFactory, Parser};
-use clap_complete::{Generator, Shell, generate};
+use anyhow::bail;
+use anyhow::Context;
+use anyhow::Result;
+use clap::Command;
+use clap::CommandFactory;
+use clap::Parser;
+use clap_complete::generate;
+use clap_complete::Generator;
+use clap_complete::Shell;
 use commands::Commands;
 use ordinator_contracts::SystemMessages;
 use reqwest::blocking::Client;
 
 #[derive(Parser)]
 #[command(name = "imperium", author, version, about, long_about = None)]
-pub struct Cli {
+pub struct Cli
+{
     #[arg(long = "generate", value_enum)]
     generator: Option<Shell>,
     #[command(subcommand)]
@@ -19,7 +27,8 @@ pub struct Cli {
 }
 
 /// Main function of the imperium command line tool
-fn main() -> anyhow::Result<()> {
+fn main() -> anyhow::Result<()>
+{
     let cli = Cli::parse();
 
     if let Some(generator) = cli.generator {
@@ -48,7 +57,8 @@ fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn create_client() -> anyhow::Result<Client> {
+fn create_client() -> anyhow::Result<Client>
+{
     let client = match reqwest::blocking::Client::builder().timeout(None).build() {
         Ok(client) => client,
         Err(e) => bail!("Failed to create HTTP client: {}", e),
@@ -57,7 +67,8 @@ fn create_client() -> anyhow::Result<Client> {
     Ok(client)
 }
 
-fn send_http(client: &Client, system_message: SystemMessages) -> Result<String> {
+fn send_http(client: &Client, system_message: SystemMessages) -> Result<String>
+{
     let imperium_address = &dotenvy::var("IMPERIUM_ADDRESS")
         .context("The environment variable IMPERIUM_ADDRESS is not set")?;
 

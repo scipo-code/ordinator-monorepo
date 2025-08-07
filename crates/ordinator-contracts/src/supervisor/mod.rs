@@ -4,12 +4,12 @@ use std::collections::HashMap;
 
 use anyhow::Context;
 use ordinator_scheduling_environment::time_environment::TimeEnvironment;
+use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrders;
-use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
-use ordinator_supervisor_actor::messages::SupervisorResponseMessage;
 use ordinator_supervisor_actor::messages::responses::SupervisorResponseStatus;
+use ordinator_supervisor_actor::messages::SupervisorResponseMessage;
 use serde::Serialize;
 use utoipa::ToSchema;
 
@@ -22,18 +22,21 @@ use crate::WorkOrderActivityDto;
 use crate::WorkOrderNumberDto;
 
 #[derive(ToSchema, Serialize)]
-pub struct SupervisorResourcesDto {
+pub struct SupervisorResourcesDto
+{
     all_technicians: BTreeSet<IdDto>,
     assigned_activities: BTreeMap<IdDto, WorkOrderActivityDto>,
 }
 
 #[derive(ToSchema, Serialize, Debug)]
-pub struct SupervisorMainTableDto {
+pub struct SupervisorMainTableDto
+{
     days: BTreeMap<NaiveDateDto, DaySubtable>,
 }
 
 #[derive(ToSchema, Debug, Serialize)]
-pub struct DaySubtable {
+pub struct DaySubtable
+{
     // Each person should be mentioned once.
     work_order_activities_per_work_center: HashMap<String, Vec<WorkOrderSupervisorRow>>,
 }
@@ -62,7 +65,6 @@ impl From<(&WorkOrder, ActivityNumber, IdStringDto)> for WorkOrderSupervisorRow
 {
     fn from(value: (&WorkOrder, ActivityNumber, IdStringDto)) -> Self
     {
-
         let hours_worked = 0.0;
         let hours_planned = value
             .0
@@ -108,12 +110,14 @@ pub struct Percentage(f64);
 // This should be a trait as well. You should not do it like this I believe
 // This means that you will have to make a From implementation for each
 // kind of SystemSolution. I am not that is the best.
-impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for SupervisorMainTableDto {
+impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for SupervisorMainTableDto
+{
     type Error = anyhow::Error;
 
     fn try_from(
         value: (&WorkOrders, &TotalSystemSolution, &TimeEnvironment),
-    ) -> Result<Self, Self::Error> {
+    ) -> Result<Self, Self::Error>
+    {
         let mut days = BTreeMap::default();
 
         let assigned_activities = &value
@@ -178,7 +182,8 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
 // TODO [ ]
 // Implement the other messages here as well
 #[derive(Serialize, ToSchema)]
-pub enum SupervisorResponseMessageDto {
+pub enum SupervisorResponseMessageDto
+{
     Status(SupervisorResponseStatusDto),
     Scheduling,
     Resources,
@@ -188,14 +193,17 @@ pub enum SupervisorResponseMessageDto {
 // CRUCIAL INSIGHT
 // You are getting more mature here! You should simply keep it up.
 #[derive(Serialize, ToSchema)]
-pub struct SupervisorResponseStatusDto {
+pub struct SupervisorResponseStatusDto
+{
     pub supervisor_resource: Vec<IdDto>,
     pub delegated_work_order_activities: usize,
     pub objective: u64,
 }
 
-impl From<SupervisorResponseStatus> for SupervisorResponseStatusDto {
-    fn from(value: SupervisorResponseStatus) -> Self {
+impl From<SupervisorResponseStatus> for SupervisorResponseStatusDto
+{
+    fn from(value: SupervisorResponseStatus) -> Self
+    {
         Self {
             supervisor_resource: value
                 .supervisor_resource
@@ -207,8 +215,10 @@ impl From<SupervisorResponseStatus> for SupervisorResponseStatusDto {
         }
     }
 }
-impl From<SupervisorResponseMessage> for SupervisorResponseMessageDto {
-    fn from(value: SupervisorResponseMessage) -> Self {
+impl From<SupervisorResponseMessage> for SupervisorResponseMessageDto
+{
+    fn from(value: SupervisorResponseMessage) -> Self
+    {
         match value {
             SupervisorResponseMessage::StateLink => todo!(),
             SupervisorResponseMessage::Status(supervisor_response_status) => {
@@ -225,8 +235,10 @@ impl From<SupervisorResponseMessage> for SupervisorResponseMessageDto {
 // not decide a single thing here.
 
 // This can be derived uniquely from the SystemSolution
-impl From<SupervisorSolution> for SupervisorResourcesDto {
-    fn from(value: SupervisorSolution) -> Self {
+impl From<SupervisorSolution> for SupervisorResourcesDto
+{
+    fn from(value: SupervisorSolution) -> Self
+    {
         let all_technicians = value.all_technicians();
         let assigned_activities = value.assigned_activities();
         SupervisorResourcesDto {

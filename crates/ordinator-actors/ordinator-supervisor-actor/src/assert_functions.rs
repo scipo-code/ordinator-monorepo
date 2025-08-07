@@ -1,17 +1,17 @@
 use std::collections::HashSet;
 use std::fmt::Debug;
 
-use anyhow::Result;
 use anyhow::bail;
+use anyhow::Result;
 use ordinator_actor_core::Actor;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use tracing::Level;
 use tracing::event;
+use tracing::Level;
 
-use crate::algorithm::SupervisorAlgorithm;
 use crate::algorithm::supervisor_solution::SupervisorSolution;
+use crate::algorithm::SupervisorAlgorithm;
 use crate::messages::SupervisorRequestMessage;
 use crate::messages::SupervisorResponseMessage;
 
@@ -49,7 +49,7 @@ where
             .algorithm
             .solution
             .get_iter()
-            .map(|(woa, _)| woa.1.0)
+            .map(|(woa, _)| woa.1 .0)
             .collect();
         // What would it mean to schedule these work
         let symmetric_difference = tactical_operation_woas
@@ -88,7 +88,7 @@ where
             .algorithm
             .solution
             .get_iter()
-            .map(|(woa, _)| woa.1.0)
+            .map(|(woa, _)| woa.1 .0)
             .collect();
 
         if !operational_state_work_order_activities.is_subset(&strategic_work_orders) {

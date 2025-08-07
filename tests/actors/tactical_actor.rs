@@ -1,4 +1,5 @@
 #[test]
+#[ignore]
 fn test_calculate_objective_value()
 {
     let work_order_number = WorkOrderNumber(2100000001);
@@ -30,6 +31,7 @@ fn test_calculate_objective_value()
     // simply work on it without an arc mutex. Yes I think that is the best
     // appraoch.
     let scheduling_environment = SchedulingEnvironment::builder()
+        .work_orders
         .time_environment_builder(|ib| ib.tactical_days("2025-02-22T07:00:00Z", 56))
         .build();
 

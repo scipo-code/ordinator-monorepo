@@ -7,12 +7,8 @@ use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::TacticalInterface;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
-use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::time_environment::day::OptionDay;
 use ordinator_scheduling_environment::time_environment::period::Period;
-use ordinator_scheduling_environment::work_order::WorkOrder;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::work_order::WorkOrders;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::MaterialStatus;
@@ -24,7 +20,11 @@ use ordinator_scheduling_environment::work_order::work_order_info::priority::Pri
 use ordinator_scheduling_environment::work_order::work_order_info::revision::Revision;
 use ordinator_scheduling_environment::work_order::work_order_info::system_condition::SystemCondition;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
+use ordinator_scheduling_environment::work_order::WorkOrder;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::WorkOrders;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::Asset;
 use rust_xlsxwriter::IntoExcelData;
 use rust_xlsxwriter::Worksheet;
 

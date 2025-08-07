@@ -15,8 +15,8 @@ pub mod tj20;
 pub mod tj30;
 pub mod tj30t;
 
-use anyhow::Result;
 use anyhow::ensure;
+use anyhow::Result;
 use chrono::NaiveDate;
 use chrono::NaiveTime;
 use rust_decimal::Decimal;

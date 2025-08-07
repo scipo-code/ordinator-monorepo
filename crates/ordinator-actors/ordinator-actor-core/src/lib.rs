@@ -8,9 +8,9 @@ use std::sync::Arc;
 use std::sync::Mutex;
 
 use algorithm::AlgorithmBuilder;
+use anyhow::anyhow;
 use anyhow::Context;
 use anyhow::Result;
-use anyhow::anyhow;
 use arc_swap::ArcSwap;
 use bus::BusReader;
 use colored::Colorize;
@@ -24,12 +24,12 @@ use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 use serde::Deserialize;
 use serde::Serialize;
-use tracing::Level;
 use tracing::event;
+use tracing::Level;
 
 use self::traits::ActorBasedLargeNeighborhoodSearch;
 

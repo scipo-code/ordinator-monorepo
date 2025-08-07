@@ -1,20 +1,21 @@
 use clap::Subcommand;
-use shared_types::{
-    agents::operational::{
-        requests::operational_request_scheduling::OperationalSchedulingRequest, OperationalRequest,
-        OperationalRequestMessage,
-    },
-    Asset, SystemMessages,
-};
+use shared_types::agents::operational::requests::operational_request_scheduling::OperationalSchedulingRequest;
+use shared_types::agents::operational::OperationalRequest;
+use shared_types::agents::operational::OperationalRequestMessage;
+use shared_types::Asset;
+use shared_types::SystemMessages;
 
 #[derive(Subcommand, Debug)]
-pub enum OperationalCommands {
+pub enum OperationalCommands
+{
     // Get the status of a specific operational agent
-    Status {
+    Status
+    {
         asset: Asset,
     },
     // Access the scheduling commands for an OperationalAgent (Technicial)
-    Scheduling {
+    Scheduling
+    {
         #[clap(subcommand)]
         scheduling_commands: SchedulingCommands,
     },
@@ -23,20 +24,25 @@ pub enum OperationalCommands {
 }
 
 #[derive(Subcommand, Debug)]
-pub enum SchedulingCommands {
+pub enum SchedulingCommands
+{
     // Get all the IDs of technicians
-    OperationalIds {
-        asset: Asset,
+    OperationalIds
+    {
+        asset: Asset
     },
     // Get information on a specific OperationalAgent
-    OperationalAgent {
+    OperationalAgent
+    {
         asset: Asset,
         operational_id: String,
     },
 }
 
-impl OperationalCommands {
-    pub fn execute(&self) -> SystemMessages {
+impl OperationalCommands
+{
+    pub fn execute(&self) -> SystemMessages
+    {
         match self {
             OperationalCommands::Status { asset } => {
                 let operational_request = OperationalRequest::AllOperationalStatus(asset.clone());
@@ -55,7 +61,8 @@ impl OperationalCommands {
                         asset,
                         operational_id,
                     } => {
-                        // TODO: Send message to the orchestrator to retrieve all information on a specific operational agent
+                        // TODO: Send message to the orchestrator to retrieve all information on a
+                        // specific operational agent
                         let operational_request_scheduling =
                             OperationalSchedulingRequest::OperationalState(operational_id.clone());
 
@@ -73,9 +80,11 @@ impl OperationalCommands {
             }
             OperationalCommands::Test => {
                 todo!();
-                // let operational_request_message = OperationalRequestMessage::Test;
+                // let operational_request_message =
+                // OperationalRequestMessage::Test;
 
-                // let operational_request = OperationalRequest::(operational_request_message);
+                // let operational_request =
+                // OperationalRequest::(operational_request_message);
 
                 // SystemMessages::Operational(operational_request)
             }

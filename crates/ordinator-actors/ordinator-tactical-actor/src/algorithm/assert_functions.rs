@@ -1,24 +1,24 @@
 use std::borrow::Cow;
 use std::collections::HashMap;
 
-use anyhow::Result;
 use anyhow::bail;
+use anyhow::Result;
 use colored::Colorize;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use priority_queue::PriorityQueue;
 use strum::IntoEnumIterator;
-use tracing::Level;
 use tracing::event;
+use tracing::Level;
 
-use super::Algorithm;
 use super::tactical_parameters::TacticalParameters;
 use super::tactical_solution::TacticalSolution;
 use super::tactical_solution::TacticalWhereIsWorkOrder;
+use super::Algorithm;
 
 type TotalExcessHours = Work;
 

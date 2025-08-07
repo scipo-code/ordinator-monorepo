@@ -4,45 +4,46 @@ use std::str::FromStr;
 use std::sync::Arc;
 use std::sync::Mutex;
 
+use anyhow::anyhow;
 use anyhow::Context;
 use anyhow::Result;
-use anyhow::anyhow;
 use chrono::NaiveDate;
 use chrono::NaiveTime;
 use ordinator_configuration::toml_baptiste::BaptisteToml;
 use ordinator_scheduling_environment::work_order;
-use ordinator_scheduling_environment::work_order::WorkOrder;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::work_order::WorkOrders;
 use ordinator_scheduling_environment::work_order::operation::Operation;
 use ordinator_scheduling_environment::work_order::operation::Operations;
 use ordinator_scheduling_environment::work_order::work_order_dates::unloading_point::UnloadingPoint;
-use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoBuilder;
 use ordinator_scheduling_environment::work_order::work_order_info::priority::Priority;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_text::WorkOrderText;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
+use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoBuilder;
+use ordinator_scheduling_environment::work_order::WorkOrder;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::WorkOrders;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use rayon::prelude::*;
 
+use super::baptiste_csv_reader::populate_csv_structures;
 use super::baptiste_csv_reader::FLOCTechnicaID;
 use super::baptiste_csv_reader::FunctionalLocationsCsv;
 use super::baptiste_csv_reader::OperationsStatusCsv;
 use super::baptiste_csv_reader::OperationsStatusCsvAggregated;
-use super::baptiste_csv_reader::WBSID;
 use super::baptiste_csv_reader::WorkCenterCsv;
 use super::baptiste_csv_reader::WorkOperations;
 use super::baptiste_csv_reader::WorkOperationsCsv;
 use super::baptiste_csv_reader::WorkOrdersCsv;
 use super::baptiste_csv_reader::WorkOrdersStatusCsv;
 use super::baptiste_csv_reader::WorkOrdersStatusCsvAggregated;
-use super::baptiste_csv_reader::populate_csv_structures;
+use super::baptiste_csv_reader::WBSID;
 use crate::sap_mapper_and_types::DATS;
 use crate::sap_mapper_and_types::TIMS;
 
 // TODO
 // Insert main configuration here,
 // `operating time` is crucial
-pub fn load_csv_data(file_path: &BaptisteToml) -> Result<WorkOrders> {
+pub fn load_csv_data(file_path: &BaptisteToml) -> Result<WorkOrders>
+{
     let functional_locations_csv =
         populate_csv_structures::<FunctionalLocationsCsv>(&file_path.mid_functional_locations)
             .expect("Could not read the csv file");
@@ -79,12 +80,7 @@ pub fn load_csv_data(file_path: &BaptisteToml) -> Result<WorkOrders> {
         work_orders_csv.clone(),
         work_orders_status_agg,
     )
-    .with_context(|| {
-        format!(
-            "File {file_path:#?} could not be found while loading data",
-            
-        )
-    })?;
+    .with_context(|| format!("File {file_path:#?} could not be found while loading data",))?;
 
     let work_orders = WorkOrders::builder()
         .work_orders_manual(work_orders_inner)
@@ -102,7 +98,8 @@ fn create_work_orders(
     work_operations_csv: WorkOperations,
     work_orders: HashMap<WorkOrderNumber, WorkOrdersCsv>,
     work_orders_status: WorkOrdersStatusCsvAggregated,
-) -> Result<HashMap<WorkOrderNumber, WorkOrder>> {
+) -> Result<HashMap<WorkOrderNumber, WorkOrder>>
+{
     assert!(!work_operations_csv.inner.is_empty());
 
     let arc_mutex_inner_work_orders = Arc::new(Mutex::new(HashMap::new()));

@@ -17,10 +17,10 @@ use resources::Id;
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::Asset;
 use crate::time_environment::MaterialToPeriod;
 use crate::time_environment::TimeInterval;
 use crate::work_order::WorkOrderConfigurations;
+use crate::Asset;
 
 pub type OperationalId = String;
 // There is something rotten about all this! I think that the best
