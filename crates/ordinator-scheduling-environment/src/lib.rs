@@ -16,10 +16,7 @@ use chrono::Utc;
 use serde::Deserialize;
 use serde::Serialize;
 use strum_macros::EnumIter;
-use time_environment::day::Day;
-use time_environment::period::Period;
 use time_environment::TimeEnvironmentBuilder;
-use work_order::operation::ActivityNumber;
 use time_environment::day::Day;
 use time_environment::period::Period;
 use work_order::ForcedWorkOrder;
@@ -76,6 +73,13 @@ impl SavedAssignment
         //
         // Yes this is the way! You are now using the `WorkOrder` has a mechanism to
         // overwrite the what ever is in the `SavedAssignments`.
+        //
+        // This function is completely wrong, the issue is that the code is not modified
+        // but over written on each change. That is not the intended behavior.
+        // As long as it works you should keep moving forward. I do not see them
+        // make a test that fails the code. Yes, do not guess, simply keep implementing
+        // and then work on the edge cases and observe the hidden abstraction
+        // afterwards.
         let assignment = match work_order {
             ForcedWorkOrder::Period(period) => {
                 let technicians = id.iter().map(|e| (e.clone(), None)).collect::<HashSet<_>>();
@@ -104,6 +108,7 @@ impl SavedAssignment
             }
         };
 
+        // The forced work order should take precedence,
         let assignment = (work_order_number, Some(*activity_number), assignment);
         self.0.push(assignment);
 
@@ -254,6 +259,9 @@ impl SchedulingEnvironmentBuilder
             //
             // You should not be smart, scalable.
 
+            // Something here is tripping you up. You need to make the code work as well as
+            // possible with the
+            //
             let assignment = Assignment::new(None, None, HashSet::default());
             assignments.push((*work_order_number, None, assignment));
         }

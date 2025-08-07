@@ -9,7 +9,6 @@ use ordinator_orchestrator::Environment;
 use ordinator_orchestrator::Orchestrator;
 use tower_http::services::ServeDir;
 use tracing::info;
-use utoipa::openapi::Components;
 use utoipa::openapi::Info;
 use utoipa::openapi::OpenApiBuilder;
 use utoipa_axum::router::OpenApiRouter;
@@ -21,7 +20,8 @@ use crate::routes::api::v1::api_scope;
 pub async fn start_application(
     orchestrator: Arc<Orchestrator<TotalSystemSolution>>,
     environment: &Environment,
-) -> impl Future<Output = std::result::Result<(), std::io::Error>> {
+) -> impl Future<Output = std::result::Result<(), std::io::Error>>
+{
     // let index_service =
     // get_service(ServeDir::new("./static_files/index")).handle_error(     |err:
     // std::io::Error| async move {         (
