@@ -29,6 +29,8 @@ use worker_environment::resources::Id;
 use self::time_environment::TimeEnvironment;
 use self::worker_environment::ActorEnvironment;
 
+/// This is the main entrypoint into the domain models it is from here
+/// you can access every aggregate root.
 #[derive(Deserialize, Serialize, Debug)]
 pub struct SchedulingEnvironment
 {
@@ -52,6 +54,9 @@ pub struct SavedAssignment(Vec<(WorkOrderNumber, Option<ActivityNumber>, Assignm
 
 impl SavedAssignment
 {
+    // This should be extended to handle the correct initialization of the system.
+    // The best approach is to make the `SavedAssignment`s always dependent on
+    // the technician.
     // Why:
     // To make it possible to assign a [`WorkOrderActivity`] to a single technician.
     //

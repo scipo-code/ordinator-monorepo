@@ -1,3 +1,4 @@
+use std::str::FromStr;
 use std::sync::Arc;
 
 use anyhow::Context;
@@ -7,6 +8,7 @@ use axum::debug_handler;
 use axum::extract::Path;
 use axum::extract::State;
 use axum::response::Result;
+use chrono::DateTime;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::WorkOrderNumberDto;
@@ -14,9 +16,17 @@ use ordinator_contracts::supervisor::SupervisorMainTableDto;
 use ordinator_contracts::supervisor::SupervisorResourcesDto;
 use ordinator_contracts::supervisor::SupervisorResponseMessageDto;
 use ordinator_orchestrator::Asset;
+use ordinator_orchestrator::Id;
 use ordinator_orchestrator::Orchestrator;
+use ordinator_orchestrator::Resources;
+use ordinator_orchestrator::StartError;
+use ordinator_orchestrator::StateLink;
 use ordinator_orchestrator::SupervisorRequestMessage;
 use ordinator_orchestrator::SupervisorStatusMessage::General;
+use ordinator_orchestrator::WorkOrderNumber;
+// This again means that you are doing something wrong. You are implementing the
+// methods in the wrong place
+// This should be moved away from here.
 use serde::Deserialize;
 use serde::Serialize;
 use utoipa::ToSchema;
@@ -196,9 +206,9 @@ pub async fn supervisor_main_table(
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct WorkOrderActivityToTechnicianDto
 {
-    #[schema(example = "2100001234")]
+    #[schema(example = 2100001234)]
     work_order_number: WorkOrderNumberDto,
-    #[schema(example = "20")]
+    #[schema(example = 20)]
     activity_number: u64,
     #[schema(example = "[l1113333, l1112222]")]
     technicians: Vec<String>,
@@ -236,18 +246,20 @@ pub async fn assign_to_technicians(
         technicians,
     } = payload;
 
-    let mut map_err = orchestrator
+    let work_order_number = WorkOrderNumber::from(work_order_number);
+
+    let mut scheduling_environment_lock = orchestrator
         .scheduling_environment
         .lock()
         .map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let days = &map_err.time_environment.days;
-    let periods = &map_err.time_environment.periods;
+    let days = &scheduling_environment_lock.time_environment.days;
+    let periods = &scheduling_environment_lock.time_environment.periods;
     let asset: Asset = asset
         .try_into()
         .map_err(|_| AppError::Anyhow("Could not convert into error".to_string()))?;
 
-    let actor_specification = &map_err
+    let actor_specification = &scheduling_environment_lock
         .worker_environment
         .actor_specification
         .get(&asset)
@@ -261,29 +273,133 @@ pub async fn assign_to_technicians(
         .filter(|e| technicians.contains(&e.id.0))
         .map(|e| e.id.clone())
         .collect::<Vec<_>>();
-
     let material_to_period = &actor_specification.material_to_period;
 
-    let forced_work_order = map_err
+    let forced_work_order = scheduling_environment_lock
         .work_orders
         .inner
-        .get(&work_order_number.clone().into())
+        .get(&work_order_number)
         .ok_or(AppError::Anyhow("WorkOrder not found".to_string()))?
         .forced_work_order(periods, days, material_to_period)
         .map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    map_err
+    scheduling_environment_lock
         .assignments
         .make_assignment_for_technician(
-            work_order_number.into(),
+            work_order_number,
             &forced_work_order,
             &activity_number,
             &technician,
         )
         .map_err(|e| AppError::Anyhow(e.to_string()))?;
 
+    orchestrator
+        .state_link_bus
+        .lock()
+        .unwrap()
+        .broadcast(StateLink::WorkOrders(vec![work_order_number]));
+
     Ok(())
 }
+
+#[derive(Serialize, Deserialize, ToSchema)]
+pub struct CreateTechnicianDto
+{
+    #[schema(example = "l1112233")]
+    id: String,
+    #[schema(example = "[\"MTN-MECH\"]")]
+    resources_string: Vec<String>,
+    #[schema(example = "[\"2025-01-01T07:00:00Z\", \"2025-01-14T07:00:00Z\"]")]
+    availability: (String, String),
+}
+
+#[debug_handler]
+#[utoipa::path(
+    post,
+    path = "/add_technician/{asset}/{supervisor_id}",
+    tag = "Supervisor",
+    description = "This endpoint is for assigning a technicians to a work order activity.",
+    params (
+        ("asset" = AssetNames, Path),
+        ("supervisor_id" = String, Path),
+    ),
+    request_body(
+        content = CreateTechnicianDto,
+    ),
+    responses(
+        (status = 201, description = "Work order activity assigned to technicians"),
+        (status = 404, body = AppError),
+        (status = 500, body = AppError),
+    )
+)]
+pub async fn add_technician(
+    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    // TODO [ ]
+    // The `_supervisor_id` should be used in the future when we have additional
+    Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
+    Json(payload): Json<CreateTechnicianDto>,
+) -> Result<(), AppError>
+{
+    let CreateTechnicianDto {
+        id,
+        resources_string,
+        availability,
+    } = payload;
+
+    let start_date = DateTime::parse_from_rfc3339(&availability.0)
+        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .to_utc();
+    let finish_date = DateTime::parse_from_rfc3339(&availability.1)
+        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .to_utc();
+
+    let mut resources = vec![];
+    for resource_string in resources_string {
+        let resource =
+            Resources::from_str(&resource_string).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
+        resources.push(resource);
+    }
+    // This can only be created if there is somekind of... You need clear boundaries
+    // here. You should check that the Worker is not already present.
+
+    let asset = Asset::try_from(asset)
+        .map_err(|_e| AppError::Anyhow("Incorrect asset name".to_string()))?;
+
+    let id = Id::new(&id, resources, vec![asset.clone()]);
+
+    orchestrator
+        .scheduling_environment
+        .lock()
+        .unwrap()
+        .worker_environment
+        .actor_specification
+        .get_mut(&asset)
+        .context("No ActorSpecification available to Asset")
+        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .add_operational(&id, start_date, finish_date);
+    // .operational
+    // .push(input_operational);
+
+    // Change the `Vec<InputOperational>`. You need complex validation on the code
+    // there. Availavilities cannot be overlapping.
+    // There should only be a single actor for an Id, not many different ones.
+    if let Err(started) = orchestrator.start_operational_actor(&id) {
+        match started {
+            StartError::AlreadyRunning => return Ok(()),
+            StartError::CouldNotConstruct => {
+                return Err(AppError::Anyhow("could not construct Actor".to_string()));
+            }
+            StartError::CouldNotCreateDependencies => {
+                return Err(AppError::Anyhow(
+                    "could not construct Actor dependencies".to_string(),
+                ));
+            }
+        }
+    }
+    Ok(())
+}
+
 // _ISSUE_ #000 means unassigned
 // TODO [ ] ISSUE #000
 // You should craft the needed requests here. You should not be working on the

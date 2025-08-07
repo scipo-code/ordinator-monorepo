@@ -133,7 +133,7 @@ impl From<Id> for IdStringDto
 {
     fn from(value: Id) -> Self
     {
-        IdStringDto(value.0)
+        Self(value.0)
     }
 }
 

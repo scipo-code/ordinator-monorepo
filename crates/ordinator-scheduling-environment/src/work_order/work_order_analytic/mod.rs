@@ -17,11 +17,7 @@ pub struct WorkOrderAnalytic
 
 pub struct WorkOrderAnalyticBuilder
 {
-    // TODO [x]
-    // You should make a builder for these if needed
     system_status_codes: Option<SystemStatusCodes>,
-    // TODO [x]
-    // You should make a builder for these if needed
     user_status_codes: Option<UserStatusCodes>,
 }
 

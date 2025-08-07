@@ -1,3 +1,4 @@
+pub mod material_clerk;
 mod orchestrator;
 mod strategic;
 mod supervisor;
@@ -6,6 +7,7 @@ mod technician;
 
 use std::sync::Arc;
 
+use material_clerk::material_clerk_routes;
 use orchestrator::export_xlsx;
 use orchestrator::orchestrator_api_scope;
 use ordinator_contracts::TotalSystemSolution;
@@ -28,6 +30,10 @@ pub async fn api_scope(
         .nest("/tactical", tactical_route(state.clone()).await)
         .nest("/supervisor", supervisor_routes(state.clone()).await)
         .nest("/technician", technician_routes(state.clone()).await)
+        .nest(
+            "/material_clerk",
+            material_clerk_routes(state.clone()).await,
+        )
         // .route("/assets", get(scheduler_asset_names))
         .routes(routes!(
             crate::handlers::orchestrator_handlers::scheduler_asset_names

@@ -157,7 +157,7 @@ where
                     self.error_channel
                         .send(err)
                         .expect("If error channel is down, everything is down");
-                    panic!("{}", &self.actor_id.0)
+                    9999
                 }
             };
 

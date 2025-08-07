@@ -96,6 +96,28 @@ pub struct WorkOrders
     // that they are.
 }
 
+impl WorkOrders
+{
+    pub fn update_material_checked(
+        &mut self,
+        work_order_number: &WorkOrderNumber,
+        checked: bool,
+    ) -> anyhow::Result<()>
+    {
+        self.inner
+            .get_mut(work_order_number)
+            .with_context(|| {
+                format!(
+                    "work order {:#?} not present in WorkOrder",
+                    work_order_number
+                )
+            })?
+            .material_checked = checked;
+
+        Ok(())
+    }
+}
+
 // WARN
 // Configurations should only be used during initialization not the
 // remaining parts of the code.
@@ -226,11 +248,12 @@ pub struct WorkOrder
     pub work_order_number: WorkOrderNumber,
     pub main_work_center: Resources,
     pub operations: Operations,
+    pub material_checked: bool,
     pub work_order_analytic: WorkOrderAnalytic,
     pub work_order_dates: WorkOrderDates,
     pub work_order_info: WorkOrderInfo,
-    pub fixed_by: FixedWorkOrder,
     // This is not acceptable. You should move it out
+    pub fixed_by: FixedWorkOrder,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -283,6 +306,7 @@ impl WorkOrderBuilder
                 .work_order_info
                 .expect("Missing field initializations on the WorkOrderBuilder"),
             fixed_by: FixedWorkOrder::BusinessLogic,
+            material_checked: false,
         }
     }
 
