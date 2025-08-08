@@ -28,6 +28,7 @@ utoipa = {version = "*", features = ["yaml", "axum_extras"]}
 utoipa-axum = "*" 
 utoipa-swagger-ui = {version = "*", features = ["axum"]}
 chrono-tz.workspace = true
+ts-rs = "*"
 
 [dev-dependencies]
 ordinator-scheduling-environment.path = "../ordinator-scheduling-environment"
