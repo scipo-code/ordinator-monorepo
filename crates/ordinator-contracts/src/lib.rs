@@ -2,11 +2,11 @@ use anyhow::Context;
 use chrono::NaiveDate;
 use ordinator_operational_actor::algorithm::operational_solution::OperationalSolution;
 use ordinator_orchestrator_actor_traits::SystemSolution;
+use ordinator_scheduling_environment::Asset;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::MaterialStatus;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
-use ordinator_scheduling_environment::Asset;
 use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
 use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
@@ -123,7 +123,7 @@ impl TryFrom<NaiveDateDto> for NaiveDate
 
     fn try_from(value: NaiveDateDto) -> Result<Self, Self::Error>
     {
-        let naive_date = NaiveDate::parse_from_str(&value.0, "%y-%m-%s")?;
+        let naive_date = NaiveDate::parse_from_str(&value.0, "%Y-%m-%d")?;
         Ok(naive_date)
     }
 }
@@ -135,8 +135,10 @@ pub type TotalSystemSolution =
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct IdStringDto(String);
 
-impl From<Id> for IdStringDto {
-    fn from(value: Id) -> Self {
+impl From<Id> for IdStringDto
+{
+    fn from(value: Id) -> Self
+    {
         Self(value.0)
     }
 }
@@ -173,7 +175,7 @@ impl From<(WorkOrderNumber, ActivityNumber)> for WorkOrderActivityDto
     fn from(value: (WorkOrderNumber, ActivityNumber)) -> Self
     {
         Self {
-            work_order: value.0 .0,
+            work_order: value.0.0,
             activity: value.1,
         }
     }
