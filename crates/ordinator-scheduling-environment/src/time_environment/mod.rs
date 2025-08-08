@@ -1,5 +1,5 @@
-use anyhow::ensure;
 use anyhow::Result;
+use anyhow::ensure;
 use chrono::DateTime;
 use chrono::Datelike;
 use chrono::Days;
@@ -8,10 +8,10 @@ use chrono::NaiveTime;
 use chrono::TimeDelta;
 use chrono::Timelike;
 use chrono::Utc;
-use serde::de;
 use serde::Deserialize;
 use serde::Deserializer;
 use serde::Serialize;
+use serde::de;
 
 use self::day::Day;
 use self::period::Period;
@@ -82,7 +82,10 @@ impl TimeEnvironmentBuilder
         let mut tactical_days = |number_of_tactical_days: u64| -> Vec<Day> {
             let mut days: Vec<Day> = Vec::new();
             for day_index in 0..number_of_tactical_days {
-                days.push(Day::new(day_index as usize, first_day.to_owned()));
+                days.push(Day::new(
+                    day_index as usize,
+                    first_day.date_naive().to_owned(),
+                ));
                 first_day = first_day.checked_add_days(Days::new(1)).unwrap();
             }
             days
@@ -113,7 +116,7 @@ impl TimeInterval
     }
 
     pub fn from_date_times(start_date_time: DateTime<Utc>, finish_date_time: DateTime<Utc>)
-        -> Self
+    -> Self
     {
         Self {
             start: start_date_time.time(),
@@ -173,7 +176,7 @@ pub fn create_time_environment(
         let mut days: Vec<Day> = Vec::new();
         let mut date = first_day.to_owned();
         for day_index in 0..number_of_days {
-            days.push(Day::new(day_index as usize, date.to_owned()));
+            days.push(Day::new(day_index as usize, date.date_naive().to_owned()));
             date = date.checked_add_days(Days::new(1)).unwrap();
         }
         days
@@ -185,7 +188,7 @@ pub fn create_time_environment(
     TimeEnvironment::new(strategic_periods, days)
 }
 fn create_periods(current_time: DateTime<Utc>, number_of_periods: u64, days: &[Day])
-    -> Vec<Period>
+-> Vec<Period>
 {
     let mut periods: Vec<Period> = Vec::<Period>::new();
     // TODO
@@ -228,10 +231,7 @@ fn create_periods(current_time: DateTime<Utc>, number_of_periods: u64, days: &[D
 
     let day_indices = days
         .iter()
-        .filter(|day| {
-            start_time.date_naive() <= day.date.date_naive()
-                && day.date.date_naive() <= end_date.date_naive()
-        })
+        .filter(|day| start_time.date_naive() <= day.date && day.date <= end_date.date_naive())
         .map(|day| day.day_index as u64)
         .collect::<Vec<_>>();
     let mut period = Period::new(start_time, end_date, day_indices);

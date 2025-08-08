@@ -1,7 +1,6 @@
 use std::collections::BTreeMap;
 
-use chrono::DateTime;
-use chrono::Utc;
+use chrono::NaiveDate;
 use ordinator_orchestrator_actor_traits::TacticalInterface;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Strategic;
@@ -18,7 +17,7 @@ impl TacticalInterface for TacticalSolution
     fn start_and_finish_dates(
         &self,
         work_order_activity: &WorkOrderActivity,
-    ) -> Option<(&DateTime<Utc>, &DateTime<Utc>)>
+    ) -> Option<(&NaiveDate, &NaiveDate)>
     {
         let activities = self.tactical_work_orders.0.get(&work_order_activity.0)?;
         let scheduled_days = match &activities {
@@ -45,7 +44,7 @@ impl TacticalInterface for TacticalSolution
                 Tactical(wo) => {
                     let first_activity = wo.0.first_key_value();
                     let first_date = first_activity?.1.scheduled.first()?.0.date;
-                    Some(WorkOrder::date_to_period(periods, &first_date.date_naive()))
+                    Some(WorkOrder::date_to_period(periods, &first_date))
                 }
                 NotScheduled => None,
             },

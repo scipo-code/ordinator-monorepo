@@ -1,8 +1,7 @@
 use std::fmt::Display;
 use std::fmt::{self};
 
-use chrono::DateTime;
-use chrono::Utc;
+use chrono::NaiveDate;
 use rust_xlsxwriter::IntoExcelData;
 use serde::Deserialize;
 use serde::Serialize;
@@ -38,12 +37,12 @@ impl Days
 pub struct Day
 {
     pub day_index: usize,
-    pub date: DateTime<Utc>,
+    pub date: NaiveDate,
 }
 
 impl Day
 {
-    pub fn new(day_index: usize, date: DateTime<Utc>) -> Self
+    pub fn new(day_index: usize, date: NaiveDate) -> Self
     {
         Day { day_index, date }
     }
@@ -53,12 +52,12 @@ impl Display for Day
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
     {
-        write!(f, "{}", self.date.date_naive())
+        write!(f, "{}", self.date)
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct OptionDay(pub Option<DateTime<Utc>>);
+pub struct OptionDay(pub Option<NaiveDate>);
 
 impl IntoExcelData for OptionDay
 {

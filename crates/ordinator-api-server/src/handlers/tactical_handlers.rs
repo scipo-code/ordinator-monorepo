@@ -125,16 +125,53 @@ pub async fn assign_start_day_for_work_order<Ss>(
 where
     Ss: SystemSolutions,
 {
-    orchestrator
-        .scheduling_environment
-        .lock()
-        .unwrap()
+    let mut scheduling_environment_lock = orchestrator.scheduling_environment.lock().unwrap();
+
+    let asset = Asset::try_from(_asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
+    let materials_to_periods = &scheduling_environment_lock
+        .worker_environment
+        .actor_specification
+        .get(&asset)
+        .context("Asset not available in ActorSpecifications")
+        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .material_to_period
+        .clone();
+
+    let days = &scheduling_environment_lock.time_environment.days.clone();
+    let periods = &scheduling_environment_lock.time_environment.periods.clone();
+    let day = days
+        .iter()
+        .find(|day| day.date == basic_start_date)
+        .with_context(|| "Chosen start date is outside of the valid scheduling period".to_string())
+        .map_err(|e| AppError::Anyhow(e.to_string()))?;
+
+    scheduling_environment_lock
         .work_orders
         .inner
         .get_mut(&work_order_number)
         .with_context(|| format!("{work_order_number:#?} not found in SchedulingEnvironment"))
         .map_err(|e| AppError::Anyhow(e.to_string()))?
+        // TODO [ ] You should clearly differentiate between the WO modifying code and the
+        // normal code.
         .set_basic_start_date(basic_start_date);
+
+    drop(scheduling_environment_lock);
+    let mut scheduling_environment_lock = orchestrator.scheduling_environment.lock().unwrap();
+    let work_order = scheduling_environment_lock
+        .work_orders
+        .inner
+        .get(&work_order_number)
+        .with_context(|| format!("WorkOrder {work_order_number:#?} is not in WorkOrders"))
+        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .forced_work_order(periods, days, materials_to_periods)
+        .map_err(|e| AppError::Anyhow(e.to_string()))?;
+
+    scheduling_environment_lock
+        .assignments
+        .make_assignment_for_tactical(work_order_number, &work_order, day.clone())
+        .with_context(|| "Could not make a tactical assignment".to_string())
+        .map_err(|e| AppError::Anyhow(e.to_string()))?;
 
     orchestrator
         .state_link_bus

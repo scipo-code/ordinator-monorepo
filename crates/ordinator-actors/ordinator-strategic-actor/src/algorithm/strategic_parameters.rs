@@ -2,15 +2,16 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use std::sync::MutexGuard;
 
-use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::bail;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
+use ordinator_scheduling_environment::Asset;
+use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_environment::time_environment::MaterialToPeriod;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::period::Period;
-use ordinator_scheduling_environment::time_environment::MaterialToPeriod;
-use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::ClusteringWeights;
 use ordinator_scheduling_environment::work_order::ForcedWorkOrder;
 use ordinator_scheduling_environment::work_order::TacticalForceType;
@@ -18,11 +19,10 @@ use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderConfigurations;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrders;
+use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::worker_environment::StrategicOptions;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
-use ordinator_scheduling_environment::worker_environment::StrategicOptions;
-use ordinator_scheduling_environment::Asset;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 use serde::Serialize;
 use tracing::info;
 
@@ -210,7 +210,7 @@ pub struct WorkOrderParameterBuilder
 impl StrategicParameters
 {
     pub fn get_locked_in_period<'a>(&'a self, work_order_number: &'a WorkOrderNumber)
-        -> &'a Period
+    -> &'a Period
     {
         let option_period = match self.strategic_work_order_parameters.get(work_order_number) {
             Some(strategic_parameter) => &strategic_parameter.locked_in_period,
@@ -294,7 +294,7 @@ impl WorkOrderParameterBuilder
                     TacticalForceType::OnlyStartDay(day) => {
                         let period = periods
                             .iter()
-                            .find(|per| per.contains_date(day.date.date_naive()))
+                            .find(|per| per.contains_date(day.date))
                             .context("day should always be contained in the period")?
                             .clone();
                         self.locked_in_period = WhereIsWorkOrder::Tactical(period);

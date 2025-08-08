@@ -12,7 +12,10 @@ pub async fn supervisor_routes(
     OpenApiRouter::new()
         .routes(routes!(crate::handlers::supervisor_handlers::status,))
         .routes(routes!(
-            crate::handlers::supervisor_handlers::all_available_technicians
+            crate::handlers::supervisor_handlers::all_technicians
+        ))
+        .routes(routes!(
+            crate::handlers::supervisor_handlers::technician_availability
         ))
         .routes(routes!(
             crate::handlers::supervisor_handlers::assign_to_technicians

@@ -2,11 +2,11 @@ use anyhow::Context;
 use chrono::NaiveDate;
 use ordinator_operational_actor::algorithm::operational_solution::OperationalSolution;
 use ordinator_orchestrator_actor_traits::SystemSolution;
+use ordinator_scheduling_environment::Asset;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::MaterialStatus;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
-use ordinator_scheduling_environment::Asset;
 use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
 use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
@@ -39,7 +39,6 @@ pub struct NaiveDateDto(pub String);
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct WorkOrderNumberDto(pub u64);
-
 
 #[derive(Debug, ToSchema, Serialize)]
 pub enum MaterialStatusDto
@@ -171,7 +170,7 @@ impl From<(WorkOrderNumber, ActivityNumber)> for WorkOrderActivityDto
     fn from(value: (WorkOrderNumber, ActivityNumber)) -> Self
     {
         Self {
-            work_order: value.0 .0,
+            work_order: value.0.0,
             activity: value.1,
         }
     }

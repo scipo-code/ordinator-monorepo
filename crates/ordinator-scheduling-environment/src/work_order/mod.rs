@@ -10,10 +10,10 @@ use std::collections::HashSet;
 use std::num::ParseIntError;
 use std::str::FromStr;
 
-use anyhow::bail;
-use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::bail;
+use anyhow::ensure;
 use chrono::DateTime;
 use chrono::NaiveDate;
 use chrono::TimeDelta;
@@ -29,21 +29,21 @@ use self::operation::Operation;
 use self::operation::OperationBuilder;
 use self::operation::Operations;
 use self::operation::Work;
-use self::work_order_analytic::status_codes::MaterialStatus;
 use self::work_order_analytic::WorkOrderAnalytic;
 use self::work_order_analytic::WorkOrderAnalyticBuilder;
+use self::work_order_analytic::status_codes::MaterialStatus;
 use self::work_order_dates::WorkOrderDates;
+use self::work_order_info::WorkOrderInfo;
+use self::work_order_info::WorkOrderInfoBuilder;
 use self::work_order_info::functional_location::FunctionalLocation;
 use self::work_order_info::priority::Priority;
 use self::work_order_info::work_order_type::WorkOrderType;
-use self::work_order_info::WorkOrderInfo;
-use self::work_order_info::WorkOrderInfoBuilder;
 use super::time_environment::period::Period;
 use super::worker_environment::resources::Resources;
-use crate::time_environment::day::Day;
-use crate::time_environment::MaterialToPeriod;
-use crate::worker_environment::resources::Id;
 use crate::Asset;
+use crate::time_environment::MaterialToPeriod;
+use crate::time_environment::day::Day;
+use crate::worker_environment::resources::Id;
 
 // TODO [ ]
 //
@@ -177,7 +177,7 @@ impl WorkOrdersBuilder
     }
 
     pub fn work_orders_manual(self, work_orders_inner: HashMap<WorkOrderNumber, WorkOrder>)
-        -> Self
+    -> Self
     {
         Self {
             inner: Some(work_orders_inner),
@@ -277,6 +277,7 @@ pub enum FixedWorkOrder
     Operational(DateTime<Utc>),
     BusinessLogic,
 }
+
 // Should you work on this now? No! Practice skills and read.
 // #[derive(Serialize, Deserialize, Clone, Debug)]
 // pub struct ManuallyInputtedInformation
@@ -473,13 +474,12 @@ impl TacticalForceType
     pub fn get_contained_date(&self) -> NaiveDate
     {
         match self {
-            TacticalForceType::OnlyStartDay(day) => day.date.date_naive(),
+            TacticalForceType::OnlyStartDay(day) => day.date,
             TacticalForceType::IndividualActivities(start_days_per_activity, _) => {
                 start_days_per_activity
                     .first()
                     .expect("A Day should always be contained in a period.")
                     .date
-                    .date_naive()
             }
         }
     }
@@ -501,7 +501,7 @@ impl TacticalForceType
 pub struct TechnicianInclude
 {
     pub id: Id,
-    pub interval: Option<(Day, Day)>,
+    pub interval: Option<(DateTime<Utc>, DateTime<Utc>)>,
 }
 
 #[allow(dead_code)]
@@ -633,7 +633,7 @@ impl WorkOrder
                 // TODO [ ] include
                 let day = days
                     .iter()
-                    .find(|f| f.date.date_naive() == *naive_date)
+                    .find(|f| f.date == *naive_date)
                     .context("naive_date not found in TimeEnvironment")?
                     .clone();
                 // You need more complex logic to fix more of the code here.

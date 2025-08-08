@@ -6,10 +6,13 @@ pub mod worker_environment;
 use std::collections::HashSet;
 use std::fmt::Display;
 use std::fmt::{self};
+use std::option::Option;
 use std::sync::Arc;
 use std::sync::Mutex;
+use std::vec::Vec;
 
 use anyhow::Result;
+use anyhow::ensure;
 use chrono::DateTime;
 use chrono::NaiveDate;
 use chrono::Utc;
@@ -94,7 +97,7 @@ impl SavedAssignment
                 work_order::TacticalForceType::IndividualActivities(_vec, _vec1) => todo!(),
             },
             ForcedWorkOrder::Technician(technician_include, _technician_exclude) => {
-                let date_time_option = technician_include.interval.as_ref().map(|day| day.0.date);
+                let date_time_option = technician_include.interval.as_ref().map(|day| day.0);
                 let technicians = id
                     .iter()
                     // WARN [ ] modifying Technicians in almost impossible as ID is FAT.
@@ -114,6 +117,65 @@ impl SavedAssignment
 
         Ok(())
     }
+
+    pub fn make_assignment_for_tactical(
+        &mut self,
+        work_order_number: WorkOrderNumber,
+        work_order: &ForcedWorkOrder,
+        day: Day,
+    ) -> Result<()>
+    {
+        // There is a difference between the WorkOrder and the other parts of the
+        // program. Should you stop? This function should change the Tactical
+        // day, unless it is being blocked by something else. It should return
+        // error codes.
+        let assignment = match work_order {
+            ForcedWorkOrder::Period(period) => {
+                ensure!(
+                    period.0.contains_date(day.date),
+                    "WorkOrder is scheduled for period {:#?}, assigning basic start for {:#?} is not allowed",
+                    period.0,
+                    day
+                );
+
+                Assignment::new(Some(period.0.clone()), Some(day), HashSet::new())
+            }
+            ForcedWorkOrder::Days(tactical_force_type) => match tactical_force_type {
+                work_order::TacticalForceType::OnlyStartDay(work_order_day) => {
+                    ensure!(
+                        *work_order_day == day,
+                        "WorkOrder is scheduled for day {:#?}, assigning basic start for {:#?} is not allowed",
+                        work_order_day,
+                        day,
+                    );
+                    Assignment::new(None, Some(day.clone()), HashSet::new())
+                }
+                work_order::TacticalForceType::IndividualActivities(_vec, _vec1) => todo!(),
+            },
+            // TODO [ ] The technician can be plural.
+            ForcedWorkOrder::Technician(technician_include, _technician_exclude) => {
+                let technicians = technician_include.id.clone();
+                let hash_set = HashSet::from([(technicians, None)]);
+                Assignment::new(None, Some(day), hash_set)
+            }
+            ForcedWorkOrder::FreeWorkOrder => Assignment::new(None, Some(day), HashSet::new()),
+        };
+
+        // The forced work order should take precedence,
+        let assignment = (work_order_number, None, assignment);
+        self.0.push(assignment);
+
+        Ok(())
+    }
+
+    pub fn assignment_for_tactical(&self) -> Vec<(WorkOrderNumber, Option<u64>, Assignment)>
+    {
+        self.0
+            .iter()
+            .filter(|&e| e.2.day.is_some())
+            .cloned()
+            .collect::<Vec<_>>()
+    }
 }
 
 // FORGET:
@@ -121,7 +183,7 @@ impl SavedAssignment
 // * Correct data structure
 // * Keep it simple
 // This is everything I believe.
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct Assignment
 {
     period: Option<Period>,
@@ -142,6 +204,11 @@ impl Assignment
             day,
             technician,
         }
+    }
+
+    pub fn day(&self) -> Option<Day>
+    {
+        self.day.clone()
     }
 }
 

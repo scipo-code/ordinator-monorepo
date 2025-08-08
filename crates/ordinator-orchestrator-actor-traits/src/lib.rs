@@ -7,28 +7,27 @@ use std::sync::Arc;
 use std::sync::Mutex;
 use std::sync::MutexGuard;
 
-use anyhow::anyhow;
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::anyhow;
 use arc_swap::ArcSwap;
 use bus::BusReader;
-use chrono::DateTime;
-use chrono::Utc;
+use chrono::NaiveDate;
 use colored::Colorize;
 use delegate::Delegate;
 use flume::Receiver;
 use flume::Sender;
 use marginal_fitness::MarginalFitness;
 use ordinator_configuration::SystemConfigurations;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::period::Period;
-use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
-use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 use serde::Serialize;
 use thiserror::Error;
 
@@ -384,7 +383,7 @@ where
     fn start_and_finish_dates(
         &self,
         work_order_activity: &WorkOrderActivity,
-    ) -> Option<(&DateTime<Utc>, &DateTime<Utc>)>;
+    ) -> Option<(&NaiveDate, &NaiveDate)>;
 
     fn tactical_period<'a>(
         &self,
