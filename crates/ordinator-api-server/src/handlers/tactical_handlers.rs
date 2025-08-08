@@ -8,6 +8,7 @@ use axum::response::IntoResponse;
 use axum::response::Response;
 use axum::response::Result;
 use chrono::NaiveDate;
+use chrono::ParseError;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::NaiveDateDto;
 use ordinator_contracts::WorkOrderNumberDto;
@@ -107,24 +108,28 @@ where
 }
 
 #[utoipa::path(
-    post,
+    patch,
     tag = "Scheduler",
-    path = "/assign_start_day_for_work_order/{asset}/{work_order_number}/{basic_start_date}",
+    path = "/assign_start_day_for_work_order/{asset}/{work_order_number}/",
     params (
         ("asset" = AssetNames, Path),
         ("work_order_number" = WorkOrderNumberDto, Path),
-        ("basic_start_date" = NaiveDateDto, Path),
     ),
+    request_body(content = NaiveDateDto, description = "json with a basic start date", content_type = "application/json", example = json!("2025-02-25")),
     responses((status = 200, body = [Vec<String>]))
 )]
 pub async fn assign_start_day_for_work_order<Ss>(
     State(orchestrator): State<Arc<Orchestrator<Ss>>>,
     // TODO [ ] `asset` should be used for authentication.
-    Path((_asset, work_order_number, basic_start_date)): Path<(Asset, WorkOrderNumber, NaiveDate)>,
+    Path((_asset, work_order_number)): Path<(Asset, WorkOrderNumber)>,
+    Json(basic_start_date_dto): Json<NaiveDateDto>,
 ) -> Result<Response, AppError>
 where
     Ss: SystemSolutions,
 {
+    let basic_start_date: NaiveDate = basic_start_date_dto
+        .try_into()
+        .map_err(|e: ParseError| AppError::Anyhow(e.to_string()))?;
     let mut scheduling_environment_lock = orchestrator.scheduling_environment.lock().unwrap();
 
     let asset = Asset::try_from(_asset).map_err(|e| AppError::Anyhow(e.to_string()))?;

@@ -123,7 +123,7 @@ impl TryFrom<NaiveDateDto> for NaiveDate
 
     fn try_from(value: NaiveDateDto) -> Result<Self, Self::Error>
     {
-        let naive_date = NaiveDate::parse_from_str(&value.0, "%y-%m-%s")?;
+        let naive_date = NaiveDate::parse_from_str(&value.0, "%Y-%m-%d")?;
         Ok(naive_date)
     }
 }
