@@ -4,8 +4,7 @@ import { useParams, Navigate } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 import { useTableColDefs } from './scheduler/ColDef';
 import { parseISO, format } from 'date-fns';
-import { fetchWorkOrders } from "@scipo-code/shared";
-import { fetchSystemClock } from '@scipo-code/shared';
+import { fetchWorkOrders, useSystemClock } from "@scipo-code/shared";
 
 
 // import { agGridThemeLight } from "./theme";
@@ -36,14 +35,7 @@ const Scheduler: React.FC = () => {
     staleTime: 60_000,              // cache 1 min
   });
 
-  const {
-    data: systemclock,
-  } = useQuery({
-    queryKey: ["systemclock"],
-    queryFn: fetchSystemClock,
-    staleTime: Infinity,
-  });
-  
+  const { data: systemclock } = useSystemClock();
 
   if (!asset) return null;
   if (!systemclock)
