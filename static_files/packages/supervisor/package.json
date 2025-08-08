@@ -12,8 +12,6 @@
   "dependencies": {
     "@scipo-code/shared": "workspace:*"
   },
-  "devDependencies": {
-  },
   "msw": {
     "workerDirectory": [
       "public"

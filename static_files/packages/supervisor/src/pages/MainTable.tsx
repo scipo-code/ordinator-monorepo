@@ -1,4 +1,6 @@
-import * as React from 'react';
+
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -7,181 +9,146 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-// import { SupervisorMainTableDto } from '@scipo-code/shared';
-
-
-
-// const data = {
-//   days: {
-//     20250113: {
-//       work_order_by_work_center: {
-        
-//         MTN_ELEC: {
-//           OP_01_001: [
-//             {
-//               area: null,
-//               work_order_number: 1002,
-//               activity_number: 10,
-//               permit: null,
-//               material: "Smat",
-//               icc: null,
-//               description: "TEST",
-//               hours_worked: 0,
-//               hours_planned: 5,
-//               percentage_complete: 0
-//             },
-//             {
-//               area: null,
-//               work_order_number: 1002,
-//               activity_number: 10,
-//               permit: null,
-//               material: "Smat",
-//               icc: null,
-//               description: "TEST",
-//               hours_worked: 0,
-//               hours_planned: 5,
-//               percentage_complete: 0
-//             }
-//           ],
-//           OP_01_002: [
-//             {
-//               area: null,
-//               work_order_number: 1002,
-//               activity_number: 10,
-//               permit: null,
-//               material: "Smat",
-//               icc: null,
-//               description: "TEST",
-//               hours_worked: 0,
-//               hours_planned: 5,
-//               percentage_complete: 0
-//             },
-//           ]
-//         },
-//         MTN_ROCE: {
-//           OP_02_001: [
-//             {
-//               area: null,
-//               work_order_number: 1002,
-//               activity_number: 10,
-//               permit: null,
-//               material: "Smat",
-//               icc: null,
-//               description: "TEST",
-//               hours_worked: 0,
-//               hours_planned: 5,
-//               percentage_complete: 0
-//             },
-//           ]
-//         }
-//       }
-//     },
-//   }
-// };
-
-// const data = [
-//   { name: 'John', age: 25, location: 'New York', options: ['Edit', 'Delete'] },
-//   { name: 'Jane', age: 30, location: 'London', options: ['Edit', 'Archive'] },
-// ];
-
-const groupedData = {
-  'MTN_ELEC': [
-    { name: 'Work Order 1002', age: 10, location: 'OP_01_001', options: ['Edit', 'Complete'] },
-    { name: 'Work Order 1003', age: 5, location: 'OP_01_002', options: ['Edit', 'Start'] },
-  ],
-  'MTN_ROCE': [
-    { name: 'Work Order 1004', age: 8, location: 'OP_02_001', options: ['Edit', 'Review'] },
-    { name: 'Work Order 1005', age: 12, location: 'OP_02_002', options: ['Edit', 'Complete'] },
-  ],
-};
+import { NaiveDateDto, SupervisorMainTableDto, useDays, useSystemClock } from '@scipo-code/shared';
+import { useSupervisorMainTable } from "@scipo-code/shared";
+import { format, parseISO } from "date-fns";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 
 
-const staticHeaders = [
-  { id: 'name', label: 'Name', render: (row) => row.name },
-  { id: 'age', label: 'Age', render: (row) => row.age },
-  { id: 'location', label: 'Location', render: (row) => row.location },
-  { id: 'action', label: 'Action', render: (row) => <button onClick={() => alert(`Action on ${row.name}`)}>Action</button> },
-  { id: 'options', label: 'Options', render: (row) => (
-      <select>
-        {row.options.map((option, idx) => (
-          <option key={idx} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-    )
-  },
-];
 
-const CommonTable = ({ headers, data, groupedData }) => {
-  if (groupedData) {
+export default function MainTable() {
+  const { asset } = useParams();
+
+  const { data: systemclock } = useSystemClock();
+  const { data: days } = useDays();
+
+  const [ selectedDay, setSelectedDay ] = useState<NaiveDateDto | null>(null);
+  // ISSUE #000 The Supervisor ID does not have any meaningful functionality and will have to be fixed
+  // in the future!
+  const supervisorId = "main";
+  const { data: mainTableData } = useSupervisorMainTable(asset || "", supervisorId, selectedDay ? selectedDay : undefined );
+
+
+  useEffect(() => {
+    if (!selectedDay && days) {
+      setSelectedDay(days[0]);
+    }
+  }, [days]);
+    
+  if (!asset) return <div>Asset not found</div>;
+
+  if (!systemclock || !days)
     return (
+      <div className="p-4">
+        <p className="text-red-600">
+          Could not retrieve time environment. Server is non-responding.
+        </p>
+      </div>
+      
+    );
+  if (!selectedDay) return <div>Loading days...</div>;
+  if (!mainTableData) return <div>Loading data...</div>;
+  
+
+  
+  return (
+    <div className="p-4 flex flex-col flex-1 min-h-0 overflow-hidden">
+      <h2 className="text-2xl font-bold mb-4 shrink-0">Work Schedule - {asset} : Server clock - {format(parseISO(systemclock), "PPP p")}</h2>
+      <div className="flex items-center gap-2 mb-4 shrink-0">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            const currentIndex = days?.indexOf(selectedDay!) || 0;
+            if (currentIndex > 0) setSelectedDay(days![currentIndex -1]);
+          }}
+          disabled={!days || !selectedDay || days.indexOf(selectedDay) === 0}
+        >
+        <ChevronLeft className="h-4 w-4" />
+        </Button>
+
+        <Select value={selectedDay || ""} onValueChange={(value) => setSelectedDay(value as NaiveDateDto)}>
+          <SelectTrigger className="w-40">
+            <SelectValue placeholder="Select date" />
+          </SelectTrigger>
+          <SelectContent>
+            {days?.map(day => (
+              <SelectItem key={day} value={day}>{day}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            const currentIndex = days?.indexOf(selectedDay!) || 0;
+            if (currentIndex < (days?.length || 0) - 1) setSelectedDay(days![currentIndex +1]);
+          }}
+          disabled={!days || !selectedDay || days.indexOf(selectedDay) === (days?.length || 0) -1}
+        >
+        <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
+      <WorkSchedule data={mainTableData} selectedDay={selectedDay} />
+
+      
+    </div>
+  )
+}
+
+const formatColumnName = (column: string) => {
+  return column.replace(/_/g, ' ').replace(/\b\w/g, l => l.toLocaleUpperCase())
+}
+
+function WorkSchedule({data, selectedDay}: {data: SupervisorMainTableDto,selectedDay: NaiveDateDto}) {
+
+  if (!data.days || !selectedDay) return <div>Missing Data</div>;
+
+  const inner_data = data.days[selectedDay]?.work_order_activities_per_work_center;
+
+  if (!inner_data ) return <div>Missing Data</div>;
+
+  const firstWorkCenter = Object.values(inner_data).find(rows => rows && rows.length > 0);
+
+  if (!firstWorkCenter || firstWorkCenter.length === 0) {
+    return <div>No work order data </div>
+  };
+
+  const columns = Object.keys(firstWorkCenter[0]);
+  
+  return (
+    <div className="overflow-auto max-h-[70vh]">
       <Table>
         <TableHeader>
           <TableRow>
-            {headers.map((header) => (
-              <TableHead key={header.id}>{header.label}</TableHead>
+            {columns.map(column => (
+              <TableHead key={column}>{formatColumnName(column)}</TableHead>
             ))}
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {Object.entries(groupedData).map(([workCenter, workCenterData]) => (
-            <React.Fragment key={workCenter}>
-              <TableRow>
-                <TableCell 
-                  colSpan={headers.length} 
-                  className="bg-blue-100 font-bold text-center py-3"
-                >
-                  {workCenter}
-                </TableCell>
+        {Object.entries(inner_data).map(([workCenterKey, workCenterRows]) => (
+          <TableBody key={workCenterKey}>
+            <TableRow>
+              <TableCell className="bg-blue-100 font-semibold px-2 py-1 text-center" colSpan={columns.length}>{workCenterKey}</TableCell>
+            </TableRow>
+            {workCenterRows?.map((row, index) => (
+              <TableRow key={index} className="hover:bg-gray-100">
+                {columns.map(column => (
+                  <TableCell key={column}>
+                    {String(row[column as keyof typeof row])}
+                  </TableCell>
+                ))}
               </TableRow>
-              {workCenterData.map((row, index) => (
-                <TableRow key={`${workCenter}-${index}`}>
-                  {headers.map((header) => (
-                    <TableCell key={header.id}>{header.render(row)}</TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </React.Fragment>
-          ))}
-        </TableBody>
-      </Table>
-    );
-  }
-
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          {headers.map((header) => (
-            <TableHead key={header.id}>{header.label}</TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((row, index) => (
-          <TableRow key={index}>
-            {headers.map((header) => (
-              <TableCell key={header.id}>{header.render(row)}</TableCell>
             ))}
-          </TableRow>
+      
+          </TableBody>
         ))}
-      </TableBody>
-    </Table>
-  );
-};
-
-const MainTable: React.FC = () => {
-
-  return (
-    <div className="w-full">
-      <div className="rounded-md border">
-        <CommonTable headers={staticHeaders} groupedData={groupedData} />
-      </div>
+      </Table>
     </div>
-  );
-};
-
-export default MainTable;
+  )
+}
