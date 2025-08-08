@@ -4,12 +4,14 @@ use std::collections::HashMap;
 
 use anyhow::Context;
 use ordinator_scheduling_environment::time_environment::TimeEnvironment;
-use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrders;
+use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::worker_environment::availability::Availability;
+use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
-use ordinator_supervisor_actor::messages::responses::SupervisorResponseStatus;
 use ordinator_supervisor_actor::messages::SupervisorResponseMessage;
+use ordinator_supervisor_actor::messages::responses::SupervisorResponseStatus;
 use serde::Serialize;
 use utoipa::ToSchema;
 
@@ -25,7 +27,7 @@ use crate::WorkOrderNumberDto;
 pub struct SupervisorResourcesDto
 {
     all_technicians: BTreeSet<IdDto>,
-    assigned_activities: BTreeMap<IdDto, WorkOrderActivityDto>,
+    assigned_activities: BTreeMap<IdStringDto, WorkOrderActivityDto>,
 }
 
 #[derive(ToSchema, Serialize, Debug)]
@@ -142,7 +144,7 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
                     .scheduled_work_order_activities
                     // This value should be gotten from the
                     .iter()
-                    .filter(|f| f.1.active_datetimes().contains(&day.date.date_naive()))
+                    .filter(|f| f.1.active_datetimes().contains(&day.date))
                     .find(|e| e.0 == *work_order_activity);
 
                 if let Some(_operational_assignment) = operational_assignments_by_day {
@@ -173,7 +175,7 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
             let day_subtable = DaySubtable {
                 work_order_activities_per_work_center,
             };
-            days.insert(NaiveDateDto::from(day.date.date_naive()), day_subtable);
+            days.insert(NaiveDateDto::from(day.date), day_subtable);
         }
         Ok(Self { days })
     }
@@ -244,9 +246,35 @@ impl From<SupervisorSolution> for SupervisorResourcesDto
         SupervisorResourcesDto {
             assigned_activities: assigned_activities
                 .into_iter()
-                .map(|e| (IdDto::from(e.0), WorkOrderActivityDto::from(e.1)))
+                .map(|e| (IdStringDto::from(e.0), WorkOrderActivityDto::from(e.1)))
                 .collect(),
             all_technicians: all_technicians.into_iter().map(IdDto::from).collect(),
         }
+    }
+}
+
+#[derive(ToSchema, Serialize, Debug)]
+pub struct SupervisorAllAvailableTechnicians
+{
+    all_technicians: Vec<(IdStringDto, Vec<String>, Vec<String>, String, String)>,
+}
+impl From<BTreeMap<Id, Availability>> for SupervisorAllAvailableTechnicians
+{
+    fn from(value: BTreeMap<Id, Availability>) -> Self
+    {
+        let all_technicians = value
+            .iter()
+            .map(|(id, e)| {
+                (
+                    IdStringDto::from(id.clone()),
+                    id.1.iter().map(|e| e.to_string()).collect(),
+                    id.2.iter().map(|e| e.to_string()).collect(),
+                    e.start_date.to_rfc3339(),
+                    e.finish_date.to_rfc3339(),
+                )
+            })
+            .collect();
+
+        Self { all_technicians }
     }
 }

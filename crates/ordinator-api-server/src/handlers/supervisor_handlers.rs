@@ -12,6 +12,7 @@ use chrono::DateTime;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::WorkOrderNumberDto;
+use ordinator_contracts::supervisor::SupervisorAllAvailableTechnicians;
 use ordinator_contracts::supervisor::SupervisorMainTableDto;
 use ordinator_contracts::supervisor::SupervisorResourcesDto;
 use ordinator_contracts::supervisor::SupervisorResponseMessageDto;
@@ -83,6 +84,47 @@ pub async fn status(
 #[debug_handler]
 #[utoipa::path(
     get,
+    path = "/technician_availability/{asset}/{supervisor_id}",
+    tag = "Supervisor",
+    params (
+        ("asset" = AssetNames, Path),
+        ("supervisor_id" = String, Path),
+    ),
+    responses(
+        (status = 200, body = SupervisorAllAvailableTechnicians),
+        (status = 404, body = AppError),
+        (status = 500, body = AppError),
+    )
+)]
+pub async fn technician_availability(
+    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    // TODO [ ]
+    // The `_supervisor_id` should be used in the future when we have additional
+    Path((asset, _supervisor_id)): Path<(Asset, String)>,
+) -> Result<Json<SupervisorAllAvailableTechnicians>, AppError>
+{
+    // let lock = orchestrator.actor_registries.lock().unwrap();
+    // let asset = Asset::try_from(asset).map_err(|e|
+    // AppError::Anyhow(e.to_string()))?;
+
+    let supervisor_all_available_technicians: SupervisorAllAvailableTechnicians = orchestrator
+        .scheduling_environment
+        .lock()
+        .expect("Cannot lock SchedulingEnvironment")
+        .worker_environment
+        .actor_specification
+        .get(&asset)
+        .context("ActorSpecification not available for the Asset")
+        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .technician_availability()
+        .into();
+
+    Ok(Json(supervisor_all_available_technicians))
+}
+
+#[debug_handler]
+#[utoipa::path(
+    get,
     path = "/all_technicians/{asset}/{supervisor_id}",
     tag = "Supervisor",
     params (
@@ -90,20 +132,21 @@ pub async fn status(
         ("supervisor_id" = String, Path),
     ),
     responses(
-        (status = 200, body = SupervisorResponseMessageDto),
+        (status = 200, body = SupervisorResourcesDto),
         (status = 404, body = AppError),
         (status = 500, body = AppError),
     )
 )]
-pub async fn all_available_technicians(
+pub async fn all_technicians(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     // TODO [ ]
     // The `_supervisor_id` should be used in the future when we have additional
-    Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
+    Path((asset, _supervisor_id)): Path<(Asset, String)>,
 ) -> Result<Json<SupervisorResourcesDto>, AppError>
 {
     // let lock = orchestrator.actor_registries.lock().unwrap();
-    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+    // let asset = Asset::try_from(asset).map_err(|e|
+    // AppError::Anyhow(e.to_string()))?;
 
     let supervisor_resources: SupervisorResourcesDto = orchestrator
         .system_solutions

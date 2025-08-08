@@ -36,6 +36,7 @@ pub struct WorkOrdersWithSchedulingQueryParams
     #[serde(default)]
     periods: Vec<PeriodDto>,
 }
+
 #[debug_handler]
 #[utoipa::path(
     get,

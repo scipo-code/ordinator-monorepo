@@ -59,6 +59,7 @@
               extensions = [
                 "rust-src"
                 "rust-analyzer"
+                "rustfmt"
               ];
             })
             pkgs.zellij

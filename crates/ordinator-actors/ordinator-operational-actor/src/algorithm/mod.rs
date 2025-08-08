@@ -9,9 +9,9 @@ use std::ops::Deref;
 use std::ops::DerefMut;
 use std::sync::Arc;
 
-use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::ensure;
 use assert_functions::OperationalAlgorithmAsserts;
 use chrono::DateTime;
 use chrono::TimeDelta;
@@ -28,8 +28,6 @@ use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::AbLNSUtils;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
-use ordinator_orchestrator_actor_traits::delegate::Delegate;
-use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_orchestrator_actor_traits::OperationalInterface;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
@@ -37,18 +35,20 @@ use ordinator_orchestrator_actor_traits::SupervisorInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::TacticalInterface;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
+use ordinator_orchestrator_actor_traits::delegate::Delegate;
+use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
-use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
-use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::worker_environment::availability::Availability;
+use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::OperationalOptions;
+use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use rand::seq::IndexedRandom;
+use tracing::Level;
 use tracing::debug;
 use tracing::event;
-use tracing::Level;
 
 #[derive(Debug)]
 pub struct OperationalAlgorithm<Ss>(Algorithm<OperationalSolution, OperationalParameters, (), Ss>)
@@ -756,7 +756,7 @@ where
             .solution
             .scheduled_work_order_activities
             .iter()
-            .map(|e| e.0 .0)
+            .map(|e| e.0.0)
             .collect::<HashSet<_>>();
 
         ensure!(
@@ -805,7 +805,7 @@ where
                 .first()
                 .unwrap()
                 .0
-                 .0
+                .0
                 == WorkOrderNumber(0))
         );
         ensure!(
@@ -815,7 +815,7 @@ where
                 .last()
                 .unwrap()
                 .0
-                 .0
+                .0
                 == WorkOrderNumber(0))
         );
         for operational_solution in &operational_solutions_filtered {
@@ -928,21 +928,24 @@ where
         work_order_and_activity_number: WorkOrderActivity,
     ) -> Result<()>
     {
-        ensure!(self
-            .solution
-            .scheduled_work_order_activities
-            .iter()
-            .any(|os| os.0 == work_order_and_activity_number));
+        ensure!(
+            self.solution
+                .scheduled_work_order_activities
+                .iter()
+                .any(|os| os.0 == work_order_and_activity_number)
+        );
 
         self.solution
             .scheduled_work_order_activities
             .retain(|os| os.0 != work_order_and_activity_number);
 
-        ensure!(!self
-            .solution
-            .scheduled_work_order_activities
-            .iter()
-            .any(|os| os.0 == work_order_and_activity_number));
+        ensure!(
+            !self
+                .solution
+                .scheduled_work_order_activities
+                .iter()
+                .any(|os| os.0 == work_order_and_activity_number)
+        );
         Ok(())
     }
 
@@ -1106,22 +1109,40 @@ where
         let (start_window, end_window) = match (strategic_period_option, tactical_days_option) {
             // What is actually happening here?
             (None, None) => (
-                &self.parameters.availability.start_date,
-                &self.parameters.availability.finish_date,
+                self.parameters.availability.start_date,
+                self.parameters.availability.finish_date,
             ),
-            (_, Some(d)) => d,
+            // Here there will be a lot of interpretation.
+            //
+            // ISSUE #000 - change the time `07:00:00` and `19:00:00` to reflect the
+            // [`OperationalActors`] [`Availability`]. Consider night shifts.
+            (_, Some((tactical_start, tactical_finish))) => (
+                tactical_start
+                    .and_hms_opt(7, 0, 0)
+                    .context("DateTime created wrong. This really should never happen")?
+                    .and_utc(),
+                tactical_finish
+                    .and_hms_opt(19, 0, 0)
+                    .context("DateTime created wrong. This really should never happen")?
+                    .and_utc(),
+            ),
             // So the issue here is that the `StrategicActor` makes a period. That is
             // depend on a current time. This means that it is not working on the
             // correct `SystemClock`.
             (Some(WhereIsWorkOrder::Strategic(period)), _) => {
-                (period.start_date(), period.finish_date())
+                (*period.start_date(), *period.finish_date())
             }
             (Some(WhereIsWorkOrder::NotScheduled), _) => (
-                &self.parameters.availability.start_date,
-                &self.parameters.availability.finish_date,
+                self.parameters.availability.start_date,
+                self.parameters.availability.finish_date,
             ),
-            (Some(WhereIsWorkOrder::Tactical(_t)), _) => {
-                panic!("This should not happen. The `(_, Some(d))` branch should have been chosen")
+            // This is actually find I think
+            (Some(WhereIsWorkOrder::Tactical(_t)), None) => {
+                // What does it mean to be in here.
+                (
+                    self.parameters.availability.start_date,
+                    self.parameters.availability.finish_date,
+                )
             } /* WARN
                * This kind of code should be made with `AppError`. You should have a centralized
                * error strategy aimed at making quick iterations on the scheduling
@@ -1160,8 +1181,8 @@ where
             let start_of_availability = {
                 let mut current_time = operational_solution[0].1.assignments.last().unwrap().finish;
 
-                if current_time < *start_window {
-                    current_time = *start_window;
+                if current_time < start_window {
+                    current_time = start_window;
                 }
 
                 let current_time_option = self.update_current_time_based_on_event(current_time);
@@ -1191,14 +1212,14 @@ where
 
             let end_of_availability = operational_solution[1].1.assignments.first().unwrap().start;
 
-            if (*end_window).min(end_of_availability) - (*start_window).max(start_of_availability)
+            if (end_window).min(end_of_availability) - (start_window).max(start_of_availability)
                 > operational_parameter.operation_time_delta
             {
-                return Ok(*start_window.max(&start_of_availability));
+                return Ok(start_window.max(start_of_availability));
             }
         }
 
-        let mut current_time = *start_window;
+        let mut current_time = start_window;
 
         let current_time_option = self.update_current_time_based_on_event(current_time);
 

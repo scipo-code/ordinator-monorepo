@@ -27,19 +27,19 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use ordinator_scheduling_environment::worker_environment::TacticalOptions;
+use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use priority_queue::PriorityQueue;
 use rand::rng;
 use rand::seq::IndexedRandom;
 use tactical_solution::TacticalObjectiveValue;
 use tactical_solution::TacticalScheduledOperations;
 use tactical_solution::TacticalSolution;
-use tracing::event;
 use tracing::Level;
+use tracing::event;
 
 use self::assert_functions::TacticalAssertions;
 use self::tactical_parameters::TacticalParameters;
@@ -183,8 +183,7 @@ where
                 .last()
                 .unwrap()
                 .0
-                .date
-                .date_naive();
+                .date;
 
             // Ahh this is completely wrong again. I think that the best approach here is to
             // make the system work.
@@ -237,6 +236,137 @@ where
 
         total_loading.to_f64() / total_capacity.to_f64()
     }
+
+    fn force_schedule(&mut self, forced_operations: Vec<WorkOrderNumber>) -> Result<()>
+    where
+        Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
+            AbLNSUtils<SolutionType = TacticalSolution>,
+        Ss: SystemSolutions<Tactical = TacticalSolution>,
+    {
+        for work_order_number in forced_operations {
+            let parameters = self
+                .parameters
+                .tactical_work_orders
+                .get(&work_order_number)
+                .context("WorkOrder not present in TacticalActor")?;
+
+            // TODO [x] - break, consider if you are going in the right direction here
+            // TODO [ ] - Make a generic forced concept in the code.
+            // We need a common expression here to make the code work as expected.
+            //
+            // You want to put this into the,
+            let start_days = parameters
+                .tactical_operation_parameters
+                .iter()
+                .map(|e| {
+                    (
+                        e.1.forced_start_date.clone(),
+                        e.1.work_remaining,
+                        e.1.operating_time,
+                        e.1.number,
+                    )
+                })
+                .collect::<Vec<_>>();
+
+            determine_forced_tactical_assignment(&start_days);
+
+            // let operation_solution = OperationSolution::new(scheduled,
+            // resource, number, work_remaining, work_order_number,
+            // activity_number)
+        }
+
+        Ok(())
+    }
+}
+
+fn determine_forced_tactical_assignment(
+    scheduled_days: &[(Option<Day>, Work, Work, u64)],
+) -> Vec<Vec<Work>>
+{
+    let mut index = 0;
+
+    // Outer `Vec` is the operation, the inner `Vec` is the day for the operation
+    let mut operation_day_work: Vec<Vec<Work>> = vec![vec![]; scheduled_days.len()];
+    let mut done_indices: Vec<bool> = vec![false; scheduled_days.len()];
+    let mut work_in_operation = scheduled_days.iter().map(|e| e.1).collect::<Vec<_>>();
+    let mut backwards = false;
+    let mut current_day: Option<Day> = None;
+
+    while done_indices.iter().all(|e| *e) {
+        let operational_schedule_information = &scheduled_days[index];
+
+        match &current_day {
+            Some(start_day) => {
+                // If the current day is already assigned, simply continue
+                // Else use the start day of the work_order
+                match current_day {
+                    Some(_) => (),
+                    None => current_day = Some(start_day.clone()),
+                }
+                let work = operational_schedule_information
+                    .1
+                    .min(operational_schedule_information.2);
+
+                operation_day_work[index].push(work);
+
+                work_in_operation[index] -= work;
+
+                if work_in_operation[index] == work {
+                    done_indices[index] = true;
+
+                    // Find next index that is equal to false, if the last element loop back again.
+                    index += 1;
+
+                    if index == scheduled_days.len() {
+                        index = 0;
+                    }
+                } else if backwards {
+                    // SAFETY: None case is always handled below
+                    current_day = Some(Day {
+                        day_index: current_day.as_ref().unwrap().day_index - 1,
+                        date: current_day
+                            .as_ref()
+                            .unwrap()
+                            .date
+                            .checked_sub_days(chrono::Days::new(1))
+                            .unwrap(),
+                    });
+                } else {
+                    // SAFETY: None case is always handled below
+                    current_day = Some(Day {
+                        day_index: current_day.as_ref().unwrap().day_index + 1,
+                        date: current_day
+                            .as_ref()
+                            .unwrap()
+                            .date
+                            .checked_add_days(chrono::Days::new(1))
+                            .unwrap(),
+                    });
+                }
+            }
+            None => {
+                match &operational_schedule_information.0 {
+                    Some(operation_day) => current_day = Some(operation_day.clone()),
+                    None => {
+                        index += 1;
+                        continue;
+                    }
+                }
+                index += 1;
+                if index == scheduled_days.len() {
+                    done_indices.reverse();
+                    backwards = true;
+                    let backwards = done_indices.iter().enumerate().find(|e| !(*e.1));
+
+                    match backwards {
+                        Some(some) => index = some.0,
+                        None => break,
+                    }
+                }
+            }
+        }
+    }
+    operation_day_work
 }
 
 impl<Ss> ActorBasedLargeNeighborhoodSearch for TacticalAlgorithm<Ss>
@@ -280,6 +410,25 @@ where
 
         // Now we want to remove the work orders that are no longer to be a
         // part of the solution.
+        // }
+        //
+        let forced_operations = self
+            .parameters
+            .tactical_work_orders
+            .iter()
+            // TODO FIX [ ] - make method that checks for every
+            // .filter(|e| e.1.is_fixed())
+            .map(|e| e.0)
+            .cloned()
+            .collect::<Vec<_>>();
+
+        // ISSUE #000 - make a method for force scheduling in the
+        // ActorBasedLargeNeighborhoodSearch.
+        // TODO [ ] Every actor needs this function. Is that correct? Yes! Every single
+        // Now? Yes.
+        //
+        // for operation in forced_operations {
+        //     self.force_schedule(forced_operations);
         // }
 
         Ok(true)
@@ -466,9 +615,7 @@ where
                 .parameters
                 .tactical_days
                 .iter()
-                .filter(|day| {
-                    tactical_parameter.earliest_allowed_start_date <= day.date.date_naive()
-                })
+                .filter(|day| tactical_parameter.earliest_allowed_start_date <= day.date)
                 .collect();
 
             let start_day: Day = match allowed_starting_days.get(start_day_index) {
@@ -805,9 +952,12 @@ where
 #[cfg(test)]
 pub mod tests
 {
+    use chrono::NaiveDate;
+    use ordinator_scheduling_environment::time_environment::day::Day;
     use ordinator_scheduling_environment::work_order::operation::Work;
     use ordinator_scheduling_environment::worker_environment::resources::Id;
 
+    use super::determine_forced_tactical_assignment;
     use crate::algorithm::determine_load;
 
     #[test]
@@ -827,10 +977,11 @@ pub mod tests
 
         let loadings = determine_load(remaining_capacity, &operating_time, work_remaining);
 
-        assert_eq!(
-            loadings,
-            vec![Work::from(3.0), Work::from(5.0), Work::from(2.0)]
-        );
+        assert_eq!(loadings, vec![
+            Work::from(3.0),
+            Work::from(5.0),
+            Work::from(2.0)
+        ]);
     }
 
     #[test]
@@ -844,15 +995,12 @@ pub mod tests
 
         let loadings = determine_load(remaining_capacity, &operating_time, work_remaining);
 
-        assert_eq!(
-            loadings,
-            vec![
-                Work::from(3.0),
-                Work::from(3.0),
-                Work::from(3.0),
-                Work::from(1.0)
-            ]
-        );
+        assert_eq!(loadings, vec![
+            Work::from(3.0),
+            Work::from(3.0),
+            Work::from(3.0),
+            Work::from(1.0)
+        ]);
     }
 
     #[test]
@@ -879,4 +1027,18 @@ pub mod tests
     // absolutely. I do not see anyother way, as the `objective value` may
     // always be dependent on the other `Solution`s.
     // GOOD a decision was made here.
+    //
+    #[test]
+    fn test_determine_forced_assignment()
+    {
+        let scheduled_days = vec![(
+            Some(Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap())),
+            Work::from(4.0),
+            Work::from(6.0),
+            1,
+        )];
+        let value = determine_forced_tactical_assignment(&scheduled_days);
+
+        assert_eq!(value, vec![vec![Work::from(4.0)]])
+    }
 }

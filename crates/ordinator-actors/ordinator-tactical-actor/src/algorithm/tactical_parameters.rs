@@ -1,4 +1,5 @@
 use std::cmp::min;
+use std::collections::BTreeMap;
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::fmt::{self};
@@ -10,20 +11,20 @@ use chrono::DateTime;
 use chrono::NaiveDate;
 use chrono::Utc;
 use ordinator_orchestrator_actor_traits::Parameters;
+use ordinator_scheduling_environment::Assignment;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::day::Day;
-use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
-use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
-use ordinator_scheduling_environment::work_order::operation::Operation;
-use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::ActivityRelation;
-use ordinator_scheduling_environment::work_order::FixedWorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderConfigurations;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::work_order::operation::Operation;
+use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
+use ordinator_scheduling_environment::worker_environment::TacticalOptions;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
-use ordinator_scheduling_environment::worker_environment::TacticalOptions;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 use serde::Serialize;
 
 use super::tactical_resources::TacticalResources;
@@ -66,16 +67,26 @@ impl Parameters for TacticalParameters
             .filter(|(_, wo)| &wo.functional_location().asset == id.2.first().unwrap())
             .filter(|(_, wo)| wo.work_order_analytic.released_for_scheduling());
 
+        let assignments = &scheduling_environment.assignments.assignment_for_tactical();
         let tactical_capacity = TacticalResources::from((scheduling_environment, id));
 
         let tactical_work_orders: HashMap<WorkOrderNumber, TacticalParameter> = work_orders
             .map(|(won, wo)| {
+                let start_days_for_activities: HashMap<Option<u64>, &Assignment> = assignments
+                    .iter()
+                    .filter(|e| e.0 == *won)
+                    .map(|e| (e.1, &e.2))
+                    .collect::<HashMap<_, _>>();
                 Ok((
                     *won,
                     // This should also be found inside of the database.
                     // There is something that has to be inverted here. You are not designing this
                     // is the best possible way.
-                    create_tactical_parameter(wo, &tactical_options.work_order_configurations)?,
+                    create_tactical_parameter(
+                        wo,
+                        start_days_for_activities,
+                        &tactical_options.work_order_configurations,
+                    )?,
                 ))
             })
             .collect::<Result<HashMap<WorkOrderNumber, TacticalParameter>>>()?;
@@ -115,15 +126,22 @@ impl Parameters for TacticalParameters
 // continue.
 pub fn create_tactical_parameter(
     work_order: &WorkOrder,
+    start_days_for_activities: HashMap<Option<u64>, &Assignment>,
     work_order_configuration: &WorkOrderConfigurations,
 ) -> Result<TacticalParameter>
 {
-    let mut operation_parameters = HashMap::new();
+    let mut operation_parameters = BTreeMap::new();
     for (activity_number, operation) in &work_order.operations.0 {
+        let forced_day = start_days_for_activities
+            .get(&Some(*activity_number))
+            .map(|e| e.day())
+            .and_then(|e| e);
+
         let operation_parameter = OperationParameter::new(
             work_order.work_order_number,
             operation,
             Work::from(work_order_configuration.operating_time as f64),
+            forced_day,
         )?;
         operation_parameters.insert(*activity_number, operation_parameter);
     }
@@ -135,12 +153,11 @@ pub fn create_tactical_parameter(
 pub struct TacticalParameter
 {
     pub main_work_center: Resources,
-    pub tactical_operation_parameters: HashMap<ActivityNumber, OperationParameter>,
+    pub tactical_operation_parameters: BTreeMap<ActivityNumber, OperationParameter>,
     // ISSUE #300 TODO [ ] 2025-07-17 implement the `forced_schedule_*` in the tactical
     //
     // pub forced_in_period: Option<Period>,
     // You have to make a force schedule function. You are getting a
-    pub(crate) fixed_by: FixedWorkOrder,
     pub weight: u64,
     pub relations: Vec<ActivityRelation>,
     // TODO: These two should be moved out of the parameters. You might end up implementing
@@ -155,7 +172,7 @@ impl TacticalParameter
         work_order: &WorkOrder,
         // This should be a part of the options.
         work_order_configuration: &WorkOrderConfigurations,
-        operation_parameters: HashMap<ActivityNumber, OperationParameter>,
+        operation_parameters: BTreeMap<ActivityNumber, OperationParameter>,
     ) -> Result<Self>
     {
         Ok(Self {
@@ -174,7 +191,6 @@ impl TacticalParameter
             earliest_allowed_start_date: work_order.work_order_dates.earliest_allowed_start_date,
             // So we have to create something that will let us fix the tactical work_orders. The
             // enum here is a great bet.
-            fixed_by: work_order.fixed_by.clone(),
         })
     }
 }
@@ -196,6 +212,7 @@ pub struct OperationParameter
     pub operating_time: Work,
     pub work_remaining: Work,
     pub resource: Resources,
+    pub forced_start_date: Option<Day>,
     // You did something right here. What was that? I am not really sure here.
     pub earliest_start_date: DateTime<Utc>,
     pub earliest_finish_date: DateTime<Utc>,
@@ -207,6 +224,7 @@ impl OperationParameter
         work_order_number: WorkOrderNumber,
         operation: &Operation,
         operating_time: Work,
+        forced: Option<Day>,
     ) -> Result<Self>
     {
         Ok(Self {
@@ -220,6 +238,7 @@ impl OperationParameter
             resource: operation.resource,
             earliest_start_date: operation.operation_dates.earliest_start_datetime,
             earliest_finish_date: operation.operation_dates.earliest_finish_datetime,
+            forced_start_date: forced,
         })
     }
 }

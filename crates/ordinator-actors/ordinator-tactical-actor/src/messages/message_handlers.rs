@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fmt::Debug;
 
 use anyhow::Context;
@@ -6,14 +7,15 @@ use ordinator_actor_core::Actor;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
+use ordinator_scheduling_environment::Assignment;
 
 use super::TacticalRequestMessage;
 use super::TacticalResponseMessage;
-use crate::algorithm::tactical_parameters::create_tactical_parameter;
+use crate::algorithm::TacticalAlgorithm;
 use crate::algorithm::tactical_parameters::TacticalParameters;
+use crate::algorithm::tactical_parameters::create_tactical_parameter;
 use crate::algorithm::tactical_resources::TacticalResources;
 use crate::algorithm::tactical_solution::TacticalSolution;
-use crate::algorithm::TacticalAlgorithm;
 
 // TODO [ ]
 // Make a TacticalAgent here! I believe that this is the best appraoch. The only
@@ -79,6 +81,11 @@ where
                     .work_order_configurations
                     .clone();
 
+                let assignments = scheduling_environment_guard
+                    .assignments
+                    .assignment_for_tactical()
+                    .clone();
+
                 drop(scheduling_environment_guard);
                 for work_order_number in modified_work_orders {
                     let work_order = work_orders.get(&work_order_number).with_context(|| {
@@ -88,6 +95,12 @@ where
                             std::any::type_name::<TacticalParameters>()
                         )
                     })?;
+
+                    let start_days_for_activities: HashMap<Option<u64>, &Assignment> = assignments
+                        .iter()
+                        .filter(|e| e.0 == work_order_number)
+                        .map(|e| (e.1, &e.2))
+                        .collect::<HashMap<_, _>>();
 
                     // FIX
                     // The solution should also be updated here. Think about how you can make
@@ -101,8 +114,11 @@ where
                     //
                     // You should wrap this up in the `Interface`
 
-                    let tactical_parameter =
-                        create_tactical_parameter(work_order, work_order_configurations)?;
+                    let tactical_parameter = create_tactical_parameter(
+                        work_order,
+                        start_days_for_activities,
+                        work_order_configurations,
+                    )?;
 
                     // It is only the algorithm that can modify parameters. Not the the Actor
                     // directly you should fix this issue soon. What

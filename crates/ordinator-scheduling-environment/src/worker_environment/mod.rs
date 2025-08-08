@@ -3,6 +3,7 @@ pub mod crew;
 pub mod resources;
 pub mod worker;
 
+use std::collections::BTreeMap;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
@@ -17,10 +18,10 @@ use resources::Id;
 use serde::Deserialize;
 use serde::Serialize;
 
+use crate::Asset;
 use crate::time_environment::MaterialToPeriod;
 use crate::time_environment::TimeInterval;
 use crate::work_order::WorkOrderConfigurations;
-use crate::Asset;
 
 pub type OperationalId = String;
 // There is something rotten about all this! I think that the best
@@ -173,6 +174,19 @@ impl ActorSpecifications
         let input_operational = InputOperational::new(id.clone(), 6.0, availability);
 
         self.operational.push(input_operational);
+    }
+
+    pub fn technician_availability(&self) -> BTreeMap<Id, Availability>
+    {
+        self.operational
+            .iter()
+            .map(|e| {
+                (
+                    e.id.clone(),
+                    e.operational_configuration.availability.clone(),
+                )
+            })
+            .collect()
     }
 }
 
