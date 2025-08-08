@@ -16,12 +16,10 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route path="/:asset/schedule" element={<ScheduleView />} />
-              <Route path="/:asset/workschedule" element={<MainTable/>} />
+              <Route path="/:asset/frozen_plan" element={<MainTable/>} />
             </Route>
           </Routes>
       </HashRouter>
   );
 }
 export default App;
-              // <Route path="planning" element={<PlanningView />} />
-              // <Route path="resources" element={<ResourceView />} />
