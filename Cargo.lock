@@ -1436,6 +1436,7 @@ dependencies = [
  "tower",
  "tower-http",
  "tracing",
+ "ts-rs",
  "utoipa",
  "utoipa-axum",
  "utoipa-swagger-ui",
