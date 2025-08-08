@@ -185,9 +185,6 @@ importers:
       '@scipo-code/shared':
         specifier: workspace:*
         version: link:../shared
-      '@tanstack/react-table':
-        specifier: ^8.21.3
-        version: 8.21.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
 
 packages:
 
