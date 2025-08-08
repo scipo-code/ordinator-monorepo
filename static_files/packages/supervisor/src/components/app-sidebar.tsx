@@ -27,8 +27,8 @@ export function AppSidebar() {
       icon: Calendar,
     },
     {
-      title: "Search",
-      url: "#",
+      title: "Resources",
+      url: `/${asset}/resources`,
       icon: Search,
     },
     {
