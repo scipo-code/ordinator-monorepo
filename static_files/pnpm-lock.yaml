@@ -182,9 +182,16 @@ importers:
 
   packages/supervisor:
     dependencies:
+      '@radix-ui/react-slot':
+        specifier: ^1.2.3
+        version: 1.2.3(@types/react@19.1.9)(react@19.1.1)
       '@scipo-code/shared':
         specifier: workspace:*
         version: link:../shared
+    devDependencies:
+      vite-plugin-checker:
+        specifier: ^0.9.3
+        version: 0.9.3(eslint@9.32.0(jiti@2.5.1))(optionator@0.9.4)(typescript@5.9.2)(vite@6.3.5(@types/node@22.17.0)(jiti@2.5.1)(lightningcss@1.30.1))
 
 packages:
 
