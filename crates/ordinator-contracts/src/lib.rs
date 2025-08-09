@@ -1,5 +1,7 @@
 use anyhow::Context;
+use chrono::DateTime;
 use chrono::NaiveDate;
+use chrono::Utc;
 use ordinator_operational_actor::algorithm::operational_solution::OperationalSolution;
 use ordinator_orchestrator_actor_traits::SystemSolution;
 use ordinator_scheduling_environment::Asset;
@@ -36,7 +38,15 @@ pub struct PeriodDto(pub String);
     Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS, Default,
 )]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+/// Example 2025-02-20
 pub struct NaiveDateDto(pub String);
+
+#[derive(
+    Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS, Default,
+)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+/// Example 2025-02-20T07:00:00
+pub struct DateTimeDto(pub String);
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
@@ -126,6 +136,17 @@ impl TryFrom<NaiveDateDto> for NaiveDate
         let naive_date = NaiveDate::parse_from_str(&value.0, "%Y-%m-%d")?;
         Ok(naive_date)
     }
+}
+
+// ISSUE #000 How do we handle datetime?
+impl TryFrom<DateTimeDto> for DateTime<Utc>
+{
+    type Error = chrono::ParseError;
+
+    fn try_from(value: DateTimeDto) -> Result<Self, Self::Error>
+    {
+        let dt = DateTime::parse_from_rfc3339(&value.0)?;
+        Ok(dt.to_utc()) }
 }
 
 pub type TotalSystemSolution =
