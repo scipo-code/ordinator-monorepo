@@ -16,6 +16,7 @@ use serde::Serialize;
 use ts_rs::TS;
 use utoipa::ToSchema;
 
+use crate::AssetNames;
 use crate::IdDto;
 use crate::IdStringDto;
 use crate::MaterialStatusDto;
@@ -52,7 +53,8 @@ type Description = String;
 type Icc = Option<String>;
 #[derive(Debug, ToSchema, Serialize, TS)]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
-pub struct WorkOrderSupervisorRow {
+pub struct WorkOrderSupervisorRow
+{
     id: IdStringDto,
     area: Area,
     work_order_number: WorkOrderNumberDto,
@@ -258,10 +260,22 @@ impl From<SupervisorSolution> for SupervisorResourcesDto
     }
 }
 
-#[derive(ToSchema, Serialize, Debug)]
+#[derive(Debug, Serialize, ToSchema, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+pub struct TechnicianAvailability
+{
+    pub id: IdStringDto,
+    pub resources: Vec<String>,
+    pub assets: Vec<AssetNames>,
+    pub start: NaiveDateDto,
+    pub end: NaiveDateDto,
+}
+
+#[derive(ToSchema, Serialize, Debug, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct SupervisorAllAvailableTechnicians
 {
-    all_technicians: Vec<(IdStringDto, Vec<String>, Vec<String>, String, String)>,
+    all_technicians: Vec<TechnicianAvailability>,
 }
 impl From<BTreeMap<Id, Availability>> for SupervisorAllAvailableTechnicians
 {
@@ -269,14 +283,16 @@ impl From<BTreeMap<Id, Availability>> for SupervisorAllAvailableTechnicians
     {
         let all_technicians = value
             .iter()
-            .map(|(id, e)| {
-                (
-                    IdStringDto::from(id.clone()),
-                    id.1.iter().map(|e| e.to_string()).collect(),
-                    id.2.iter().map(|e| e.to_string()).collect(),
-                    e.start_date.to_rfc3339(),
-                    e.finish_date.to_rfc3339(),
-                )
+            .map(|(id, e)| TechnicianAvailability {
+                id: IdStringDto::from(id.clone()),
+                resources: id.1.iter().map(|e| e.to_string()).collect::<Vec<_>>(),
+                assets: id
+                    .2
+                    .iter()
+                    .map(|e| AssetNames(e.to_string()))
+                    .collect::<Vec<_>>(),
+                start: NaiveDateDto(e.start_date.format("%Y-%m-%d").to_string()),
+                end: NaiveDateDto(e.finish_date.format("%Y-%m-%d").to_string()),
             })
             .collect();
 
