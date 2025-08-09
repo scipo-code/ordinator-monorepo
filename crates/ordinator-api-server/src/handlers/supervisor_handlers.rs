@@ -282,7 +282,7 @@ pub struct WorkOrderActivityToTechnicianDto
 }
 #[debug_handler]
 #[utoipa::path(
-    post,
+    patch,
     path = "/assign_to_technicians/{asset}/{supervisor_id}",
     tag = "Supervisor",
     description = "This endpoint is for assigning a technicians to a work order activity.",

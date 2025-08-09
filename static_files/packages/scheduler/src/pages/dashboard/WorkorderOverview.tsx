@@ -168,16 +168,6 @@ export default function WorkorderOverview() {
     }, [assignMutation]);
 
   
-  
-  console.log('Periods Debug:', {
-    periods,
-    isArray: Array.isArray(periods),
-    length: periods?.length,
-    type: typeof periods,
-    firstItem: periods?.[0],
-    keys: periods?.[0] ? Object.keys(periods[0]) : 'no first item'
-  });
-
   if (!workorder || !asset) return null;
   if (isLoading || isPeriodsLoading) {
     return (
@@ -193,7 +183,7 @@ export default function WorkorderOverview() {
   }
   
   return (
-    <div className="px-4">
+    <div className="px-4 py-4">
       <WorkorderCard
          wo={woInfo!}
          periods={periods}
