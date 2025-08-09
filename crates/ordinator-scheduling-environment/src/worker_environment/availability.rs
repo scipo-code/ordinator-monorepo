@@ -1,10 +1,10 @@
 use chrono::DateTime;
 use chrono::TimeDelta;
 use chrono::Utc;
-use serde::de;
 use serde::Deserialize;
 use serde::Deserializer;
 use serde::Serialize;
+use serde::de;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Availability
@@ -17,12 +17,19 @@ pub struct Availability
 
 impl Availability
 {
-    pub fn new(start_date: chrono::DateTime<Utc>, finish_date: chrono::DateTime<Utc>) -> Self
+    pub fn new(
+        start_date: chrono::DateTime<Utc>,
+        finish_date: chrono::DateTime<Utc>,
+    ) -> anyhow::Result<Self>
     {
-        Self {
+        if start_date > finish_date {
+            return Err(anyhow::anyhow!("Start date greater than finish date."));
+        }
+
+        Ok(Self {
             start_date,
             finish_date,
-        }
+        })
     }
 
     pub fn duration(&self) -> TimeDelta

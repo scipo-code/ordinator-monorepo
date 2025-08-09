@@ -11,6 +11,7 @@ use axum::response::Result;
 use axum_extra::extract::Query;
 use chrono::DateTime;
 use ordinator_contracts::AssetNames;
+use ordinator_contracts::DateTimeDto;
 use ordinator_contracts::NaiveDateDto;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::WorkOrderNumberDto;
@@ -32,6 +33,7 @@ use ordinator_orchestrator::WorkOrderNumber;
 // This should be moved away from here.
 use serde::Deserialize;
 use serde::Serialize;
+use ts_rs::TS;
 use utoipa::IntoParams;
 use utoipa::ToSchema;
 
@@ -369,15 +371,18 @@ pub async fn assign_to_technicians(
     Ok(())
 }
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types")]
 pub struct CreateTechnicianDto
 {
     #[schema(example = "l1112233")]
     id: String,
     #[schema(example = "[\"MTN-MECH\"]")]
     resources_string: Vec<String>,
-    #[schema(example = "[\"2025-01-01T07:00:00Z\", \"2025-01-14T07:00:00Z\"]")]
-    availability: (String, String),
+    #[schema(example = "\"2025-01-01T07:00:00Z\"")]
+    start: DateTimeDto,
+    #[schema(example = "\"2025-01-01T07:00:00Z\"")]
+    finish: DateTimeDto,
 }
 
 #[debug_handler]
@@ -405,20 +410,17 @@ pub async fn add_technician(
     // The `_supervisor_id` should be used in the future when we have additional
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
     Json(payload): Json<CreateTechnicianDto>,
-) -> Result<(), AppError>
+) -> Result<Json<String>, AppError>
 {
     let CreateTechnicianDto {
         id,
         resources_string,
-        availability,
+        start,
+        finish,
     } = payload;
 
-    let start_date = DateTime::parse_from_rfc3339(&availability.0)
-        .map_err(|e| AppError::Anyhow(e.to_string()))?
-        .to_utc();
-    let finish_date = DateTime::parse_from_rfc3339(&availability.1)
-        .map_err(|e| AppError::Anyhow(e.to_string()))?
-        .to_utc();
+    let start_date = DateTime::try_from(start).map_err(|e| AppError::Anyhow(e.to_string()))?;
+    let finish_date = DateTime::try_from(finish).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
     let mut resources = vec![];
     for resource_string in resources_string {
@@ -444,7 +446,8 @@ pub async fn add_technician(
         .get_mut(&asset)
         .context("No ActorSpecification available to Asset")
         .map_err(|e| AppError::Anyhow(e.to_string()))?
-        .add_operational(&id, start_date, finish_date);
+        .add_operational(&id, start_date, finish_date)
+        .map_err(|e| AppError::Anyhow(e.to_string()))?;
     // .operational
     // .push(input_operational);
 
@@ -453,7 +456,12 @@ pub async fn add_technician(
     // There should only be a single actor for an Id, not many different ones.
     if let Err(started) = orchestrator.start_operational_actor(&id) {
         match started {
-            StartError::AlreadyRunning => return Ok(()),
+            StartError::AlreadyRunning => {
+                return Ok(Json(format!(
+                    "Technician {} already exists and is running",
+                    id.0
+                )));
+            }
             StartError::CouldNotConstruct => {
                 return Err(AppError::Anyhow("could not construct Actor".to_string()));
             }
@@ -464,7 +472,10 @@ pub async fn add_technician(
             }
         }
     }
-    Ok(())
+    Ok(Json(format!(
+        "Technician {} successfully created and started",
+        id.0
+    )))
 }
 
 // _ISSUE_ #000 means unassigned
