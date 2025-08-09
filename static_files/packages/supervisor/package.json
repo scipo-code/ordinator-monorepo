@@ -13,10 +13,8 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@scipo-code/shared": "workspace:*"
   },
-  "msw": {
-    "workerDirectory": [
-      "public"
-    ]
+  "devDependencies": {
+    "vite-plugin-checker": "^0.9.3"
   },
   "overrides": {
     "react-is": "^19.0.0-rc-69d4b800-20241021"
