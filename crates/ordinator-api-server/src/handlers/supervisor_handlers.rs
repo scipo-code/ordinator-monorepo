@@ -372,7 +372,7 @@ pub async fn assign_to_technicians(
 }
 
 #[derive(Serialize, Deserialize, ToSchema, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types")]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct CreateTechnicianDto
 {
     #[schema(example = "l1112233")]
