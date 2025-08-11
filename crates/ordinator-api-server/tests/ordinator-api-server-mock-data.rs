@@ -33,7 +33,7 @@ async fn test_complete_system() -> anyhow::Result<()>
 
     tokio::select! {
         // TODO [ ] fix the server
-        res = server => res.await?,
+        res = server => res?.await?,
         res = error_handle => res??,
         res = system_clock_handle => res?,
         // _ = signal::ctrl_c() => {

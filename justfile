@@ -1,7 +1,6 @@
 run:
     cargo run --release --bin ordinator-api-server 2> temp_output_from_program.log
 
-
 run-test:
     cargo test test_complete_system -- --ignored --nocapture 2> temp_output_from_program.log
 
@@ -10,30 +9,29 @@ bs-test:
 
 export-ts-bindings:
     cargo +nightly test export_bindings
-    cd static_files/packages/shared && pnpm generate-exports
-    sed -i 's/";$/.ts";/' static_files/packages/shared/src/types/index.ts
+
     
 build-ordinator-frontends:
-    mkdir -p dist/static_files/scheduler
-    mkdir -p dist/static_files/supervisor
+    mkdir -p ./dist/static_files/scheduler
+    mkdir -p ./dist/static_files/supervisor
     cd static_files/ && pnpm install && pnpm -r build
-    cp -r static_files/packages/scheduler/dist/* dist/static_files/scheduler/
-    cp -r static_files/packages/supervisor/dist/* dist/static_files/supervisor/
+    cp -r static_files/packages/scheduler/dist/* ./dist/static_files/scheduler/
+    cp -r static_files/packages/supervisor/dist/* ./dist/static_files/supervisor/
 
 build-ordinator-api-windows:
-    cross build --target x86_64-pc-windows-gnu --release && cp target/x86_64-pc-windows-gnu/release/ordinator-api-server.exe ./dist/
+    cross build --target x86_64-pc-windows-gnu --release && cp target/x86_64-pc-windows-gnu/release/ordinator-api-server.exe ././dist/
 
 build-ordinator-api-linux:
-    cargo build --release && cp target/release/ordinator-api-server ./dist/ 
+    cargo build --release && cp target/release/ordinator-api-server ././dist/ 
 
 create-required-directories:
-    mkdir -p dist/logging/logs/
-    mkdir -p dist/benches
-    mkdir -p dist/profiling
-    mkdir -p dist/xlsx_dumps
-    cp -r configuration dist/configuration
-    cp .env.example dist/.env.example
-    cp -r temp_scheduling_environment_database dist/temp_scheduling_environment_database
+    mkdir -p ./dist/logging/logs/
+    mkdir -p ./dist/benches
+    mkdir -p ./dist/profiling
+    mkdir -p ./dist/xlsx_dumps
+    cp -r configuration ./dist/configuration
+    cp .env.example ./dist/.env.example
+    cp -r temp_scheduling_environment_database ./dist/temp_scheduling_environment_database
 
 build-ordinator-for-deployment-windows: (build-ordinator-frontends) (build-ordinator-api-windows) (create-required-directories)
 

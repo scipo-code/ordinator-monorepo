@@ -1,20 +1,21 @@
 use std::sync::Arc;
 use std::sync::MutexGuard;
 
-use anyhow::anyhow;
 use anyhow::Result;
+use anyhow::anyhow;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::TacticalInterface;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
-use ordinator_scheduling_environment::time_environment::period::Period;
-use ordinator_scheduling_environment::work_order::operation::Operation;
-use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::MaterialStatus;
-use ordinator_scheduling_environment::work_order::WorkOrder;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_environment::time_environment::period::Period;
+use ordinator_scheduling_environment::work_order::WorkOrder;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::operation::Operation;
+use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::MaterialStatus;
 use serde::Serialize;
+use tracing::info;
 use ts_rs::TS;
 use utoipa::ToSchema;
 
@@ -133,6 +134,8 @@ impl
 
         let periods = value.1.time_environment.periods.clone();
         let periods_for_frozen_and_draft = [periods[0].clone(), periods[1].clone()];
+
+        info!(target: "developer", tactical_work_orders = system_solution.tactical.clone().unwrap().all_scheduled_tasks().len());
 
         for work_order in work_orders_by_asset {
             let sorted_operations = work_order.operations.0.iter().collect::<Vec<_>>();

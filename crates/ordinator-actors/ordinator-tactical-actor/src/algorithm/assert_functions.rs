@@ -1,24 +1,25 @@
 use std::borrow::Cow;
 use std::collections::HashMap;
 
-use anyhow::bail;
 use anyhow::Result;
+use anyhow::bail;
 use colored::Colorize;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
-use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use priority_queue::PriorityQueue;
 use strum::IntoEnumIterator;
-use tracing::event;
 use tracing::Level;
+use tracing::event;
+use tracing::info;
 
+use super::Algorithm;
 use super::tactical_parameters::TacticalParameters;
 use super::tactical_solution::TacticalSolution;
 use super::tactical_solution::TacticalWhereIsWorkOrder;
-use super::Algorithm;
 
 type TotalExcessHours = Work;
 
@@ -30,10 +31,8 @@ pub trait TacticalAssertions
     fn asset_that_capacity_is_not_exceeded(&self) -> Result<TotalExcessHours>;
 }
 
-type Type = TacticalParameters;
-
 impl<Ss> TacticalAssertions
-    for Algorithm<TacticalSolution, Type, PriorityQueue<WorkOrderNumber, u64>, Ss>
+    for Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>
 where
     Ss: SystemSolutions,
 {
@@ -79,6 +78,7 @@ where
                     // about the initialization of the
                     .unwrap_or(&zero_work);
 
+                info!(target: "debug", day = ?day.0, ?agg_load, ?sch_load);
                 if (agg_load - sch_load).0.round_dp(9) != Work::from(0.0).0 {
                     event!(Level::ERROR, agg_load = ?agg_load, sch_load = ?sch_load, resource = ?resource, day = ?day);
                     bail!(
