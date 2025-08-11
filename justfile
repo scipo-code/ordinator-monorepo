@@ -5,6 +5,8 @@ run:
 run-test:
     cargo test test_complete_system -- --ignored --nocapture 2> temp_output_from_program.log
 
+bs-test:
+    bs target/debug/deps/ordinator_tactical_actor-cd5c23df1ab83245 
 
 export-ts-bindings:
     cargo +nightly test export_bindings
