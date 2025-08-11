@@ -13,8 +13,10 @@ use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSoluti
 use ordinator_supervisor_actor::messages::SupervisorResponseMessage;
 use ordinator_supervisor_actor::messages::responses::SupervisorResponseStatus;
 use serde::Serialize;
+use ts_rs::TS;
 use utoipa::ToSchema;
 
+use crate::AssetNames;
 use crate::IdDto;
 use crate::IdStringDto;
 use crate::MaterialStatusDto;
@@ -30,13 +32,15 @@ pub struct SupervisorResourcesDto
     assigned_activities: BTreeMap<IdStringDto, WorkOrderActivityDto>,
 }
 
-#[derive(ToSchema, Serialize, Debug)]
+#[derive(ToSchema, Serialize, Debug, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct SupervisorMainTableDto
 {
-    days: BTreeMap<NaiveDateDto, DaySubtable>,
+    pub days: BTreeMap<NaiveDateDto, DaySubtable>,
 }
 
-#[derive(ToSchema, Debug, Serialize)]
+#[derive(ToSchema, Debug, Serialize, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct DaySubtable
 {
     // Each person should be mentioned once.
@@ -47,7 +51,8 @@ type Area = Option<String>;
 type Permit = Option<String>;
 type Description = String;
 type Icc = Option<String>;
-#[derive(Debug, ToSchema, Serialize)]
+#[derive(Debug, ToSchema, Serialize, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct WorkOrderSupervisorRow
 {
     id: IdStringDto,
@@ -106,7 +111,8 @@ impl From<(&WorkOrder, ActivityNumber, IdStringDto)> for WorkOrderSupervisorRow
     }
 }
 
-#[derive(Debug, ToSchema, Serialize)]
+#[derive(Debug, ToSchema, Serialize, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct Percentage(f64);
 
 // This should be a trait as well. You should not do it like this I believe
@@ -129,7 +135,7 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
             .unwrap()
             .assess_and_assign_activities();
 
-        for day in value.2.days.iter().take(14) {
+        for day in value.2.frozen_days() {
             let mut work_order_activities_per_work_center: HashMap<
                 String,
                 Vec<WorkOrderSupervisorRow>,
@@ -194,7 +200,8 @@ pub enum SupervisorResponseMessageDto
 
 // CRUCIAL INSIGHT
 // You are getting more mature here! You should simply keep it up.
-#[derive(Serialize, ToSchema)]
+#[derive(Serialize, ToSchema, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct SupervisorResponseStatusDto
 {
     pub supervisor_resource: Vec<IdDto>,
@@ -253,10 +260,22 @@ impl From<SupervisorSolution> for SupervisorResourcesDto
     }
 }
 
-#[derive(ToSchema, Serialize, Debug)]
+#[derive(Debug, Serialize, ToSchema, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+pub struct TechnicianAvailability
+{
+    pub id: IdStringDto,
+    pub resources: Vec<String>,
+    pub assets: Vec<AssetNames>,
+    pub start: NaiveDateDto,
+    pub end: NaiveDateDto,
+}
+
+#[derive(ToSchema, Serialize, Debug, TS)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct SupervisorAllAvailableTechnicians
 {
-    all_technicians: Vec<(IdStringDto, Vec<String>, Vec<String>, String, String)>,
+    all_technicians: Vec<TechnicianAvailability>,
 }
 impl From<BTreeMap<Id, Availability>> for SupervisorAllAvailableTechnicians
 {
@@ -264,14 +283,16 @@ impl From<BTreeMap<Id, Availability>> for SupervisorAllAvailableTechnicians
     {
         let all_technicians = value
             .iter()
-            .map(|(id, e)| {
-                (
-                    IdStringDto::from(id.clone()),
-                    id.1.iter().map(|e| e.to_string()).collect(),
-                    id.2.iter().map(|e| e.to_string()).collect(),
-                    e.start_date.to_rfc3339(),
-                    e.finish_date.to_rfc3339(),
-                )
+            .map(|(id, e)| TechnicianAvailability {
+                id: IdStringDto::from(id.clone()),
+                resources: id.1.iter().map(|e| e.to_string()).collect::<Vec<_>>(),
+                assets: id
+                    .2
+                    .iter()
+                    .map(|e| AssetNames(e.to_string()))
+                    .collect::<Vec<_>>(),
+                start: NaiveDateDto(e.start_date.format("%Y-%m-%d").to_string()),
+                end: NaiveDateDto(e.finish_date.format("%Y-%m-%d").to_string()),
             })
             .collect();
 

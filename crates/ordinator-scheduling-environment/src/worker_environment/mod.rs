@@ -168,12 +168,13 @@ impl ActorSpecifications
         id: &Id,
         start_date: DateTime<Utc>,
         finish_date: DateTime<Utc>,
-    )
+    ) -> anyhow::Result<()>
     {
-        let availability = Availability::new(start_date, finish_date);
+        let availability = Availability::new(start_date, finish_date)?;
         let input_operational = InputOperational::new(id.clone(), 6.0, availability);
 
         self.operational.push(input_operational);
+        Ok(())
     }
 
     pub fn technician_availability(&self) -> BTreeMap<Id, Availability>

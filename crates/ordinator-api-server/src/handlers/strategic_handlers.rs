@@ -8,7 +8,6 @@ use axum::extract::State;
 use axum::response::IntoResponse;
 use axum::response::Response;
 use axum::response::Result;
-// use axum::extract::Query;
 use axum_extra::extract::Query;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::PeriodDto;
@@ -187,15 +186,16 @@ where
 /// This handler updates the [`SchedulingEnvironment`] that the UnloadingPoint
 /// has been updated and sends a command
 /// to every `Actor` that the [`SchedulignEnvironment`] has changed.
+
 #[debug_handler]
 #[utoipa::path(
-    post,
-    path = "/{asset}/assign_work_order_to_period/{work_order_number}/{period}",
+    patch,
+    path = "/{asset}/assign_work_order_to_period/{work_order_number}/",
     tag = "Scheduler",
+    request_body(content = PeriodDto, description = "json with the assigned period", content_type = "application/json", example = json!("2025-W5-6")),
     params (
         ("asset" = AssetNames, Path),
         ("work_order_number" = WorkOrderNumberDto, Path),
-        ("period" = PeriodDto, Path),
     ),
     responses(
         (status = 200),
@@ -205,11 +205,8 @@ where
 )]
 pub async fn assign_work_order_to_period(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    Path((asset_dto, work_order_number_dto, period_dto)): Path<(
-        AssetNames,
-        WorkOrderNumberDto,
-        PeriodDto,
-    )>,
+    Path((asset_dto, work_order_number_dto)): Path<(AssetNames, WorkOrderNumberDto)>,
+    Json(period_dto): Json<PeriodDto>,
 ) -> Result<Response, AppError>
 {
     // This should go into the handler, directory. There is no other way around it

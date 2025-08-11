@@ -17,6 +17,11 @@ export function AppSidebar() {
   const { asset } = useParams();
   const items = [
     {
+      title: "Frozen Plan",
+      url: `/${asset}/frozen_plan`,
+      icon: User,
+    },
+    {
       title: "Schedule",
       url: `/${asset}/schedule`,
       icon: Calendar,
@@ -24,11 +29,6 @@ export function AppSidebar() {
     {
       title: "Resources",
       url: `/${asset}/resources`,
-      icon: User,
-    },
-    {
-      title: "Search",
-      url: "#",
       icon: Search,
     },
     {

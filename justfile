@@ -10,6 +10,8 @@ bs-test:
 
 export-ts-bindings:
     cargo +nightly test export_bindings
+    cd static_files/packages/shared && pnpm generate-exports
+    sed -i 's/";$/.ts";/' static_files/packages/shared/src/types/index.ts
     
 build-ordinator-frontends:
     mkdir -p dist/static_files/scheduler
