@@ -31,10 +31,8 @@ pub trait TacticalAssertions
     fn asset_that_capacity_is_not_exceeded(&self) -> Result<TotalExcessHours>;
 }
 
-type Type = TacticalParameters;
-
 impl<Ss> TacticalAssertions
-    for Algorithm<TacticalSolution, Type, PriorityQueue<WorkOrderNumber, u64>, Ss>
+    for Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>
 where
     Ss: SystemSolutions,
 {

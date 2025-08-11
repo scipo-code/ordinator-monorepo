@@ -1476,6 +1476,7 @@ dependencies = [
  "strum",
  "strum_macros",
  "toml",
+ "tracing",
  "ts-rs",
  "utoipa",
 ]
