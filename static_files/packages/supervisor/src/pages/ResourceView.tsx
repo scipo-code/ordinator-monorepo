@@ -1,22 +1,26 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NaiveDateDto, TechnicianAvailability, useDays, useTechnicianAvailability } from "@scipo-code/shared";
 import { format } from "date-fns";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import 'react-day-picker/dist/style.css';
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 
 export default function ResourceView() {
   const { asset } = useParams();
-  const { data: days, isLoading: isDaysLoading, error: daysError } = useDays();
+  const { data: days, isLoading: isDaysLoading } = useDays();
 
   // ISSUE #000 The Supervisor ID does not have any meaningful functionality and will have to be fixed
   // in the future!
   const supervisorId = "main";
-  const { data: availableTechnicians, isLoading: isTechniciansLoading, error: techniciansError } = useTechnicianAvailability(asset || "", supervisorId);
+  const { data: availableTechnicians, isLoading: isTechniciansLoading } = useTechnicianAvailability(asset || "", supervisorId);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
 
   if (!asset) return <div>Asset not found</div>;
@@ -93,7 +97,12 @@ function GanttView({ technicians, weekDays }: GanttViewProps) {
   return (
     <Card className="flex-1 min-h-0 flex flex-col">
       <CardHeader className="shrink-0">
-        <CardTitle className="text-lg">Weekly Schedule</CardTitle>
+        <div className="flex items-center justify-between">
+        <CardTitle className="text-lg">
+          Weekly Availability
+         </CardTitle>
+         <AddTechnicianDialog/>
+        </div>
       </CardHeader>
       <CardContent className="flex-1 min-h-0 overflow-auto">
         <div>
@@ -152,3 +161,43 @@ function DayCell({ stringDay, technician }: DayCellProps) {
   );
 }
 
+
+
+function AddTechnicianDialog() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm">Add Technician</Button>
+      </DialogTrigger>
+
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add Technician</DialogTitle>
+        </DialogHeader>
+        <Calendar mode="range" numberOfMonths={1}/>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+
+
+// function CalendarPopover() {
+
+
+  
+//   return (
+//     <Popover>
+//       <PopoverTrigger asChild>
+//         <Button
+//           variant="outline"
+//         >
+//           <CalendarIcon/>
+//         </Button>
+//       </PopoverTrigger>
+//       <PopoverContent>
+//       </PopoverContent>
+//     </Popover>
+        
+//   )
+// }

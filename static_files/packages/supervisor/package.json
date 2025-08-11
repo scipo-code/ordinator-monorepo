@@ -10,8 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.1",
+    "@radix-ui/react-dialog": "^1.1.14",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-popover": "^1.1.14",
     "@radix-ui/react-slot": "^1.2.3",
-    "@scipo-code/shared": "workspace:*"
+    "@scipo-code/shared": "workspace:*",
+    "date-fns": "^4.1.0",
+    "react-day-picker": "^9.8.1",
+    "react-hook-form": "^7.62.0",
+    "zod": "^4.0.17"
   },
   "devDependencies": {
     "vite-plugin-checker": "^0.9.3"
