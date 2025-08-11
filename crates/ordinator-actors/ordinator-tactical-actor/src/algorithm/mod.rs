@@ -280,8 +280,7 @@ where
     }
 }
 
-// TODO [ ] - add different resources between operation specific logic
-// TODO [ ] - add number_of_people logic
+
 fn determine_forced_tactical_assignment(
     scheduled_days: &[(Option<Day>, Work, Work, u64)],
 ) -> Vec<VecDeque<(Day, Work)>>
@@ -291,10 +290,12 @@ fn determine_forced_tactical_assignment(
     // Outer `Vec` is the operation, the inner `Vec` is the day for the operation
     let mut operation_day_work: Vec<VecDeque<(Day, Work)>> =
         vec![VecDeque::new(); scheduled_days.len()];
+
     let mut done_indices: Vec<bool> = vec![false; scheduled_days.len()];
     let mut work_in_operation = scheduled_days.iter().map(|e| e.1).collect::<Vec<_>>();
     let mut backwards = false;
     let mut current_day: Option<Day> = None;
+
     let mut operational_schedule_information = &scheduled_days[operation_index];
 
     while !done_indices.iter().all(|e| *e) {
@@ -1068,13 +1069,6 @@ pub mod tests
         assert_eq!(min_work, Work::from(10.0));
     }
 
-    // You should test all this in the right order. I think that...
-    // QUESTION
-    // Is it correct of you to move this into the integration testing? Yes
-    // absolutely. I do not see anyother way, as the `objective value` may
-    // always be dependent on the other `Solution`s.
-    // GOOD a decision was made here.
-
     #[test]
     fn test_determine_forced_assignment_1()
     {
@@ -1174,5 +1168,6 @@ pub mod tests
             ],
             vec![(day_2.clone(), Work::from(4.0))]
         ])
+
     }
 }
