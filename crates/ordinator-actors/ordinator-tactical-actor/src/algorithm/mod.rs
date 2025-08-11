@@ -6,6 +6,7 @@ pub mod tactical_solution;
 
 use std::cmp::Ordering;
 use std::collections::HashSet;
+use std::collections::VecDeque;
 use std::ops::Deref;
 use std::ops::DerefMut;
 use std::panic::Location;
@@ -279,94 +280,140 @@ where
     }
 }
 
+// TODO [ ] - add different resources between operation specific logic
+// TODO [ ] - add number_of_people logic
 fn determine_forced_tactical_assignment(
     scheduled_days: &[(Option<Day>, Work, Work, u64)],
-) -> Vec<Vec<Work>>
+) -> Vec<VecDeque<(Day, Work)>>
 {
-    let mut index = 0;
+    let mut operation_index = 0;
 
     // Outer `Vec` is the operation, the inner `Vec` is the day for the operation
-    let mut operation_day_work: Vec<Vec<Work>> = vec![vec![]; scheduled_days.len()];
+    let mut operation_day_work: Vec<VecDeque<(Day, Work)>> =
+        vec![VecDeque::new(); scheduled_days.len()];
     let mut done_indices: Vec<bool> = vec![false; scheduled_days.len()];
     let mut work_in_operation = scheduled_days.iter().map(|e| e.1).collect::<Vec<_>>();
     let mut backwards = false;
     let mut current_day: Option<Day> = None;
+    let mut operational_schedule_information = &scheduled_days[operation_index];
 
-    while done_indices.iter().all(|e| *e) {
-        let operational_schedule_information = &scheduled_days[index];
+    while !done_indices.iter().all(|e| *e) {
+        // This is to extract the correct
+        operational_schedule_information = match &scheduled_days.get(operation_index) {
+            Some(value) => value,
+            None => {
+                if backwards {
+                    operation_index -= 1;
+                } else {
+                    backwards = true;
+                }
+                continue;
+            }
+        };
+        dbg!(
+            operation_index,
+            &operational_schedule_information,
+            &work_in_operation,
+            &current_day,
+        );
 
         match &current_day {
             Some(start_day) => {
-                // If the current day is already assigned, simply continue
-                // Else use the start day of the work_order
-                match current_day {
-                    Some(_) => (),
-                    None => current_day = Some(start_day.clone()),
-                }
-                let work = operational_schedule_information
-                    .1
-                    .min(operational_schedule_information.2);
+                let work =
+                    work_in_operation[operation_index].min(operational_schedule_information.2);
 
-                operation_day_work[index].push(work);
-
-                work_in_operation[index] -= work;
-
-                if work_in_operation[index] == work {
-                    done_indices[index] = true;
-
-                    // Find next index that is equal to false, if the last element loop back again.
-                    index += 1;
-
-                    if index == scheduled_days.len() {
-                        index = 0;
+                if work.is_zero() {
+                    done_indices[operation_index] = true;
+                    if backwards {
+                        if operation_index == 0 {
+                            break;
+                        }
+                        operation_index -= 1;
+                        dbg!(
+                            operation_index,
+                            &operational_schedule_information,
+                            &work_in_operation,
+                            &current_day,
+                            &operation_day_work,
+                        );
+                        current_day = operation_day_work
+                            .iter()
+                            .flatten()
+                            .nth(0)
+                            .map(|e| e.0.clone());
+                    } else {
+                        operation_index += 1;
+                        current_day = None;
                     }
                 } else if backwards {
-                    // SAFETY: None case is always handled below
-                    current_day = Some(Day {
-                        day_index: current_day.as_ref().unwrap().day_index - 1,
-                        date: current_day
-                            .as_ref()
-                            .unwrap()
-                            .date
-                            .checked_sub_days(chrono::Days::new(1))
-                            .unwrap(),
-                    });
+                    operation_day_work[operation_index]
+                        .push_front((current_day.clone().unwrap(), work));
+                    work_in_operation[operation_index] -= work;
+                    if backwards {
+                        sub_one_day(&mut current_day).unwrap();
+                    } else {
+                        add_one_day(&mut current_day).unwrap();
+                    }
                 } else {
-                    // SAFETY: None case is always handled below
-                    current_day = Some(Day {
-                        day_index: current_day.as_ref().unwrap().day_index + 1,
-                        date: current_day
-                            .as_ref()
-                            .unwrap()
-                            .date
-                            .checked_add_days(chrono::Days::new(1))
-                            .unwrap(),
-                    });
-                }
-            }
-            None => {
-                match &operational_schedule_information.0 {
-                    Some(operation_day) => current_day = Some(operation_day.clone()),
-                    None => {
-                        index += 1;
-                        continue;
+                    operation_day_work[operation_index]
+                        .push_back((current_day.clone().unwrap(), work));
+                    work_in_operation[operation_index] -= work;
+                    if backwards {
+                        sub_one_day(&mut current_day).unwrap();
+                    } else {
+                        add_one_day(&mut current_day).unwrap();
                     }
                 }
-                index += 1;
-                if index == scheduled_days.len() {
-                    done_indices.reverse();
-                    backwards = true;
-                    let backwards = done_indices.iter().enumerate().find(|e| !(*e.1));
 
-                    match backwards {
-                        Some(some) => index = some.0,
-                        None => break,
+                dbg!(&current_day, operation_index);
+            }
+
+            // If the current day is not defined. We should start from here.
+            None => match &operational_schedule_information.0 {
+                // Some if the operation is forced to a particular day.
+                Some(operation_day) => {
+                    // A forced operation should always override
+                    current_day = Some(operation_day.clone());
+                    continue;
+                }
+                None => {
+                    if backwards {
+                    } else {
+                        operation_index += 1;
                     }
                 }
-            }
+            },
         }
     }
     operation_day_work
+}
+
+fn add_one_day(current_day: &mut Option<Day>) -> Option<()>
+{
+    *current_day = Some(Day {
+        day_index: current_day.as_ref().unwrap().day_index.checked_add(1)?,
+        date: current_day
+            .as_ref()
+            .unwrap()
+            .date
+            .checked_add_days(chrono::Days::new(1))
+            .unwrap(),
+    });
+    Some(())
+}
+
+fn sub_one_day(current_day: &mut Option<Day>) -> Option<()>
+{
+    *current_day = Some(Day {
+        day_index: current_day.as_ref().unwrap().day_index.checked_sub(1)?,
+        date: current_day
+            .as_ref()
+            .unwrap()
+            .date
+            .checked_sub_days(chrono::Days::new(1))
+            .unwrap(),
+    });
+    Some(())
 }
 
 impl<Ss> ActorBasedLargeNeighborhoodSearch for TacticalAlgorithm<Ss>
@@ -1027,18 +1074,105 @@ pub mod tests
     // absolutely. I do not see anyother way, as the `objective value` may
     // always be dependent on the other `Solution`s.
     // GOOD a decision was made here.
-    //
+
     #[test]
-    fn test_determine_forced_assignment()
+    fn test_determine_forced_assignment_1()
     {
-        let scheduled_days = vec![(
-            Some(Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap())),
-            Work::from(4.0),
-            Work::from(6.0),
-            1,
-        )];
+        let day = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
+        let scheduled_days = vec![(Some(day.clone()), Work::from(4.0), Work::from(6.0), 1)];
         let value = determine_forced_tactical_assignment(&scheduled_days);
 
-        assert_eq!(value, vec![vec![Work::from(4.0)]])
+        assert_eq!(value, vec![vec![(day.clone(), Work::from(4.0))]])
+    }
+
+    #[test]
+    fn test_determine_forced_assignment_2()
+    {
+        let day = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
+        let day_2 = Day::new(4, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
+        let scheduled_days = vec![(Some(day.clone()), Work::from(8.0), Work::from(6.0), 1)];
+        let value = determine_forced_tactical_assignment(&scheduled_days);
+
+        assert_eq!(value, vec![vec![
+            (day.clone(), Work::from(6.0)),
+            (day_2.clone(), Work::from(2.0))
+        ]])
+    }
+
+    #[test]
+    fn test_determine_forced_assignment_3()
+    {
+        let day_1 = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
+        let day_2 = Day::new(4, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
+        let day_3 = Day::new(5, NaiveDate::from_ymd_opt(2025, 1, 3).unwrap());
+
+        let scheduled_days = vec![
+            (Some(day_1.clone()), Work::from(8.0), Work::from(6.0), 1),
+            (Some(day_2.clone()), Work::from(4.0), Work::from(6.0), 1),
+        ];
+        // TODO [ ] - Add the Date
+        let value = determine_forced_tactical_assignment(&scheduled_days);
+
+        assert_eq!(value, vec![
+            vec![
+                (day_1.clone(), Work::from(6.0)),
+                (day_2.clone(), Work::from(2.0))
+            ],
+            vec![(day_2.clone(), Work::from(4.0))]
+        ])
+    }
+
+    #[test]
+    fn test_determine_forced_assignment_4()
+    {
+        let day_0 = Day::new(0, NaiveDate::from_ymd_opt(2024, 12, 31).unwrap());
+        let day_1 = Day::new(1, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
+        let day_2 = Day::new(2, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
+        let day_3 = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 3).unwrap());
+
+        let scheduled_days = vec![
+            (None, Work::from(6.0), Work::from(6.0), 1),
+            (Some(day_1.clone()), Work::from(8.0), Work::from(6.0), 1),
+            (Some(day_2.clone()), Work::from(4.0), Work::from(6.0), 1),
+        ];
+        // TODO [ ] - Add the Date
+        let value = determine_forced_tactical_assignment(&scheduled_days);
+
+        assert_eq!(value, vec![
+            vec![(day_1.clone(), Work::from(6.0))],
+            vec![
+                (day_1.clone(), Work::from(6.0)),
+                (day_2.clone(), Work::from(2.0))
+            ],
+            vec![(day_2.clone(), Work::from(4.0))]
+        ])
+    }
+    #[test]
+    fn test_determine_forced_assignment_5()
+    {
+        let day_0 = Day::new(0, NaiveDate::from_ymd_opt(2024, 12, 31).unwrap());
+        let day_1 = Day::new(1, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
+        let day_2 = Day::new(2, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
+        let day_3 = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 3).unwrap());
+
+        let scheduled_days = vec![
+            (None, Work::from(12.0), Work::from(6.0), 1),
+            (Some(day_1.clone()), Work::from(8.0), Work::from(6.0), 1),
+            (Some(day_2.clone()), Work::from(4.0), Work::from(6.0), 1),
+        ];
+        // TODO [ ] - Add the Date
+        let value = determine_forced_tactical_assignment(&scheduled_days);
+
+        assert_eq!(value, vec![
+            vec![
+                (day_0.clone(), Work::from(6.0)),
+                (day_1.clone(), Work::from(6.0))
+            ],
+            vec![
+                (day_1.clone(), Work::from(6.0)),
+                (day_2.clone(), Work::from(2.0))
+            ],
+            vec![(day_2.clone(), Work::from(4.0))]
+        ])
     }
 }
