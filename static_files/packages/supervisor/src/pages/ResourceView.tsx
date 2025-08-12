@@ -2,14 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { NaiveDateDto, TechnicianAvailability, useDays, useTechnicianAvailability } from "@scipo-code/shared";
+import { NaiveDateDto, SupervisorAllAvailableTechnicians, TechnicianAvailability, useDays, useTechnicianAvailability } from "@scipo-code/shared";
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import 'react-day-picker/dist/style.css';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 
 
@@ -22,16 +20,32 @@ export default function ResourceView() {
   const supervisorId = "main";
   const { data: availableTechnicians, isLoading: isTechniciansLoading } = useTechnicianAvailability(asset || "", supervisorId);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
-  const [workCenter, setWorkCenter] = useState<string | undefined>();
+  const [selectedWorkCenters, setSelectedWorkCenters] = useState<string[]>([]);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
 
   const workCenters = availableTechnicians ? [...new Set(availableTechnicians.all_technicians.flatMap(tech => tech.resources) || [])] : [];
 
   useEffect(() => {
-    if (workCenters.length > 0 && !workCenter) {
-      setWorkCenter(workCenters[0]);
+    if (workCenters.length > 0 && selectedWorkCenters.length === 0 && !hasUserInteracted) {
+      setSelectedWorkCenters([workCenters[0]]);
     }
-  }, [workCenter, workCenters])
+  }, [selectedWorkCenters.length, workCenters, hasUserInteracted]);
 
+  const toggleWorkCenter = (workCenter: string) => {
+    setSelectedWorkCenters(prev =>
+      prev.includes(workCenter)
+        ? prev.filter(wc => wc !== workCenter)
+        : [...prev, workCenter]
+    );
+  };
+
+  const clearSelection = () =>  {
+    setHasUserInteracted(true);
+    setSelectedWorkCenters([]);
+
+  }
+
+  console.log(selectedWorkCenters);
   if (!asset) return <div>Asset not found</div>;
   if (isDaysLoading || isTechniciansLoading) return <div>Loading...</div>;
   if (!days || !availableTechnicians) {
@@ -69,57 +83,61 @@ export default function ResourceView() {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mb-4">
-        <WorkCenterCommand workCenters={workCenters} onSelect={setWorkCenter} selectedWorkCenter={workCenter}/>
-        {workCenter && (
-          <>
-            <Badge variant="secondary" className="ml-2">
-              {availableTechnicians.all_technicians.filter(tech => tech.resources.includes(workCenter)).length} technicians
-            </Badge>
-          </> 
-        )}
-      </div>
-      {workCenter ? (
-        <GanttView
-          technicians={availableTechnicians.all_technicians.filter(tech => tech.resources.includes(workCenter))}
-          weekDays={weekDays}
-        /> ) : (
-        <div className="flex-1 flex items-center justify-center text-gray-500">
-          Please select a work center to view technicians
+      <div className="flex gap-4">
+        <div className="flex-1 min-h-0">
+        {selectedWorkCenters ? (
+            <GanttView
+              technicians={availableTechnicians.all_technicians.filter(tech => tech.resources.some(resource => selectedWorkCenters.includes(resource)))}
+              weekDays={weekDays}
+              workCenters={selectedWorkCenters}
+            /> ) : (
+            <div className="flex-1 flex items-center justify-center text-gray-500">
+              Please select a work center to view technicians
+            </div>
+            )
+          }
         </div>
-        )
-      }
+        <div className="w-60 flex-shrink-0">
+          <WorkCenterSidebar workCenters={workCenters}
+            selectedWorkCenters={selectedWorkCenters}
+            onToggle={toggleWorkCenter}
+            onClear={clearSelection}
+            technicians={availableTechnicians}
+            />
+        </div>
+      </div>
     </div>
   );
 }
 
-
-function WorkCenterCommand({workCenters, onSelect, selectedWorkCenter}: {
+function WorkCenterSidebar({ workCenters, selectedWorkCenters, onToggle, onClear, technicians}: {
   workCenters: string[],
-  onSelect: (value: string) => void,
-  selectedWorkCenter?: string
+  selectedWorkCenters: string[],
+  onToggle: (value: string) => void,
+  onClear: () => void,
+  technicians: SupervisorAllAvailableTechnicians,
 }) {
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="sm">{selectedWorkCenter || "Select Work Center"}</Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <Command >
-          <CommandInput placeholder="Filter Work Center" />
-          <CommandList>
-            <CommandEmpty>No work center found</CommandEmpty>
-              {workCenters.map(wc => (
-                <CommandItem
-                  key={wc}
-                  value={wc}
-                  onSelect={(value) => onSelect(value)}
-                  >{wc}</CommandItem>
-              ))}
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <Card>
+      <CardHeader>
+        <CardTitle>Select Work Centers</CardTitle>
+        <Button variant="outline" size="sm" onClick={onClear}>clear</Button>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-2">
+        {workCenters.map(wc => (
+          <div
+            key={wc}
+            className={`flex justify-between p-2 rounded cursor-pointer hover:bg-gray-100 ${
+              selectedWorkCenters.includes(wc) ? 'bg-blue-100' : ''
+            }`}
+            onClick={() => onToggle(wc)}
+          >
+            <span>{wc}</span>
+            <Badge>{technicians.all_technicians.filter(tech => tech.resources.includes(wc)).length}</Badge>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
   )
 }
 
@@ -127,9 +145,10 @@ function WorkCenterCommand({workCenters, onSelect, selectedWorkCenter}: {
 interface GanttViewProps {
   technicians: TechnicianAvailability[];
   weekDays: NaiveDateDto[];
+  workCenters: string[];
 }
 
-function GanttView({ technicians, weekDays }: GanttViewProps) {
+function GanttView({ technicians, weekDays, workCenters }: GanttViewProps) {
   return (
     <Card className="flex-1 min-h-0 flex flex-col">
       <CardHeader className="shrink-0">
@@ -144,7 +163,7 @@ function GanttView({ technicians, weekDays }: GanttViewProps) {
         <div>
           {/* Day headers */}
           <div className="grid grid-cols-15 gap-1 mb-2 sticky top-0 bg-white z-10">
-            <div className="font-medium p-2">Technician</div>
+            <div className="font-medium p-2">Tech</div>
             {weekDays.map(day => (
               <div key={day} className="font-medium p-2 text-center border rounded">
                 <div>{format(day, "EEE")}</div>
@@ -154,8 +173,15 @@ function GanttView({ technicians, weekDays }: GanttViewProps) {
           </div>
           
           {/* Technician rows */}
-          {technicians.map(technician => (
-            <TechnicianRow key={technician.id} technician={technician} weekDays={weekDays} />
+          {workCenters.map(wc => (
+            <div key={wc}>
+              <div className="flex rounded justify-center bg-blue-300 mb-2">
+                <span className="font-medium">{wc}</span>
+              </div>
+              {technicians.filter(tech => tech.resources.includes(wc)).map(technician => (
+                <TechnicianRow key={technician.id} technician={technician} weekDays={weekDays} />
+              ))}
+            </div>
           ))}
         </div>
       </CardContent>
@@ -163,6 +189,16 @@ function GanttView({ technicians, weekDays }: GanttViewProps) {
   );
 }
 
+          // {workCenters.map(wc => (
+          //   <div key={wc}
+          //     <div className="flex rounded justify-center bg-blue-300 mb-2">
+          //       <span className="font-medium">{wc}</span>
+          //     </div>
+          //     {technicians.filter(tech => tech.resources.includes(wc)).map(technician => (
+          //       <TechnicianRow key={technician.id} technician={technician} weekDays={weekDays} />
+          //     ))}
+          //   </div>
+          // ))}
 interface TechnicianRowProps {
   technician: TechnicianAvailability;
   weekDays: NaiveDateDto[];
