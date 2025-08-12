@@ -1,15 +1,16 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NaiveDateDto, TechnicianAvailability, useDays, useTechnicianAvailability } from "@scipo-code/shared";
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import 'react-day-picker/dist/style.css';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
 
 
 export default function ResourceView() {
@@ -21,9 +22,17 @@ export default function ResourceView() {
   const supervisorId = "main";
   const { data: availableTechnicians, isLoading: isTechniciansLoading } = useTechnicianAvailability(asset || "", supervisorId);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
+  const [workCenter, setWorkCenter] = useState<string | undefined>();
+
+  const workCenters = availableTechnicians ? [...new Set(availableTechnicians.all_technicians.flatMap(tech => tech.resources) || [])] : [];
+
+  useEffect(() => {
+    if (workCenters.length > 0 && !workCenter) {
+      setWorkCenter(workCenters[0]);
+    }
+  }, [workCenter, workCenters])
 
   if (!asset) return <div>Asset not found</div>;
-  
   if (isDaysLoading || isTechniciansLoading) return <div>Loading...</div>;
   if (!days || !availableTechnicians) {
     return <div>Error loading data</div>;
@@ -31,7 +40,7 @@ export default function ResourceView() {
 
   const weekDays = days.slice(currentDayIndex, currentDayIndex + 14);
 
-  const workCenters = [...new Set(availableTechnicians.all_technicians.flatMap(tech => tech.resources) || [])];
+
 
   const navigatePeriod = (direction: 'prev' | 'next') => {
     setCurrentDayIndex(prev => {
@@ -39,8 +48,6 @@ export default function ResourceView() {
       return Math.max(0, Math.min(newIndex, (days.length || 0) - 7));
     });
   };
-
-  
 
   const canGoPrevPeriod = currentDayIndex > 0;
   const canGoNextPeriod = currentDayIndex + 7 < (days.length || 0);
@@ -62,30 +69,60 @@ export default function ResourceView() {
         </div>
       </div>
 
-      <Tabs defaultValue={workCenters[0]} className="flex flex-col flex-1 min-h-0">
-        <TabsList className="shrink-0">
-          {workCenters.map(workCenter => (
-            <TabsTrigger key={workCenter} value={workCenter}>
-              {workCenter}
-              <Badge variant="secondary" className="ml-2">
-                {availableTechnicians.all_technicians.filter(tech => tech.resources.includes(workCenter)).length}
-              </Badge>
-            </TabsTrigger>
-          ))}
-        </TabsList>
-
-        {workCenters.map(workCenter => (
-          <TabsContent key={workCenter} value={workCenter} className="flex-1 min-h-0">
-            <GanttView
-              technicians={availableTechnicians.all_technicians.filter(tech => tech.resources.includes(workCenter))}
-              weekDays={weekDays}
-            />
-          </TabsContent>
-        ))}
-      </Tabs>
+      <div className="flex items-center gap-2 mb-4">
+        <WorkCenterCommand workCenters={workCenters} onSelect={setWorkCenter} selectedWorkCenter={workCenter}/>
+        {workCenter && (
+          <>
+            <Badge variant="secondary" className="ml-2">
+              {availableTechnicians.all_technicians.filter(tech => tech.resources.includes(workCenter)).length} technicians
+            </Badge>
+          </> 
+        )}
+      </div>
+      {workCenter ? (
+        <GanttView
+          technicians={availableTechnicians.all_technicians.filter(tech => tech.resources.includes(workCenter))}
+          weekDays={weekDays}
+        /> ) : (
+        <div className="flex-1 flex items-center justify-center text-gray-500">
+          Please select a work center to view technicians
+        </div>
+        )
+      }
     </div>
   );
 }
+
+
+function WorkCenterCommand({workCenters, onSelect, selectedWorkCenter}: {
+  workCenters: string[],
+  onSelect: (value: string) => void,
+  selectedWorkCenter?: string
+}) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm">{selectedWorkCenter || "Select Work Center"}</Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <Command >
+          <CommandInput placeholder="Filter Work Center" />
+          <CommandList>
+            <CommandEmpty>No work center found</CommandEmpty>
+              {workCenters.map(wc => (
+                <CommandItem
+                  key={wc}
+                  value={wc}
+                  onSelect={(value) => onSelect(value)}
+                  >{wc}</CommandItem>
+              ))}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 
 interface GanttViewProps {
   technicians: TechnicianAvailability[];
