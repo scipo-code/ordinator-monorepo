@@ -2,4 +2,4 @@
 import type { OperationDto } from "./OperationDto";
 import type { PeriodStatus } from "./PeriodStatus";
 
-export type WorkOrderInfoWithSchedulingDto = { asset: string, work_order_number: bigint, main_work_center: string, operations: Array<OperationDto>, functional_location: string, sch: boolean, awsc: boolean, vendor: boolean, priority: string, revision: string, period_status: PeriodStatus, suggested_scheduled_period: string, basic_start_date: string, basic_finish_date: string, };
+export type WorkOrderInfoWithSchedulingDto = { asset: string, work_order_number: bigint, main_work_center: string, operations: Array<OperationDto>, functional_location: string, sch: boolean, awsc: boolean, vendor: boolean, sece: boolean, priority: string, revision: string, period_status: PeriodStatus, suggested_scheduled_period: string, basic_start_date: string, basic_finish_date: string, earliest_allowed_start_date: string, latest_allowed_finish_date: string, };

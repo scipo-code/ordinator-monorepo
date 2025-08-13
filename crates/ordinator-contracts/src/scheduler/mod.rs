@@ -280,12 +280,15 @@ pub struct WorkOrderInfoWithSchedulingDto
     sch: bool,
     awsc: bool,
     vendor: bool,
+    sece: bool,
     priority: String,
     revision: String,
     period_status: PeriodStatus,
     suggested_scheduled_period: String,
     basic_start_date: String,
     basic_finish_date: String,
+    earliest_allowed_start_date: String,
+    latest_allowed_finish_date: String,
 }
 
 impl
@@ -399,12 +402,15 @@ impl
             sch: work_order_view.user_status.sch,
             awsc: work_order_view.user_status.awsc,
             vendor: work_order_view.vendor,
+            sece: work_order_view.user_status.sece,
             priority: work_order_view.priority.to_string(),
             revision: work_order_view.revision.to_string(),
             period_status,
             suggested_scheduled_period: strategic_schedule.clone(),
             basic_start_date: work_order_view.basic_start_date.to_string(),
             basic_finish_date: work_order_view.basic_finish_date.to_string(),
+            earliest_allowed_start_date: work_order_view.earliest_allowed_start_date,
+            latest_allowed_finish_date: work_order_view.latest_allowed_finish_date,
         };
 
         Ok(work_order_info)
