@@ -29,9 +29,11 @@ create-required-directories:
     mkdir -p ./dist/benches
     mkdir -p ./dist/profiling
     mkdir -p ./dist/xlsx_dumps
+    mkdir -p ./dist/dist
     cp -r configuration ./dist/configuration
     cp .env.example ./dist/.env.example
     cp -r temp_scheduling_environment_database ./dist/temp_scheduling_environment_database
+    cp -r ./dist/static_files ./dist/dist/
 
 build-ordinator-for-deployment-windows: (build-ordinator-frontends) (build-ordinator-api-windows) (create-required-directories)
 
