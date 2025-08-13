@@ -28,24 +28,68 @@ use crate::Asset;
 )]
 pub enum Resources
 {
+    #[serde(rename = "MTN-MECH")]
+    MtnMech,
+    #[serde(rename = "MTN-ELEC")]
+    MtnElec,
+    #[serde(rename = "MTN-INST")]
+    MtnInst,
+    #[serde(rename = "MTN-ROUS")]
+    MtnRous,
+    #[serde(rename = "MTN-RIGG")]
+    MtnRigg,
+    #[serde(rename = "MTN-SCAF")]
+    MtnScaf,
     #[serde(rename = "MTN-PIPF")]
     MtnPipf,
-    #[serde(rename = "VEN-TURB")]
-    VenTurb,
-    #[serde(rename = "CON-VEN")]
-    ConVen,
-    #[serde(rename = "MTN-LAGG")]
-    MtnLagg,
-    #[serde(rename = "VEN-SCAF")]
-    VenScaf,
+    #[serde(rename = "MTN-CRAN")]
+    MtnCran,
     #[serde(rename = "MTN-ROPE")]
     MtnRope,
+    #[serde(rename = "MTN-PAIN")]
+    MtnPain,
+    #[serde(rename = "MTN-TELE")]
+    MtnTele,
+    #[serde(rename = "MTN-TURB")]
+    MtnTurb,
+    #[serde(rename = "MTN-LAGG")]
+    MtnLagg,
+    #[serde(rename = "MTN-SAT")]
+    MtnSat,
+    #[serde(rename = "PRODTECH")]
+    Prodtech,
+    #[serde(rename = "PRODLABO")]
+    Prodlabo,
+    #[serde(rename = "VEN-INST")]
+    VenInst,
+    #[serde(rename = "VEN-ACCO")]
+    VenAcco,
+    #[serde(rename = "VEN-COMM")]
+    VenComm,
+    #[serde(rename = "VEN-CRAN")]
+    VenCran,
+    #[serde(rename = "VEN-ELEC")]
+    VenElec,
+    #[serde(rename = "VEN-HVAC")]
+    VenHvac,
+    #[serde(rename = "VEN-MECH")]
+    VenMech,
+    #[serde(rename = "VEN-METE")]
+    VenMete,
+    #[serde(rename = "VEN-SUBS")]
+    VenSubs,
+    #[serde(rename = "VEN-ROPE")]
+    VenRope,
+    #[serde(rename = "VEN-FFEQ")]
+    VenFfeq,
+    #[serde(rename = "VEN-TURB")]
+    VenTurb,
+    #[serde(rename = "VEN-SCAF")]
+    VenScaf,
     #[serde(rename = "VEN-INSP")]
     VenInsp,
     #[serde(rename = "INP-SITE")]
     InpSite,
-    #[serde(rename = "VEN-INST")]
-    VenInst,
     #[serde(rename = "MAINONSH")]
     Mainonsh,
     #[serde(rename = "DRILLING")]
@@ -56,6 +100,24 @@ pub enum Resources
     Wellsupv,
     #[serde(rename = "WELLTECH")]
     Welltech,
+    #[serde(rename = "MEDIC")]
+    Medic,
+    #[serde(rename = "QAQCELEC")]
+    Qaqcelec,
+    #[serde(rename = "QAQCMECH")]
+    Qaqcmech,
+    #[serde(rename = "QAQCPAIN")]
+    Qaqcpain,
+    #[serde(rename = "PRODCCR")]
+    Prodccr,
+    #[serde(rename = "CMP-RIGG")]
+    CmpRigg,
+    #[serde(rename = "CMP-SCAF")]
+    CmpScaf,
+    #[serde(rename = "CON-NPT")]
+    ConNpt,
+    #[serde(rename = "CON-VEN")]
+    ConVen,
     #[serde(rename = "CON-ELEC")]
     ConElec,
     #[serde(rename = "CON-INPF")]
@@ -76,68 +138,6 @@ pub enum Resources
     ConRope,
     #[serde(rename = "CON-WELD")]
     ConWeld,
-    #[serde(rename = "MTN-ROUS")]
-    MtnRous,
-    #[serde(rename = "MTN-CRAN")]
-    MtnCran,
-    #[serde(rename = "MTN-ELEC")]
-    MtnElec,
-    #[serde(rename = "MTN-INST")]
-    MtnInst,
-    #[serde(rename = "MTN-MECH")]
-    MtnMech,
-    #[serde(rename = "MTN-RIGG")]
-    MtnRigg,
-    #[serde(rename = "MTN-SCAF")]
-    MtnScaf,
-    #[serde(rename = "MTN-PAIN")]
-    MtnPain,
-    #[serde(rename = "MTN-TELE")]
-    MtnTele,
-    #[serde(rename = "MTN-TURB")]
-    MtnTurb,
-    #[serde(rename = "MEDIC")]
-    Medic,
-    #[serde(rename = "PRODLABO")]
-    Prodlabo,
-    #[serde(rename = "PRODTECH")]
-    Prodtech,
-    #[serde(rename = "MTN-SAT")]
-    MtnSat,
-    #[serde(rename = "VEN-ACCO")]
-    VenAcco,
-    #[serde(rename = "VEN-COMM")]
-    VenComm,
-    #[serde(rename = "VEN-CRAN")]
-    VenCran,
-    #[serde(rename = "VEN-ELEC")]
-    VenElec,
-    #[serde(rename = "VEN-HVAC")]
-    VenHvac,
-    #[serde(rename = "VEN-MECH")]
-    VenMech,
-    #[serde(rename = "VEN-METE")]
-    VenMete,
-    #[serde(rename = "VEN-SUBS")]
-    VenSubs,
-    #[serde(rename = "VEN-ROPE")]
-    VenRope,
-    #[serde(rename = "QAQCELEC")]
-    Qaqcelec,
-    #[serde(rename = "QAQCMECH")]
-    Qaqcmech,
-    #[serde(rename = "QAQCPAIN")]
-    Qaqcpain,
-    #[serde(rename = "PRODCCR")]
-    Prodccr,
-    #[serde(rename = "VEN-FFEQ")]
-    VenFfeq,
-    #[serde(rename = "CMP-RIGG")]
-    CmpRigg,
-    #[serde(rename = "CMP-SCAF")]
-    CmpScaf,
-    #[serde(rename = "CON-NPT")]
-    ConNpt,
 }
 
 impl FromStr for Resources

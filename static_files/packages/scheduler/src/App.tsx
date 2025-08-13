@@ -1,4 +1,4 @@
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 // import AssetDashboard from "./pages/AssetDashboard"; 
 import Scheduler from "./pages/dashboard/Scheduler";
 import "./App.css";
@@ -14,6 +14,7 @@ function App() {
     <HashRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
+            <Route path="/:asset/" element={<Navigate to="dashboard" relative="path" />} />
             <Route path="/:asset/dashboard" element={<Scheduler />} />
             <Route path="/:asset/dashboard/:workorder" element={<WorkorderOverview/>} />
           </Route>
