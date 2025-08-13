@@ -7,17 +7,17 @@ use chrono::TimeZone;
 use chrono::Utc;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::WorkOrderNumber;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::create_time_environment;
+use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
 use ordinator_scheduling_environment::work_order::work_order_info::priority::Priority;
 use ordinator_scheduling_environment::work_order::work_order_info::revision::Revision;
 use ordinator_scheduling_environment::work_order::work_order_info::system_condition::SystemCondition;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_text::WorkOrderText;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
-use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use ordinator_scheduling_environment::worker_environment::ActorEnvironment;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
-use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_environment::worker_environment::resources::Resources;
 
 pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironment>>
 {
@@ -82,7 +82,6 @@ pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironme
                                     order_system_status: Some("TEST".to_string()),
                                     order_user_status: Some("TEST".to_string()),
                                     order_description: "TEST".to_string(),
-                                    operation_description: Some("TEST".to_string()),
                                     object_description: Some("TEST".to_string()),
                                     notes_1: Some("TEST".to_string()),
                                     notes_2: Some(1),
@@ -138,7 +137,6 @@ pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironme
                                     order_system_status: Some("TEST".to_string()),
                                     order_user_status: Some("TEST".to_string()),
                                     order_description: "TEST".to_string(),
-                                    operation_description: Some("TEST".to_string()),
                                     object_description: Some("TEST".to_string()),
                                     notes_1: Some("TEST".to_string()),
                                     notes_2: Some(1),

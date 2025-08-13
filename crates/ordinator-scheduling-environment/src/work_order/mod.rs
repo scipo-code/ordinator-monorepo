@@ -22,6 +22,8 @@ use colored::Colorize;
 use serde::Deserialize;
 use serde::Serialize;
 use tracing::info;
+use work_order_analytic::status_codes::SystemStatusCodes;
+use work_order_analytic::status_codes::UserStatusCodes;
 use work_order_dates::WorkOrderDatesBuilder;
 
 use self::operation::ActivityNumber;
@@ -257,15 +259,85 @@ impl WorkOrders
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct WorkOrder
 {
-    pub work_order_number: WorkOrderNumber,
-    pub main_work_center: Resources,
-    pub operations: Operations,
-    pub material_checked: bool,
-    pub work_order_analytic: WorkOrderAnalytic,
-    pub work_order_dates: WorkOrderDates,
-    pub work_order_info: WorkOrderInfo,
+    pub(crate) work_order_number: WorkOrderNumber,
+    pub(crate) main_work_center: Resources,
+    pub(crate) operations: Operations,
+    pub(crate) material_checked: bool,
+    pub(crate) work_order_analytic: WorkOrderAnalytic,
+    pub(crate) work_order_dates: WorkOrderDates,
+    pub(crate) work_order_info: WorkOrderInfo,
     // This is not acceptable. You should move it out
-    pub fixed_by: FixedWorkOrder,
+    pub(crate) fixed_by: FixedWorkOrder,
+}
+
+/// [`WorkOrder`] dates methods
+impl WorkOrder
+{
+    pub fn earliest_allowed_start_date(&self) -> NaiveDate
+    {
+        self.work_order_dates.earliest_allowed_start_date
+    }
+
+    pub fn operation_work_remaining(&self, activity_number: u64) -> Result<Work>
+    {
+        Ok(self
+            .operations
+            .0
+            .get(&activity_number)
+            .context("Operation does not exist")?
+            .operation_info
+            .work_remaining)
+    }
+
+    pub fn operation_preparation(&self, activity: u64) -> Option<Work>
+    {
+        Some(
+            self.operations
+                .0
+                .get(&activity)?
+                .operation_analytic
+                .preparation_time,
+        )
+    }
+
+    pub fn activity_numbers(&self) -> Vec<u64>
+    {
+        self.operations.0.keys().cloned().collect()
+    }
+
+    pub fn number_of_people(&self, activity_number: u64) -> Result<u64>
+    {
+        Ok(self
+            .operations
+            .0
+            .get(&activity_number)
+            .context("Operation missing")?
+            .operation_info
+            .number)
+    }
+
+    pub fn operation_resource(&self, activity_number: u64) -> Result<Resources>
+    {
+        Ok(self
+            .operations
+            .0
+            .get(&activity_number)
+            .context("Operation missing")?
+            .resource)
+    }
+
+    pub fn operation(&self, activity_number: u64) -> &Operation
+    {
+        self.operations
+            .0
+            .get(&activity_number)
+            .expect("Should should never be missing")
+    }
+
+    pub fn work_order_number(&self) -> WorkOrderNumber
+    {
+        self.work_order_number
+    }
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -568,6 +640,16 @@ impl WorkOrder
             work_order_info: None,
             _fixed_by: None,
         }
+    }
+
+    pub fn activity_relations(&self) -> Vec<ActivityRelation>
+    {
+        self.operations.relations()
+    }
+
+    pub fn released_for_scheduling(&self) -> bool
+    {
+        self.work_order_analytic.system_status_codes.rel
     }
 
     // How should this function be implemented? You need to look in the
@@ -1185,6 +1267,132 @@ impl WorkOrder
             .build()
     }
 }
+
+pub struct WorkOrderView
+{
+    pub work_order_number: WorkOrderNumber,
+    pub priority: String,
+    pub revision: String,
+    pub work_order_type: String,
+    pub main_work_ctr: String,
+    pub description_work_order: String,
+    pub material_status: MaterialStatus,
+    pub system_status: SystemStatusCodes,
+    pub user_status: UserStatusCodes,
+    pub operations: Vec<OperationView>,
+    pub vendor: bool,
+    pub basic_start_date: String,
+    pub basic_finish_date: String,
+    pub earliest_allowed_start_date: String,
+    pub latest_allowed_finish_date: String,
+    pub functional_location: String,
+    pub subnetwork_of: String,
+    pub system_condition: String,
+    pub maintenance_plan: String,
+    pub planner_group: String,
+    pub maintenance_plant: String,
+    pub pm_collective: String,
+    pub room: String,
+}
+
+#[derive(Clone)]
+pub struct OperationView
+{
+    pub activity: u64,
+    pub resource: Resources,
+    pub remaining_work: Work,
+    pub actual_work: Work,
+    pub number_of_people: u64,
+    pub unloading_point: String,
+    pub duration: Work,
+    pub earliest_start_datetime: DateTime<Utc>,
+    pub earliest_finish_datetime: DateTime<Utc>,
+    pub operation_short_text: String,
+    pub description_operation: String,
+    // operation_system_status: String,
+    // operation_user_status: String,
+}
+
+/// Read models should be implemented here.
+impl WorkOrder
+{
+    pub fn view(&self) -> WorkOrderView
+    {
+        let mut operation_views: Vec<OperationView> = vec![];
+
+        for operation in &self.operations.0 {
+            let operation_view = operation.1.view();
+            operation_views.push(operation_view);
+        }
+
+        let work_order_view = WorkOrderView {
+            work_order_number: self.work_order_number,
+            priority: self.work_order_info.priority.to_string(),
+            revision: self.work_order_info.revision.to_string(),
+            work_order_type: self.work_order_info.work_order_type.to_string(),
+            main_work_ctr: self.main_work_center.to_string(),
+            description_work_order: self
+                .work_order_info
+                .work_order_text
+                .order_description
+                .clone(),
+
+            material_status: MaterialStatus::from(&self.work_order_analytic.user_status_codes),
+            system_status: self.work_order_analytic.system_status_codes.clone(),
+            user_status: self.work_order_analytic.user_status_codes.clone(),
+            basic_start_date: self.work_order_dates.basic_start_date.to_string(),
+            basic_finish_date: self.work_order_dates.basic_finish_date.to_string(),
+            earliest_allowed_start_date: self
+                .work_order_dates
+                .earliest_allowed_start_date
+                .to_string(),
+            latest_allowed_finish_date: self
+                .work_order_dates
+                .latest_allowed_finish_date
+                .to_string(),
+            operations: operation_views,
+            // operation_system_status: self.status_codes().clone(),
+            // operation_user_status: self.status_codes().clone(),
+            functional_location: self.functional_location().to_string(),
+            subnetwork_of: self
+                .work_order_info
+                .work_order_info_detail
+                .subnetwork
+                .clone(),
+            system_condition: self.work_order_info.system_condition.to_string(),
+            maintenance_plan: self
+                .work_order_info
+                .work_order_info_detail
+                .maintenance_plan
+                .clone(),
+            planner_group: self
+                .work_order_info
+                .work_order_info_detail
+                .planner_group
+                .clone(),
+            maintenance_plant: self
+                .work_order_info
+                .work_order_info_detail
+                .maintenance_plant
+                .clone(),
+            pm_collective: self
+                .work_order_info
+                .work_order_info_detail
+                .pm_collective
+                .clone(),
+            room: self.work_order_info.work_order_info_detail.room.clone(),
+            vendor: self.vendor(),
+        };
+        work_order_view
+    }
+}
+// The issue with what you are doing is that we can keep implementing stuff like
+// this until the day we die. You have to simply go for the money here. I think
+// that is the best approach.
+//
+// You are not good enough to code. You are good enough to do this, Brian
+// believes in you. You simply have to keep working.
+
 #[cfg(test)]
 mod tests
 {

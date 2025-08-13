@@ -6,12 +6,12 @@ use super::Work;
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct OperationAnalytic
 {
-    pub preparation_time: Work,
+    pub(crate) preparation_time: Work,
     // FIX
     // This is wrong, this field should be given completely by the
     // numbers and `work_remaining` you should integrate this into
     // the builder.
-    pub duration: Work,
+    pub(crate) duration: Work,
 }
 
 pub struct OperationAnalyticBuilder

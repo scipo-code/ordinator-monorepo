@@ -8,10 +8,10 @@ pub type NumberOfPeople = u64;
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct OperationInfo
 {
-    pub number: NumberOfPeople,
-    pub work_remaining: Work,
-    pub work_actual: Work,
-    pub work: Work,
+    pub(crate) number: NumberOfPeople,
+    pub(crate) work_remaining: Work,
+    pub(crate) work_actual: Work,
+    pub(crate) work: Work,
 }
 
 // Good! The fields should be optional in the OperationInfoBuilder, not the

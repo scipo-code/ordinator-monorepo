@@ -9,33 +9,33 @@ use std::ops::DerefMut;
 use std::panic::Location;
 use std::sync::Arc;
 
-use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::ensure;
 use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::AbLNSUtils;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
-use ordinator_orchestrator_actor_traits::delegate::Delegate;
-use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_orchestrator_actor_traits::OperationalInterface;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
+use ordinator_orchestrator_actor_traits::delegate::Delegate;
+use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::SupervisorOptions;
 use rand::rng;
 use rand::seq::IndexedRandom;
 use supervisor_parameters::SupervisorParameters;
 use supervisor_solution::SupervisorSolution;
 #[allow(unused_imports)]
-use tracing::event;
-#[allow(unused_imports)]
 use tracing::Level;
+#[allow(unused_imports)]
+use tracing::event;
 
 pub struct SupervisorAlgorithm<Ss>(Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>)
 where
@@ -143,7 +143,7 @@ where
         &mut self,
     ) -> Result<
         ObjectiveValueType<
-            <<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::ObjectiveValue,
+            <<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective,
         >,
     >
     {
@@ -451,7 +451,7 @@ where
 
                     let supervisor_parameter_resource = &supervisor_parameter.resource;
 
-                    if supervisor_parameter.work == Work::from(0.0) {
+                    if supervisor_parameter.work_remaining == Work::from(0.0) {
                         non_incorporated_work_orders.insert(*work_order_number);
                         continue;
                     };
@@ -478,13 +478,13 @@ where
 
         self.solution
             .operational_state_machine
-            .retain(|id_woa, _| strategic_activities.contains(&id_woa.1 .0));
+            .retain(|id_woa, _| strategic_activities.contains(&id_woa.1.0));
 
         let supervisor_work_orders = self
             .solution
             .operational_state_machine
             .iter()
-            .map(|e| e.0 .1 .0)
+            .map(|e| e.0.1.0)
             .collect::<HashSet<_>>();
         // Okay now we want to run this based on the state of the `Supervisor`
         //

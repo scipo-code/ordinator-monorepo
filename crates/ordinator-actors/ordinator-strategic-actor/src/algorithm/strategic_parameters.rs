@@ -89,7 +89,7 @@ impl Parameters for StrategicParameters
             .inner
             .iter()
             .filter(|(_, wo)| wo.functional_location().asset == *asset)
-            .filter(|(_, wo)| wo.work_order_analytic.released_for_scheduling());
+            .filter(|(_, wo)| wo.released_for_scheduling());
 
         // ISSUE #000
         // This is crucial to fix correctly now
@@ -388,7 +388,7 @@ impl StrategicClustering
             .iter()
             .filter(|(_, wo)| &wo.functional_location().asset == asset)
             .map(|(number, work_order)| {
-                let fl = &work_order.work_order_info.functional_location;
+                let fl = &work_order.functional_location();
                 (
                     number,
                     fl.asset.clone(),

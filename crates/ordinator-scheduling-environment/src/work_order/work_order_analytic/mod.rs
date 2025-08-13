@@ -11,8 +11,8 @@ use status_codes::UserStatusCodesBuilder;
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct WorkOrderAnalytic
 {
-    pub system_status_codes: SystemStatusCodes,
-    pub user_status_codes: UserStatusCodes,
+    pub(crate) system_status_codes: SystemStatusCodes,
+    pub(crate) user_status_codes: UserStatusCodes,
 }
 
 pub struct WorkOrderAnalyticBuilder
@@ -103,10 +103,6 @@ impl WorkOrderAnalytic
         self.user_status_codes.sch
     }
 
-    pub fn released_for_scheduling(&self) -> bool
-    {
-        self.system_status_codes.rel
-    }
 
     pub fn material(&self) -> MaterialStatus
     {

@@ -17,6 +17,7 @@ use ordinator_operational_actor::algorithm::operational_solution::OperationalSol
 use ordinator_operational_actor::messages::OperationalRequestMessage;
 use ordinator_operational_actor::messages::OperationalResponseMessage;
 use ordinator_orchestrator_actor_traits::Solution;
+use ordinator_orchestrator_actor_traits::SolutionState;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SupervisorInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
@@ -45,7 +46,7 @@ use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSoluti
 struct TestSystemSolution<Zs: SupervisorInterface + Clone>
 {
     supervisor: Zs,
-    operational: HashMap<Id, OperationalSolution>,
+    operational: HashMap<Id, SolutionState<OperationalSolution>>,
 }
 
 // What should you do here? I believe that I should refactor the
@@ -145,7 +146,7 @@ impl SystemSolutions for TestSystemSolution<SupervisorSolution>
         todo!()
     }
 
-    fn strategic_swap(&mut self, id: &Id, solution: Self::Strategic)
+    fn strategic_swap(&mut self, id: &Id, solution: SolutionState<TestStrategic>)
     where
         Self::Strategic: ordinator_orchestrator_actor_traits::Solution,
     {
@@ -157,7 +158,7 @@ impl SystemSolutions for TestSystemSolution<SupervisorSolution>
         todo!()
     }
 
-    fn tactical_swap(&mut self, id: &Id, solution: Self::Tactical)
+    fn tactical_swap(&mut self, id: &Id, solution: SolutionState<TestTactical>)
     where
         Self::Tactical: ordinator_orchestrator_actor_traits::Solution,
     {
@@ -169,7 +170,7 @@ impl SystemSolutions for TestSystemSolution<SupervisorSolution>
         Ok(&self.supervisor)
     }
 
-    fn supervisor_swap(&mut self, id: &Id, solution: Self::Supervisor)
+    fn supervisor_swap(&mut self, id: &Id, solution: SolutionState<SupervisorSolution>)
     where
         Self::Supervisor: ordinator_orchestrator_actor_traits::Solution,
     {
@@ -186,7 +187,7 @@ impl SystemSolutions for TestSystemSolution<SupervisorSolution>
         todo!()
     }
 
-    fn operational_swap(&mut self, id: &Id, solution: Self::Operational)
+    fn operational_swap(&mut self, id: &Id, solution: SolutionState<OperationalSolution>)
     where
         Self::Operational: Solution,
     {
@@ -196,30 +197,30 @@ impl SystemSolutions for TestSystemSolution<SupervisorSolution>
 
 impl Solution for TestTactical
 {
-    type ObjectiveValue = ();
+    type Objective = ();
     type Parameters = ();
 
-    fn new(parameters: &Self::Parameters) -> anyhow::Result<Self>
+    fn from_parameters(parameters: &Self::Parameters) -> anyhow::Result<Self>
     {
         todo!()
     }
 
-    fn update_objective_value(&mut self, other_objective: Self::ObjectiveValue)
+    fn update_objective(&mut self, other_objective: Self::Objective)
     {
         todo!()
     }
 }
 impl Solution for TestStrategic
 {
-    type ObjectiveValue = ();
+    type Objective = ();
     type Parameters = ();
 
-    fn new(parameters: &Self::Parameters) -> anyhow::Result<Self>
+    fn from_parameters(parameters: &Self::Parameters) -> anyhow::Result<Self>
     {
         todo!()
     }
 
-    fn update_objective_value(&mut self, other_objective: Self::ObjectiveValue)
+    fn update_objective(&mut self, other_objective: Self::Objective)
     {
         todo!()
     }
@@ -296,7 +297,6 @@ fn start_operational_actor()
                                     order_system_status: Some("TEST".to_string()),
                                     order_user_status: Some("TEST".to_string()),
                                     order_description: "TEST".to_string(),
-                                    operation_description: Some("TEST".to_string()),
                                     object_description: Some("TEST".to_string()),
                                     notes_1: Some("TEST".to_string()),
                                     notes_2: Some(1),
@@ -350,7 +350,6 @@ fn start_operational_actor()
                                     order_system_status: Some("TEST".to_string()),
                                     order_user_status: Some("TEST".to_string()),
                                     order_description: "TEST".to_string(),
-                                    operation_description: Some("TEST".to_string()),
                                     object_description: Some("TEST".to_string()),
                                     notes_1: Some("TEST".to_string()),
                                     notes_2: Some(1),

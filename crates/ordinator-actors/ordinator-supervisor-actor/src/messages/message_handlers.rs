@@ -1,22 +1,23 @@
 use std::collections::HashSet;
 use std::fmt::Debug;
 
-use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::bail;
 use ordinator_actor_core::Actor;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
-use tracing::event;
 use tracing::Level;
+use tracing::event;
 
 use super::SupervisorRequestMessage;
 use super::SupervisorResponseMessage;
+use crate::algorithm::SupervisorAlgorithm;
+use crate::algorithm::supervisor_parameters::SupervisorParameter;
 use crate::algorithm::supervisor_parameters::SupervisorParameters;
 use crate::algorithm::supervisor_solution::SupervisorSolution;
-use crate::algorithm::SupervisorAlgorithm;
 use crate::messages::responses::SupervisorResponseScheduling;
 use crate::messages::responses::SupervisorResponseStatus;
 
@@ -48,20 +49,19 @@ where
                             std::any::type_name::<SupervisorParameters>()
                         )
                     })?;
-                    // TODO [ ]
-                    // You need to take a clear stance on this in the code. Should you make an
-                    // API for this? Of course you should.
-                    //
-                    // This is written so sloppy.
-                    // I can sense that we should instead think about the data flow in
-                    // the program. That probably has a higher chance of success. Yes.
-                    for (activity_number, operation) in &work_order.operations.0 {
-                        self.algorithm
-                            .parameters
-                            .create_and_insert_supervisor_parameter(
-                                operation,
-                                &(work_order_number, *activity_number),
-                            )
+
+                    for activity_number in work_order.activity_numbers() {
+                        let resource = work_order.operation_resource(activity_number)?;
+                        let number = work_order.number_of_people(activity_number)?;
+                        let work_remaining =
+                            work_order.operation_work_remaining(activity_number)?;
+
+                        let supervisor_parameter =
+                            SupervisorParameter::new(resource, number, work_remaining);
+                        self.algorithm.parameters.insert_supervisor_parameter(
+                            &(work_order_number, activity_number),
+                            supervisor_parameter,
+                        )
                     }
                 }
                 Ok(SupervisorResponseMessage::StateLink)

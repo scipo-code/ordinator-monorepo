@@ -170,6 +170,7 @@ pub async fn all_technicians(
             "SupervisorSolution not available. Likely due to the Supervisor not being instantiated"
                 .to_string(),
         ))?
+        .inner()
         .clone()
         .into();
 
@@ -261,11 +262,9 @@ pub async fn supervisor_main_table(
     let query_day = query.day;
 
     if !query_day.0.is_empty() {
-        supervisor_main_table_dto.days = supervisor_main_table_dto
+        supervisor_main_table_dto
             .days
-            .into_iter()
-            .filter(|(day_key, _)| day_key == &query_day)
-            .collect();
+            .retain(|day_key, _| day_key == &query_day);
     };
 
     Ok(Json(supervisor_main_table_dto))

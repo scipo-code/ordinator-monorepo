@@ -24,13 +24,14 @@ use ordinator_orchestrator::StrategicInterface;
 use ordinator_orchestrator::SystemSolutions;
 use ordinator_orchestrator::WorkOrderNumber;
 use serde::Deserialize;
+use tracing::instrument;
 use utoipa::IntoParams;
 use utoipa::ToSchema;
 
 use crate::routes::api::AppError;
 
 // This is a handler. Not a `Route` you should change that. Keep working.
-#[derive(Deserialize, IntoParams, ToSchema)]
+#[derive(Debug, Deserialize, IntoParams, ToSchema)]
 pub struct WorkOrdersWithSchedulingQueryParams
 {
     #[serde(default)]
@@ -53,6 +54,7 @@ pub struct WorkOrdersWithSchedulingQueryParams
         (status = 500, body = AppError),
     )
 )]
+#[instrument(target = "business_events", fields(elapsed_time), skip(orchestrator))]
 pub async fn get_scheduler_work_orders(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     Path(asset): Path<AssetNames>,

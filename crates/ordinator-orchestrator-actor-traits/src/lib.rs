@@ -3,6 +3,8 @@ pub mod marginal_fitness;
 use std::collections::BTreeMap;
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::ops::Deref;
+use std::ops::DerefMut;
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::sync::MutexGuard;
@@ -95,31 +97,24 @@ impl<RequestMessage, Res> Communication<RequestMessage, Res>
 #[derive(PartialEq, Eq, Clone)]
 pub struct SystemSolution<S, T, U, V>
 where
-    S: StrategicInterface,
-    T: TacticalInterface,
-    U: SupervisorInterface,
-    // FIX [ ]
-    // This `Solution` should be removed.
+    S: StrategicInterface + Solution,
+    T: TacticalInterface + Solution,
+    U: SupervisorInterface + Solution,
     V: OperationalInterface + Solution,
 {
-    pub strategic: Option<S>,
-    pub tactical: Option<T>,
-    pub supervisor: Option<U>,
-    pub operational: HashMap<Id, V>,
+    pub strategic: Option<SolutionState<S>>,
+    pub tactical: Option<SolutionState<T>>,
+    pub supervisor: Option<SolutionState<U>>,
+    pub operational: HashMap<Id, SolutionState<V>>,
 }
 
-// ISSUE TODO [ ]
-//
-// This whole [`SystemSolution`] should be reworked. It should be trait-based.
-//
-// It is what it is trying to tell us.
+// ISSUE #000 [ ] - this whole [`SystemSolution`] should be reworked. It should
+// be trait-based.
 impl<S, T, U, V> std::fmt::Debug for SystemSolution<S, T, U, V>
 where
-    S: StrategicInterface,
-    T: TacticalInterface,
-    U: SupervisorInterface,
-    // FIX [ ]
-    // This `Solution` should be removed.
+    S: StrategicInterface + Solution,
+    T: TacticalInterface + Solution,
+    U: SupervisorInterface + Solution,
     V: OperationalInterface + Solution,
 {
     // What you are doing here is so important! That you decided to make this is
@@ -173,40 +168,35 @@ pub trait SystemSolutions: Clone + Sized
     fn new() -> Self;
     fn strategic(&self) -> Result<&Self::Strategic>;
 
-    fn strategic_swap(&mut self, id: &Id, solution: Self::Strategic)
+    fn strategic_swap(&mut self, id: &Id, solution: SolutionState<Self::Strategic>)
     where
         Self::Strategic: Solution;
     fn tactical_actor_solution(&self) -> Result<&Self::Tactical>;
 
-    fn tactical_swap(&mut self, id: &Id, solution: Self::Tactical)
+    fn tactical_swap(&mut self, id: &Id, solution: SolutionState<Self::Tactical>)
     where
         Self::Tactical: Solution;
     fn supervisor_actor_solutions(&self) -> Result<&Self::Supervisor>;
 
-    fn supervisor_swap(&mut self, id: &Id, solution: Self::Supervisor)
+    fn supervisor_swap(&mut self, id: &Id, solution: SolutionState<Self::Supervisor>)
     where
         Self::Supervisor: Solution;
     fn operational_actor_solutions(&self, id: &Id) -> Result<&Self::Operational>;
 
     fn all_operational(&self) -> HashSet<Id>;
     // If you make all Id's internal you could simply work on those?
-    fn operational_swap(&mut self, id: &Id, solution: Self::Operational)
+    fn operational_swap(&mut self, id: &Id, solution: SolutionState<Self::Operational>)
     where
         Self::Operational: Solution;
 }
 
-// You are out in the woods here. You should keep up the work and focus on
-// making the You are not making this in the correct way. I think that a better
-// approach is to
-//
-// TODO [ ]
-// Make this work with the correct way of designing
+// ISSUE #000 [ ] - use trait composition instead of a single large trait.
 #[allow(dead_code, unused_variables)]
 impl<S, T, U, V> SystemSolutions for SystemSolution<S, T, U, V>
 where
-    S: StrategicInterface,
-    T: TacticalInterface,
-    U: SupervisorInterface,
+    S: StrategicInterface + Solution,
+    T: TacticalInterface + Solution,
+    U: SupervisorInterface + Solution,
     V: OperationalInterface + Solution,
 {
     type Operational = V;
@@ -226,55 +216,63 @@ where
 
     fn strategic(&self) -> Result<&Self::Strategic>
     {
-        self.strategic
+        Ok(&self
+            .strategic
             .as_ref()
-            .with_context(|| "StrategicActor SystemSolution not found")
+            .with_context(|| "StrategicActor SystemSolution not found")?
+            .inner)
     }
 
     fn tactical_actor_solution(&self) -> Result<&Self::Tactical>
     {
-        self.tactical
+        Ok(&self
+            .tactical
             .as_ref()
-            .with_context(|| "TacticalActor SystemSolution not found")
+            .with_context(|| "TacticalActor SystemSolution not found")?
+            .inner)
     }
 
     fn supervisor_actor_solutions(&self) -> Result<&Self::Supervisor>
     {
-        self.supervisor
+        Ok(&self
+            .supervisor
             .as_ref()
-            .with_context(|| "SupervisorActor SystemSolution not found")
+            .with_context(|| "SupervisorActor SystemSolution not found")?
+            .inner)
     }
 
     fn operational_actor_solutions(&self, id: &Id) -> Result<&Self::Operational>
     {
-        self.operational
+        Ok(&self
+            .operational
             .get(id)
-            .with_context(|| "OperationalActor SystemSolution not found")
+            .with_context(|| "OperationalActor SystemSolution not found")?
+            .inner)
     }
 
     // Can you even do this? Is this allowed? I do not t
-    fn operational_swap(&mut self, id: &Id, solution: Self::Operational)
+    fn operational_swap(&mut self, id: &Id, solution: SolutionState<Self::Operational>)
     where
         Self::Operational: Solution,
     {
         self.operational.insert(id.clone(), solution);
     }
 
-    fn strategic_swap(&mut self, id: &Id, solution: Self::Strategic)
+    fn strategic_swap(&mut self, id: &Id, solution: SolutionState<Self::Strategic>)
     where
         Self::Strategic: Solution,
     {
         self.strategic = Some(solution);
     }
 
-    fn tactical_swap(&mut self, id: &Id, solution: Self::Tactical)
+    fn tactical_swap(&mut self, id: &Id, solution: SolutionState<Self::Tactical>)
     where
         Self::Tactical: Solution,
     {
         self.tactical = Some(solution);
     }
 
-    fn supervisor_swap(&mut self, id: &Id, solution: Self::Supervisor)
+    fn supervisor_swap(&mut self, id: &Id, solution: SolutionState<Self::Supervisor>)
     where
         Self::Supervisor: Solution,
     {
@@ -285,9 +283,6 @@ where
     {
         self.operational.keys().cloned().collect()
     }
-
-    // You could implement the pointer swapping here. Hmm... that might not be the
-    // best idea.
 }
 
 pub trait Parameters
@@ -323,9 +318,9 @@ where
 // `from` trait. Meaning that we should focus on making the system
 // work with the
 // Should this function have an option or not? Yes it should.
-pub trait Solution: Sized
+pub trait Solution: Sized + Debug
 {
-    type ObjectiveValue: Debug;
+    type Objective: Debug;
     type Parameters;
 
     // The weightings are found inside of the
@@ -336,9 +331,77 @@ pub trait Solution: Sized
     // Should you have the options here? I think that you should derive the...
     //
     // The solution should only contain the things that actually change.
-    fn new(parameters: &Self::Parameters) -> Result<Self>;
+    fn from_parameters(parameters: &Self::Parameters) -> Result<Self>;
 
-    fn update_objective_value(&mut self, other_objective: Self::ObjectiveValue);
+    fn update_objective(&mut self, other_objective: Self::Objective);
+}
+
+pub type Iterations = u64;
+pub type Version = u64;
+
+#[derive(Debug, PartialEq, Eq, Clone)]
+pub struct SolutionState<S: Solution>
+{
+    stagnation_iterations: Iterations,
+    version: Version,
+    inner: S,
+}
+
+impl<S: Solution> Deref for SolutionState<S>
+{
+    type Target = S;
+
+    fn deref(&self) -> &Self::Target
+    {
+        &self.inner
+    }
+}
+
+impl<S: Solution> DerefMut for SolutionState<S>
+{
+    fn deref_mut(&mut self) -> &mut Self::Target
+    {
+        &mut self.inner
+    }
+}
+
+/// Wrapper of [`Solution`] traits. Keeps track of the
+/// number of iterations in the current [`Solution`]
+/// with `stagnation_iterations` and keeps track of the
+/// version of the best solution with `version`.
+impl<S: Solution> SolutionState<S>
+{
+    pub fn new(solution: S) -> Self
+    {
+        SolutionState {
+            stagnation_iterations: Iterations::MIN,
+            version: Version::MIN,
+            inner: solution,
+        }
+    }
+
+    pub fn revert_to_old_solution(&mut self, solution: S)
+    {
+        self.stagnation_iterations += 1;
+        self.inner = solution;
+    }
+
+    pub fn update_objective(&mut self, objective: S::Objective)
+    {
+        self.stagnation_iterations = 0;
+        self.version += 1;
+        self.inner.update_objective(objective);
+    }
+
+    pub fn inner_mut(&mut self) -> &mut S
+    {
+        &mut self.inner
+    }
+
+    pub fn inner(&self) -> &S
+    {
+        &self.inner
+    }
 }
 
 // NOTE [ ]
@@ -454,7 +517,7 @@ pub trait SwapSolution<Ss>: Solution + Sized
 where
     Ss: SystemSolutions,
 {
-    fn swap(id: &Id, solution: Self, system_solution: &mut Ss);
+    fn swap(id: &Id, solution: SolutionState<Self>, system_solution: &mut Ss);
 
     // fn perform_swap(id: &Id, solution: Self, system_solution:
     // Self::SystemSolution) {
@@ -562,4 +625,62 @@ where
         stake_link_bus: BusReader<StateLink>,
         error_channel: Sender<anyhow::Error>,
     ) -> Result<Self::Communication>;
+}
+
+#[cfg(test)]
+mod tests
+{
+    use crate::Solution;
+    use crate::SolutionState;
+
+    #[test]
+    fn test_solution_state_increment()
+    {
+        #[derive(Debug)]
+        struct TestSolution;
+
+        impl Solution for TestSolution
+        {
+            type Objective = u64;
+            type Parameters = ();
+
+            fn from_parameters(parameters: &Self::Parameters) -> anyhow::Result<Self>
+            {
+                todo!()
+            }
+
+            fn update_objective(&mut self, other_objective: Self::Objective)
+            {
+                ()
+            }
+        }
+        let mut solution = SolutionState::new(TestSolution);
+
+        let objective = 9;
+
+        solution.update_objective(objective);
+
+        assert!(solution.version == 1);
+        solution.update_objective(objective);
+
+        assert!(solution.version == 2);
+
+        assert!(solution.stagnation_iterations == 0);
+        solution.revert_to_old_solution(TestSolution);
+        assert!(solution.stagnation_iterations == 1);
+
+        solution.revert_to_old_solution(TestSolution);
+        assert!(solution.stagnation_iterations == 2);
+
+        solution.revert_to_old_solution(TestSolution);
+        assert!(solution.stagnation_iterations == 3);
+
+        solution.revert_to_old_solution(TestSolution);
+        assert!(solution.stagnation_iterations == 4);
+
+        solution.revert_to_old_solution(TestSolution);
+        assert!(solution.stagnation_iterations == 5);
+        assert!(solution.version == 2);
+        assert_ne!(solution.stagnation_iterations, 6);
+    }
 }

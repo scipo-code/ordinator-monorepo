@@ -9,8 +9,8 @@ use serde::Serialize;
 #[derive(Default, Args, Clone, Serialize, Deserialize, Debug)]
 pub struct UnloadingPoint
 {
-    pub string: String,
-    pub period_string: Option<String>,
+    pub(crate) string: String,
+    pub(crate) period_string: Option<String>,
 }
 // This field simply needs to be derived when we want a period. That is the only
 // way of implementing it in a way that will scale into the future. You cannot

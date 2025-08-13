@@ -7,9 +7,9 @@ use std::iter::Sum;
 use std::num::ParseFloatError;
 use std::str::FromStr;
 
-use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::ensure;
 use chrono::DateTime;
 use chrono::Utc;
 use colored::Colorize;
@@ -17,17 +17,18 @@ use operation_analytic::OperationAnalyticBuilder;
 use operation_info::OperationInfoBuilder;
 use rust_decimal::prelude::*;
 use rust_xlsxwriter::IntoExcelData;
+use serde::Deserialize;
+use serde::Serialize;
 use serde::de::MapAccess;
 use serde::de::Visitor;
 use serde::de::{self};
 use serde::ser::SerializeStruct;
-use serde::Deserialize;
-use serde::Serialize;
 
 use self::operation_analytic::OperationAnalytic;
 use self::operation_info::OperationInfo;
-use super::work_order_dates::unloading_point::UnloadingPoint;
 use super::ActivityRelation;
+use super::OperationView;
+use super::work_order_dates::unloading_point::UnloadingPoint;
 use crate::time_environment::day::Day;
 use crate::time_environment::period::Period;
 use crate::worker_environment::resources::Resources;
@@ -35,7 +36,7 @@ use crate::worker_environment::resources::Resources;
 pub type ActivityNumber = u64;
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
-pub struct Operations(pub BTreeMap<ActivityNumber, Operation>);
+pub struct Operations(pub(crate) BTreeMap<ActivityNumber, Operation>);
 
 impl Operations
 {
@@ -96,7 +97,13 @@ impl Operation
             operation_info: None,
             operation_analytic: None,
             operation_dates: None,
+            operation_description: None,
         }
+    }
+
+    pub fn work_remaining(&self) -> &Work
+    {
+        &self.operation_info.work_remaining
     }
 
     pub fn possible_start(&self) -> Day
@@ -123,6 +130,23 @@ impl Operation
             None => None,
         }
     }
+
+    pub fn view(&self) -> OperationView
+    {
+        OperationView {
+            activity: self.activity,
+            resource: self.resource,
+            remaining_work: self.operation_info.work_remaining,
+            actual_work: self.operation_info.work_actual,
+            unloading_point: self.unloading_point.to_string(),
+            earliest_start_datetime: self.operation_dates.earliest_start_datetime,
+            earliest_finish_datetime: self.operation_dates.earliest_finish_datetime,
+            operation_short_text: "FIELD MISSING".to_string(),
+            description_operation: self.operation_description.to_string(),
+            number_of_people: self.operation_info.number,
+            duration: self.operation_analytic.duration,
+        }
+    }
 }
 
 impl OperationBuilder
@@ -145,6 +169,7 @@ impl OperationBuilder
             operation_dates: self
                 .operation_dates
                 .expect("operation_dates should always be part of the operation"),
+            operation_description: self.operation_description.unwrap_or_default(),
         }
     }
 }
@@ -153,7 +178,7 @@ impl OperationsBuilder
 {
     pub fn build(self) -> Operations
     {
-        Operations(self.0 .0)
+        Operations(self.0.0)
     }
 
     // This should insert values into the `Operations` if there are no one there.
@@ -170,7 +195,7 @@ impl OperationsBuilder
 
         f(&mut operations_builder);
 
-        self.0 .0.insert(
+        self.0.0.insert(
             operations_builder.operations_number,
             operations_builder.build(),
         );
@@ -182,12 +207,13 @@ impl OperationsBuilder
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Operation
 {
-    pub activity: ActivityNumber,
-    pub resource: Resources,
-    pub unloading_point: UnloadingPoint,
-    pub operation_info: OperationInfo,
-    pub operation_analytic: OperationAnalytic,
-    pub operation_dates: OperationDates,
+    pub(crate) activity: ActivityNumber,
+    pub(crate) resource: Resources,
+    pub(crate) unloading_point: UnloadingPoint,
+    pub(crate) operation_info: OperationInfo,
+    pub(crate) operation_description: String,
+    pub(crate) operation_analytic: OperationAnalytic,
+    pub(crate) operation_dates: OperationDates,
 }
 
 pub struct OperationBuilder
@@ -196,6 +222,7 @@ pub struct OperationBuilder
     resource: Resources,
     unloading_point: Option<UnloadingPoint>,
     operation_info: Option<OperationInfo>,
+    operation_description: Option<String>,
     operation_analytic: Option<OperationAnalytic>,
     operation_dates: Option<OperationDates>,
 }
@@ -205,6 +232,12 @@ impl OperationBuilder
     pub fn unloading_point(mut self, unloading_point: UnloadingPoint) -> Self
     {
         self.unloading_point = Some(unloading_point);
+        self
+    }
+
+    pub fn operation_description(mut self, description: String) -> Self
+    {
+        self.operation_description = Some(description);
         self
     }
 
@@ -521,10 +554,10 @@ impl<'de> Deserialize<'de> for Work
                             assert_eq!(value_str, "Decimal".to_string());
                         }
                         _ => {
-                            return Err(de::Error::unknown_field(
-                                &key,
-                                &["work_type", "work_value"],
-                            ));
+                            return Err(de::Error::unknown_field(&key, &[
+                                "work_type",
+                                "work_value",
+                            ]));
                         }
                     }
                 }
@@ -553,8 +586,8 @@ impl Display for Work
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 pub struct OperationDates
 {
-    pub earliest_start_datetime: DateTime<Utc>,
-    pub earliest_finish_datetime: DateTime<Utc>,
+    pub(crate) earliest_start_datetime: DateTime<Utc>,
+    pub(crate) earliest_finish_datetime: DateTime<Utc>,
 }
 
 pub struct OperationDatesBuilder
