@@ -65,7 +65,7 @@ impl Parameters for TacticalParameters
             // WARN: Unwrap accepted. Every agent should always be connected to an Asset
             // QUESTION: Is this actually true?
             .filter(|(_, wo)| &wo.functional_location().asset == id.2.first().unwrap())
-            .filter(|(_, wo)| wo.work_order_analytic.released_for_scheduling());
+            .filter(|(_, wo)| wo.released_for_scheduling());
 
         let assignments = &scheduling_environment.assignments.assignment_for_tactical();
         let tactical_capacity = TacticalResources::from((scheduling_environment, id));
@@ -131,14 +131,15 @@ pub fn create_tactical_parameter(
 ) -> Result<TacticalParameter>
 {
     let mut operation_parameters = BTreeMap::new();
-    for (activity_number, operation) in &work_order.operations.0 {
+    for activity_number in &work_order.activity_numbers() {
         let forced_day = start_days_for_activities
             .get(&Some(*activity_number))
             .map(|e| e.day())
             .and_then(|e| e);
 
+        let operation = work_order.operation(*activity_number);
         let operation_parameter = OperationParameter::new(
-            work_order.work_order_number,
+            work_order.work_order_number(),
             operation,
             Work::from(work_order_configuration.operating_time as f64),
             forced_day,
@@ -152,7 +153,6 @@ pub fn create_tactical_parameter(
 #[derive(Debug, Clone, Serialize)]
 pub struct TacticalParameter
 {
-    pub main_work_center: Resources,
     pub tactical_operation_parameters: BTreeMap<ActivityNumber, OperationParameter>,
     // ISSUE #300 TODO [ ] 2025-07-17 implement the `forced_schedule_*` in the tactical
     //
@@ -176,7 +176,6 @@ impl TacticalParameter
     ) -> Result<Self>
     {
         Ok(Self {
-            main_work_center: work_order.main_work_center,
             tactical_operation_parameters: operation_parameters,
             // Setting this field will be immensely difficult. This is where much of the business
             // logic should recide. It will not be simple to create this.
@@ -187,8 +186,8 @@ impl TacticalParameter
             // ISSUE #300 TODO [ ] 2025-07-17 implement the `forced_schedule_*` in the tactical
             // actor forced_in_period: work_order.,
             weight: work_order.work_order_value(work_order_configuration)?,
-            relations: work_order.operations.relations(),
-            earliest_allowed_start_date: work_order.work_order_dates.earliest_allowed_start_date,
+            relations: work_order.activity_relations(),
+            earliest_allowed_start_date: work_order.earliest_allowed_start_date(),
             // So we have to create something that will let us fix the tactical work_orders. The
             // enum here is a great bet.
         })
@@ -227,17 +226,18 @@ impl OperationParameter
         forced: Option<Day>,
     ) -> Result<Self>
     {
+        let operation_view = operation.view();
         Ok(Self {
             work_order_number,
-            number: operation.operation_info.number,
+            number: operation_view.number_of_people,
             // FIX
             // This should also have been created differently.
-            duration: operation.operation_analytic.duration,
+            duration: operation_view.duration,
             operating_time,
-            work_remaining: operation.operation_info.work_remaining,
-            resource: operation.resource,
-            earliest_start_date: operation.operation_dates.earliest_start_datetime,
-            earliest_finish_date: operation.operation_dates.earliest_finish_datetime,
+            work_remaining: operation_view.remaining_work,
+            resource: operation_view.resource,
+            earliest_start_date: operation_view.earliest_start_datetime,
+            earliest_finish_date: operation_view.earliest_finish_datetime,
             forced_start_date: forced,
         })
     }

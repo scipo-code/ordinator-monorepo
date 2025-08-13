@@ -4,13 +4,14 @@ use std::fmt::Debug;
 use anyhow::Result;
 use colored::Colorize;
 use ordinator_orchestrator_actor_traits::Solution;
+use ordinator_orchestrator_actor_traits::SolutionState;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::time_environment::period::Period;
-use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::StrategicOptions;
 use serde::Deserialize;
 use serde::Serialize;
@@ -28,7 +29,7 @@ pub struct StrategicSolution
 {
     objective_value: StrategicObjectiveValue,
     pub(crate) strategic_scheduled_work_orders: HashMap<WorkOrderNumber, WhereIsWorkOrder<Period>>,
-    pub strategic_loadings: StrategicResources,
+    pub(crate) strategic_loadings: StrategicResources,
 }
 
 impl StrategicSolution
@@ -176,10 +177,10 @@ impl StrategicObjectiveValue
 }
 impl Solution for StrategicSolution
 {
-    type ObjectiveValue = StrategicObjectiveValue;
+    type Objective = StrategicObjectiveValue;
     type Parameters = StrategicParameters;
 
-    fn new(parameters: &Self::Parameters) -> Result<Self>
+    fn from_parameters(parameters: &Self::Parameters) -> Result<Self>
     {
         let strategic_loadings = parameters
             .strategic_capacity
@@ -231,7 +232,7 @@ impl Solution for StrategicSolution
         })
     }
 
-    fn update_objective_value(&mut self, other_objective_value: Self::ObjectiveValue)
+    fn update_objective(&mut self, other_objective_value: Self::Objective)
     {
         self.objective_value = other_objective_value;
     }
@@ -243,7 +244,7 @@ where
 {
     fn swap(
         id: &ordinator_scheduling_environment::worker_environment::resources::Id,
-        solution: Self,
+        solution: SolutionState<Self>,
         system_solution: &mut Ss,
     )
     {

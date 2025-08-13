@@ -120,11 +120,11 @@ fn create_work_orders(
             None => "WARN: FUNCTIONAL_LOCATION MISSING IS THIS CORRECT?",
         };
 
+        // ISSUE #000 [] - make a builder here
         let work_order_text = WorkOrderText::new(
             None,
             None,
             work_order_csv.WO_Header_Description.clone(),
-            None,
             None,
             None,
             None,
@@ -200,6 +200,7 @@ fn create_work_orders(
                 // This is very good! The model should take in raw values and then verify them.
                 let operation = Operation::builder(*operations_number, resource)
                     .unloading_point(unloading_point)
+                    .operation_description(operation_csv.OPR_Description.clone())
                     .operation_info(|oib| {
                         oib
                             .number(operation_csv.OPR_Workers_Numbers)

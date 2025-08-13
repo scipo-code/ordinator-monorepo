@@ -10,24 +10,24 @@ use serde::Serialize;
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct WorkOrderDates
 {
-    pub earliest_allowed_start_date: NaiveDate,
-    pub latest_allowed_finish_date: NaiveDate,
+    pub(crate) earliest_allowed_start_date: NaiveDate,
+    pub(crate) latest_allowed_finish_date: NaiveDate,
     // TODO [ ]
     // This should be a function. It can be uniquely
     // derived from the other fields.
-    pub basic_start_date: NaiveDate,
-    pub basic_finish_date: NaiveDate,
+    pub(crate) basic_start_date: NaiveDate,
+    pub(crate) basic_finish_date: NaiveDate,
     #[serde(
         serialize_with = "serialize_duration",
         deserialize_with = "deserialize_duration"
     )]
-    pub duration: Duration,
-    pub basic_start_scheduled: Option<DateTime<Utc>>,
-    pub basic_finish_scheduled: Option<DateTime<Utc>>,
+    pub(crate) duration: Duration,
+    pub(crate) basic_start_scheduled: Option<DateTime<Utc>>,
+    pub(crate) basic_finish_scheduled: Option<DateTime<Utc>>,
     // TODO [ ]
     // This should be a function. It can be uniquely
     // derived from the other fields.
-    pub material_expected_date: Option<DateTime<Utc>>,
+    pub(crate) material_expected_date: Option<DateTime<Utc>>,
 }
 
 // FIX

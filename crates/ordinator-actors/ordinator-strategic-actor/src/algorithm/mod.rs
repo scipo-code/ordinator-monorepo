@@ -257,7 +257,7 @@ where
         &mut self,
     ) -> Result<
         ObjectiveValueType<
-            <<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::ObjectiveValue,
+            <<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective,
         >,
     >
     {

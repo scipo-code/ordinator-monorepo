@@ -16,7 +16,7 @@ impl Delegate
 {
     pub fn build(operation: &Operation) -> Delegate
     {
-        if operation.operation_info.work_remaining.0.is_zero() {
+        if operation.work_remaining().is_zero() {
             return Delegate::Done;
         }
         Delegate::Assess

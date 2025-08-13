@@ -9,10 +9,11 @@ use arc_swap::ArcSwap;
 use arc_swap::Guard;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
+use ordinator_orchestrator_actor_traits::SolutionState;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_environment::worker_environment::resources::Id;
 
 use crate::traits::AbLNSUtils;
 
@@ -38,7 +39,7 @@ where
 {
     pub id: Id,
     pub solution_intermediate: I,
-    pub solution: S,
+    pub solution: SolutionState<S>,
     pub parameters: P,
     pub arc_swap_shared_solution: Arc<ArcSwap<Ss>>,
     pub loaded_system_solution: Guard<Arc<Ss>>,
@@ -56,7 +57,7 @@ where
 {
     id: Option<Id>,
     solution_intermediate: I,
-    solution: Option<S>,
+    solution: Option<SolutionState<S>>,
     parameters: Option<P>,
     arc_swap_shared_solution: Option<Arc<ArcSwap<Ss>>>,
     loaded_shared_solution: Option<Guard<Arc<Ss>>>,
@@ -92,7 +93,7 @@ where
 
     fn clone_algorithm_solution(&self) -> S
     {
-        self.solution.clone()
+        self.solution.inner().clone()
     }
 
     fn load_shared_solution(&mut self)
@@ -100,17 +101,16 @@ where
         self.loaded_system_solution = self.arc_swap_shared_solution.load();
     }
 
-    fn swap_solution(&mut self, solution: S)
+    fn swap_to_old_solution(&mut self, solution: S)
     {
-        self.solution = solution;
+        // When swapping we should update the [`Solution`] and also
+        // the counters
+        self.solution.revert_to_old_solution(solution);
     }
 
-    fn update_objective_value(
-        &mut self,
-        objective_value: <Self::SolutionType as Solution>::ObjectiveValue,
-    )
+    fn update_objective(&mut self, objective_value: <Self::SolutionType as Solution>::Objective)
     {
-        self.solution.update_objective_value(objective_value);
+        self.solution.update_objective(objective_value);
     }
 }
 
@@ -178,12 +178,14 @@ where
         // reason that you. Ahh CRUCIAL INSIGHT... The S is the actual concrete type
         // here and `Solution` was simply the trait... This is a crucial insight here.
         // There is so many
-        self.solution = Some(S::new(&parameters).with_context(|| {
-            format!(
-                "Could not build solution from parameters\nLocation: {}",
-                Location::caller()
-            )
-        })?);
+        self.solution = Some(SolutionState::new(
+            S::from_parameters(&parameters).with_context(|| {
+                format!(
+                    "Could not build solution from parameters\nLocation: {}",
+                    Location::caller()
+                )
+            })?,
+        ));
 
         self.parameters = Some(parameters);
 

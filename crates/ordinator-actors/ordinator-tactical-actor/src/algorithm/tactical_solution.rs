@@ -2,24 +2,25 @@ use std::collections::BTreeMap;
 use std::collections::HashMap;
 use std::fmt::Display;
 
-use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::bail;
 use colored::Colorize;
 use ordinator_orchestrator_actor_traits::Solution;
+use ordinator_orchestrator_actor_traits::SolutionState;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
-use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
-use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
-use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
+use ordinator_scheduling_environment::worker_environment::TacticalOptions;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
-use ordinator_scheduling_environment::worker_environment::TacticalOptions;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -88,10 +89,10 @@ impl std::fmt::Debug for TacticalSolution
 // This should be put into the `algorithm.rs` file
 impl Solution for TacticalSolution
 {
-    type ObjectiveValue = TacticalObjectiveValue;
+    type Objective = TacticalObjectiveValue;
     type Parameters = TacticalParameters;
 
-    fn new(parameters: &Self::Parameters) -> Result<Self>
+    fn from_parameters(parameters: &Self::Parameters) -> Result<Self>
     {
         let tactical_loadings_inner: HashMap<Resources, Days> = parameters
             .tactical_capacity
@@ -117,7 +118,7 @@ impl Solution for TacticalSolution
         })
     }
 
-    fn update_objective_value(&mut self, other_objective_value: Self::ObjectiveValue)
+    fn update_objective(&mut self, other_objective_value: Self::Objective)
     {
         self.objective_value = other_objective_value;
     }
@@ -127,7 +128,7 @@ impl<Ss> SwapSolution<Ss> for TacticalSolution
 where
     Ss: SystemSolutions<Tactical = TacticalSolution>,
 {
-    fn swap(id: &Id, solution: Self, system_solution: &mut Ss)
+    fn swap(id: &Id, solution: SolutionState<Self>, system_solution: &mut Ss)
     {
         system_solution.tactical_swap(id, solution);
     }

@@ -4,17 +4,16 @@ use std::sync::MutexGuard;
 use anyhow::Context;
 use anyhow::Result;
 use ordinator_orchestrator_actor_traits::Parameters;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::period::Period;
-use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
-use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
-use ordinator_scheduling_environment::work_order::operation::Operation;
-use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
+use ordinator_scheduling_environment::worker_environment::SupervisorOptions;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
-use ordinator_scheduling_environment::worker_environment::SupervisorOptions;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 
 pub struct SupervisorParameters
 {
@@ -100,21 +99,16 @@ impl Parameters for SupervisorParameters
                         .expect("TODO: Implement multi-asset technicians")
             })
         {
-            let inner_map = work_order
-                .operations
-                .0
-                .iter()
-                .map(|(acn, op)| {
-                    (
-                        *acn,
-                        SupervisorParameter::new(
-                            op.resource,
-                            op.operation_info.number,
-                            op.operation_info.work,
-                        ),
-                    )
-                })
-                .collect();
+            let mut inner_map = HashMap::new();
+            for activity_number in work_order.activity_numbers() {
+                let resource = work_order.operation_resource(activity_number)?;
+                let number = work_order.number_of_people(activity_number)?;
+                let work = work_order.operation_work_remaining(activity_number)?;
+
+                let supervisor_parameter = SupervisorParameter::new(resource, number, work);
+
+                inner_map.insert(activity_number, supervisor_parameter);
+            }
 
             let _assert_option = supervisor_parameters.insert(*work_order_number, inner_map);
 
@@ -178,12 +172,16 @@ impl SupervisorParameters
 
     // This should be a part of the `Parameters` trait. You are starting to feel
     // overwhelmed again. Relax
-    pub(crate) fn create_and_insert_supervisor_parameter(
+    pub(crate) fn insert_supervisor_parameter(
         &mut self,
-        _operation: &Operation,
-        _work_order_activity: &WorkOrderActivity,
+        work_order_activity: &WorkOrderActivity,
+        supervisor_parameter: SupervisorParameter,
     )
     {
+        self.supervisor_work_orders
+            .entry(work_order_activity.0)
+            .or_default()
+            .insert(work_order_activity.1, supervisor_parameter);
         // DEBUG: Make assertions here!
     }
 }
@@ -193,17 +191,17 @@ pub struct SupervisorParameter
 {
     pub resource: Resources,
     pub number: NumberOfPeople,
-    pub work: Work,
+    pub work_remaining: Work,
 }
 
 impl SupervisorParameter
 {
-    pub fn new(resource: Resources, number: NumberOfPeople, work: Work) -> Self
+    pub fn new(resource: Resources, number: NumberOfPeople, work_remaining: Work) -> Self
     {
         Self {
             resource,
             number,
-            work,
+            work_remaining,
         }
     }
 }

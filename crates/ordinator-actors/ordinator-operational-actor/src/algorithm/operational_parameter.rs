@@ -14,21 +14,21 @@ use std::collections::HashMap;
 use std::fmt::Debug;
 use std::sync::MutexGuard;
 
-use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::ensure;
 use chrono::TimeDelta;
 use colored::Colorize;
 use ordinator_orchestrator_actor_traits::Parameters;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
-use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
-use ordinator_scheduling_environment::worker_environment::OperationalOptions;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 
 // Again there are here multiple ways of doing things. You should be careful
 // I think that the best approach is to put the... You could reformulate
@@ -128,7 +128,7 @@ impl Parameters for OperationalParameters
 
     // Do we even want the code to look like this in the first place?
     fn from_source(
-        asset: &Id,
+        id: &Id,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
         // This is not needed. It should always be a part of your SchedulingEnvironment.
         // Yes this is the best approach here.
@@ -141,15 +141,17 @@ impl Parameters for OperationalParameters
             .work_orders
             .inner
             .iter()
-            .filter(|(_, wo)| wo.work_order_analytic.released_for_scheduling())
+            .filter(|(_, wo)| wo.released_for_scheduling())
             .collect::<HashMap<_, _>>()
         {
-            for (activity_number, operation) in &work_order.operations.0 {
-                let work_order_activity = (*work_order_number, *activity_number);
+            for activity_number in work_order.activity_numbers() {
+                let work_order_activity = (*work_order_number, activity_number);
 
+                let work_remaining = work_order.operation_work_remaining(activity_number);
+                let preparation_time = work_order.operation_preparation(activity_number);
                 let operational_parameter_option = OperationalParameter::new(
-                    operation.operation_info.work_remaining,
-                    operation.operation_analytic.preparation_time,
+                    work_remaining.context("Could not derive work_remaining")?,
+                    preparation_time.context("Could not derive preparation_time")?,
                 );
 
                 // Are we mutating this function?
@@ -164,13 +166,7 @@ impl Parameters for OperationalParameters
 
                 work_order_parameters.insert(work_order_activity, operational_parameter);
             }
-            let activity_relations = scheduling_environment
-                .work_orders
-                .inner
-                .get(work_order_number)
-                .context("Could not find the work_order_number")?
-                .operations
-                .relations();
+            let activity_relations = work_order.activity_relations();
 
             work_order_activity_relations.insert(*work_order_number, activity_relations);
         }
@@ -178,15 +174,13 @@ impl Parameters for OperationalParameters
         let operational_configuration = &scheduling_environment
             .worker_environment
             .actor_specification
-            .get(asset.asset())
+            .get(id.asset())
             .unwrap()
             .operational
             .iter()
-            .find(|oca| asset == &oca.id)
-            .with_context(|| format!("{:#?} did not exist.", asset.0))?;
+            .find(|oca| id == &oca.id)
+            .with_context(|| format!("OperationalActor: {:#?} does not exist", id))?;
 
-        // What you have been doing is really silly here. You should work on improving
-        // this as much as possible.
         Ok(Self {
             work_order_parameters,
             work_order_activity_relations,

@@ -7,8 +7,6 @@ pub(crate) mod system_solution_tester;
 
 use std::collections::HashMap;
 use std::fmt::Debug;
-use std::fs::File;
-use std::io::Read;
 use std::marker::PhantomData;
 use std::sync::Arc;
 
@@ -59,7 +57,7 @@ use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
 pub use ordinator_tactical_actor::messages::TacticalRequestMessage;
 pub use ordinator_tactical_actor::messages::TacticalResponseMessage;
 pub use ordinator_tactical_actor::messages::requests::TacticalStatusMessage;
-use ordinator_total_data_processing::excel_dumps::create_excel_dump;
+// use ordinator_total_data_processing::excel_dumps::create_excel_dump;
 use serde::Deserialize;
 use serde::Serialize;
 use tokio::task::JoinHandle;
@@ -222,7 +220,8 @@ where
                         format!("{work_order_number:?} is not part of the SchedulingEnvironment")
                     })?;
 
-                let asset = &work_order.work_order_info.functional_location.asset;
+                let asset = &work_order.functional_location().asset;
+                let _work_order_view = work_order.view();
 
                 let _api_solution = match self.system_solutions.lock().unwrap().get(asset) {
                     Some(arc_swap_shared_solution) => (arc_swap_shared_solution).load(),
@@ -244,7 +243,7 @@ where
                 let _work_orders: Vec<_> = cloned_work_orders
                     .inner
                     .iter()
-                    .filter(|wo| wo.1.work_order_info.functional_location.asset == asset)
+                    .filter(|wo| wo.1.functional_location().asset == asset)
                     .collect();
 
                 let _loaded_shared_solution =
@@ -915,7 +914,7 @@ impl<Ss> Orchestrator<Ss>
 where
     Ss: SystemSolutions,
 {
-    pub fn export_xlsx_solution(&self, asset: Asset) -> Result<(Vec<u8>, String)>
+    pub fn export_xlsx_solution(&self, _asset: Asset) -> Result<(Vec<u8>, String)>
     {
         // let system_solution = self
         //     .system_solutions
@@ -933,32 +932,34 @@ where
         // system_solution.strategic().all_scheduled_tasks();
         // let tactical_agent_solution =
         // system_solution.tactical().all_scheduled_tasks();
-        let work_orders = {
+        let _work_orders = {
             let scheduling_environment_lock = self.scheduling_environment.lock().unwrap();
             scheduling_environment_lock.work_orders.clone()
         };
 
-        let xlsx_filename = create_excel_dump(
-            asset.clone(),
-            work_orders,
-            self.system_solutions
-                .lock()
-                .unwrap()
-                .get(&asset)
-                .with_context(|| {
-                    format!("You should start up a Scheduling System for Asset {asset}")
-                })?
-                .load(),
-        )
-        .unwrap();
-        let mut buffer = Vec::new();
-        let mut file = File::open(&xlsx_filename).unwrap();
-        file.read_to_end(&mut buffer).unwrap();
-        std::fs::remove_file(xlsx_filename).expect("The XLSX file could not be deleted");
-        let filename = format!("ordinator_xlsx_dump_for_{asset}");
-        let http_header = format!("attachment; filename={filename}");
+        // ISSUE #000 [ ] - introduce the `create_excel_dump` in the system.
+        // let xlsx_filename = create_excel_dump(
+        //     asset.clone(),
+        //     work_orders,
+        //     self.system_solutions
+        //         .lock()
+        //         .unwrap()
+        //         .get(&asset)
+        //         .with_context(|| {
+        //             format!("You should start up a Scheduling System for Asset
+        // {asset}")         })?
+        //         .load(),
+        // )
+        // .unwrap();
+        // let mut buffer = Vec::new();
+        // let mut file = File::open(&xlsx_filename).unwrap();
+        // file.read_to_end(&mut buffer).unwrap();
+        // std::fs::remove_file(xlsx_filename).expect("The XLSX file could not be
+        // deleted"); let filename = format!("ordinator_xlsx_dump_for_{asset}");
+        // let http_header = format!("attachment; filename={filename}");
 
-        Ok((buffer, http_header))
+        // Ok((buffer, http_header))
+        Err(anyhow!("REIMPLEMENT THE EXCEL EXPORT FUNCTION"))
     }
 }
 

@@ -6,9 +6,9 @@ use anyhow::Result;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use serde::Serialize;
+use tracing::Level;
 use tracing::event;
 use tracing::info;
-use tracing::Level;
 
 pub type ActorLinkToSchedulingEnvironment<'a> = MutexGuard<'a, SchedulingEnvironment>;
 
@@ -75,13 +75,12 @@ pub trait ActorBasedLargeNeighborhoodSearch
             ObjectiveValueType::Better(objective_value) => {
                 info!(target: "research", objective_value = ?objective_value);
                 self.algorithm_util_methods()
-                    .update_objective_value(objective_value);
+                    .update_objective(objective_value);
                 self.make_atomic_pointer_swap();
             }
             ObjectiveValueType::Worse => self
                 .algorithm_util_methods()
-                .swap_solution(current_solution),
-
+                .swap_to_old_solution(current_solution),
             ObjectiveValueType::Force => todo!(),
         }
         Ok(())
@@ -104,9 +103,7 @@ pub trait ActorBasedLargeNeighborhoodSearch
     fn calculate_objective_value(
         &mut self,
     ) -> Result<
-        ObjectiveValueType<
-            <<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::ObjectiveValue,
-        >,
+        ObjectiveValueType<<<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective>,
     >;
 
     fn schedule(&mut self) -> Result<()>;
@@ -152,12 +149,9 @@ pub trait AbLNSUtils
 
     // You made the SolutionType to fix this issue. Now you are diviating
     // from it again. I think that this is the best approach
-    fn update_objective_value(
-        &mut self,
-        objective_value: <Self::SolutionType as Solution>::ObjectiveValue,
-    );
+    fn update_objective(&mut self, objective_value: <Self::SolutionType as Solution>::Objective);
 
-    fn swap_solution(&mut self, solution: Self::SolutionType);
+    fn swap_to_old_solution(&mut self, solution: Self::SolutionType);
 }
 
 #[derive(Debug)]

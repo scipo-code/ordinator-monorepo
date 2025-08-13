@@ -339,7 +339,7 @@ fn determine_forced_tactical_assignment(
                         current_day = operation_day_work
                             .iter()
                             .flatten()
-                            .nth(0)
+                            .next()
                             .map(|e| e.0.clone());
                     } else {
                         operation_index += 1;
@@ -501,9 +501,7 @@ where
     fn calculate_objective_value(
         &mut self,
     ) -> Result<
-        ObjectiveValueType<
-            <<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::ObjectiveValue,
-        >,
+        ObjectiveValueType<<<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective>,
     >
     {
         let options = &self.parameters.tactical_options;
@@ -1104,7 +1102,6 @@ pub mod tests
     {
         let day_1 = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
         let day_2 = Day::new(4, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
-        let day_3 = Day::new(5, NaiveDate::from_ymd_opt(2025, 1, 3).unwrap());
 
         let scheduled_days = vec![
             (Some(day_1.clone()), Work::from(8.0), Work::from(6.0), 1),
@@ -1125,10 +1122,8 @@ pub mod tests
     #[test]
     fn test_determine_forced_assignment_4()
     {
-        let day_0 = Day::new(0, NaiveDate::from_ymd_opt(2024, 12, 31).unwrap());
         let day_1 = Day::new(1, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
         let day_2 = Day::new(2, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
-        let day_3 = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 3).unwrap());
 
         let scheduled_days = vec![
             (None, Work::from(6.0), Work::from(6.0), 1),
@@ -1153,7 +1148,6 @@ pub mod tests
         let day_0 = Day::new(0, NaiveDate::from_ymd_opt(2024, 12, 31).unwrap());
         let day_1 = Day::new(1, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
         let day_2 = Day::new(2, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
-        let day_3 = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 3).unwrap());
 
         let scheduled_days = vec![
             (None, Work::from(12.0), Work::from(6.0), 1),

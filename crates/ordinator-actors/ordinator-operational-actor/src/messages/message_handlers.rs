@@ -1,21 +1,22 @@
 use std::fmt::Debug;
 
+use anyhow::Context;
 use anyhow::Result;
 use ordinator_actor_core::Actor;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SupervisorInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use tracing::event;
 use tracing::Level;
+use tracing::event;
 
-use super::requests::OperationalSchedulingRequest;
-use super::responses::OperationalResponseStatus;
 use super::OperationalRequestMessage;
 use super::OperationalResponseMessage;
+use super::requests::OperationalSchedulingRequest;
+use super::responses::OperationalResponseStatus;
+use crate::algorithm::OperationalAlgorithm;
 use crate::algorithm::operational_parameter::OperationalParameter;
 use crate::algorithm::operational_solution::OperationalSolution;
-use crate::algorithm::OperationalAlgorithm;
 // Was this actually needed? I am not really sure here I believe that
 // the best approach is to make something.
 impl<Ss> CommandHandler<OperationalRequestMessage, OperationalResponseMessage>
@@ -45,10 +46,14 @@ where
                         .get(&work_order_number)
                         .unwrap();
 
-                    for (activity_number, operation) in work_order.operations.0.iter() {
+                    for activity_number in work_order.activity_numbers() {
                         let operational_parameter = match OperationalParameter::new(
-                            operation.operation_info.work_remaining,
-                            operation.operation_analytic.preparation_time,
+                            work_order
+                                .operation_work_remaining(activity_number)
+                                .context("operation_work_remaintin does not exist")?,
+                            work_order
+                                .operation_preparation(activity_number)
+                                .context("operation_preparation does not exist")?,
                         ) {
                             Some(operational_parameter) => operational_parameter,
                             None => continue,
@@ -57,7 +62,7 @@ where
                         self.algorithm
                             .parameters
                             .work_order_parameters
-                            .insert((work_order_number, *activity_number), operational_parameter);
+                            .insert((work_order_number, activity_number), operational_parameter);
                     }
                 }
 

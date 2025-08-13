@@ -6,12 +6,13 @@ use std::sync::Arc;
 
 use anyhow::Result;
 use arc_swap::Guard;
-use ordinator_orchestrator_actor_traits::delegate::Delegate;
-use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_orchestrator_actor_traits::OperationalInterface;
 use ordinator_orchestrator_actor_traits::Solution;
+use ordinator_orchestrator_actor_traits::SolutionState;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
+use ordinator_orchestrator_actor_traits::delegate::Delegate;
+use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::Id;
@@ -63,13 +64,13 @@ impl std::fmt::Debug for SupervisorSolution
 
 impl Solution for SupervisorSolution
 {
-    type ObjectiveValue = SupervisorObjectiveValue;
+    type Objective = SupervisorObjectiveValue;
     type Parameters = SupervisorParameters;
 
     // Here the solution should not be created based on the
     // state of the parameters but on the state in the strategic
     // actor. That is what you want to do here.
-    fn new(_parameters: &Self::Parameters) -> Result<Self>
+    fn from_parameters(_parameters: &Self::Parameters) -> Result<Self>
     {
         // The SupervisorParameters should have knowledge of the agents.
         // Does that mean that you simply have to instantiate a single
@@ -103,7 +104,7 @@ impl Solution for SupervisorSolution
         //     })
         //     .collect();
 
-        let objective_value = Self::ObjectiveValue::default();
+        let objective_value = Self::Objective::default();
 
         Ok(Self {
             objective_value,
@@ -111,7 +112,7 @@ impl Solution for SupervisorSolution
         })
     }
 
-    fn update_objective_value(&mut self, other_objective_value: Self::ObjectiveValue)
+    fn update_objective(&mut self, other_objective_value: Self::Objective)
     {
         self.objective_value = other_objective_value;
     }
@@ -121,7 +122,7 @@ impl<Ss> SwapSolution<Ss> for SupervisorSolution
 where
     Ss: SystemSolutions<Supervisor = SupervisorSolution>,
 {
-    fn swap(id: &Id, solution: Self, system_solution: &mut Ss)
+    fn swap(id: &Id, solution: SolutionState<Self>, system_solution: &mut Ss)
     {
         system_solution.supervisor_swap(id, solution);
     }
@@ -165,7 +166,7 @@ impl SupervisorSolution
     {
         self.operational_state_machine
             .iter_mut()
-            .filter(|(key, _)| key.1 .0 == work_order_number)
+            .filter(|(key, _)| key.1.0 == work_order_number)
             .for_each(|(_, delegate)| *delegate = Delegate::Assess)
     }
 
@@ -248,7 +249,7 @@ impl SupervisorSolution
             .filter(|(_, delegate)| {
                 **delegate == Delegate::Assign || **delegate == Delegate::Unassign
             })
-            .map(|(id_woa, _)| id_woa.1 .0)
+            .map(|(id_woa, _)| id_woa.1.0)
             .collect()
     }
 

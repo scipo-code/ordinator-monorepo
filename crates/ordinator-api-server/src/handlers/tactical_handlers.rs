@@ -132,12 +132,10 @@ where
         .map_err(|e: ParseError| AppError::Anyhow(e.to_string()))?;
     let mut scheduling_environment_lock = orchestrator.scheduling_environment.lock().unwrap();
 
-    let asset = Asset::try_from(_asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
-
     let materials_to_periods = &scheduling_environment_lock
         .worker_environment
         .actor_specification
-        .get(&asset)
+        .get(&_asset)
         .context("Asset not available in ActorSpecifications")
         .map_err(|e| AppError::Anyhow(e.to_string()))?
         .material_to_period

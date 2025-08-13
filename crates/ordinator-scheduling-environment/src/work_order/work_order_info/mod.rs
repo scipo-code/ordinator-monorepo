@@ -21,13 +21,13 @@ use self::work_order_type::WorkOrderType;
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct WorkOrderInfo
 {
-    pub priority: Priority,
-    pub work_order_type: WorkOrderType,
-    pub functional_location: FunctionalLocation,
-    pub work_order_text: WorkOrderText,
-    pub revision: Revision,
-    pub system_condition: SystemCondition,
-    pub work_order_info_detail: WorkOrderInfoDetail,
+    pub(crate) priority: Priority,
+    pub(crate) work_order_type: WorkOrderType,
+    pub(crate) functional_location: FunctionalLocation,
+    pub(crate) work_order_text: WorkOrderText,
+    pub(crate) revision: Revision,
+    pub(crate) system_condition: SystemCondition,
+    pub(crate) work_order_info_detail: WorkOrderInfoDetail,
 }
 
 #[derive(Default)]

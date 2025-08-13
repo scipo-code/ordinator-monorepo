@@ -63,6 +63,7 @@ pub struct WorkOrderSupervisorRow
     material: MaterialStatusDto,
     icc: Icc,
     description: Description,
+    hands_on_tool_time: f64,
     hours_worked: f64,
     hours_planned: f64,
     percentage_complete: Percentage,
@@ -72,40 +73,37 @@ impl From<(&WorkOrder, ActivityNumber, IdStringDto)> for WorkOrderSupervisorRow
 {
     fn from(value: (&WorkOrder, ActivityNumber, IdStringDto)) -> Self
     {
+        // ISSUE #999 [ ] -
+        let hands_on_tool_time = 0.0;
+        let work_order_view = value.0.view();
         let hours_worked = 0.0;
-        let hours_planned = value
-            .0
-            .operations
-            .0
-            .get(&value.1)
-            .expect("This the activity number should always be present")
-            .operation_info
-            .work_remaining
-            .to_f64();
 
-        let percentage = Percentage(hours_worked / hours_planned);
+        let hours_planned = work_order_view
+            .operations
+            .iter()
+            .find(|e| e.activity == value.1)
+            .expect("This the activity number should always be present")
+            .remaining_work;
+
+        let percentage = Percentage(hours_worked / hours_planned.to_f64());
 
         Self {
             id: value.2,
             area: None,
-            work_order_number: WorkOrderNumberDto(value.0.work_order_number.0),
+            work_order_number: WorkOrderNumberDto(value.0.work_order_number().0),
             activity_number: value.1,
             permit: None,
-            material: value.0.work_order_analytic.material().into(),
+            material: work_order_view.material_status.into(),
             icc: None,
-            description: value
-                .0
-                .work_order_info
-                .work_order_text
-                .order_description
-                .clone(),
+            description: work_order_view.description_work_order.clone(),
             // This is rather complicated. It dependes on the current state of the operational
             // Solution. You want to take the system solution and change this so that
             // the amount of work that is in the past is the hours worked. The
             // [`SystemClock`] will be crucial for the correct interpretation of this
             // value.
+            hands_on_tool_time,
             hours_worked,
-            hours_planned,
+            hours_planned: hours_planned.to_f64(),
             percentage_complete: percentage,
         }
     }
