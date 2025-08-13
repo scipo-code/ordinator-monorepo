@@ -493,14 +493,14 @@ impl<T> WhereIsWorkOrder<T>
         matches!(self, WhereIsWorkOrder::NotScheduled)
     }
 
-    pub fn is_strategic(&self) -> bool
+    pub fn strategic_forced(&self) -> bool
     {
         matches!(self, WhereIsWorkOrder::Strategic(_))
     }
 
     pub fn is_strategic_or_tactical(&self) -> bool
     {
-        self.is_tactical() || self.is_strategic()
+        self.is_tactical() || self.strategic_forced()
     }
 }
 
@@ -644,15 +644,12 @@ mod tests
             type Objective = u64;
             type Parameters = ();
 
-            fn from_parameters(parameters: &Self::Parameters) -> anyhow::Result<Self>
+            fn from_parameters(_parameters: &Self::Parameters) -> anyhow::Result<Self>
             {
                 todo!()
             }
 
-            fn update_objective(&mut self, other_objective: Self::Objective)
-            {
-                ()
-            }
+            fn update_objective(&mut self, _other_objective: Self::Objective) {}
         }
         let mut solution = SolutionState::new(TestSolution);
 

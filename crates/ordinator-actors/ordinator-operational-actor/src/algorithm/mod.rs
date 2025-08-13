@@ -326,9 +326,7 @@ where
     fn calculate_objective_value(
         &mut self,
     ) -> Result<
-        ObjectiveValueType<
-            <<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective,
-        >,
+        ObjectiveValueType<<<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective>,
     >
     {
         let operational_events: Vec<Assignment> = self
@@ -836,6 +834,11 @@ where
     fn algorithm_util_methods(&mut self) -> &mut Self::Algorithm
     {
         &mut self.0
+    }
+
+    fn force_schedule(&mut self) -> Result<()>
+    {
+        todo!()
     }
 }
 

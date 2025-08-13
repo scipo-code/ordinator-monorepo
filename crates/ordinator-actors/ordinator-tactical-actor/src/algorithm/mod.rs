@@ -238,7 +238,10 @@ where
         total_loading.to_f64() / total_capacity.to_f64()
     }
 
-    fn force_schedule(&mut self, forced_operations: Vec<WorkOrderNumber>) -> Result<()>
+    fn force_schedule_tactical_work_orders(
+        &mut self,
+        forced_operations: Vec<WorkOrderNumber>,
+    ) -> Result<()>
     where
         Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
             AbLNSUtils<SolutionType = TacticalSolution>,
@@ -280,8 +283,10 @@ where
     }
 }
 
+// Essay should you fix this now? Or make a new endpoint? 
 // TODO [ ] - add different resources between operation specific logic
 // TODO [ ] - add number_of_people logic
+#[allow(unused_assignments)]
 fn determine_forced_tactical_assignment(
     scheduled_days: &[(Option<Day>, Work, Work, u64)],
 ) -> Vec<VecDeque<(Day, Work)>>
@@ -318,7 +323,7 @@ fn determine_forced_tactical_assignment(
         );
 
         match &current_day {
-            Some(start_day) => {
+            Some(_start_day) => {
                 let work =
                     work_in_operation[operation_index].min(operational_schedule_information.2);
 
@@ -459,15 +464,6 @@ where
         // part of the solution.
         // }
         //
-        let forced_operations = self
-            .parameters
-            .tactical_work_orders
-            .iter()
-            // TODO FIX [ ] - make method that checks for every
-            // .filter(|e| e.1.is_fixed())
-            .map(|e| e.0)
-            .cloned()
-            .collect::<Vec<_>>();
 
         // ISSUE #000 - make a method for force scheduling in the
         // ActorBasedLargeNeighborhoodSearch.
@@ -477,6 +473,9 @@ where
         // for operation in forced_operations {
         //     self.force_schedule(forced_operations);
         // }
+        //
+        self.force_schedule()
+            .context("Could not force schedule tactical solutions")?;
 
         Ok(true)
     }
@@ -835,6 +834,24 @@ where
     {
         &mut self.0
     }
+
+    fn force_schedule(&mut self) -> Result<()>
+    {
+        let forced_work_orders: Vec<_> = self
+            .parameters
+            .tactical_work_orders
+            .iter()
+            .filter(|e| {
+                e.1.tactical_operation_parameters
+                    .iter()
+                    .any(|e| e.1.forced_start_date.is_some())
+            })
+            .map(|e| e.0)
+            .cloned()
+            .collect();
+
+        self.force_schedule_tactical_work_orders(forced_work_orders)
+    }
 }
 
 enum LoopState
@@ -1167,6 +1184,35 @@ pub mod tests
                 (day_2.clone(), Work::from(2.0))
             ],
             vec![(day_2.clone(), Work::from(4.0))]
+        ])
+    }
+    #[test]
+    fn test_determine_forced_assignment_6()
+    {
+        let day_0 = Day::new(0, NaiveDate::from_ymd_opt(2024, 12, 30).unwrap());
+        let day_1 = Day::new(1, NaiveDate::from_ymd_opt(2024, 12, 31).unwrap());
+        let day_2 = Day::new(2, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
+        let day_3 = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
+
+        let scheduled_days = vec![
+            (None, Work::from(18.0), Work::from(6.0), 1),
+            (Some(day_1.clone()), Work::from(8.0), Work::from(6.0), 1),
+            (Some(day_2.clone()), Work::from(4.0), Work::from(6.0), 1),
+        ];
+        // TODO [ ] - Add the Date
+        let value = determine_forced_tactical_assignment(&scheduled_days);
+
+        assert_eq!(value, vec![
+            vec![
+                (day_0.clone(), Work::from(6.0)),
+                (day_1.clone(), Work::from(6.0)),
+                (day_2.clone(), Work::from(6.0)),
+            ],
+            vec![
+                (day_2.clone(), Work::from(6.0)),
+                (day_3.clone(), Work::from(2.0))
+            ],
+            vec![(day_3.clone(), Work::from(4.0))]
         ])
     }
 }

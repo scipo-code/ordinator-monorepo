@@ -108,6 +108,8 @@ pub trait ActorBasedLargeNeighborhoodSearch
 
     fn schedule(&mut self) -> Result<()>;
 
+    fn force_schedule(&mut self) -> Result<()>;
+
     fn unschedule(&mut self) -> Result<()>;
 
     /// This method is for updating the algorithm based on external inputs and

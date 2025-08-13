@@ -299,7 +299,7 @@ impl SchedulingEnvironmentBuilder
             .take()
             .expect("ActorEnvironment should always be available.");
 
-        let material_to_period = &worker_environment
+        let _material_to_period = &worker_environment
             .actor_specification
             .iter()
             .nth(0)
@@ -307,18 +307,18 @@ impl SchedulingEnvironmentBuilder
             .1
             .material_to_period;
 
-        for (work_order_number, work_order) in &work_orders.inner {
+        for work_order_number in work_orders.inner.keys() {
             // This methods is created in exactly the same way here.
             // The fundamental issue is that you do not understand the business logic here.
 
-            //
-            let forced_work_order = work_order
-                .forced_work_order(
-                    &time_environment.periods,
-                    &time_environment.days,
-                    material_to_period,
-                )
-                .unwrap();
+            // ISSUE #002 - make the [`AssignmentRepo`]
+            // let forced_work_order = work_order
+            //     .forced_work_order(
+            //         &time_environment.periods,
+            //         &time_environment.days,
+            //         material_to_period,
+            //     )
+            //     .unwrap();
 
             // We want to make the `ForcedWorkOrder` and turn it into the other aggregate!
             // Yes that is the approach forward. o
