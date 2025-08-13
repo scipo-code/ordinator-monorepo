@@ -1,3 +1,4 @@
+import { CreateTechnicianDto } from "../types/CreateTechnicianDto.ts";
 import { NaiveDateDto } from "../types/NaiveDateDto.ts";
 import { SupervisorAllAvailableTechnicians } from "../types/SupervisorAllAvailableTechnicians.ts";
 import { SupervisorMainTableDto } from "../types/SupervisorMainTableDto.ts";
@@ -41,4 +42,27 @@ export async function fetchTechnicianAvailability(
   }
 
   return (await res.json()) as SupervisorAllAvailableTechnicians;
+}
+
+export async function addTechnician(
+  asset: string,
+  supervisor_id: string,
+  technician: CreateTechnicianDto,
+): Promise<string> {
+  const url = `/api/v1/supervisor/add_technician/${encodeURIComponent(asset)}` +
+    `/${encodeURIComponent(supervisor_id)}`;
+
+  const reqOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(technician),
+  };
+
+  const res = await fetch(url, reqOptions);
+
+  if (!res.ok) {
+    throw new Error(await res.text());
+  }
+
+  return res.text();
 }
