@@ -39,19 +39,19 @@ export default function ResourceView() {
   const supervisorId = "main";
   const { data: availableTechnicians, isLoading: isTechniciansLoading } = useTechnicianAvailability(asset || "", supervisorId);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
-  const [selectedWorkCenters, setSelectedWorkCenters] = useState<string[]>([]);
+  const [selectedResources, setSelectedResources] = useState<string[]>([]);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
 
   const workCenters = availableTechnicians ? [...new Set(availableTechnicians.all_technicians.flatMap(tech => tech.resources) || [])] : [];
 
   useEffect(() => {
-    if (workCenters.length > 0 && selectedWorkCenters.length === 0 && !hasUserInteracted) {
-      setSelectedWorkCenters([workCenters[0]]);
+    if (workCenters.length > 0 && selectedResources.length === 0 && !hasUserInteracted) {
+      setSelectedResources([workCenters[0]]);
     }
-  }, [selectedWorkCenters.length, workCenters, hasUserInteracted]);
+  }, [selectedResources.length, workCenters, hasUserInteracted]);
 
   const toggleWorkCenter = (workCenter: string) => {
-    setSelectedWorkCenters(prev =>
+    setSelectedResources(prev =>
       prev.includes(workCenter)
         ? prev.filter(wc => wc !== workCenter)
         : [...prev, workCenter]
@@ -60,7 +60,7 @@ export default function ResourceView() {
 
   const clearSelection = () =>  {
     setHasUserInteracted(true);
-    setSelectedWorkCenters([]);
+    setSelectedResources([]);
   }
 
   if (!asset) return <div>Asset not found</div>;
@@ -100,11 +100,11 @@ export default function ResourceView() {
 
       <div className="flex flex-1 min-h-0 gap-2 overflow-hidden">
         <div className="flex-1 min-h-0">
-        {selectedWorkCenters ? (
+        {selectedResources ? (
             <GanttView
-              technicians={availableTechnicians.all_technicians.filter(tech => tech.resources.some(resource => selectedWorkCenters.includes(resource)))}
+              technicians={availableTechnicians.all_technicians.filter(tech => tech.resources.some(resource => selectedResources.includes(resource)))}
               weekDays={weekDays}
-              workCenters={selectedWorkCenters}
+              workCenters={selectedResources}
             /> ) : (
             <div className="flex-1 flex items-center justify-center text-gray-500">
               Please select a work center to view technicians
@@ -114,7 +114,7 @@ export default function ResourceView() {
         </div>
         <div className="w-60">
           <WorkCenterSidebar workCenters={workCenters}
-            selectedWorkCenters={selectedWorkCenters}
+            selectedWorkCenters={selectedResources}
             onToggle={toggleWorkCenter}
             onClear={clearSelection}
             technicians={availableTechnicians}
