@@ -6,10 +6,12 @@ import { Toaster } from "@/components/ui/sonner";
 export default function Layout() {
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <main className="flex flex-col h-screen">
-        <Outlet />          {/* ← WorkOrders or Resources appears here */}
-      </main>
+      <div className="flex h-screen w-full">
+        <AppSidebar />
+        <main className="flex flex-col flex-1">
+          <Outlet />          {/* ← WorkOrders or Resources appears here */}
+        </main>
+      </div>
       <Toaster />
     </SidebarProvider>
   );
