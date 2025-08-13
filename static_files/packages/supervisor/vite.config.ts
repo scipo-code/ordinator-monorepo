@@ -11,12 +11,12 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    // checker({
-    //   typescript: {
-    //     tsconfigPath: "./tsconfig.json",
-    //     buildMode: true,
-    //   },
-    // }),
+    checker({
+      typescript: {
+        tsconfigPath: "./tsconfig.json",
+        buildMode: true,
+      },
+    }),
     viteStaticCopy({
       targets: [
         {
