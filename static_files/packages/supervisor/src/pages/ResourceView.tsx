@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils"
 import {
   Command,
@@ -25,6 +26,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 
 export default function ResourceView() {
@@ -79,7 +82,7 @@ export default function ResourceView() {
   const canGoNextPeriod = currentDayIndex + 7 < (days.length || 0);
 
   return (
-    <div className="p-4 flex flex-col flex-1 min-h-0 overflow-hidden">
+    <div className="p-4 flex flex-col flex-1 min-h-0 border ">
       <div className="flex items-center justify-between mb-4 shrink-0">
         <h2 className="text-2xl font-bold">Resource Availability</h2>
         <div className="flex items-center gap-2">
@@ -95,7 +98,7 @@ export default function ResourceView() {
         </div>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex flex-1 min-h-0 gap-2 overflow-hidden">
         <div className="flex-1 min-h-0">
         {selectedWorkCenters ? (
             <GanttView
@@ -109,7 +112,7 @@ export default function ResourceView() {
             )
           }
         </div>
-        <div className="w-60 flex-shrink-0">
+        <div className="w-60">
           <WorkCenterSidebar workCenters={workCenters}
             selectedWorkCenters={selectedWorkCenters}
             onToggle={toggleWorkCenter}
@@ -135,7 +138,8 @@ function WorkCenterSidebar({ workCenters, selectedWorkCenters, onToggle, onClear
         <CardTitle>Select Work Centers</CardTitle>
         <Button variant="outline" size="sm" disabled={selectedWorkCenters.length === 0 ? true : false} onClick={onClear}>Clear Selection</Button>
       </CardHeader>
-      <CardContent className="flex flex-col gap-2">
+      <CardContent className="flex flex-col gap-2 h-[420px]">
+        <ScrollArea className="flex-1">
         {workCenters.map(wc => (
           <div
             role="button"
@@ -149,6 +153,7 @@ function WorkCenterSidebar({ workCenters, selectedWorkCenters, onToggle, onClear
             <Badge>{technicians.all_technicians.filter(tech => tech.resources.includes(wc)).length}</Badge>
           </div>
         ))}
+        </ScrollArea>
       </CardContent>
     </Card>
   )
@@ -163,7 +168,7 @@ interface GanttViewProps {
 
 function GanttView({ technicians, weekDays, workCenters }: GanttViewProps) {
   return (
-    <Card className="flex-1 min-h-0 flex flex-col">
+    <Card className="flex-1 min-h-0 flex flex-col h-full">
       <CardHeader className="shrink-0">
         <div className="flex items-center justify-between">
         <CardTitle className="text-lg">
@@ -172,7 +177,7 @@ function GanttView({ technicians, weekDays, workCenters }: GanttViewProps) {
          <AddTechnicianDialog/>
         </div>
       </CardHeader>
-      <CardContent className="flex-1 min-h-0 overflow-auto">
+      <CardContent className="flex-1 min-h-0 overflow-auto p-4">
         <div>
           {/* Day headers */}
           <div className="grid grid-cols-15 gap-1 mb-2 sticky top-0 bg-white z-10">
@@ -254,7 +259,10 @@ const formTechnicianSchema = z.object({
 function AddTechnicianDialog() {
   const { asset } = useParams();
   const { data: resources } = useResources();
-  const [selectedResources, setSelectedResources ] = useState<string[]>([]);
+  const [ _selectedResources, setSelectedResources ] = useState<string[]>([]);
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
+
 
   const form = useForm<z.infer<typeof formTechnicianSchema>>({
     resolver: zodResolver(formTechnicianSchema),
@@ -271,20 +279,17 @@ function AddTechnicianDialog() {
     try {
       await addTechnician(asset!, "main", values);
       form.reset();
+      toast(`Technician, ${values.id}, has been added.`);
       setSelectedResources([])
+      setOpen(false);
+
+      queryClient.invalidateQueries({queryKey: ["technicianAvailability"]});
     } catch (error) {
-      console.log("Failed to add technician:", error);
+      toast(`Failed to add technician: ${error}`);
     }
   };
 
   
-  const toggleResources = (resource: string) => {
-    setSelectedResources(prev =>
-      prev.includes(resource)
-      ? prev.filter(res => res !== resource)
-      : [...prev, resource]
-  );
-  }
 
   if (resources?.length === 0 || !resources) {
     return (
@@ -294,7 +299,7 @@ function AddTechnicianDialog() {
 
   
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">Add Technician</Button>
       </DialogTrigger>
@@ -391,13 +396,6 @@ function AddTechnicianDialog() {
     </Dialog>
   )
 }
-          // <Label htmlFor="technician-id-1">Technician ID</Label>
-          // <Input id="technician-id-1" name="technician-id" defaultValue="ID" />
-          // <Calendar24 label="Start Date" />
-          // <Calendar24 label="Finish Date" />
-          // <Label htmlFor="">Resources</Label>
-          // <ResourcesCombobox resources={resources} selectedResources={selectedResources} onSelect={toggleResources} />
-          // <AddedResources selectedResources={selectedResources} onToggle={toggleResources} />
 
 function ResourcesCombobox({resources, selectedResources, onSelect}: {resources: string[], selectedResources: string[], onSelect: (value: string) => void}) {
   const [open, setOpen] = useState(false)
@@ -451,10 +449,10 @@ function AddedResources({selectedResources, onToggle}: {selectedResources: strin
   return (
     <div className="p-2 flex flex-wrap gap-2 overflow-auto rounded-md border max-h-[200px] min-h-[40px]">
       {selectedResources.map(r => (
-        <div className="gap-2">
-          <Badge key={r} variant="secondary" className="gap-2 mb-1" key={r} onClick={() => onToggle(r)}>
+        <div key={r} className="gap-2">
+          <Badge variant="secondary" className="gap-2 mb-1" key={r} onClick={() => onToggle(r)}>
             <p>{r}</p>
-            <Button key={r} variant="ghost" size="sm">
+            <Button variant="ghost" size="sm">
               <X className="h-3 w-3" />
             </Button>
           </Badge>
