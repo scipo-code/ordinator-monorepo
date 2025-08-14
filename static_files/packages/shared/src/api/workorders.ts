@@ -1,3 +1,4 @@
+import { apiConfig } from "./config.ts";
 import { PeriodDto } from "../types/PeriodDto.ts";
 import type { WorkOrderInfoWithSchedulingDto } from "../types/WorkOrderInfoWithSchedulingDto.ts";
 import type { SchedulingData } from "../types/SchedulingData.ts";
@@ -12,7 +13,8 @@ export async function fetchWorkOrders(
     periods.forEach((p) => params.append("periods", p));
   }
 
-  const url = `/api/v1/scheduler/work_orders_with_scheduling/${asset}?`;
+  const url =
+    `${apiConfig.baseUrl}/api/v1/scheduler/work_orders_with_scheduling/${asset}?`;
   const res = await fetch(
     url + params.toString(),
   );
@@ -27,12 +29,13 @@ export async function fetchWorkOrders(
   return (await res.json()) as SchedulingData[];
 }
 
-export async function assignWorkordertoPeriod(
+export async function assignWorkOrderToPeriod(
   asset: string,
   workorder: string,
   period: PeriodDto,
 ): Promise<string> {
-  const url = `/api/v1/scheduler/${encodeURIComponent(asset)}` +
+  const url =
+    `${apiConfig.baseUrl}/api/v1/scheduler/${encodeURIComponent(asset)}` +
     `/assign_work_order_to_period/${encodeURIComponent(workorder)}`;
 
   const reqOptions = {
@@ -55,7 +58,7 @@ export async function fetchWorkorderInfo(
   work_order_number: string,
 ): Promise<WorkOrderInfoWithSchedulingDto> {
   const res = await fetch(
-    `/api/v1/scheduler/work_orders_with_scheduling/${asset}/${work_order_number}`,
+    `${apiConfig.baseUrl}/api/v1/scheduler/work_orders_with_scheduling/${asset}/${work_order_number}`,
   );
 
   if (!res.ok) {

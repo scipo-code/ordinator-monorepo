@@ -1,8 +1,9 @@
+import { apiConfig } from "./config.ts";
 import { PeriodDto } from "../types/PeriodDto.ts";
 
 export async function fetchPeriods(): Promise<PeriodDto[]> {
   const res = await fetch(
-    "/api/v1/periods",
+    `${apiConfig.baseUrl}/api/v1/periods`,
   );
 
   if (!res.ok) {

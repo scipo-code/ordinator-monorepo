@@ -1,3 +1,4 @@
+import { apiConfig } from "./config.ts";
 import { CreateTechnicianDto } from "../types/CreateTechnicianDto.ts";
 import { NaiveDateDto } from "../types/NaiveDateDto.ts";
 import { SupervisorAllAvailableTechnicians } from "../types/SupervisorAllAvailableTechnicians.ts";
@@ -15,7 +16,7 @@ export async function fetchMainTable(
   }
 
   const url =
-    `/api/v1/supervisor/supervisor_main_table/${asset}/${supervisor_id}?`;
+    `${apiConfig.baseUrl}/api/v1/supervisor/supervisor_main_table/${asset}/${supervisor_id}?`;
   const res = await fetch(
     url + params.toString(),
   );
@@ -33,7 +34,7 @@ export async function fetchTechnicianAvailability(
   supervisor_id: string,
 ): Promise<SupervisorAllAvailableTechnicians> {
   const url =
-    `/api/v1/supervisor/technician_availability/${asset}/${supervisor_id}`;
+    `${apiConfig.baseUrl}/api/v1/supervisor/technician_availability/${asset}/${supervisor_id}`;
   const res = await fetch(url);
 
   if (!res.ok) {
@@ -49,7 +50,10 @@ export async function addTechnician(
   supervisor_id: string,
   technician: CreateTechnicianDto,
 ): Promise<string> {
-  const url = `/api/v1/supervisor/add_technician/${encodeURIComponent(asset)}` +
+  const url =
+    `${apiConfig.baseUrl}/api/v1/supervisor/add_technician/${
+      encodeURIComponent(asset)
+    }` +
     `/${encodeURIComponent(supervisor_id)}`;
 
   const reqOptions = {
