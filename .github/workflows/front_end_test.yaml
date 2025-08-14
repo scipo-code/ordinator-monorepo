@@ -25,7 +25,7 @@ jobs:
       - name: Install frontend dependencies
         run: cd static_files/packages/shared/ && pnpm install
       - name: Start backend server
-        run: cargo test test_complete_system -- --ignored --nocapture &
+        run: cp .env.example .env && cargo test test_complete_system -- --ignored --nocapture &
         env:
           BACKGROUND: true
       - name: Wait for server to be ready
