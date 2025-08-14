@@ -10,6 +10,7 @@
     "npm:@radix-ui/react-label@^2.1.2": "2.1.7_@types+react@19.1.9_@types+react-dom@19.1.7__@types+react@19.1.9_react@19.1.1_react-dom@19.1.1__react@19.1.1",
     "npm:@radix-ui/react-label@^2.1.7": "2.1.7_@types+react@19.1.9_@types+react-dom@19.1.7__@types+react@19.1.9_react@19.1.1_react-dom@19.1.1__react@19.1.1",
     "npm:@radix-ui/react-popover@^1.1.14": "1.1.14_@types+react@19.1.9_@types+react-dom@19.1.7__@types+react@19.1.9_react@19.1.1_react-dom@19.1.1__react@19.1.1",
+    "npm:@radix-ui/react-scroll-area@^1.2.9": "1.2.9_@types+react@19.1.9_@types+react-dom@19.1.7__@types+react@19.1.9_react@19.1.1_react-dom@19.1.1__react@19.1.1",
     "npm:@radix-ui/react-select@^2.1.6": "2.2.5_@types+react@19.1.9_@types+react-dom@19.1.7__@types+react@19.1.9_react@19.1.1_react-dom@19.1.1__react@19.1.1",
     "npm:@radix-ui/react-separator@^1.1.2": "1.1.7_@types+react@19.1.9_@types+react-dom@19.1.7__@types+react@19.1.9_react@19.1.1_react-dom@19.1.1__react@19.1.1",
     "npm:@radix-ui/react-slot@^1.2.3": "1.2.3_@types+react@19.1.9_react@19.1.1",
@@ -39,6 +40,7 @@
     "npm:globals@16": "16.3.0",
     "npm:lucide-react@0.475": "0.475.0_react@19.1.1",
     "npm:msw@^2.7.3": "2.10.4_typescript@5.9.2_@types+node@22.17.0",
+    "npm:next-themes@~0.4.6": "0.4.6_react@19.1.1_react-dom@19.1.1__react@19.1.1",
     "npm:postcss@^8.5.3": "8.5.6",
     "npm:react-day-picker@^9.8.1": "9.8.1_react@19.1.1",
     "npm:react-dom@19": "19.1.1_react@19.1.1",
@@ -46,6 +48,7 @@
     "npm:react-router-dom@^7.6.1": "7.8.0_react@19.1.1_react-dom@19.1.1__react@19.1.1",
     "npm:react@19": "19.1.1",
     "npm:recharts@^2.15.1": "2.15.4_react@19.1.1_react-dom@19.1.1__react@19.1.1",
+    "npm:sonner@^2.0.7": "2.0.7_react@19.1.1_react-dom@19.1.1__react@19.1.1",
     "npm:tailwind-merge@^3.0.1": "3.3.1",
     "npm:tailwindcss-animate@^1.0.7": "1.0.7_tailwindcss@4.1.11",
     "npm:tailwindcss@^4.1.8": "4.1.11",
@@ -1060,6 +1063,28 @@
         "@radix-ui/react-primitive",
         "@radix-ui/react-use-callback-ref",
         "@radix-ui/react-use-controllable-state",
+        "@types/react",
+        "@types/react-dom",
+        "react",
+        "react-dom"
+      ],
+      "optionalPeers": [
+        "@types/react",
+        "@types/react-dom"
+      ]
+    },
+    "@radix-ui/react-scroll-area@1.2.9_@types+react@19.1.9_@types+react-dom@19.1.7__@types+react@19.1.9_react@19.1.1_react-dom@19.1.1__react@19.1.1": {
+      "integrity": "sha512-YSjEfBXnhUELsO2VzjdtYYD4CfQjvao+lhhrX5XsHD7/cyUNzljF1FHEbgTPN7LH2MClfwRMIsYlqTYpKTTe2A==",
+      "dependencies": [
+        "@radix-ui/number",
+        "@radix-ui/primitive",
+        "@radix-ui/react-compose-refs",
+        "@radix-ui/react-context",
+        "@radix-ui/react-direction",
+        "@radix-ui/react-presence",
+        "@radix-ui/react-primitive",
+        "@radix-ui/react-use-callback-ref",
+        "@radix-ui/react-use-layout-effect",
         "@types/react",
         "@types/react-dom",
         "react",
@@ -2848,6 +2873,13 @@
     "natural-compare@1.4.0": {
       "integrity": "sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw=="
     },
+    "next-themes@0.4.6_react@19.1.1_react-dom@19.1.1__react@19.1.1": {
+      "integrity": "sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==",
+      "dependencies": [
+        "react",
+        "react-dom"
+      ]
+    },
     "node-releases@2.0.19": {
       "integrity": "sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw=="
     },
@@ -3225,6 +3257,13 @@
         "chalk@2.4.2",
         "figures",
         "pkg-conf"
+      ]
+    },
+    "sonner@2.0.7_react@19.1.1_react-dom@19.1.1__react@19.1.1": {
+      "integrity": "sha512-W6ZN4p58k8aDKA4XPcx2hpIQXBRAgyiWVkYhT7CvK6D3iAu7xjvVyhQHg2/iaKJZ1XVJ4r7XuwGL+WGEK37i9w==",
+      "dependencies": [
+        "react",
+        "react-dom"
       ]
     },
     "source-map-js@1.2.1": {
@@ -3610,6 +3649,8 @@
             "npm:@radix-ui/react-popover@^1.1.14",
             "npm:ag-charts-react@^11.3.2",
             "npm:cmdk@^1.1.1",
+            "npm:next-themes@~0.4.6",
+            "npm:sonner@^2.0.7",
             "npm:vite-plugin-checker@~0.9.3"
           ]
         }

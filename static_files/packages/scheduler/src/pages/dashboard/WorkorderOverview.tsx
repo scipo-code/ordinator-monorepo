@@ -11,6 +11,7 @@ import { PeriodDto } from "@scipo-code/shared";
 import { PeriodAssignment } from "@/components/PeriodAssignment";
 import { useCallback } from "react";
 import { TacticalDayAssignment } from "@/components/TacticalDayAssignment";
+import { toast } from "sonner";
 
 
 function WorkorderCard({
@@ -152,10 +153,11 @@ export default function WorkorderOverview() {
       queryClient.invalidateQueries({
         queryKey: ['workorderInfo', {workorder, asset}]
       });
+      toast("Period Assigned Succesfully");
     },
 
     onError: (error: Error) => {
-      console.error("Failed to assign period: ", error);
+      toast.error(`Failed to assign period: ${error}`);
     },
   });
 
@@ -186,6 +188,7 @@ export default function WorkorderOverview() {
     )
     
   }
+
   
   return (
     <div className="px-4 py-4">
@@ -196,21 +199,6 @@ export default function WorkorderOverview() {
          onAssignPeriod={handleAssignPeriod}
          isAssigning={assignMutation.isPending}
       />
-
-      {assignMutation.error && (
-        <div className="max-w-4xl mt-4 p-4 bg-red-50 border border-red-200 rounded">
-          <p className="text-red-800">
-            Failed to assign period: {assignMutation.error.message}
-          </p>
-        </div>
-      )}
-
-
-      {assignMutation.isSuccess && (
-        <div className="max-w-4xl mt-4 p-4 bg-green-50 border border-green-200 rounded">
-          <p className="text-green-800">Period assigned successfully!</p>
-        </div>
-      )}
     </div>
 
   )}
