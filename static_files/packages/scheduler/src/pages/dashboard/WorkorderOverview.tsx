@@ -38,11 +38,16 @@ function WorkorderCard({
           {renderFlag("SCH", wo.sch)}
           {renderFlag("AWSC", wo.awsc)}
           {renderFlag("Vendor", wo.vendor)}
+          {renderFlag("SECE", wo.sece)}
         </CardTitle>
         <CardDescription>
           <div className="flex flex-col space-y-0.5">
             <span>Main Workcenter: {wo.main_work_center}</span>
             <span>Functional Location: {wo.functional_location}</span>
+            <span>Basic Start Date: {wo.basic_start_date}</span>
+            <span>Basic Finish Date: {wo.basic_finish_date}</span>
+            <span>EASD - LAFD: {wo.earliest_allowed_start_date} - {wo.latest_allowed_finish_date}</span>
+            <span>Priority: {wo.priority}</span>
           </div>
         </CardDescription>
       </CardHeader>
@@ -56,7 +61,7 @@ function WorkorderCard({
               <TableHead>Work Center</TableHead>
               <TableHead>Number of People</TableHead>
               <TableHead>Unloading Point Period</TableHead>
-              <TableHead>Unloading Point Code</TableHead>
+              <TableHead>Scheduled Start</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -66,8 +71,8 @@ function WorkorderCard({
                   <TableCell className="text-right">{a.work_remaining}</TableCell>
                   <TableCell>{a.work_center}</TableCell>
                   <TableCell className="text-right">{a.number_of_people}</TableCell>
-                  <TableCell>{a.unloading_point_period}</TableCell>
                   <TableCell>{a.unloading_point_string}</TableCell>
+                  <TableCell>{a.scheduled_start_date}</TableCell>
                 </TableRow>
               ))}
           </TableBody>
