@@ -29,7 +29,8 @@ jobs:
         env:
           BACKGROUND: true
       - name: Wait for server to be ready
-        run: sleep 10
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:3000/hello || curl -f http://127.0.0.1:3000/health; do sleep 2; done' || echo "Server not ready after 60s"
       - name: Run frontend tests
         run: cd static_files/packages/shared/ && pnpm test:run
       - name: Stop backend server
