@@ -1,4 +1,4 @@
-import { assignWorkordertoPeriod, fetchWorkorderInfo } from "@scipo-code/shared";
+import { assignWorkOrderToPeriod, fetchWorkorderInfo } from "@scipo-code/shared";
 import { useParams } from "react-router-dom"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -147,7 +147,7 @@ export default function WorkorderOverview() {
       asset: string,
       workorder: string,
       period: PeriodDto,
-    }) => assignWorkordertoPeriod(asset,workorder, period),
+    }) => assignWorkOrderToPeriod(asset,workorder, period),
 
     onSuccess: () => {
       queryClient.invalidateQueries({

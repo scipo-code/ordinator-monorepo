@@ -3610,6 +3610,9 @@
         "npm:@tailwindcss/vite@^4.1.8",
         "npm:@tanstack/react-query@^5.67.1",
         "npm:@tanstack/react-table@^8.21.3",
+        "npm:@testing-library/jest-dom@^6.7.0",
+        "npm:@testing-library/react@^16.3.0",
+        "npm:@testing-library/user-event@^14.6.1",
         "npm:@types/node@^22.15.29",
         "npm:@types/react-dom@^19.0.4",
         "npm:@types/react@^19.0.10",
@@ -3625,6 +3628,7 @@
         "npm:eslint-plugin-react-refresh@~0.4.19",
         "npm:eslint@^9.21.0",
         "npm:globals@16",
+        "npm:jsdom@^26.1.0",
         "npm:lucide-react@0.475",
         "npm:msw@^2.7.3",
         "npm:postcss@^8.5.3",
@@ -3638,7 +3642,8 @@
         "npm:typescript-eslint@^8.24.1",
         "npm:typescript@^5.7.3",
         "npm:vite-plugin-static-copy@^3.1.1",
-        "npm:vite@^6.1.1"
+        "npm:vite@^6.1.1",
+        "npm:vitest@^3.2.4"
       ]
     },
     "members": {
