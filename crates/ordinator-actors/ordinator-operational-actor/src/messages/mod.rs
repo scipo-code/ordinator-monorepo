@@ -2,7 +2,7 @@ pub mod message_handlers;
 pub mod requests;
 pub mod responses;
 use ordinator_actor_core::RequestMessage;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use serde::Serialize;
 
 use self::requests::*;
@@ -56,7 +56,7 @@ pub struct OperationalStatus
 pub enum OperationalResponse
 {
     AllOperationalStatus(Vec<OperationalResponseMessage>),
-    OperationalIds(Vec<Id>),
+    OperationalIds(Vec<ActorCompositeId>),
     OperationalState(OperationalResponseMessage),
     NoOperationalAgentFound(String),
 }

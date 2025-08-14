@@ -1,10 +1,13 @@
+use std::collections::BTreeSet;
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 use serde::Deserialize;
 use serde::Serialize;
 
 use super::availability::Availability;
-use super::resources::Id;
+use super::resources::ActorCompositeId;
+use super::resources::Resources;
 use crate::time_environment::TimeInterval;
 use crate::worker_environment::worker::Worker;
 
@@ -18,8 +21,8 @@ pub struct AgentEnvironment
 {
     // TODO [ ]
     // Rename these they have a horrible name, they have nothing to do with
-    pub operational: HashMap<Id, OperationalConfigurationAll>,
-    pub supervisor: HashMap<Id, SupervisorConfigurationAll>,
+    pub operational: HashMap<ActorCompositeId, OperationalConfigurationAll>,
+    pub supervisor: HashMap<ActorCompositeId, SupervisorConfigurationAll>,
 }
 
 // WARN
@@ -27,7 +30,7 @@ pub struct AgentEnvironment
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct OperationalConfigurationAll
 {
-    pub id: Id,
+    pub id: ActorCompositeId,
     pub hours_per_day: f64,
     pub operational_configuration: OperationalConfiguration,
 }
@@ -35,7 +38,7 @@ pub struct OperationalConfigurationAll
 impl OperationalConfigurationAll
 {
     pub fn new(
-        id: Id,
+        id: ActorCompositeId,
         hours_per_day: f64,
         operational_configuration: OperationalConfiguration,
     ) -> Self
@@ -58,19 +61,21 @@ impl OperationalConfigurationAll
 #[derive(Deserialize, Debug, Serialize, Clone)]
 pub struct OperationalConfiguration
 {
-    pub availability: Availability,
+    pub availability: BTreeSet<Availability>,
     pub break_interval: TimeInterval,
     pub off_shift_interval: TimeInterval,
     pub toolbox_interval: TimeInterval,
+    pub resources: HashSet<Resources>,
 }
 
 impl OperationalConfiguration
 {
     pub fn new(
-        availability: Availability,
+        availability: BTreeSet<Availability>,
         break_interval: TimeInterval,
         off_shift_interval: TimeInterval,
         toolbox_interval: TimeInterval,
+        resources: HashSet<Resources>,
     ) -> Self
     {
         Self {
@@ -78,6 +83,7 @@ impl OperationalConfiguration
             break_interval,
             off_shift_interval,
             toolbox_interval,
+            resources,
         }
     }
 }
@@ -86,7 +92,7 @@ impl OperationalConfiguration
 #[derive(Default, Serialize, Deserialize, Debug, Clone)]
 pub struct SupervisorConfigurationAll
 {
-    pub id: Id,
+    pub id: ActorCompositeId,
     // FIX
     // This information is found in two different places. That is an
     // error that has to be fixed.
@@ -95,7 +101,7 @@ pub struct SupervisorConfigurationAll
 
 impl SupervisorConfigurationAll
 {
-    pub fn new(id: Id, number_of_supervisor_periods: u64) -> Self
+    pub fn new(id: ActorCompositeId, number_of_supervisor_periods: u64) -> Self
     {
         Self {
             id,

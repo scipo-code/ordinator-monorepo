@@ -4,7 +4,9 @@ pub mod resources;
 pub mod worker;
 
 use std::collections::BTreeMap;
+use std::collections::BTreeSet;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::path::PathBuf;
 
 use anyhow::Context;
@@ -14,7 +16,8 @@ use chrono::DateTime;
 use chrono::NaiveTime;
 use chrono::Utc;
 use crew::OperationalConfiguration;
-use resources::Id;
+use resources::ActorCompositeId;
+use resources::Resources;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -141,20 +144,16 @@ impl ActorEnvironmentBuilder
     }
 }
 
+// ISSUE #004 [ ] - make a trait implementation for this.
+pub type IdString = String;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ActorSpecifications
 {
     pub strategic: InputStrategic,
     pub tactical: InputTactical,
     pub supervisors: Vec<InputSupervisor>,
-    // QUESTION
-    // Why not just store the OperationalParameters here?
-    // Hmm... because the WorkOrders should not be part of this
-    // what about the options? The options should be defined in
-    // a separate config file
-    // TODO [ ] Make separate config files for options
-    pub operational: Vec<InputOperational>,
-    // QUESTION [ ] Is this the way to do it?
+    pub operational: HashMap<IdString, InputOperational>,
+    // QUESTION [x] Is this the way to do it?
     // It cannot be like this. The idea of a relational database is beginning
     // to make a lot of sense.
     pub work_order_configurations: WorkOrderConfigurations,
@@ -165,26 +164,46 @@ impl ActorSpecifications
 {
     pub fn add_operational(
         &mut self,
-        id: &Id,
+        id: &IdString,
+        assets: Vec<Asset>,
+        resources: Vec<Resources>,
         start_date: DateTime<Utc>,
         finish_date: DateTime<Utc>,
-    ) -> anyhow::Result<()>
+        // This should return a
+    ) -> anyhow::Result<ActorCompositeId>
     {
-        let availability = Availability::new(start_date, finish_date)?;
-        let input_operational = InputOperational::new(id.clone(), 6.0, availability);
+        let availability = Availability::new(start_date, finish_date, assets)?;
 
-        self.operational.push(input_operational);
-        Ok(())
+        self.operational
+            .entry(id.clone())
+            .and_modify(|e| {
+                e.operational_configuration
+                    .availability
+                    .insert(availability.clone());
+            })
+            .or_insert(InputOperational::new(
+                id.clone(),
+                resources.clone(),
+                6.0,
+                availability.clone(),
+            ));
+
+        Ok(ActorCompositeId::new(id, resources, availability))
     }
 
-    pub fn technician_availability(&self) -> BTreeMap<Id, Availability>
+    pub fn technician_availability(
+        &self,
+    ) -> BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Resources>)>
     {
         self.operational
             .iter()
             .map(|e| {
                 (
-                    e.id.clone(),
-                    e.operational_configuration.availability.clone(),
+                    e.0.clone(),
+                    (
+                        e.1.operational_configuration.availability.clone(),
+                        e.1.operational_configuration.resources.clone(),
+                    ),
                 )
             })
             .collect()
@@ -207,7 +226,7 @@ pub struct TimeInput
 #[derive(Eq, PartialEq, Serialize, Deserialize, Debug)]
 pub struct InputStrategic
 {
-    pub id: Id,
+    pub id: IdString,
     pub number_of_strategic_periods: usize,
     pub strategic_options: StrategicOptions,
 }
@@ -215,7 +234,7 @@ pub struct InputStrategic
 #[derive(Eq, PartialEq, Serialize, Deserialize, Debug)]
 pub struct InputTactical
 {
-    pub id: Id,
+    pub id: IdString,
     pub number_of_tactical_days: usize,
     pub tactical_options: TacticalOptions,
 }
@@ -223,7 +242,7 @@ pub struct InputTactical
 #[derive(Eq, Hash, PartialEq, Serialize, Deserialize, Debug)]
 pub struct InputSupervisor
 {
-    pub id: Id,
+    pub id: IdString,
     pub number_of_supervisor_periods: u64,
     pub supervisor_options: SupervisorOptions,
 }
@@ -233,7 +252,7 @@ pub struct InputSupervisor
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct InputOperational
 {
-    pub id: Id,
+    pub id: IdString,
     pub hours_per_day: f64,
     pub operational_configuration: OperationalConfiguration,
     pub operational_options: OperationalOptions,
@@ -241,10 +260,18 @@ pub struct InputOperational
 
 impl InputOperational
 {
-    pub fn new(id: Id, hours_per_day: f64, availability: Availability) -> Self
+    pub fn new(
+        id: IdString,
+        resources: Vec<Resources>,
+        hours_per_day: f64,
+
+        availability: Availability,
+    ) -> Self
     {
+        let resources = resources.iter().cloned().collect::<HashSet<_>>();
+        let availabilities = BTreeSet::from([availability]);
         let operational_configuration = OperationalConfiguration::new(
-            availability,
+            availabilities,
             TimeInterval {
                 start: NaiveTime::from_hms_opt(11, 0, 0).unwrap(),
                 end: NaiveTime::from_hms_opt(12, 0, 0).unwrap(),
@@ -257,6 +284,7 @@ impl InputOperational
                 start: NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
                 end: NaiveTime::from_hms_opt(8, 0, 0).unwrap(),
             },
+            resources,
         );
 
         let operational_options = OperationalOptions {
@@ -264,7 +292,7 @@ impl InputOperational
         };
 
         Self {
-            id,
+            id: id.clone(),
             hours_per_day,
             operational_configuration,
             operational_options,
@@ -368,6 +396,7 @@ mod tests
 
     //     assert_eq!(system_agents.operational[0].id.1, [Resources::MtnElec]);
 
+    use std::collections::HashMap;
     //     assert_eq!(
     //         system_agents.operational[0]
     //             .operational_configuration
@@ -383,4 +412,119 @@ mod tests
     //         NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
     //     );
     // }
+    use std::str::FromStr;
+
+    use chrono::NaiveDateTime;
+
+    use super::ActorSpecifications;
+    use crate::Asset;
+    use crate::worker_environment::IdString;
+    use crate::worker_environment::availability::Availability;
+    use crate::worker_environment::resources::Resources;
+
+    #[test]
+    fn test_add_technician()
+    {
+        // You have to mock all these dependencies to test the code.
+
+        let mut actor_specification = ActorSpecifications {
+            strategic: todo!(),
+            tactical: todo!(),
+            supervisors: vec![],
+            operational: HashMap::new(),
+            work_order_configurations: crate::work_order::WorkOrderConfigurations {
+                order_type_weights: HashMap::new(),
+                status_weights: HashMap::new(),
+                vis_priority_map: HashMap::new(),
+                wdf_priority_map: HashMap::new(),
+                wgn_priority_map: HashMap::new(),
+                wpm_priority_map: HashMap::new(),
+                clustering_weights: crate::work_order::ClusteringWeights {
+                    asset: 0,
+                    sector: 0,
+                    system: 0,
+                    subsystem: 0,
+                    equipment_tag: 0,
+                },
+                operating_time: 6,
+            },
+            material_to_period: crate::time_environment::MaterialToPeriod {
+                nmat: 0,
+                smat: 0,
+                cmat: 0,
+                pmat: 0,
+                wmat: 0,
+            },
+        };
+
+        let start_date = NaiveDateTime::from_str("2025-09-01T07:00:00")
+            .unwrap()
+            .and_utc();
+        let finish_date = NaiveDateTime::from_str("2025-09-04T07:00:00")
+            .unwrap()
+            .and_utc();
+        let assets = vec![Asset::Test];
+        let id_string: IdString = "OP-01-test".to_string();
+        let resources = vec![Resources::MtnLagg];
+
+        actor_specification
+            .add_operational(&id_string, assets, resources, start_date, finish_date)
+            .unwrap();
+
+        assert!(actor_specification.operational.contains_key(&id_string));
+
+        let availability_test_mock = Availability::new(start_date, finish_date, assets).unwrap();
+        assert!(
+            actor_specification
+                .operational
+                .get(&id_string)
+                .unwrap()
+                .operational_configuration
+                .availability
+                .contains(&availability_test_mock)
+        );
+        assert!(
+            actor_specification
+                .operational
+                .get(&id_string)
+                .unwrap()
+                .operational_configuration
+                .availability
+                .len()
+                == 1
+        );
+
+        let start_date_2 = NaiveDateTime::from_str("2025-09-06T07:00:00")
+            .unwrap()
+            .and_utc();
+        let finish_date_2 = NaiveDateTime::from_str("2025-09-010T07:00:00")
+            .unwrap()
+            .and_utc();
+
+        actor_specification
+            .add_operational(&id_string, assets, resources, start_date_2, finish_date_2)
+            .unwrap();
+
+        let availability_test_mock_2 =
+            Availability::new(start_date_2, finish_date_2, assets).unwrap();
+        assert!(
+            actor_specification
+                .operational
+                .get(&id_string)
+                .unwrap()
+                .operational_configuration
+                .availability
+                .contains(&availability_test_mock_2)
+        );
+        assert!(
+            actor_specification
+                .operational
+                .get(&id_string)
+                .unwrap()
+                .operational_configuration
+                .availability
+                .len()
+                == 2
+        );
+    }
 }

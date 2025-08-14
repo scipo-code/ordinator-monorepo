@@ -20,7 +20,7 @@ use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use serde::Serialize;
 
 // This is for the `constracts`, `conversions`, and the `orchstrator` to handle.
@@ -152,7 +152,7 @@ impl<Ss> SwapSolution<Ss> for OperationalSolution
 where
     Ss: SystemSolutions<Operational = Self>,
 {
-    fn swap(id: &Id, solution: SolutionState<Self>, system_solution: &mut Ss)
+    fn swap(id: &ActorCompositeId, solution: SolutionState<Self>, system_solution: &mut Ss)
     {
         system_solution.operational_swap(id, solution);
     }
@@ -163,15 +163,15 @@ pub trait GetMarginalFitness
 {
     fn marginal_fitness(
         &self,
-        operational_agent: &Id,
+        operational_agent: &ActorCompositeId,
         work_order_activity: &WorkOrderActivity,
     ) -> Result<&MarginalFitness>;
 }
-impl GetMarginalFitness for HashMap<Id, OperationalSolution>
+impl GetMarginalFitness for HashMap<ActorCompositeId, OperationalSolution>
 {
     fn marginal_fitness(
         &self,
-        operational_agent: &Id,
+        operational_agent: &ActorCompositeId,
         work_order_activity: &WorkOrderActivity,
     ) -> Result<&MarginalFitness>
     {
@@ -452,13 +452,13 @@ impl Assignment
         match kind {
             Unavailability::Beginning => {
                 let event_start_time = availability
-                    .start_date
+                    .start_datetime()
                     .clone()
                     .date_naive()
                     .and_hms_opt(0, 0, 0)
                     .unwrap()
                     .and_utc();
-                let event_finish_time = availability.start_date;
+                let event_finish_time = availability.start_datetime();
 
                 Assignment::new(
                     OperationalEvents::Unavailable(TimeInterval::from_date_times(
@@ -470,9 +470,9 @@ impl Assignment
                 )
             }
             Unavailability::End => {
-                let event_start_time = availability.finish_date;
+                let event_start_time = availability.finish_datetime();
                 let event_finish_time = availability
-                    .finish_date
+                    .finish_datetime()
                     .clone()
                     .date_naive()
                     .and_hms_opt(23, 59, 59)

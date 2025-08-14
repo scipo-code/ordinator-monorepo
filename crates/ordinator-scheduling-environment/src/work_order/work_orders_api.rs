@@ -33,8 +33,8 @@ impl WorkOrders
                 .out_of_scheduled_or_draft();
         }
 
-        work_order.work_order_dates.basic_start_date = period.start_date().date_naive();
-        work_order.work_order_dates.basic_finish_date = period.finish_date().date_naive();
+        work_order.work_order_dates.basic_start_date = period.start_datetime().date_naive();
+        work_order.work_order_dates.basic_finish_date = period.finish_datetime().date_naive();
 
         work_order
             .operations

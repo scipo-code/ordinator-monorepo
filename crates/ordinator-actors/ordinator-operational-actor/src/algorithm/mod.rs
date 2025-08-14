@@ -143,8 +143,8 @@ where
                 ))
             } else {
                 // TODO [x] BREAK
-                if self.0.parameters.availability.finish_date < new_current_time {
-                    new_current_time = self.0.parameters.availability.finish_date;
+                if self.0.parameters.availability.finish_datetime() < new_current_time {
+                    new_current_time = self.0.parameters.availability.finish_datetime();
                 }
                 let time_interval = TimeInterval::new(start.time(), new_current_time.time())?;
                 Ok((
@@ -379,7 +379,7 @@ where
             )
         })?;
 
-        let mut current_time = self.parameters.availability.start_date;
+        let mut current_time = self.parameters.availability.start_datetime();
 
         let mut wrench_time: TimeDelta = TimeDelta::zero();
         let mut break_time: TimeDelta = TimeDelta::zero();
@@ -625,7 +625,7 @@ where
             .sorted_unstable_by_key(|ass| ass.start);
         no_overlap(&all_events.collect::<Vec<_>>())
             .with_context(|| "Overlap between work order activities".to_string())?;
-        let mut current_time = self.parameters.availability.start_date;
+        let mut current_time = self.parameters.availability.start_datetime();
 
         // Fill the schedule
         // What does `ContainOrNextOrNone` even mean here? The fact that you do not know
@@ -727,9 +727,9 @@ where
 
             no_overlap(&all_events.collect::<Vec<_>>())
                 .with_context(|| "Overlap between work order activities".to_string())?;
-            if current_time >= self.parameters.availability.finish_date {
+            if current_time >= self.parameters.availability.finish_datetime() {
                 self.solution.non_productive.last_mut().unwrap().finish =
-                    self.parameters.availability.finish_date;
+                    self.parameters.availability.finish_datetime();
                 break;
             };
         }
@@ -1112,8 +1112,8 @@ where
         let (start_window, end_window) = match (strategic_period_option, tactical_days_option) {
             // What is actually happening here?
             (None, None) => (
-                self.parameters.availability.start_date,
-                self.parameters.availability.finish_date,
+                self.parameters.availability.start_datetime(),
+                self.parameters.availability.finish_datetime(),
             ),
             // Here there will be a lot of interpretation.
             //
@@ -1133,18 +1133,18 @@ where
             // depend on a current time. This means that it is not working on the
             // correct `SystemClock`.
             (Some(WhereIsWorkOrder::Strategic(period)), _) => {
-                (*period.start_date(), *period.finish_date())
+                (*period.start_datetime(), *period.finish_datetime())
             }
             (Some(WhereIsWorkOrder::NotScheduled), _) => (
-                self.parameters.availability.start_date,
-                self.parameters.availability.finish_date,
+                self.parameters.availability.start_datetime(),
+                self.parameters.availability.finish_datetime(),
             ),
             // This is actually find I think
             (Some(WhereIsWorkOrder::Tactical(_t)), None) => {
                 // What does it mean to be in here.
                 (
-                    self.parameters.availability.start_date,
-                    self.parameters.availability.finish_date,
+                    self.parameters.availability.start_datetime(),
+                    self.parameters.availability.finish_datetime(),
                 )
             } /* WARN
                * This kind of code should be made with `AppError`. You should have a centralized
@@ -1328,10 +1328,10 @@ fn no_overlap_by_ref(events: Vec<&Assignment>) -> bool
 fn is_assignments_in_bounds(events: &Vec<Assignment>, availability: &Availability) -> bool
 {
     for event in events {
-        if event.start < availability.start_date && !event.operational_events.unavail() {
+        if event.start < availability.start_datetime() && !event.operational_events.unavail() {
             return false;
         }
-        if availability.finish_date < event.finish && !event.operational_events.unavail() {
+        if availability.finish_datetime() < event.finish && !event.operational_events.unavail() {
             return false;
         }
     }

@@ -13,7 +13,7 @@ use ordinator_orchestrator_actor_traits::SolutionState;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
 use crate::traits::AbLNSUtils;
 
@@ -37,7 +37,7 @@ where
     P: Parameters,
     Ss: SystemSolutions,
 {
-    pub id: Id,
+    pub id: ActorCompositeId,
     pub solution_intermediate: I,
     pub solution: SolutionState<S>,
     pub parameters: P,
@@ -55,7 +55,7 @@ where
     P: Parameters,
     Ss: SystemSolutions,
 {
-    id: Option<Id>,
+    id: Option<ActorCompositeId>,
     solution_intermediate: I,
     solution: Option<SolutionState<S>>,
     parameters: Option<P>,
@@ -150,7 +150,7 @@ where
         Ok(algorithm_inner.into())
     }
 
-    pub fn id(mut self, id: Id) -> Self
+    pub fn id(mut self, id: ActorCompositeId) -> Self
     {
         self.id = Some(id);
 

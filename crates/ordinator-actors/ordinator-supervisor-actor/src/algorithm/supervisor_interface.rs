@@ -4,7 +4,7 @@ use std::collections::HashSet;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
 use ordinator_orchestrator_actor_traits::SupervisorInterface;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
 use super::supervisor_solution::SupervisorSolution;
 
@@ -12,7 +12,7 @@ use super::supervisor_solution::SupervisorSolution;
 /// in the
 impl SupervisorInterface for SupervisorSolution
 {
-    fn delegates_for_agent(&self, operational_agent: &Id) -> HashMap<WorkOrderActivity, Delegate>
+    fn delegates_for_agent(&self, operational_agent: &ActorCompositeId) -> HashMap<WorkOrderActivity, Delegate>
     {
         self.operational_state_machine
             .iter()
@@ -21,7 +21,7 @@ impl SupervisorInterface for SupervisorSolution
             .collect()
     }
 
-    fn delegated_tasks(&self, operational_agent: &Id) -> HashSet<WorkOrderActivity>
+    fn delegated_tasks(&self, operational_agent: &ActorCompositeId) -> HashSet<WorkOrderActivity>
     {
         self.operational_state_machine
             .iter()
@@ -33,7 +33,7 @@ impl SupervisorInterface for SupervisorSolution
     }
 
     // This function has to be moved.
-    fn count_delegate_types(&self, operational_agent: &Id) -> (u64, u64, u64)
+    fn count_delegate_types(&self, operational_agent: &ActorCompositeId) -> (u64, u64, u64)
     {
         let mut count_assign = 0;
         let mut count_assess = 0;

@@ -21,7 +21,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrders;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::StrategicOptions;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Serialize;
 use tracing::info;
@@ -59,11 +59,11 @@ impl Parameters for StrategicParameters
 
     // That change in the asset, was not complete without downsides.
     fn from_source(
-        id: &Id,
+        id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>
     {
-        let asset = id.2.first().expect("This should never happen");
+        let asset = id.2.main_asset();
 
         let work_orders = &scheduling_environment.work_orders;
 

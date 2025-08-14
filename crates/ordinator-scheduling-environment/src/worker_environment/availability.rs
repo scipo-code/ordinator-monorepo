@@ -1,4 +1,5 @@
 use chrono::DateTime;
+use chrono::NaiveDate;
 use chrono::TimeDelta;
 use chrono::Utc;
 use serde::Deserialize;
@@ -6,13 +7,16 @@ use serde::Deserializer;
 use serde::Serialize;
 use serde::de;
 
-#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+use crate::Asset;
+
+#[derive(Hash, Eq, PartialEq, PartialOrd, Ord, Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Availability
 {
     #[serde(deserialize_with = "chrono_datetime_deserialize")]
-    pub start_date: chrono::DateTime<Utc>,
+    start_datetime: chrono::DateTime<Utc>,
     #[serde(deserialize_with = "chrono_datetime_deserialize")]
-    pub finish_date: chrono::DateTime<Utc>,
+    finish_datetime: chrono::DateTime<Utc>,
+    assets: Vec<Asset>,
 }
 
 impl Availability
@@ -20,6 +24,7 @@ impl Availability
     pub fn new(
         start_date: chrono::DateTime<Utc>,
         finish_date: chrono::DateTime<Utc>,
+        assets: Vec<Asset>,
     ) -> anyhow::Result<Self>
     {
         if start_date > finish_date {
@@ -27,14 +32,45 @@ impl Availability
         }
 
         Ok(Self {
-            start_date,
-            finish_date,
+            start_datetime: start_date,
+            finish_datetime: finish_date,
+            assets,
         })
     }
 
     pub fn duration(&self) -> TimeDelta
     {
-        self.finish_date - self.start_date
+        self.finish_datetime - self.start_datetime
+    }
+
+    pub fn main_asset(&self) -> &Asset
+    {
+        self.assets.first().expect("This should never happen")
+    }
+
+    pub fn assets(&self) -> &Vec<Asset>
+    {
+        &self.assets
+    }
+
+    pub(crate) fn start_date(&self) -> NaiveDate
+    {
+        self.start_datetime.date_naive()
+    }
+
+    pub(crate) fn finish_date(&self) -> NaiveDate
+    {
+        self.finish_datetime.date_naive()
+    }
+
+    pub fn finish_datetime(&self) -> DateTime<Utc>
+    {
+        self.finish_datetime
+    }
+
+    pub fn start_datetime(&self) -> DateTime<Utc>
+    {
+        self.start_datetime
     }
 }
 
@@ -53,6 +89,7 @@ pub struct TomlAvailability
 {
     start_date: toml::value::Datetime,
     end_date: toml::value::Datetime,
+    asset: Vec<Asset>,
 }
 
 impl From<TomlAvailability> for Availability
@@ -69,8 +106,9 @@ impl From<TomlAvailability> for Availability
                 .to_utc();
 
         Self {
-            start_date: start_date_time,
-            finish_date: end_date_time,
+            start_datetime: start_date_time,
+            finish_datetime: end_date_time,
+            assets: value.asset,
         }
     }
 }

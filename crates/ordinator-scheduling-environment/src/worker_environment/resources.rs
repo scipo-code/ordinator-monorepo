@@ -8,17 +8,18 @@ use serde::Deserialize;
 use serde::Serialize;
 use strum_macros::EnumIter;
 
+use super::availability::Availability;
 use crate::Asset;
 
 /// This enum holds all the resources that are available needed to schedule work
 /// order.
 #[derive(
+    Hash,
     PartialOrd,
     Ord,
     Debug,
     Eq,
     PartialEq,
-    Hash,
     Clone,
     Serialize,
     Deserialize,
@@ -309,12 +310,14 @@ impl Resources
 
 // TODO
 // You should add a function here to make the code work with the.
+// TODO [x] Start here. Put availability into the [`Id`].
+// TODO [ ]
 #[derive(Eq, Hash, Ord, PartialOrd, PartialEq, Serialize, Deserialize, Clone, Default)]
-pub struct Id(pub String, pub Vec<Resources>, pub Vec<Asset>);
+pub struct ActorCompositeId(pub String, pub Vec<Resources>, pub Availability);
 
 // You have to learn to use the debugger in the code there is simply no other
 // way and you have to make the code work with
-impl std::fmt::Debug for Id
+impl std::fmt::Debug for ActorCompositeId
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
@@ -330,16 +333,16 @@ impl std::fmt::Debug for Id
     }
 }
 
-impl Id
+impl ActorCompositeId
 {
-    pub fn new(id_employee: &str, resources: Vec<Resources>, related_assets: Vec<Asset>) -> Self
+    pub fn new(id_employee: &str, resources: Vec<Resources>, availability: Availability) -> Self
     {
-        Id(id_employee.to_string(), resources, related_assets)
+        ActorCompositeId(id_employee.to_string(), resources, availability)
     }
 
     pub fn asset(&self) -> &Asset
     {
-        self.2.first().unwrap()
+        self.2.main_asset()
     }
 }
 
@@ -369,7 +372,7 @@ impl Shift
 
 // NOTE [ ]
 // Only the `Debug::alternate()` can be colored.
-impl Display for Id
+impl Display for ActorCompositeId
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {

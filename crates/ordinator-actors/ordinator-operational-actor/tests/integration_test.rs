@@ -38,15 +38,15 @@ use ordinator_scheduling_environment::work_order::work_order_info::work_order_te
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
 use ordinator_scheduling_environment::worker_environment::ActorEnvironment;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
 
 #[derive(Clone, Debug)]
 struct TestSystemSolution<Zs: SupervisorInterface + Clone>
 {
-    supervisor: Zs,
-    operational: HashMap<Id, SolutionState<OperationalSolution>>,
+    supervisor: Option<Zs>,
+    operational: HashMap<ActorCompositeId, SolutionState<OperationalSolution>>,
 }
 
 // What should you do here? I believe that I should refactor the
@@ -146,7 +146,7 @@ impl SystemSolutions for TestSystemSolution<SupervisorSolution>
         todo!()
     }
 
-    fn strategic_swap(&mut self, id: &Id, solution: SolutionState<TestStrategic>)
+    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<TestStrategic>)
     where
         Self::Strategic: ordinator_orchestrator_actor_traits::Solution,
     {
@@ -158,7 +158,7 @@ impl SystemSolutions for TestSystemSolution<SupervisorSolution>
         todo!()
     }
 
-    fn tactical_swap(&mut self, id: &Id, solution: SolutionState<TestTactical>)
+    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<TestTactical>)
     where
         Self::Tactical: ordinator_orchestrator_actor_traits::Solution,
     {
@@ -167,28 +167,37 @@ impl SystemSolutions for TestSystemSolution<SupervisorSolution>
 
     fn supervisor_actor_solutions(&self) -> anyhow::Result<&Self::Supervisor>
     {
-        Ok(&self.supervisor)
+        Ok(self.supervisor.as_ref().unwrap())
     }
 
-    fn supervisor_swap(&mut self, id: &Id, solution: SolutionState<SupervisorSolution>)
-    where
+    fn supervisor_swap(
+        &mut self,
+        id: &ActorCompositeId,
+        solution: SolutionState<SupervisorSolution>,
+    ) where
         Self::Supervisor: ordinator_orchestrator_actor_traits::Solution,
     {
         todo!()
     }
 
-    fn operational_actor_solutions(&self, id: &Id) -> anyhow::Result<&Self::Operational>
+    fn operational_actor_solutions(
+        &self,
+        id: &ActorCompositeId,
+    ) -> anyhow::Result<&Self::Operational>
     {
         todo!()
     }
 
-    fn all_operational(&self) -> std::collections::HashSet<Id>
+    fn all_operational(&self) -> std::collections::HashSet<ActorCompositeId>
     {
         todo!()
     }
 
-    fn operational_swap(&mut self, id: &Id, solution: SolutionState<OperationalSolution>)
-    where
+    fn operational_swap(
+        &mut self,
+        id: &ActorCompositeId,
+        solution: SolutionState<OperationalSolution>,
+    ) where
         Self::Operational: Solution,
     {
         self.operational.insert(id.clone(), solution);
@@ -393,10 +402,12 @@ fn start_operational_actor()
         .get(&Asset::Test)
         .unwrap()
         .operational
-        .first()
+        .iter()
+        .next()
         .unwrap()
-        .id
+        .0
         .clone();
+
     let supervisor_id = &scheduling_environment
         .lock()
         .unwrap()
@@ -410,6 +421,18 @@ fn start_operational_actor()
         .id
         .clone();
 
+    let _system_solution = Arc::new(ArcSwap::new(Arc::new(TestSystemSolution {
+        supervisor: None,
+        operational: HashMap::new(),
+    })));
+
+    let operational_id: ActorCompositeId = _system_solution
+        .load()
+        .operational
+        .keys()
+        .next()
+        .unwrap()
+        .clone();
     let operational_state_machine = HashMap::from([(
         (operational_id.clone(), (WorkOrderNumber(1001), 10)),
         Delegate::Assess,
@@ -419,10 +442,6 @@ fn start_operational_actor()
     dbg!(&supervisor);
     // TODO [ ] 2025-07-08 Make a `builder` for the `SystemSolution`.
     // You need to construct a builder for the `SystemSolution` as well.
-    let _system_solution = Arc::new(ArcSwap::new(Arc::new(TestSystemSolution {
-        supervisor,
-        operational: HashMap::new(),
-    })));
     let (sender, receiver) = flume::unbounded();
     let system_configuration = SystemConfigurations::read_all_configs().unwrap();
 

@@ -11,8 +11,8 @@ use chrono::DateTime;
 use chrono::NaiveDate;
 use chrono::Utc;
 use ordinator_orchestrator_actor_traits::Parameters;
-use ordinator_scheduling_environment::Assignment;
 use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_environment::assignments::AnyAssignment;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrder;
@@ -23,7 +23,7 @@ use ordinator_scheduling_environment::work_order::operation::Operation;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
 use ordinator_scheduling_environment::worker_environment::TacticalOptions;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Serialize;
 
@@ -43,7 +43,7 @@ impl Parameters for TacticalParameters
     type Key = WorkOrderNumber;
 
     fn from_source(
-        id: &Id,
+        id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>
     {
@@ -64,7 +64,7 @@ impl Parameters for TacticalParameters
             .iter()
             // WARN: Unwrap accepted. Every agent should always be connected to an Asset
             // QUESTION: Is this actually true?
-            .filter(|(_, wo)| &wo.functional_location().asset == id.2.first().unwrap())
+            .filter(|(_, wo)| &wo.functional_location().asset == id.2.main_asset())
             .filter(|(_, wo)| wo.released_for_scheduling());
 
         let assignments = &scheduling_environment.assignments.assignment_for_tactical();
@@ -72,11 +72,12 @@ impl Parameters for TacticalParameters
 
         let tactical_work_orders: HashMap<WorkOrderNumber, TacticalParameter> = work_orders
             .map(|(won, wo)| {
-                let start_days_for_activities: HashMap<Option<u64>, &Assignment> = assignments
-                    .iter()
-                    .filter(|e| e.0 == *won)
-                    .map(|e| (e.1, &e.2))
-                    .collect::<HashMap<_, _>>();
+                let start_days_for_activities: HashMap<Option<ActivityNumber>, AnyAssignment> =
+                    assignments
+                        .iter()
+                        .filter(|e| e.1.work_order_number() == *won)
+                        .map(|e| (e.1.activity_number(), e.1.clone()))
+                        .collect::<HashMap<_, _>>();
                 Ok((
                     *won,
                     // This should also be found inside of the database.
@@ -126,7 +127,7 @@ impl Parameters for TacticalParameters
 // continue.
 pub fn create_tactical_parameter(
     work_order: &WorkOrder,
-    start_days_for_activities: HashMap<Option<u64>, &Assignment>,
+    start_days_for_activities: HashMap<Option<ActivityNumber>, AnyAssignment>,
     work_order_configuration: &WorkOrderConfigurations,
 ) -> Result<TacticalParameter>
 {

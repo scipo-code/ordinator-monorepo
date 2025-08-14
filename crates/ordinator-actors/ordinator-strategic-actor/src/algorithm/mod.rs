@@ -1484,7 +1484,7 @@ fn determine_forced_work_order_resource_loadings(
             let operational_resource = OperationalResource::new(
                 &(resources.to_string() + "_dummy"),
                 Work::from(0.0),
-                vec![*resources],
+                HashSet::from([*resources]),
             );
             resources_store_dummy = Some(operational_resource);
             qualified_technicians.push(resources_store_dummy.as_mut().unwrap());
@@ -1772,8 +1772,8 @@ fn determine_difference_resources(
 
 pub fn calculate_period_difference(scheduled_period: &Period, latest_period: &Period) -> i64
 {
-    let scheduled_period_date = scheduled_period.finish_date().to_owned();
-    let latest_date = latest_period.finish_date();
+    let scheduled_period_date = scheduled_period.finish_datetime().to_owned();
+    let latest_date = latest_period.finish_datetime();
     let duration = scheduled_period_date.signed_duration_since(latest_date);
     let days = duration.num_days();
     std::cmp::max(days / 7, 0) as i64
@@ -2001,29 +2001,29 @@ mod tests
         let capacity_resource = HashMap::from([
             (
                 "Test one".to_string(),
-                OperationalResource::new("Test one", Work::from(5.0), vec![Resources::MtnMech]),
+                OperationalResource::new("Test one", Work::from(5.0), HashSet::from([Resources::MtnMech])),
             ),
             (
                 "Test two".to_string(),
-                OperationalResource::new("Test two", Work::from(4.0), vec![Resources::MtnElec]),
+                OperationalResource::new("Test two", Work::from(4.0), HashSet::from([Resources::MtnElec])),
             ),
             (
                 "Test three".to_string(),
-                OperationalResource::new("Test three", Work::from(3.0), vec![Resources::MtnScaf]),
+                OperationalResource::new("Test three", Work::from(3.0), HashSet::from([Resources::MtnScaf])),
             ),
         ]);
         let loading_resource = HashMap::from([
             (
                 "Test one".to_string(),
-                OperationalResource::new("Test one", Work::from(2.0), vec![Resources::MtnMech]),
+                OperationalResource::new("Test one", Work::from(2.0), HashSet::from([Resources::MtnMech])),
             ),
             (
                 "Test two".to_string(),
-                OperationalResource::new("Test two", Work::from(2.0), vec![Resources::MtnElec]),
+                OperationalResource::new("Test two", Work::from(2.0), HashSet::from([Resources::MtnElec])),
             ),
             (
                 "Test three".to_string(),
-                OperationalResource::new("Test three", Work::from(2.0), vec![Resources::MtnScaf]),
+                OperationalResource::new("Test three", Work::from(2.0), HashSet::from([Resources::MtnScaf])),
             ),
         ]);
 
@@ -2032,15 +2032,15 @@ mod tests
         let difference_actual = HashMap::from([
             (
                 "Test one".to_string(),
-                OperationalResource::new("Test one", Work::from(3.0), vec![Resources::MtnMech]),
+                OperationalResource::new("Test one", Work::from(3.0), HashSet::from([Resources::MtnMech])),
             ),
             (
                 "Test two".to_string(),
-                OperationalResource::new("Test two", Work::from(2.0), vec![Resources::MtnElec]),
+                OperationalResource::new("Test two", Work::from(2.0), HashSet::from([Resources::MtnElec])),
             ),
             (
                 "Test three".to_string(),
-                OperationalResource::new("Test three", Work::from(1.0), vec![Resources::MtnScaf]),
+                OperationalResource::new("Test three", Work::from(1.0), HashSet::from([Resources::MtnScaf])),
             ),
         ]);
 
@@ -2062,7 +2062,7 @@ mod tests
         let operational_resource = OperationalResource::new(
             operational_id,
             capacity,
-            vec![Resources::MtnMech, Resources::MtnElec, Resources::Prodtech],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec, Resources::Prodtech]),
         );
 
         let operational_resources_by_period =
@@ -2119,7 +2119,7 @@ mod tests
         let operational_resource = OperationalResource::new(
             operational_id,
             capacity,
-            vec![Resources::MtnMech, Resources::MtnElec, Resources::Prodtech],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec, Resources::Prodtech]),
         );
 
         let operational_resources_by_period =
@@ -2183,7 +2183,7 @@ mod tests
         let operational_resource = OperationalResource::new(
             operational_id,
             capacity,
-            vec![Resources::MtnMech, Resources::MtnElec, Resources::Prodtech],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec, Resources::Prodtech]),
         );
 
         let operational_resources_by_period =
@@ -2245,12 +2245,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2279,12 +2279,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2315,12 +2315,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2342,12 +2342,12 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(20.0),
-            vec![Resources::MtnScaf, Resources::MtnElec],
+            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
         );
 
         let mut strategic_resource = StrategicResources::default();
@@ -2366,12 +2366,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2404,12 +2404,12 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(50.0),
-            vec![Resources::MtnScaf, Resources::MtnElec],
+            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
         );
         let mut strategic_resources = StrategicResources::default();
 
@@ -2428,12 +2428,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2459,12 +2459,12 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(20.0),
-            vec![Resources::MtnScaf, Resources::MtnElec],
+            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
         );
         let mut strategic_resources = StrategicResources::default();
 
@@ -2483,12 +2483,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(30.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(30.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2516,15 +2516,15 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(30.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(30.0),
-            vec![Resources::MtnScaf, Resources::MtnElec],
+            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
         );
         let operational_resource_3 =
-            OperationalResource::new("VEN-MECH_dummy", Work::from(20.0), vec![Resources::VenMech]);
+            OperationalResource::new("VEN-MECH_dummy", Work::from(20.0), HashSet::from([Resources::VenMech]));
 
         let mut strategic_resources = StrategicResources::default();
 
@@ -2549,12 +2549,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(20.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(20.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2570,12 +2570,12 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(-20.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(-20.0),
-            vec![Resources::MtnScaf, Resources::MtnElec],
+            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
         );
         let mut strategic_resources_manual = StrategicResources::default();
 
@@ -2606,17 +2606,17 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(6.0),
-                vec![Resources::MtnMech, Resources::Prodtech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::Prodtech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_2",
                 Work::from(0.0),
-                vec![Resources::MtnScaf, Resources::MtnRigg, Resources::MtnLagg],
+                HashSet::from([Resources::MtnScaf, Resources::MtnRigg, Resources::MtnLagg]),
             ),
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(2.0),
-                vec![Resources::MtnInst, Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnInst, Resources::MtnMech, Resources::MtnElec]),
             ),
         ];
 
@@ -2689,12 +2689,12 @@ mod tests
         let operational_resource_0 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(40.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
 
         strategic_resources.insert_operational_resource(periods[0].clone(), operational_resource_0);
@@ -2912,7 +2912,7 @@ mod tests
         let operational_resource_0 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
 
         strategic_resources.insert_operational_resource(periods[0].clone(), operational_resource_0);

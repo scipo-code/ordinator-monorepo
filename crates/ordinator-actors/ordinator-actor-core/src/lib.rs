@@ -25,7 +25,7 @@ use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use serde::Deserialize;
 use serde::Serialize;
 use tracing::Level;
@@ -53,7 +53,7 @@ where
     Algorithm: ActorBasedLargeNeighborhoodSearch + Debug,
     ActorResponse: Debug,
 {
-    pub actor_id: Id,
+    pub actor_id: ActorCompositeId,
     pub scheduling_environment: Arc<Mutex<SchedulingEnvironment>>,
     pub algorithm: Algorithm,
     // TODO [ ] 2025-07-14 These senders and receivers are relevant for the `Algorithm`
@@ -212,7 +212,7 @@ where
     ActorRequest: Send + Sync + 'static,
     ActorResponse: Send + Sync + 'static,
 {
-    agent_id: Option<Id>,
+    agent_id: Option<ActorCompositeId>,
     scheduling_environment: Option<Arc<Mutex<SchedulingEnvironment>>>,
     algorithm: Option<Algorithm>,
     receiver_from_orchestrator: Option<Receiver<ActorRequest>>,
@@ -255,7 +255,7 @@ where
         Ok(self.communication_for_orchestrator.unwrap())
     }
 
-    pub fn agent_id(mut self, agent_id: Id) -> Self
+    pub fn agent_id(mut self, agent_id: ActorCompositeId) -> Self
     {
         self.agent_id = Some(agent_id);
         self

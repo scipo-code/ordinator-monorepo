@@ -19,7 +19,7 @@ use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
 use ordinator_scheduling_environment::worker_environment::TacticalOptions;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Deserialize;
 use serde::Serialize;
@@ -128,7 +128,7 @@ impl<Ss> SwapSolution<Ss> for TacticalSolution
 where
     Ss: SystemSolutions<Tactical = TacticalSolution>,
 {
-    fn swap(id: &Id, solution: SolutionState<Self>, system_solution: &mut Ss)
+    fn swap(id: &ActorCompositeId, solution: SolutionState<Self>, system_solution: &mut Ss)
     {
         system_solution.tactical_swap(id, solution);
     }

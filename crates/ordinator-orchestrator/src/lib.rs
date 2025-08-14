@@ -40,7 +40,8 @@ pub use ordinator_scheduling_environment::time_environment::day::Day;
 pub use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrders;
 pub use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
-pub use ordinator_scheduling_environment::worker_environment::resources::Id;
+pub use ordinator_scheduling_environment::worker_environment::availability::Availability;
+pub use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 pub use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use ordinator_strategic_actor::StrategicApi;
 use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
@@ -61,6 +62,7 @@ pub use ordinator_tactical_actor::messages::requests::TacticalStatusMessage;
 use serde::Deserialize;
 use serde::Serialize;
 use tokio::task::JoinHandle;
+use tracing::debug;
 use tracing::info;
 use tracing::instrument;
 
@@ -92,7 +94,7 @@ pub enum OrchestratorRequest
     GetDays,
     AgentStatusRequest,
     // InitializeSystemAgentsFromFile(Asset, ActorSpecifications),
-    CreateSupervisorAgent(Asset, u64, Id),
+    CreateSupervisorAgent(Asset, u64, ActorCompositeId),
     DeleteSupervisorAgent(Asset, String),
 
     // This should be an API handle not simply
@@ -431,11 +433,11 @@ impl ActorRegistry
         strategic_agent_addr: Communication<StrategicRequestMessage, StrategicResponseMessage>,
         tactical_agent_addr: Communication<TacticalRequestMessage, TacticalResponseMessage>,
         supervisor_agent_addrs: HashMap<
-            Id,
+            ActorCompositeId,
             Communication<SupervisorRequestMessage, SupervisorResponseMessage>,
         >,
         operational_actor_communication: HashMap<
-            Id,
+            ActorCompositeId,
             Communication<OperationalRequestMessage, OperationalResponseMessage>,
         >,
     ) -> Self
@@ -450,7 +452,7 @@ impl ActorRegistry
 
     pub fn add_supervisor_agent(
         &mut self,
-        id: Id,
+        id: ActorCompositeId,
         communication: Communication<SupervisorRequestMessage, SupervisorResponseMessage>,
     )
     {
@@ -459,14 +461,14 @@ impl ActorRegistry
 
     pub fn add_operational_agent(
         &mut self,
-        id: Id,
+        id: ActorCompositeId,
         communication: Communication<OperationalRequestMessage, OperationalResponseMessage>,
     )
     {
         self.operational_agent_senders.insert(id, communication);
     }
 
-    pub fn supervisor_by_id_string(&self, id_string: String) -> Id
+    pub fn supervisor_by_id_string(&self, id_string: String) -> ActorCompositeId
     {
         self.supervisor_agent_senders
             .keys()
@@ -549,45 +551,105 @@ where
 
         let (strategic_id, tactical_id, supervisors, operationals) = {
             let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
-            let strategic_id = scheduling_environment_guard
+            let actor_specifications = scheduling_environment_guard
                 .worker_environment
                 .actor_specification
                 .get(asset)
-                .unwrap()
-                .strategic
-                .id
-                .clone();
-            let tactical_id = scheduling_environment_guard
-                .worker_environment
-                .actor_specification
-                .get(asset)
-                .unwrap()
-                .tactical
-                .id
-                .clone();
-            let supervisors = scheduling_environment_guard
-                .worker_environment
-                .actor_specification
-                .get(asset)
-                .unwrap()
-                .supervisors
-                .iter()
-                .map(|e| e.id.clone())
-                .collect::<Vec<_>>();
-            let operationals = scheduling_environment_guard
-                .worker_environment
-                .actor_specification
-                .get(asset)
-                .unwrap()
+                .unwrap();
+            let periods = &scheduling_environment_guard.time_environment.periods;
+            let days = &scheduling_environment_guard.time_environment.days;
+
+            let input_strategic = &actor_specifications.strategic;
+
+            let strategic_id = ActorCompositeId::new(
+                &input_strategic.id,
+                vec![],
+                Availability::new(
+                    *periods.first().unwrap().start_datetime(),
+                    *periods
+                        .get(input_strategic.number_of_strategic_periods - 1)
+                        .unwrap()
+                        .finish_datetime(),
+                    vec![asset.clone()],
+                )?,
+            );
+
+            // ISSUE: #000 [ ] - Make the `TimeEnvironment` return function based times
+            // ESSAY: #20250814-1
+            // You should make the time_environment into a system clock. No that
+            // fits into a port, and the adapter will then handle the relehj
+            let input_tactical = &actor_specifications.tactical;
+            debug!(target: "developer", days = ?days);
+            let tactical_id = ActorCompositeId::new(
+                &actor_specifications.tactical.id,
+                vec![],
+                Availability::new(
+                    days.first()
+                        .unwrap()
+                        .date
+                        .and_hms_opt(0, 0, 0)
+                        .context("Could not make a DateTime in Availability for TacticalActor")?
+                        .and_utc(),
+                    days.get(input_tactical.number_of_tactical_days - 1)
+                        .unwrap()
+                        .date
+                        .and_hms_opt(0, 0, 0)
+                        .context("Could not make a DateTime in Availability for TacticalActor")?
+                        .and_utc(),
+                    vec![asset.clone()],
+                )?,
+            );
+
+            let supervisors = &actor_specifications.supervisors;
+
+            let mut supervisor_ids: Vec<ActorCompositeId> = vec![];
+            for input_supervisor in supervisors {
+                let supervisor_actor_id = ActorCompositeId::new(
+                    &input_supervisor.id,
+                    vec![],
+                    Availability::new(
+                        *periods.first().unwrap().start_datetime(),
+                        *periods
+                            .get((input_supervisor.number_of_supervisor_periods - 1) as usize)
+                            .unwrap()
+                            .finish_datetime(),
+                        vec![asset.clone()],
+                    )?,
+                );
+
+                supervisor_ids.push(supervisor_actor_id)
+            }
+
+            let operationals: Vec<ActorCompositeId> = actor_specifications
                 .operational
                 .iter()
-                .map(|e| e.id.clone())
+                // TODO [ ] Start here.
+                // Loop over all the availabilities in the system using `InputOperational`.
+                .flat_map(|(id, input_operational)| {
+                    input_operational
+                        .operational_configuration
+                        .availability
+                        .iter()
+                        .map(|availability| {
+                            ActorCompositeId::new(
+                                id,
+                                input_operational
+                                    .operational_configuration
+                                    .resources
+                                    .clone()
+                                    .into_iter()
+                                    .collect::<Vec<_>>(),
+                                availability.clone(),
+                            )
+                        })
+                })
                 .collect::<Vec<_>>();
 
-            (strategic_id, tactical_id, supervisors, operationals)
+            (strategic_id, tactical_id, supervisor_ids, operationals)
         };
 
         let strategic_communication = StrategicApi::construct_actor(
+            // You should make the code work correctly with the
             strategic_id.clone(),
             dependencies.0.clone(),
             dependencies.1.clone(),

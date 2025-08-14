@@ -243,7 +243,7 @@ where
     Ss: SystemSolutions<Strategic = StrategicSolution>,
 {
     fn swap(
-        id: &ordinator_scheduling_environment::worker_environment::resources::Id,
+        id: &ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId,
         solution: SolutionState<Self>,
         system_solution: &mut Ss,
     )

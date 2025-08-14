@@ -15,7 +15,7 @@ use ordinator_orchestrator_actor_traits::delegate::Delegate;
 use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
 use super::supervisor_parameters::SupervisorParameters;
 
@@ -25,13 +25,13 @@ pub type SupervisorObjectiveValue = u64;
 pub struct SupervisorSolution
 {
     pub(crate) objective_value: SupervisorObjectiveValue,
-    pub(crate) operational_state_machine: HashMap<(Id, WorkOrderActivity), Delegate>,
+    pub(crate) operational_state_machine: HashMap<(ActorCompositeId, WorkOrderActivity), Delegate>,
 }
 
 impl SupervisorSolution
 {
     pub fn new_from_parts(
-        operational_state_machine: HashMap<(Id, WorkOrderActivity), Delegate>,
+        operational_state_machine: HashMap<(ActorCompositeId, WorkOrderActivity), Delegate>,
     ) -> Self
     {
         Self {
@@ -122,7 +122,7 @@ impl<Ss> SwapSolution<Ss> for SupervisorSolution
 where
     Ss: SystemSolutions<Supervisor = SupervisorSolution>,
 {
-    fn swap(id: &Id, solution: SolutionState<Self>, system_solution: &mut Ss)
+    fn swap(id: &ActorCompositeId, solution: SolutionState<Self>, system_solution: &mut Ss)
     {
         system_solution.supervisor_swap(id, solution);
     }
@@ -134,7 +134,7 @@ where
 /// We should be careful about how we implement this system.
 impl SupervisorSolution
 {
-    pub fn all_technicians(&self) -> BTreeSet<Id>
+    pub fn all_technicians(&self) -> BTreeSet<ActorCompositeId>
     {
         self.operational_state_machine
             .keys()
@@ -142,7 +142,7 @@ impl SupervisorSolution
             .collect()
     }
 
-    pub fn assigned_activities(&self) -> BTreeMap<Id, WorkOrderActivity>
+    pub fn assigned_activities(&self) -> BTreeMap<ActorCompositeId, WorkOrderActivity>
     {
         self.operational_state_machine
             .iter()
@@ -153,7 +153,7 @@ impl SupervisorSolution
 
     // This is implemented incorrectly. You should make the code work correctly with
     // the. This means that each Id can only have a single WorkOrderActivity.
-    pub fn assess_and_assign_activities(&self) -> Vec<(Id, WorkOrderActivity)>
+    pub fn assess_and_assign_activities(&self) -> Vec<(ActorCompositeId, WorkOrderActivity)>
     {
         self.operational_state_machine
             .iter()
@@ -196,7 +196,7 @@ impl SupervisorSolution
         work_order_activity: &WorkOrderActivity,
         // It can only ever reference the `loaded_shared_solution`
         loaded_shared_solution: &Guard<Arc<Ss>>,
-    ) -> Result<Vec<(Id, Delegate, MarginalFitness)>>
+    ) -> Result<Vec<(ActorCompositeId, Delegate, MarginalFitness)>>
     where
         Ss: SystemSolutions,
     {
@@ -237,7 +237,7 @@ impl SupervisorSolution
 
     pub(crate) fn get_iter(
         &self,
-    ) -> std::collections::hash_map::Iter<(Id, WorkOrderActivity), Delegate>
+    ) -> std::collections::hash_map::Iter<(ActorCompositeId, WorkOrderActivity), Delegate>
     {
         self.operational_state_machine.iter()
     }

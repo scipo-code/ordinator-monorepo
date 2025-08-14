@@ -13,7 +13,7 @@
 // use ordinator_scheduling_environment::work_order::operation::Work;
 // use ordinator_scheduling_environment::worker_environment::TacticalOptions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 // use ordinator_scheduling_environment::worker_environment::resources::Resources;
 // use ordinator_tactical_actor::algorithm::tactical_parameters::OperationParameter;
 // use ordinator_tactical_actor::algorithm::tactical_parameters::TacticalParameter;
@@ -63,7 +63,7 @@ fn test_calculate_objective_value()
     // TODO
     // Insert the needed functions here to create the `SchedulingEnvironment`
 
-    let _id = Id::default();
+    let _id = ActorCompositeId::default();
 
     // let system_configurations =
     // SystemConfigurations::read_all_configs().unwrap().load();

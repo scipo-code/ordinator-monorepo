@@ -8,7 +8,7 @@ use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::MaterialStatus;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
 use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
@@ -146,7 +146,8 @@ impl TryFrom<DateTimeDto> for DateTime<Utc>
     fn try_from(value: DateTimeDto) -> Result<Self, Self::Error>
     {
         let dt = DateTime::parse_from_rfc3339(&value.0)?;
-        Ok(dt.to_utc()) }
+        Ok(dt.to_utc())
+    }
 }
 
 pub type TotalSystemSolution =
@@ -156,9 +157,17 @@ pub type TotalSystemSolution =
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct IdStringDto(String);
 
-impl From<Id> for IdStringDto
+impl IdStringDto
 {
-    fn from(value: Id) -> Self
+    pub fn new(id: String) -> Self
+    {
+        Self(id)
+    }
+}
+
+impl From<ActorCompositeId> for IdStringDto
+{
+    fn from(value: ActorCompositeId) -> Self
     {
         Self(value.0)
     }
@@ -173,14 +182,19 @@ pub struct IdDto
     asset: Vec<AssetNames>,
 }
 
-impl From<Id> for IdDto
+impl From<ActorCompositeId> for IdDto
 {
-    fn from(value: Id) -> Self
+    fn from(value: ActorCompositeId) -> Self
     {
         Self {
             id: value.0,
             resources: value.1.iter().map(|e| e.to_string()).collect(),
-            asset: value.2.iter().map(|e| AssetNames(e.to_string())).collect(),
+            asset: value
+                .2
+                .assets()
+                .iter()
+                .map(|e| AssetNames(e.to_string()))
+                .collect(),
         }
     }
 }

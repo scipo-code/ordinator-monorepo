@@ -1,17 +1,18 @@
-use std::collections::hash_map::Entry;
 use std::collections::HashMap;
+use std::collections::HashSet;
+use std::collections::hash_map::Entry;
 use std::sync::MutexGuard;
 
-use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::ensure;
 use ordinator_actor_core::algorithm::LoadOperation;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use ordinator_scheduling_environment::worker_environment::OperationalId;
-use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
+use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -21,9 +22,9 @@ use serde::Serialize;
 #[derive(Default, Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct StrategicResources(pub HashMap<Period, HashMap<OperationalId, OperationalResource>>);
 
-impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &Id)> for StrategicResources
+impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for StrategicResources
 {
-    fn from(value: (&MutexGuard<'a, SchedulingEnvironment>, &Id)) -> Self
+    fn from(value: (&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)) -> Self
     {
         let gradual_reduction = |i: usize| -> f64 {
             if i == 0 {
@@ -66,25 +67,30 @@ impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &Id)> for StrategicResour
                 // rely on the 13 days.
                 let days_in_period = 13.0; // WARN: period.count_overlapping_days(availability);
 
-                for resource in &operational_agent.id.1 {
+                for resource in &operational_agent.1.operational_configuration.resources {
                     skill_hours.insert(
                         *resource,
                         Work::from(
-                            operational_agent.hours_per_day * days_in_period * gradual_reduction(i),
+                            operational_agent.1.hours_per_day
+                                * days_in_period
+                                * gradual_reduction(i),
                         ),
                     );
                 }
 
                 let operational_resource = OperationalResource::new(
-                    &operational_agent.id.0,
+                    operational_agent.0,
                     Work::from(
-                        operational_agent.hours_per_day * days_in_period * gradual_reduction(i),
+                        operational_agent.1.hours_per_day * days_in_period * gradual_reduction(i),
                     ),
-                    operational_agent.id.1.clone(),
+                    operational_agent
+                        .1
+                        .operational_configuration
+                        .resources
+                        .clone(),
                 );
 
-                operational_resource_map
-                    .insert(operational_agent.id.0.clone(), operational_resource);
+                operational_resource_map.insert(operational_agent.0.clone(), operational_resource);
             }
             strategic_resources_inner.insert(period.clone(), operational_resource_map);
         }
@@ -103,7 +109,7 @@ pub struct OperationalResource
 
 impl OperationalResource
 {
-    pub fn new(id: &str, total_hours: Work, skills: Vec<Resources>) -> Self
+    pub fn new(id: &str, total_hours: Work, skills: HashSet<Resources>) -> Self
     {
         let skill_hours: HashMap<Resources, Work> =
             skills.iter().map(|ski| (*ski, total_hours)).collect();

@@ -26,7 +26,7 @@ use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 
 // You are beginning to see the truth. That there are no shortcuts
@@ -77,7 +77,7 @@ where
     type Communication = Communication<OperationalRequestMessage, OperationalResponseMessage>;
 
     fn construct_actor(
-        id: Id,
+        id: ActorCompositeId,
         scheduling_environment_guard: Arc<Mutex<SchedulingEnvironment>>,
         shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,

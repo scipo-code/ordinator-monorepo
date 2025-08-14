@@ -82,12 +82,12 @@ pub enum EventType
     NonProductiveTime,
     Unavailable,
 }
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
 #[derive(Debug, Serialize)]
 pub struct OperationalResponseStatus
 {
-    id: Id,
+    id: ActorCompositeId,
     assign_number_of_activities: u64,
     assess_number_of_activities: u64,
     unassign_number_of_activities: u64,
@@ -97,7 +97,7 @@ pub struct OperationalResponseStatus
 impl OperationalResponseStatus
 {
     pub fn new(
-        id: Id,
+        id: ActorCompositeId,
         assign_number_of_activities: u64,
         assess_number_of_activities: u64,
         unassign_number_of_activities: u64,

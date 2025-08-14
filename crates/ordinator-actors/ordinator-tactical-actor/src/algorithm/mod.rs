@@ -157,8 +157,8 @@ where
                 .and_then(|period| period.scheduled_task(work_order_number))
                 .map(|where_is_work_order| {
                     match where_is_work_order {
-                        WhereIsWorkOrder::Strategic(period) => period.start_date().date_naive(),
-                        WhereIsWorkOrder::Tactical(period) => period.start_date().date_naive(),
+                        WhereIsWorkOrder::Strategic(period) => period.start_datetime().date_naive(),
+                        WhereIsWorkOrder::Tactical(period) => period.start_datetime().date_naive(),
                         // ISSUE #000 TODO [ ] 2025-07-22 fix the tactical objective
                         WhereIsWorkOrder::NotScheduled => {
                             tactical_parameter.earliest_allowed_start_date
@@ -283,7 +283,7 @@ where
     }
 }
 
-// Essay should you fix this now? Or make a new endpoint? 
+// Essay should you fix this now? Or make a new endpoint?
 // TODO [ ] - add different resources between operation specific logic
 // TODO [ ] - add number_of_people logic
 #[allow(unused_assignments)]
@@ -1017,7 +1017,7 @@ pub mod tests
     use chrono::NaiveDate;
     use ordinator_scheduling_environment::time_environment::day::Day;
     use ordinator_scheduling_environment::work_order::operation::Work;
-    use ordinator_scheduling_environment::worker_environment::resources::Id;
+    use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
     use super::determine_forced_tactical_assignment;
     use crate::algorithm::determine_load;
@@ -1049,7 +1049,7 @@ pub mod tests
     #[test]
     fn test_determine_load_2()
     {
-        let _id = Id::default();
+        let _id = ActorCompositeId::default();
 
         let remaining_capacity = Work::from(3.0);
         let operating_time = Work::from(3.0);

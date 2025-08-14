@@ -1,18 +1,20 @@
 #![feature(iter_map_windows)]
+pub mod assignments;
 pub mod time_environment;
 pub mod work_order;
 pub mod worker_environment;
 
+use std::collections::HashMap;
 use std::collections::HashSet;
 use std::fmt::Display;
 use std::fmt::{self};
 use std::option::Option;
 use std::sync::Arc;
 use std::sync::Mutex;
-use std::vec::Vec;
 
 use anyhow::Result;
-use anyhow::ensure;
+use assignments::Assignment;
+use assignments::SavedAssignment;
 use chrono::DateTime;
 use chrono::NaiveDate;
 use chrono::Utc;
@@ -20,14 +22,10 @@ use serde::Deserialize;
 use serde::Serialize;
 use strum_macros::EnumIter;
 use time_environment::TimeEnvironmentBuilder;
-use time_environment::day::Day;
 use time_environment::period::Period;
-use work_order::ForcedWorkOrder;
-use work_order::WorkOrderNumber;
+use uuid::Uuid;
 use work_order::WorkOrders;
 use work_order::WorkOrdersBuilder;
-use work_order::operation::ActivityNumber;
-use worker_environment::resources::Id;
 
 use self::time_environment::TimeEnvironment;
 use self::worker_environment::ActorEnvironment;
@@ -50,166 +48,6 @@ pub enum TimeType
     Period(Period),
     Day(NaiveDate),
     SpecificTime(DateTime<Utc>),
-}
-
-#[derive(Deserialize, Serialize, Debug)]
-pub struct SavedAssignment(Vec<(WorkOrderNumber, Option<ActivityNumber>, Assignment)>);
-
-impl SavedAssignment
-{
-    // This should be extended to handle the correct initialization of the system.
-    // The best approach is to make the `SavedAssignment`s always dependent on
-    // the technician.
-    // Why:
-    // To make it possible to assign a [`WorkOrderActivity`] to a single technician.
-    //
-    //
-    pub fn make_assignment_for_technician(
-        &mut self,
-        work_order_number: WorkOrderNumber,
-        work_order: &ForcedWorkOrder,
-        activity_number: &ActivityNumber,
-        id: &[Id],
-    ) -> Result<()>
-    {
-        // TODO [ ] - you have to create the correct structure to hold the data.
-        //
-        // Yes this is the way! You are now using the `WorkOrder` has a mechanism to
-        // overwrite the what ever is in the `SavedAssignments`.
-        //
-        // This function is completely wrong, the issue is that the code is not modified
-        // but over written on each change. That is not the intended behavior.
-        // As long as it works you should keep moving forward. I do not see them
-        // make a test that fails the code. Yes, do not guess, simply keep implementing
-        // and then work on the edge cases and observe the hidden abstraction
-        // afterwards.
-        let assignment = match work_order {
-            ForcedWorkOrder::Period(period) => {
-                let technicians = id.iter().map(|e| (e.clone(), None)).collect::<HashSet<_>>();
-                // Should we make an assignment for each of the technicians? Yes.
-                Assignment::new(Some(period.0.clone()), None, technicians)
-            }
-            ForcedWorkOrder::Days(tactical_force_type) => match tactical_force_type {
-                work_order::TacticalForceType::OnlyStartDay(day) => {
-                    let technicians = id.iter().map(|e| (e.clone(), None)).collect::<HashSet<_>>();
-                    Assignment::new(None, Some(day.clone()), technicians)
-                }
-                work_order::TacticalForceType::IndividualActivities(_vec, _vec1) => todo!(),
-            },
-            ForcedWorkOrder::Technician(technician_include, _technician_exclude) => {
-                let date_time_option = technician_include.interval.as_ref().map(|day| day.0);
-                let technicians = id
-                    .iter()
-                    // WARN [ ] modifying Technicians in almost impossible as ID is FAT.
-                    .map(|e| (e.clone(), date_time_option))
-                    .collect::<HashSet<_>>();
-                Assignment::new(None, None, technicians)
-            }
-            ForcedWorkOrder::FreeWorkOrder => {
-                let technicians = id.iter().map(|e| (e.clone(), None)).collect::<HashSet<_>>();
-                Assignment::new(None, None, technicians)
-            }
-        };
-
-        // The forced work order should take precedence,
-        let assignment = (work_order_number, Some(*activity_number), assignment);
-        self.0.push(assignment);
-
-        Ok(())
-    }
-
-    pub fn make_assignment_for_tactical(
-        &mut self,
-        work_order_number: WorkOrderNumber,
-        work_order: &ForcedWorkOrder,
-        day: Day,
-    ) -> Result<()>
-    {
-        // There is a difference between the WorkOrder and the other parts of the
-        // program. Should you stop? This function should change the Tactical
-        // day, unless it is being blocked by something else. It should return
-        // error codes.
-        let assignment = match work_order {
-            ForcedWorkOrder::Period(period) => {
-                ensure!(
-                    period.0.contains_date(day.date),
-                    "WorkOrder is scheduled for period {:#?}, assigning basic start for {:#?} is not allowed",
-                    period.0,
-                    day
-                );
-
-                Assignment::new(Some(period.0.clone()), Some(day), HashSet::new())
-            }
-            ForcedWorkOrder::Days(tactical_force_type) => match tactical_force_type {
-                work_order::TacticalForceType::OnlyStartDay(work_order_day) => {
-                    ensure!(
-                        *work_order_day == day,
-                        "WorkOrder is scheduled for day {:#?}, assigning basic start for {:#?} is not allowed",
-                        work_order_day,
-                        day,
-                    );
-                    Assignment::new(None, Some(day.clone()), HashSet::new())
-                }
-                work_order::TacticalForceType::IndividualActivities(_vec, _vec1) => todo!(),
-            },
-            // TODO [ ] The technician can be plural.
-            ForcedWorkOrder::Technician(technician_include, _technician_exclude) => {
-                let technicians = technician_include.id.clone();
-                let hash_set = HashSet::from([(technicians, None)]);
-                Assignment::new(None, Some(day), hash_set)
-            }
-            ForcedWorkOrder::FreeWorkOrder => Assignment::new(None, Some(day), HashSet::new()),
-        };
-
-        // The forced work order should take precedence,
-        let assignment = (work_order_number, None, assignment);
-        self.0.push(assignment);
-
-        Ok(())
-    }
-
-    pub fn assignment_for_tactical(&self) -> Vec<(WorkOrderNumber, Option<u64>, Assignment)>
-    {
-        self.0
-            .iter()
-            .filter(|&e| e.2.day.is_some())
-            .cloned()
-            .collect::<Vec<_>>()
-    }
-}
-
-// FORGET:
-// * Exclude
-// * Correct data structure
-// * Keep it simple
-// This is everything I believe.
-#[derive(Clone, Deserialize, Serialize, Debug)]
-pub struct Assignment
-{
-    period: Option<Period>,
-    day: Option<Day>,
-    technician: HashSet<(Id, Option<DateTime<Utc>>)>,
-}
-
-impl Assignment
-{
-    fn new(
-        period: Option<Period>,
-        day: Option<Day>,
-        technician: HashSet<(Id, Option<DateTime<Utc>>)>,
-    ) -> Self
-    {
-        Self {
-            period,
-            day,
-            technician,
-        }
-    }
-
-    pub fn day(&self) -> Option<Day>
-    {
-        self.day.clone()
-    }
 }
 
 // `new` and modification is very different here. You should clearly understand
@@ -240,7 +78,6 @@ impl Assignment
 //
 // Do not think about DDD at the moment. Simply make the data structure
 // to support two different kinds of
-
 pub struct SchedulingEnvironmentBuilder
 {
     work_orders: Option<WorkOrders>,
@@ -288,7 +125,7 @@ impl SchedulingEnvironmentBuilder
             .work_orders
             .expect("You should build the WorkOrders with the correct parameters injected.");
 
-        let mut assignments = Vec::new();
+        let mut assignments = HashMap::new();
 
         let time_environment = self
             .time_environment
@@ -329,10 +166,18 @@ impl SchedulingEnvironmentBuilder
             // Something here is tripping you up. You need to make the code work as well as
             // possible with the
             //
-            let assignment = Assignment::new(None, None, HashSet::default());
-            assignments.push((*work_order_number, None, assignment));
+            // REMEMBER:
+            // You simply have to get experience with modelling these kinds of structures.
+            let assignment = assignments::AnyAssignment::Base(Assignment::new(
+                *work_order_number,
+                None,
+                None,
+                None,
+                HashSet::default(),
+            ));
+            assignments.insert(Uuid::new_v4(), assignment);
         }
-        let saved_assignments = SavedAssignment(assignments);
+        let saved_assignments = SavedAssignment::new(assignments);
         Arc::new(Mutex::new(SchedulingEnvironment {
             work_orders,
             worker_environment,

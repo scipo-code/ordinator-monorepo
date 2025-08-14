@@ -45,7 +45,8 @@ use super::worker_environment::resources::Resources;
 use crate::Asset;
 use crate::time_environment::MaterialToPeriod;
 use crate::time_environment::day::Day;
-use crate::worker_environment::resources::Id;
+use crate::worker_environment::IdString;
+use crate::worker_environment::resources::ActorCompositeId;
 
 // TODO [ ]
 //
@@ -270,7 +271,7 @@ pub struct WorkOrder
     pub(crate) fixed_by: FixedWorkOrder,
 }
 
-/// [`WorkOrder`] dates methods
+/// [`WorkOrder`] read methods.
 impl WorkOrder
 {
     pub fn earliest_allowed_start_date(&self) -> NaiveDate
@@ -340,6 +341,7 @@ impl WorkOrder
     }
 }
 
+// This is not allowed.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum FixedWorkOrder
 {
@@ -572,7 +574,7 @@ impl TacticalForceType
 #[derive(Debug)]
 pub struct TechnicianInclude
 {
-    pub id: Id,
+    pub id: IdString,
     pub interval: Option<(DateTime<Utc>, DateTime<Utc>)>,
 }
 
@@ -580,7 +582,7 @@ pub struct TechnicianInclude
 #[derive(Debug)]
 pub struct TechnicianExclude
 {
-    ids: HashSet<Id>,
+    ids: HashSet<ActorCompositeId>,
     intervals: HashSet<Option<(Day, Day)>>,
 }
 
@@ -640,6 +642,11 @@ impl WorkOrder
             work_order_info: None,
             _fixed_by: None,
         }
+    }
+
+    pub fn is_valid(&self) -> bool
+    {
+        false
     }
 
     pub fn activity_relations(&self) -> Vec<ActivityRelation>
@@ -1076,8 +1083,8 @@ impl WorkOrder
     pub fn date_to_period<'a>(periods: &'a [Period], date_time: &NaiveDate) -> &'a Period
     {
         let period: Option<&Period> = periods.iter().find(|period| {
-            period.start_date().date_naive() <= *date_time
-                && period.finish_date().date_naive() >= *date_time
+            period.start_datetime().date_naive() <= *date_time
+                && period.finish_datetime().date_naive() >= *date_time
         });
 
         // This is created in a horrible way. I think that the best approach here
