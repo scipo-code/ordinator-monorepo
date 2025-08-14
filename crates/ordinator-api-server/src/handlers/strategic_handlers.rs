@@ -243,12 +243,12 @@ pub async fn assign_work_order_to_period(
         .update_scheduled_period(&work_order_number, &period, periods)
         .with_context(|| {
             format!(
-                "Could assign work order {:#?} to period {}",
+                "Could not assign work order {:#?} to period {}",
                 work_order_number,
                 period.period_string()
             )
         })
-        .map_err(|e| AppError::Anyhow(e.to_string()))?;
+        .map_err(|e| AppError::Anyhow(format!("{}", e)))?;
 
     // I hated that message structure when I first wrote it, now you have a lesson
     // to learn. So the [`StateLink`] is responsible for updating the `Actors` when
