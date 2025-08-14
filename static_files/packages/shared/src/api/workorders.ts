@@ -33,10 +33,10 @@ export async function assignWorkordertoPeriod(
   period: PeriodDto,
 ): Promise<string> {
   const url = `/api/v1/scheduler/${encodeURIComponent(asset)}` +
-    `/assign_work_order_to_period/${encodeURIComponent(workorder)}/`;
+    `/assign_work_order_to_period/${encodeURIComponent(workorder)}`;
 
   const reqOptions = {
-    method: "PATCH",
+    method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(period),
   };

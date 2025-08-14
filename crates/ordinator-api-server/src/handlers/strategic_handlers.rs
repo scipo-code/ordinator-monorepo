@@ -192,13 +192,13 @@ where
 #[debug_handler]
 #[utoipa::path(
     post,
-    path = "/{asset}/assign_work_order_to_period/{work_order_number}/{period}",
+    path = "/{asset}/assign_work_order_to_period/{work_order_number}",
     tag = "Scheduler",
     params (
         ("asset" = AssetNames, Path),
         ("work_order_number" = WorkOrderNumberDto, Path),
-        ("period" = PeriodDto, Path),
     ),
+    request_body(content = PeriodDto, description = "json with the assigned period", content_type = "application/json", example = json!("2025-W5-6")),
     responses(
         (status = 200),
         (status = 404, body = AppError),
@@ -207,11 +207,8 @@ where
 )]
 pub async fn assign_work_order_to_period(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    Path((asset_dto, work_order_number_dto, period_dto)): Path<(
-        AssetNames,
-        WorkOrderNumberDto,
-        PeriodDto,
-    )>,
+    Path((asset_dto, work_order_number_dto)): Path<(AssetNames, WorkOrderNumberDto)>,
+    Json(period_dto): Json<PeriodDto>,
 ) -> Result<Response, AppError>
 {
     // This should go into the handler, directory. There is no other way around it
