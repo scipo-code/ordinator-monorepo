@@ -23,7 +23,7 @@ impl Availability
     ) -> anyhow::Result<Self>
     {
         if start_date > finish_date {
-            return Err(anyhow::anyhow!("Start date greater than finish date."));
+            return Err(anyhow::anyhow!("Start date later than finish date."));
         }
 
         Ok(Self {
