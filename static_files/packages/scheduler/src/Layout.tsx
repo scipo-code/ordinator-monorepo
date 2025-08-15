@@ -1,6 +1,7 @@
 import { Outlet, useParams } from "react-router-dom";
 import { SidebarProvider } from "./components/ui/sidebar";
-import { AppSidebar, SidebarItem } from "@scipo-code/shared";
+import { SidebarItem } from "@scipo-code/shared";
+import { AppSidebar } from "@/components/app-sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
 import { useMemo } from "react";

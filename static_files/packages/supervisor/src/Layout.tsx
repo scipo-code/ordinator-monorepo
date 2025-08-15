@@ -1,9 +1,10 @@
 import { Outlet, useParams } from "react-router-dom";
 import { SidebarProvider } from "./components/ui/sidebar";
-import { AppSidebar, SidebarItem } from "@scipo-code/shared";
+import { AppSidebar } from "@/components/app-sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { useMemo } from "react";
 import { CalendarDays, ClipboardList, Settings, Users } from "lucide-react";
+import { SidebarItem } from "@scipo-code/shared";
 
 export default function Layout() {
   const { asset } = useParams();
