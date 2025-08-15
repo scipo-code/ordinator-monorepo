@@ -1,5 +1,6 @@
 pub mod material_clerk;
 mod orchestrator;
+pub mod solution_status;
 mod strategic;
 mod supervisor;
 mod tactical;
@@ -12,6 +13,7 @@ use orchestrator::export_xlsx;
 use orchestrator::orchestrator_api_scope;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Orchestrator;
+use solution_status::solution_status_routes;
 use strategic::scheduler_nest;
 use supervisor::supervisor_routes;
 use tactical::tactical_route;
@@ -30,6 +32,10 @@ pub async fn api_scope(
         .nest("/tactical", tactical_route(state.clone()).await)
         .nest("/supervisor", supervisor_routes(state.clone()).await)
         .nest("/technician", technician_routes(state.clone()).await)
+        .nest(
+            "/solution_status",
+            solution_status_routes(state.clone()).await,
+        )
         .nest(
             "/material_clerk",
             material_clerk_routes(state.clone()).await,

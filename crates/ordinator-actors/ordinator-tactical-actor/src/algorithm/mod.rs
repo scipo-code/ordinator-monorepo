@@ -28,19 +28,20 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use ordinator_scheduling_environment::worker_environment::TacticalOptions;
+use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use priority_queue::PriorityQueue;
 use rand::rng;
 use rand::seq::IndexedRandom;
 use tactical_solution::TacticalObjectiveValue;
 use tactical_solution::TacticalScheduledOperations;
 use tactical_solution::TacticalSolution;
-use tracing::event;
 use tracing::Level;
+use tracing::event;
+use tracing::warn;
 
 use self::assert_functions::TacticalAssertions;
 use self::tactical_parameters::TacticalParameters;
@@ -477,6 +478,7 @@ where
         self.force_schedule()
             .context("Could not force schedule tactical solutions")?;
 
+        warn!(target: "debug", tactical_solution = ?self.solution);
         Ok(true)
     }
 
@@ -1039,10 +1041,11 @@ pub mod tests
 
         let loadings = determine_load(remaining_capacity, &operating_time, work_remaining);
 
-        assert_eq!(
-            loadings,
-            vec![Work::from(3.0), Work::from(5.0), Work::from(2.0)]
-        );
+        assert_eq!(loadings, vec![
+            Work::from(3.0),
+            Work::from(5.0),
+            Work::from(2.0)
+        ]);
     }
 
     #[test]
@@ -1056,15 +1059,12 @@ pub mod tests
 
         let loadings = determine_load(remaining_capacity, &operating_time, work_remaining);
 
-        assert_eq!(
-            loadings,
-            vec![
-                Work::from(3.0),
-                Work::from(3.0),
-                Work::from(3.0),
-                Work::from(1.0)
-            ]
-        );
+        assert_eq!(loadings, vec![
+            Work::from(3.0),
+            Work::from(3.0),
+            Work::from(3.0),
+            Work::from(1.0)
+        ]);
     }
 
     #[test]
@@ -1110,13 +1110,10 @@ pub mod tests
         let scheduled_days = vec![(Some(day.clone()), Work::from(8.0), Work::from(6.0), 1)];
         let value = determine_forced_tactical_assignment(&scheduled_days);
 
-        assert_eq!(
-            value,
-            vec![vec![
-                (day.clone(), Work::from(6.0)),
-                (day_2.clone(), Work::from(2.0))
-            ]]
-        )
+        assert_eq!(value, vec![vec![
+            (day.clone(), Work::from(6.0)),
+            (day_2.clone(), Work::from(2.0))
+        ]])
     }
 
     #[test]
@@ -1132,16 +1129,13 @@ pub mod tests
         // TODO [ ] - Add the Date
         let value = determine_forced_tactical_assignment(&scheduled_days);
 
-        assert_eq!(
-            value,
+        assert_eq!(value, vec![
             vec![
-                vec![
-                    (day_1.clone(), Work::from(6.0)),
-                    (day_2.clone(), Work::from(2.0))
-                ],
-                vec![(day_2.clone(), Work::from(4.0))]
-            ]
-        )
+                (day_1.clone(), Work::from(6.0)),
+                (day_2.clone(), Work::from(2.0))
+            ],
+            vec![(day_2.clone(), Work::from(4.0))]
+        ])
     }
 
     #[test]
@@ -1158,20 +1152,14 @@ pub mod tests
         // TODO [ ] - Add the Date
         let value = determine_forced_tactical_assignment(&scheduled_days);
 
-
-
-      
-        assert_eq!(
-            value,
+        assert_eq!(value, vec![
+            vec![(day_1.clone(), Work::from(6.0))],
             vec![
-                vec![(day_1.clone(), Work::from(6.0))],
-                vec![
-                    (day_1.clone(), Work::from(6.0)),
-                    (day_2.clone(), Work::from(2.0))
-                ],
-                vec![(day_2.clone(), Work::from(4.0))]
-            ]
-        )
+                (day_1.clone(), Work::from(6.0)),
+                (day_2.clone(), Work::from(2.0))
+            ],
+            vec![(day_2.clone(), Work::from(4.0))]
+        ])
     }
     // #[test]
     // fn test_determine_forced_assignment_5()
@@ -1201,7 +1189,6 @@ pub mod tests
     //         vec![(day_2.clone(), Work::from(4.0))]
     //     ])
     // }
-
     // #[test]
     // fn test_determine_forced_assignment_6()
     // {

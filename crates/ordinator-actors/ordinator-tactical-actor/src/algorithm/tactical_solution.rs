@@ -35,12 +35,13 @@ pub struct TacticalObjectiveValue
     pub resource_penalty: (usize, u64),
 }
 
+/// TacticalObjectiveValue, assumes Minimization
 impl TacticalObjectiveValue
 {
     pub fn new(tactical_options: &TacticalOptions) -> Self
     {
         Self {
-            objective_value: 0,
+            objective_value: u64::MAX,
             urgency: (tactical_options.urgency, u64::MAX),
             resource_penalty: (tactical_options.resource_penalty, u64::MAX),
         }
