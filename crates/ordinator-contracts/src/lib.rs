@@ -114,7 +114,7 @@ impl TryFrom<AssetNames> for Asset
 
     fn try_from(value: AssetNames) -> anyhow::Result<Self>
     {
-        Asset::new_from_string(&value.0.to_uppercase())
+        Asset::new_from_string(&value.0)
             .with_context(|| format!("This operation should never fail\nAssetNames: {value:#?}"))
     }
 }
