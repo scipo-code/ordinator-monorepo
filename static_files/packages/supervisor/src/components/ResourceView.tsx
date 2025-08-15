@@ -286,6 +286,7 @@ function AddTechnicianDialog() {
                   <FormLabel>Resources</FormLabel>
                   <FormControl>
                     <div className="gap-2">
+                      <div className="mb-2">
                       <ResourcesCombobox
                         resources={resources}
                         selectedResources={field.value}
@@ -296,6 +297,7 @@ function AddTechnicianDialog() {
                           field.onChange(newResources);
                         }}
                       />
+                      </div>
                       <AddedResources
                         selectedResources={field.value}
                         onToggle={(resource) => {

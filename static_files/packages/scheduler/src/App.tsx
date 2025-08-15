@@ -5,6 +5,7 @@ import "./App.css";
 import Layout from "./Layout";
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'; 
 import WorkorderOverview from "./pages/dashboard/WorkorderOverview";
+import ResourceView from "./pages/ResourceView";
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -17,6 +18,7 @@ function App() {
             <Route path="/:asset/" element={<Navigate to="dashboard" relative="path" />} />
             <Route path="/:asset/dashboard" element={<Scheduler />} />
             <Route path="/:asset/dashboard/:workorder" element={<WorkorderOverview/>} />
+            <Route path="/:asset/resources" element={<ResourceView />} />
           </Route>
         </Routes>
     </HashRouter>
