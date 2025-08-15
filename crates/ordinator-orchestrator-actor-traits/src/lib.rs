@@ -342,13 +342,13 @@ pub trait Solution: Sized + Debug
     fn update_objective(&mut self, other_objective: Self::Objective);
 }
 
-pub type Iterations = u64;
+pub type Stagnation = u64;
 pub type Version = u64;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct SolutionState<S: Solution>
 {
-    stagnation_iterations: Iterations,
+    stagnation_iterations: Stagnation,
     version: Version,
     inner: S,
 }
@@ -380,7 +380,7 @@ impl<S: Solution> SolutionState<S>
     pub fn new(solution: S) -> Self
     {
         SolutionState {
-            stagnation_iterations: Iterations::MIN,
+            stagnation_iterations: Stagnation::MIN,
             version: Version::MIN,
             inner: solution,
         }
@@ -407,6 +407,11 @@ impl<S: Solution> SolutionState<S>
     pub fn inner(&self) -> &S
     {
         &self.inner
+    }
+
+    pub fn stagnation_and_version(&self) -> (Stagnation, Version)
+    {
+        (self.stagnation_iterations, self.version)
     }
 }
 
