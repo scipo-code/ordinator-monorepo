@@ -7,7 +7,7 @@ run-test:
 bs-test:
     bs target/debug/deps/ordinator_tactical_actor-cd5c23df1ab83245 
 
-run-front-end-test:
+test-front-ends:
     cargo test test_complete_system -- --ignored --nocapture & cd static_files/packages/shared/ && pnpm test:run && pkill -f test_complete_system 
 
 export-ts-bindings:
