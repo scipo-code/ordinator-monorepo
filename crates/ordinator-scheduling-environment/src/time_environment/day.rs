@@ -1,6 +1,3 @@
-use std::fmt::Display;
-use std::fmt::{self};
-
 use chrono::NaiveDate;
 use rust_xlsxwriter::IntoExcelData;
 use serde::Deserialize;
@@ -34,25 +31,20 @@ impl Days
 }
 
 #[derive(Eq, PartialEq, Hash, Clone, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-pub struct Day
-{
-    pub day_index: usize,
-    pub date: NaiveDate,
-}
+pub struct Day(pub NaiveDate);
 
 impl Day
 {
-    pub fn new(day_index: usize, date: NaiveDate) -> Self
+    pub fn range(start_day: Day, range: u64) -> Vec<Day>
     {
-        Day { day_index, date }
-    }
-}
-
-impl Display for Day
-{
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
-    {
-        write!(f, "{}", self.date)
+        (0..range)
+            .map(|e| {
+                Day(start_day
+                    .0
+                    .checked_add_days(chrono::Days::new(e))
+                    .expect("NaiveDate exceeded its range"))
+            })
+            .collect()
     }
 }
 

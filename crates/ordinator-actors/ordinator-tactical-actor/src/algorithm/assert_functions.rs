@@ -83,7 +83,7 @@ where
                     event!(Level::ERROR, agg_load = ?agg_load, sch_load = ?sch_load, resource = ?resource, day = ?day);
                     bail!(
                         "Loads does not match on: \n\tday {}\n\tresource: {}\n\tscheduled load (based on loadings): {}\n\taggregated_load (based on scheduled work): {}\n",
-                        day.1.to_string().bright_green(),
+                        day.1.0.to_string().bright_green(),
                         resource.to_string().bright_blue(),
                         sch_load.to_string().bright_yellow(),
                         agg_load.to_string().bright_yellow()

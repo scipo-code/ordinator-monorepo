@@ -23,6 +23,7 @@ pub struct SupervisorParameters
     pub options: SupervisorOptions,
 }
 
+pub struct SupervisorParametersBuilder;
 // ASSERT on elements in the Vec. That is a really good point.
 // ISSUE START HERE
 impl std::fmt::Debug for SupervisorParameters
@@ -50,9 +51,10 @@ impl std::fmt::Debug for SupervisorParameters
 
 impl Parameters for SupervisorParameters
 {
+    type Builder = SupervisorParametersBuilder;
     type Key = WorkOrderActivity;
 
-    fn from_source(
+    fn from_scheduling_environment(
         id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>
@@ -118,6 +120,11 @@ impl Parameters for SupervisorParameters
         _key: Self::Key,
         _scheduling_environment: MutexGuard<SchedulingEnvironment>,
     )
+    {
+        todo!()
+    }
+
+    fn from_builder() -> Self::Builder
     {
         todo!()
     }

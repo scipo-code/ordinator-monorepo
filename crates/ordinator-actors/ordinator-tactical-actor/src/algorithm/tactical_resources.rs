@@ -112,20 +112,25 @@ impl TacticalResources
         }
     }
 
-    pub fn determine_period_load(&self, resource: &Resources, period: &Period) -> Result<Work>
+    pub fn determine_period_load(
+        &self,
+        days: &[Day],
+        resource: &Resources,
+        period: &Period,
+    ) -> Result<Work>
     {
-        let days = &self
+        let work = &self
             .resources
             .get(resource)
             .with_context(|| "The resources between the strategic and the tactical should always correspond, unless that the tactical has not been initialized yet".to_string())?
             .days;
 
-        Ok(days
+        Ok(work
             .iter()
             .enumerate()
             // How should we handle this? The goal is to connect a given period to a set of daily
             // indices. You should do this first I think? Yes?
-            .filter(|(index, _)| period.day_indices.contains(&(*index as u64)))
+            .filter(|(index, _)| period.contains_date(days[*index].0))
             // This is where you have to think about the architecture of the code.
             .map(|(_, work)| work)
             .fold(Work::from(0.0), |acc, work| &acc + work))

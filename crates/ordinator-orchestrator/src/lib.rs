@@ -586,14 +586,14 @@ where
                 Availability::new(
                     days.first()
                         .unwrap()
-                        .date
+                        .0
                         .and_hms_opt(0, 0, 0)
                         .context("Could not make a DateTime in Availability for TacticalActor")?
                         .and_utc(),
                     days.get(input_tactical.number_of_tactical_days - 1)
                         .or_else(|| days.last())
                         .unwrap()
-                        .date
+                        .0
                         .and_hms_opt(0, 0, 0)
                         .context("Could not make a DateTime in Availability for TacticalActor")?
                         .and_utc(),

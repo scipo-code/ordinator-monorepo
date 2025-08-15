@@ -50,15 +50,18 @@ pub struct StrategicParameters
     pub strategic_options: StrategicOptions,
 }
 
+pub struct StrategicParametersBuilder;
+
 // QUESTION
 // Should you make a builder for the `Parameters`?
 // I believe that this is a good idea, but I am not really sure
 impl Parameters for StrategicParameters
 {
+    type Builder = StrategicParametersBuilder;
     type Key = WorkOrderNumber;
 
     // That change in the asset, was not complete without downsides.
-    fn from_source(
+    fn from_scheduling_environment(
         id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>
@@ -148,6 +151,11 @@ impl Parameters for StrategicParameters
         _key: Self::Key,
         _scheduling_environment: MutexGuard<SchedulingEnvironment>,
     )
+    {
+        todo!()
+    }
+
+    fn from_builder() -> Self::Builder
     {
         todo!()
     }
@@ -294,7 +302,7 @@ impl WorkOrderParameterBuilder
                     TacticalForceType::OnlyStartDay(day) => {
                         let period = periods
                             .iter()
-                            .find(|per| per.contains_date(day.date))
+                            .find(|per| per.contains_date(day.0))
                             .context("day should always be contained in the period")?
                             .clone();
                         self.locked_in_period = WhereIsWorkOrder::Tactical(period);

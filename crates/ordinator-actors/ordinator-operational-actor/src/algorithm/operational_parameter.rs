@@ -58,6 +58,9 @@ pub struct OperationalParameters
     pub options: OperationalOptions,
 }
 
+// TODO [ ]
+pub struct OperationalParametersBuilder;
+
 impl Debug for OperationalParameters
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
@@ -122,12 +125,22 @@ impl Debug for OperationalParameters
 // There is something rotten about this function.
 impl Parameters for OperationalParameters
 {
+    type Builder = OperationalParametersBuilder;
     type Key = WorkOrderActivity;
 
     // You should not put it in the Options
 
+    fn create_and_insert_new_parameter(
+        &mut self,
+        _key: Self::Key,
+        _scheduling_environment: MutexGuard<SchedulingEnvironment>,
+    )
+    {
+        todo!()
+    }
+
     // Do we even want the code to look like this in the first place?
-    fn from_source(
+    fn from_scheduling_environment(
         id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
         // This is not needed. It should always be a part of your SchedulingEnvironment.
@@ -210,11 +223,7 @@ impl Parameters for OperationalParameters
         })
     }
 
-    fn create_and_insert_new_parameter(
-        &mut self,
-        _key: Self::Key,
-        _scheduling_environment: MutexGuard<SchedulingEnvironment>,
-    )
+    fn from_builder() -> Self::Builder
     {
         todo!()
     }

@@ -296,15 +296,18 @@ where
     Self: Sized,
 {
     type Key;
+    type Builder;
 
     /// Who should build the parameters. That is the key question here.
     /// Do you want to mutate it?
     ///
     /// I really do not like this trait declaration. Something has to change?
-    fn from_source(
+    fn from_scheduling_environment(
         id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>;
+
+    fn from_builder() -> Self::Builder;
 
     /// WARNING
     /// This method can become extremely complex in a practical setting.

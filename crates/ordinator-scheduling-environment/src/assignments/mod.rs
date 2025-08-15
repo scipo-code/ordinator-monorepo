@@ -152,7 +152,7 @@ impl SavedAssignment
         let assignment = match work_order {
             ForcedWorkOrder::Period(period) => {
                 ensure!(
-                    period.0.contains_date(day.date),
+                    period.0.contains_date(day.0),
                     "WorkOrder is scheduled for period {:#?}, assigning basic start for {:#?} is not allowed",
                     period.0,
                     day

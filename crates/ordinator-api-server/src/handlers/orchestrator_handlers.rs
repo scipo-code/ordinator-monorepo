@@ -116,7 +116,7 @@ pub async fn days(State(orchestrator): State<Arc<Orchestrator<TotalSystemSolutio
         .time_environment
         .days
         .iter()
-        .map(|e| e.date.to_string())
+        .map(|e| e.0.to_string())
         .collect();
 
     Json(days).into_response()

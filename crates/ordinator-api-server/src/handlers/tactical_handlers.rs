@@ -141,7 +141,7 @@ where
     let periods = &scheduling_environment_lock.time_environment.periods.clone();
     let day = days
         .iter()
-        .find(|day| day.date == basic_start_date)
+        .find(|day| day.0 == basic_start_date)
         .with_context(|| "Chosen start date is outside of the valid scheduling period".to_string())
         .map_err(|e| AppError::Anyhow(e.to_string()))?;
 

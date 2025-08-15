@@ -26,8 +26,8 @@ impl TacticalInterface for TacticalSolution
             NotScheduled => return None,
         };
 
-        let start = &scheduled_days.first().unwrap().0.date;
-        let end = &scheduled_days.last().unwrap().0.date;
+        let start = &scheduled_days.first().unwrap().0.0;
+        let end = &scheduled_days.last().unwrap().0.0;
 
         Some((start, end))
     }
@@ -43,7 +43,7 @@ impl TacticalInterface for TacticalSolution
                 Strategic(_) => None,
                 Tactical(wo) => {
                     let first_activity = wo.0.first_key_value();
-                    let first_date = first_activity?.1.scheduled.first()?.0.date;
+                    let first_date = first_activity?.1.scheduled.first()?.0.0;
                     Some(WorkOrder::date_to_period(periods, &first_date))
                 }
                 NotScheduled => None,

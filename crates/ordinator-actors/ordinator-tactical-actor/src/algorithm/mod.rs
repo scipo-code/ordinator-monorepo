@@ -1,4 +1,5 @@
-mod assert_functions;
+pub mod assert_functions;
+mod tactical_fixtures;
 pub mod tactical_interface;
 pub mod tactical_parameters;
 pub mod tactical_resources;
@@ -185,7 +186,7 @@ where
                 .last()
                 .unwrap()
                 .0
-                .date;
+                .0;
 
             // Ahh this is completely wrong again. I think that the best approach here is to
             // make the system work.
@@ -396,29 +397,23 @@ fn determine_forced_tactical_assignment(
 
 fn add_one_day(current_day: &mut Option<Day>) -> Option<()>
 {
-    *current_day = Some(Day {
-        day_index: current_day.as_ref().unwrap().day_index.checked_add(1)?,
-        date: current_day
-            .as_ref()
-            .unwrap()
-            .date
-            .checked_add_days(chrono::Days::new(1))
-            .unwrap(),
-    });
+    *current_day = Some(Day(current_day
+        .as_ref()
+        .unwrap()
+        .0
+        .checked_add_days(chrono::Days::new(1))
+        .unwrap()));
     Some(())
 }
 
 fn sub_one_day(current_day: &mut Option<Day>) -> Option<()>
 {
-    *current_day = Some(Day {
-        day_index: current_day.as_ref().unwrap().day_index.checked_sub(1)?,
-        date: current_day
-            .as_ref()
-            .unwrap()
-            .date
-            .checked_sub_days(chrono::Days::new(1))
-            .unwrap(),
-    });
+    *current_day = Some(Day(current_day
+        .as_ref()
+        .unwrap()
+        .0
+        .checked_sub_days(chrono::Days::new(1))
+        .unwrap()));
     Some(())
 }
 
@@ -661,7 +656,7 @@ where
                 .parameters
                 .tactical_days
                 .iter()
-                .filter(|day| tactical_parameter.earliest_allowed_start_date <= day.date)
+                .filter(|day| tactical_parameter.earliest_allowed_start_date <= day.0)
                 .collect();
 
             let start_day: Day = match allowed_starting_days.get(start_day_index) {
@@ -674,10 +669,10 @@ where
 
             let allowed_days: Vec<_> = all_days
                 .iter_mut()
-                .filter(|date| start_day.date <= date.date)
+                .filter(|date| start_day.0 <= date.0)
                 .collect();
 
-            let mut current_day = allowed_days.into_iter().peekable();
+            let mut current_day = allowed_days.into_iter().enumerate().peekable();
 
             let mut sorted_activities = tactical_parameter
                 .tactical_operation_parameters
@@ -704,7 +699,7 @@ where
                 };
 
                 let first_day_remaining_capacity =
-                    match self.remaining_capacity(&resource, current_day_peek) {
+                    match self.remaining_capacity(&resource, current_day_peek.0) {
                         Some(remaining_capacity) => remaining_capacity,
                         None => {
                             loop_state = LoopState::Unscheduled;
@@ -724,7 +719,7 @@ where
 
                 for load in loadings {
                     let day = match current_day.peek() {
-                        Some(day) => (*day).clone(),
+                        Some(day) => (*day.1).clone(),
                         None => {
                             break;
                         }
@@ -742,7 +737,7 @@ where
                         }
                     };
 
-                    if self.remaining_capacity(&resource, current_day).is_none() {
+                    if self.remaining_capacity(&resource, current_day.0).is_none() {
                         loop_state = LoopState::Unscheduled;
                         continue 'back_to_loop_state_handle;
                     };
@@ -898,13 +893,12 @@ where
     {
         for operation in operation_solutions.0.values() {
             let resource = &operation.resource;
-            for loadings in &operation.scheduled {
-                let day = &loadings.0;
-                let load = &loadings.1;
+            for (day_index, day_work) in operation.scheduled.iter().enumerate() {
+                let load = &day_work.1;
                 let resource_loading = self
                     .solution
                     .tactical_loadings
-                    .get_resource(resource, day.day_index)?;
+                    .get_resource(resource, day_index)?;
 
                 let new_load = match load_operation {
                     LoadOperation::Add => resource_loading + load,
@@ -915,7 +909,7 @@ where
                     .tactical_loadings
                     // WARN [ ] 2025-07-02 It is crucial that the index is always at the right place
                     // in the code.
-                    .get_resource_mut(resource, day.day_index)? = new_load;
+                    .get_resource_mut(resource, day_index)? = new_load;
             }
         }
         Ok(())
@@ -942,17 +936,17 @@ where
         }
     }
 
-    fn remaining_capacity(&self, resource: &Resources, day: &Day) -> Option<Work>
+    fn remaining_capacity(&self, resource: &Resources, day_index: usize) -> Option<Work>
     {
         let remaining_capacity = self
             .parameters
             .tactical_capacity
-            .get_resource(resource, day.day_index)
+            .get_resource(resource, day_index)
             .ok()?
             - self
                 .solution
                 .tactical_loadings
-                .get_resource(resource, day.day_index)
+                .get_resource(resource, day_index)
                 .ok()?;
 
         if remaining_capacity <= Work::from(0.0) {
@@ -1017,11 +1011,23 @@ where
 pub mod tests
 {
     use chrono::NaiveDate;
+    use ordinator_actor_core::algorithm::Algorithm;
+    use ordinator_orchestrator_actor_traits::OperationalInterface;
+    use ordinator_orchestrator_actor_traits::Solution;
+    use ordinator_orchestrator_actor_traits::StrategicInterface;
+    use ordinator_orchestrator_actor_traits::SupervisorInterface;
+    use ordinator_orchestrator_actor_traits::SystemSolutions;
+    use ordinator_orchestrator_actor_traits::TacticalInterface;
     use ordinator_scheduling_environment::time_environment::day::Day;
+    use ordinator_scheduling_environment::work_order::WorkOrderNumber;
     use ordinator_scheduling_environment::work_order::operation::Work;
     use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
+    use priority_queue::PriorityQueue;
 
     use super::determine_forced_tactical_assignment;
+    use super::tactical_fixtures::tactical_parameters_1;
+    use super::tactical_parameters::TacticalParameters;
+    use super::tactical_solution::TacticalSolution;
     use crate::algorithm::determine_load;
 
     #[test]
@@ -1095,7 +1101,7 @@ pub mod tests
     #[test]
     fn test_determine_forced_assignment_1()
     {
-        let day = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
+        let day = Day(NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
         let scheduled_days = vec![(Some(day.clone()), Work::from(4.0), Work::from(6.0), 1)];
         let value = determine_forced_tactical_assignment(&scheduled_days);
 
@@ -1105,8 +1111,8 @@ pub mod tests
     #[test]
     fn test_determine_forced_assignment_2()
     {
-        let day = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
-        let day_2 = Day::new(4, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
+        let day = Day(NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
+        let day_2 = Day(NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
         let scheduled_days = vec![(Some(day.clone()), Work::from(8.0), Work::from(6.0), 1)];
         let value = determine_forced_tactical_assignment(&scheduled_days);
 
@@ -1119,8 +1125,8 @@ pub mod tests
     #[test]
     fn test_determine_forced_assignment_3()
     {
-        let day_1 = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
-        let day_2 = Day::new(4, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
+        let day_1 = Day(NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
+        let day_2 = Day(NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
 
         let scheduled_days = vec![
             (Some(day_1.clone()), Work::from(8.0), Work::from(6.0), 1),
@@ -1141,8 +1147,8 @@ pub mod tests
     #[test]
     fn test_determine_forced_assignment_4()
     {
-        let day_1 = Day::new(1, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
-        let day_2 = Day::new(2, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
+        let day_1 = Day(NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
+        let day_2 = Day(NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
 
         let scheduled_days = vec![
             (None, Work::from(6.0), Work::from(6.0), 1),
@@ -1164,10 +1170,10 @@ pub mod tests
     // #[test]
     // fn test_determine_forced_assignment_5()
     // {
-    //     let day_0 = Day::new(0, NaiveDate::from_ymd_opt(2024, 12,
-    // 31).unwrap());     let day_1 = Day::new(1,
-    // NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());     let day_2 =
-    // Day::new(2, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
+    //     let day_0 = Day(NaiveDate::from_ymd_opt(2024, 12,
+    // 31).unwrap());     let day_1 = Day()    // NaiveDate::from_ymd_opt(2025, 1,
+    // 1).unwrap());     let day_2 = Day(NaiveDate::from_ymd_opt(2025, 1,
+    // 2).unwrap());
 
     //     let scheduled_days = vec![
     //         (None, Work::from(12.0), Work::from(6.0), 1),
@@ -1192,11 +1198,10 @@ pub mod tests
     // #[test]
     // fn test_determine_forced_assignment_6()
     // {
-    //     let day_0 = Day::new(0, NaiveDate::from_ymd_opt(2024, 12,
-    // 30).unwrap());     let day_1 = Day::new(1,
-    // NaiveDate::from_ymd_opt(2024, 12, 31).unwrap());     let day_2 =
-    // Day::new(2, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
-    //     let day_3 = Day::new(3, NaiveDate::from_ymd_opt(2025, 1,
+    //     let day_0 = Day(NaiveDate::from_ymd_opt(2024, 12,
+    // 30).unwrap());     let day_1 = Day()    // NaiveDate::from_ymd_opt(2024, 12,
+    // 31).unwrap());     let day_2 = Day(NaiveDate::from_ymd_opt(2025, 1,
+    // 1).unwrap());     let day_3 = Day(NaiveDate::from_ymd_opt(2025, 1,
     // 2).unwrap());
 
     //     let scheduled_days = vec![
@@ -1220,4 +1225,216 @@ pub mod tests
     //         vec![(day_3.clone(), Work::from(4.0))]
     //     ])
     // }
+    //
+    //
+    #[test]
+    fn test_tactical_schedule_function()
+    {
+        let tactical_parameters = tactical_parameters_1();
+
+        let tactical_algorithm = Algorithm::<
+            TacticalSolution,
+            TacticalParameters,
+            PriorityQueue<WorkOrderNumber, u64>,
+            TestSystemSolution<Operational, Strategic, Supervisor, Tactical>,
+        >::builder();
+    }
+
+    #[derive(Clone, Debug, Eq, PartialEq)]
+    struct Operational;
+    impl Solution for Operational
+    {
+        type Objective = ();
+        type Parameters = ();
+
+        fn from_parameters(parameters: &Self::Parameters) -> anyhow::Result<Self>
+        {
+            todo!()
+        }
+
+        fn update_objective(&mut self, other_objective: Self::Objective)
+        {
+            todo!()
+        }
+    }
+    impl OperationalInterface for Operational
+    {
+        fn marginal_fitness_for_operational_actor<'a>(
+            &'a self,
+            work_order_activity: &ordinator_scheduling_environment::work_order::WorkOrderActivity,
+        ) -> Option<&'a ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness>
+        {
+            todo!()
+        }
+
+        fn scheduled_activities_for_operational_actor(
+            &self,
+        ) -> std::collections::HashSet<
+            ordinator_scheduling_environment::work_order::WorkOrderActivity,
+        >
+        {
+            todo!()
+        }
+    }
+    #[derive(Clone, Debug, Eq, PartialEq)]
+    struct Strategic;
+    impl StrategicInterface for Strategic{
+        
+    } 
+    impl Solution for Strategic
+    {
+        type Objective = ();
+        type Parameters = ();
+
+        fn from_parameters(parameters: &Self::Parameters) -> anyhow::Result<Self>
+        {
+            todo!()
+        }
+
+        fn update_objective(&mut self, other_objective: Self::Objective)
+        {
+            todo!()
+        }
+    }
+    #[derive(Clone, Debug, Eq, PartialEq)]
+    struct Tactical;
+    impl TacticalInterface for Tactical{
+        
+    } 
+    impl Solution for Tactical
+    {
+        type Objective = ();
+        type Parameters = ();
+
+        fn from_parameters(parameters: &Self::Parameters) -> anyhow::Result<Self>
+        {
+            todo!()
+        }
+
+        fn update_objective(&mut self, other_objective: Self::Objective)
+        {
+            todo!()
+        }
+    }
+    #[derive(Clone, Debug, Eq, PartialEq)]
+    struct Supervisor;
+    impl SupervisorInterface for Supervisor{
+        
+    } 
+    impl Solution for Supervisor
+    {
+        type Objective = ();
+        type Parameters = ();
+
+        fn from_parameters(parameters: &Self::Parameters) -> anyhow::Result<Self>
+        {
+            todo!()
+        }
+
+        fn update_objective(&mut self, other_objective: Self::Objective)
+        {
+            todo!()
+        }
+    }
+
+    #[derive(Clone)]
+    struct TestSystemSolution<Operational, Strategic, Supervisor, Tactical>
+    where
+        Operational: Solution + OperationalInterface,
+        Strategic: Solution + StrategicInterface,
+        Tactical: Solution + TacticalInterface,
+        Supervisor: Solution + SupervisorInterface,
+    {
+        operational: Operational,
+        strategic: Strategic,
+        supervisor: Supervisor,
+        tactical: Tactical,
+    }
+
+    impl<Operational, Strategic, Supervisor, Tactical> SystemSolutions
+        for TestSystemSolution<Operational, Strategic, Supervisor, Tactical>
+    where
+        Operational: Solution + OperationalInterface,
+        Strategic: Solution + StrategicInterface,
+        Tactical: Solution + TacticalInterface,
+        Supervisor: Solution + SupervisorInterface,
+    {
+        type Operational = Operational;
+        type Strategic = Strategic;
+        type Supervisor = Supervisor;
+        type Tactical = Tactical;
+
+        fn new() -> Self
+        {
+            todo!()
+        }
+
+        fn strategic(&self) -> anyhow::Result<&Self::Strategic>
+        {
+            todo!()
+        }
+
+        fn strategic_swap(
+            &mut self,
+            id: &ActorCompositeId,
+            solution: ordinator_orchestrator_actor_traits::SolutionState<Self::Strategic>,
+        ) where
+            Self::Strategic: ordinator_orchestrator_actor_traits::Solution,
+        {
+            todo!()
+        }
+
+        fn tactical_actor_solution(&self) -> anyhow::Result<&Self::Tactical>
+        {
+            todo!()
+        }
+
+        fn tactical_swap(
+            &mut self,
+            id: &ActorCompositeId,
+            solution: ordinator_orchestrator_actor_traits::SolutionState<Self::Tactical>,
+        ) where
+            Self::Tactical: ordinator_orchestrator_actor_traits::Solution,
+        {
+            todo!()
+        }
+
+        fn supervisor_actor_solutions(&self) -> anyhow::Result<&Self::Supervisor>
+        {
+            todo!()
+        }
+
+        fn supervisor_swap(
+            &mut self,
+            id: &ActorCompositeId,
+            solution: ordinator_orchestrator_actor_traits::SolutionState<Self::Supervisor>,
+        ) where
+            Self::Supervisor: ordinator_orchestrator_actor_traits::Solution,
+        {
+            todo!()
+        }
+
+        fn operational_actor_solutions(
+            &self,
+            id: &ActorCompositeId,
+        ) -> anyhow::Result<&Self::Operational>
+        {
+            todo!()
+        }
+
+        fn all_operational(&self) -> std::collections::HashSet<ActorCompositeId>
+        {
+            todo!()
+        }
+
+        fn operational_swap(
+            &mut self,
+            id: &ActorCompositeId,
+            solution: ordinator_orchestrator_actor_traits::SolutionState<Self::Operational>,
+        ) where
+            Self::Operational: ordinator_orchestrator_actor_traits::Solution,
+        {
+            todo!()
+        }
+    }
 }

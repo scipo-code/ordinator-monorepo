@@ -104,7 +104,7 @@ where
         .algorithm(|ab| {
             ab.id(id)
                 // So this function returns a `Result`
-                .parameters_and_solution(&scheduling_environment_guard.lock().unwrap())?
+                .parameters_and_solution_from_scheduling_environment(&scheduling_environment_guard.lock().unwrap())?
                 .system_solution_arc_swap(shared_solution_arc_swap)
         })?
         .communication(error_channel, state_link_bus)

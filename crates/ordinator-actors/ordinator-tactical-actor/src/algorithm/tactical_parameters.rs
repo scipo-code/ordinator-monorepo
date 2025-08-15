@@ -14,6 +14,7 @@ use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::assignments::AnyAssignment;
 use ordinator_scheduling_environment::time_environment::day::Day;
+use ordinator_scheduling_environment::time_environment::day::Days;
 use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
@@ -32,17 +33,105 @@ use super::tactical_resources::TacticalResources;
 #[derive(Debug)]
 pub struct TacticalParameters
 {
-    pub tactical_work_orders: HashMap<WorkOrderNumber, TacticalParameter>,
+    pub tactical_work_orders: HashMap<WorkOrderNumber, TacticalWorkOrder>,
     pub tactical_days: Vec<Day>,
     pub tactical_capacity: TacticalResources,
     pub tactical_options: TacticalOptions,
 }
 
+pub struct TacticalParametersBuilder
+{
+    tactical_work_orders: HashMap<WorkOrderNumber, TacticalWorkOrder>,
+    tactical_days: Option<Vec<Day>>,
+    tactical_capacity: Option<TacticalResources>,
+    tactical_options: Option<TacticalOptions>,
+}
+
+impl TacticalParametersBuilder
+{
+    fn new() -> Self
+    {
+        Self {
+            tactical_work_orders: HashMap::new(),
+            tactical_days: None,
+            tactical_capacity: None,
+            tactical_options: None,
+        }
+    }
+
+    pub fn tactical_work_orders_builder<F>(
+        mut self,
+        work_order_number: WorkOrderNumber,
+        configure: F,
+    ) -> Self
+    where
+        F: FnOnce(TacticalWorkOrderBuilder) -> TacticalWorkOrderBuilder,
+    {
+        let operations_builder = TacticalWorkOrder::builder();
+
+        let operations_builder = configure(operations_builder);
+
+        self.tactical_work_orders
+            .insert(work_order_number, operations_builder.build());
+
+        self
+    }
+
+    pub fn tactical_days(mut self, days: Vec<Day>) -> Self
+    {
+        self.tactical_days = Some(days);
+        self
+    }
+
+    pub fn tactical_capacity(mut self, capacity: TacticalResources) -> Self
+    {
+        self.tactical_capacity = Some(capacity);
+        self
+    }
+
+    pub fn tactical_capacity_builder<F>(mut self, configure: F) -> Self
+    where
+        F: FnOnce(TacticalResourcesBuilder) -> TacticalResourcesBuilder,
+    {
+        let builder = TacticalResourcesBuilder::new();
+        let configured_builder = configure(builder);
+        self.tactical_capacity = Some(configured_builder.build());
+        self
+    }
+
+    pub fn tactical_options(mut self, options: TacticalOptions) -> Self
+    {
+        self.tactical_options = Some(options);
+        self
+    }
+
+    pub fn tactical_options_builder<F>(mut self, configure: F) -> Self
+    where
+        F: FnOnce(TacticalOptionsBuilder) -> TacticalOptionsBuilder,
+    {
+        let builder = TacticalOptionsBuilder::new();
+        let configured_builder = configure(builder);
+        self.tactical_options = Some(configured_builder.build());
+        self
+    }
+
+    pub fn build(self) -> TacticalParameters
+    {
+        TacticalParameters {
+            tactical_work_orders: self.tactical_work_orders,
+            tactical_days: self.tactical_days.unwrap(),
+            tactical_capacity: self.tactical_capacity.unwrap(),
+            tactical_options: self.tactical_options.unwrap(),
+        }
+    }
+}
+
 impl Parameters for TacticalParameters
 {
+    type Builder = TacticalParametersBuilder;
     type Key = WorkOrderNumber;
 
-    fn from_source(
+    fn from_scheduling_environment(
         id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>
@@ -72,7 +161,7 @@ impl Parameters for TacticalParameters
         let assignments = &scheduling_environment.assignments.assignment_for_tactical();
         let tactical_capacity = TacticalResources::from((scheduling_environment, id));
 
-        let tactical_work_orders: HashMap<WorkOrderNumber, TacticalParameter> = work_orders
+        let tactical_work_orders: HashMap<WorkOrderNumber, TacticalWorkOrder> = work_orders
             .map(|(won, wo)| {
                 let start_days_for_activities: HashMap<Option<ActivityNumber>, AnyAssignment> =
                     assignments
@@ -88,7 +177,7 @@ impl Parameters for TacticalParameters
                     create_tactical_parameter(wo, start_days_for_activities, work_order_policies)?,
                 ))
             })
-            .collect::<Result<HashMap<WorkOrderNumber, TacticalParameter>>>()?;
+            .collect::<Result<HashMap<WorkOrderNumber, TacticalWorkOrder>>>()?;
 
         let tactical_days = scheduling_environment.time_environment.days[0..min(
             actor_specification.tactical().number_of_tactical_days,
@@ -101,6 +190,11 @@ impl Parameters for TacticalParameters
             tactical_capacity,
             tactical_options: actor_specification.tactical().tactical_options.clone(),
         })
+    }
+
+    fn from_builder() -> Self::Builder
+    {
+        TacticalParametersBuilder::new()
     }
 
     // We cannot reuse this component.
@@ -127,7 +221,7 @@ pub fn create_tactical_parameter(
     work_order: &WorkOrder,
     start_days_for_activities: HashMap<Option<ActivityNumber>, AnyAssignment>,
     work_order_configuration: &WorkOrderPolicies,
-) -> Result<TacticalParameter>
+) -> Result<TacticalWorkOrder>
 {
     let mut operation_parameters = BTreeMap::new();
     for activity_number in &work_order.activity_numbers() {
@@ -146,11 +240,11 @@ pub fn create_tactical_parameter(
         operation_parameters.insert(*activity_number, operation_parameter);
     }
 
-    TacticalParameter::new(work_order, work_order_configuration, operation_parameters)
+    TacticalWorkOrder::new(work_order, work_order_configuration, operation_parameters)
 }
 
 #[derive(Debug, Clone, Serialize)]
-pub struct TacticalParameter
+pub struct TacticalWorkOrder
 {
     pub tactical_operation_parameters: BTreeMap<ActivityNumber, OperationParameter>,
     // ISSUE #300 TODO [ ] 2025-07-17 implement the `forced_schedule_*` in the tactical
@@ -164,8 +258,306 @@ pub struct TacticalParameter
     pub earliest_allowed_start_date: NaiveDate,
 }
 
+pub struct TacticalWorkOrderBuilder
+{
+    tactical_operation_parameters: BTreeMap<ActivityNumber, OperationParameter>,
+    weight: Option<u64>,
+    relations: Option<Vec<ActivityRelation>>,
+    earliest_allowed_start_date: Option<NaiveDate>,
+}
+
+impl TacticalWorkOrderBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            tactical_operation_parameters: BTreeMap::new(),
+            weight: None,
+            relations: None,
+            earliest_allowed_start_date: None,
+        }
+    }
+
+    pub fn weight(mut self, weight: u64) -> Self
+    {
+        self.weight = Some(weight);
+        self
+    }
+
+    pub fn relations(mut self, relations: Vec<ActivityRelation>) -> Self
+    {
+        self.relations = Some(relations);
+        self
+    }
+
+    pub fn earliest_allowed_start_date(mut self, date: NaiveDate) -> Self
+    {
+        self.earliest_allowed_start_date = Some(date);
+        self
+    }
+
+    pub fn tactical_operation_parameters<F>(mut self, configure: F) -> Self
+    where
+        F: FnOnce(TacticalOperationParametersBuilder) -> TacticalOperationParametersBuilder,
+    {
+        let builder = TacticalOperationParametersBuilder::new();
+        let configured_builder = configure(builder);
+        self.tactical_operation_parameters = configured_builder.build();
+        self
+    }
+
+    pub fn build(self) -> TacticalWorkOrder
+    {
+        TacticalWorkOrder {
+            tactical_operation_parameters: self.tactical_operation_parameters,
+            weight: self.weight.unwrap(),
+            relations: self.relations.unwrap(),
+            earliest_allowed_start_date: self.earliest_allowed_start_date.unwrap(),
+        }
+    }
+}
+
+#[derive(Default)]
+pub struct TacticalResourcesBuilder
+{
+    resources: HashMap<Resources, Days>,
+}
+
+impl TacticalResourcesBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            resources: HashMap::new(),
+        }
+    }
+
+    pub fn add_resource(mut self, resource: Resources, days: Days) -> Self
+    {
+        self.resources.insert(resource, days);
+        self
+    }
+
+    pub fn add_resource_with_work(mut self, resource: Resources, work_per_day: Vec<Work>) -> Self
+    {
+        let days = Days { days: work_per_day };
+        self.resources.insert(resource, days);
+        self
+    }
+
+    pub fn add_resource_uniform(
+        mut self,
+        resource: Resources,
+        work_per_day: Work,
+        num_days: usize,
+    ) -> Self
+    {
+        let days = Days {
+            days: vec![work_per_day; num_days],
+        };
+        self.resources.insert(resource, days);
+        self
+    }
+
+    pub fn build(self) -> TacticalResources
+    {
+        TacticalResources::new(self.resources)
+    }
+}
+
+pub struct TacticalOptionsBuilder
+{
+    number_of_removed_work_orders: Option<usize>,
+    urgency: Option<usize>,
+    resource_penalty: Option<usize>,
+}
+
+impl TacticalOptionsBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            number_of_removed_work_orders: None,
+            urgency: None,
+            resource_penalty: None,
+        }
+    }
+
+    pub fn number_of_removed_work_orders(mut self, count: usize) -> Self
+    {
+        self.number_of_removed_work_orders = Some(count);
+        self
+    }
+
+    pub fn urgency(mut self, urgency: usize) -> Self
+    {
+        self.urgency = Some(urgency);
+        self
+    }
+
+    pub fn resource_penalty(mut self, penalty: usize) -> Self
+    {
+        self.resource_penalty = Some(penalty);
+        self
+    }
+
+    pub fn build(self) -> TacticalOptions
+    {
+        TacticalOptions {
+            number_of_removed_work_orders: self.number_of_removed_work_orders.unwrap_or(0),
+            urgency: self.urgency.unwrap_or(1),
+            resource_penalty: self.resource_penalty.unwrap_or(1),
+        }
+    }
+}
+
+pub struct TacticalOperationParametersBuilder
+{
+    operation_parameters: BTreeMap<ActivityNumber, OperationParameter>,
+}
+
+impl TacticalOperationParametersBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            operation_parameters: BTreeMap::new(),
+        }
+    }
+
+    pub fn add_operation_parameter(
+        mut self,
+        activity_number: ActivityNumber,
+        parameter: OperationParameter,
+    ) -> Self
+    {
+        self.operation_parameters.insert(activity_number, parameter);
+        self
+    }
+
+    pub fn add_operation_parameter_with_builder<F>(
+        mut self,
+        activity_number: ActivityNumber,
+        configure: F,
+    ) -> Self
+    where
+        F: FnOnce(OperationParameterBuilder) -> OperationParameterBuilder,
+    {
+        let builder = OperationParameterBuilder::new();
+        let configured_builder = configure(builder);
+        self.operation_parameters
+            .insert(activity_number, configured_builder.build());
+        self
+    }
+
+    pub fn build(self) -> BTreeMap<ActivityNumber, OperationParameter>
+    {
+        self.operation_parameters
+    }
+}
+
+pub struct OperationParameterBuilder
+{
+    work_order_number: Option<WorkOrderNumber>,
+    number: Option<NumberOfPeople>,
+    duration: Option<Work>,
+    operating_time: Option<Work>,
+    work_remaining: Option<Work>,
+    resource: Option<Resources>,
+    forced_start_date: Option<Option<Day>>,
+    earliest_start_date: Option<DateTime<Utc>>,
+    earliest_finish_date: Option<DateTime<Utc>>,
+}
+
+impl OperationParameterBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            work_order_number: None,
+            number: None,
+            duration: None,
+            operating_time: None,
+            work_remaining: None,
+            resource: None,
+            forced_start_date: None,
+            earliest_start_date: None,
+            earliest_finish_date: None,
+        }
+    }
+
+    pub fn work_order_number(mut self, work_order_number: WorkOrderNumber) -> Self
+    {
+        self.work_order_number = Some(work_order_number);
+        self
+    }
+
+    pub fn number(mut self, number: NumberOfPeople) -> Self
+    {
+        self.number = Some(number);
+        self
+    }
+
+    pub fn duration(mut self, duration: Work) -> Self
+    {
+        self.duration = Some(duration);
+        self
+    }
+
+    pub fn operating_time(mut self, operating_time: Work) -> Self
+    {
+        self.operating_time = Some(operating_time);
+        self
+    }
+
+    pub fn work_remaining(mut self, work_remaining: Work) -> Self
+    {
+        self.work_remaining = Some(work_remaining);
+        self
+    }
+
+    pub fn resource(mut self, resource: Resources) -> Self
+    {
+        self.resource = Some(resource);
+        self
+    }
+
+    pub fn forced_start_date(mut self, forced_start_date: Option<Day>) -> Self
+    {
+        self.forced_start_date = Some(forced_start_date);
+        self
+    }
+
+    pub fn earliest_start_datetime(mut self, earliest_start_date: DateTime<Utc>) -> Self
+    {
+        self.earliest_start_date = Some(earliest_start_date);
+        self
+    }
+
+    pub fn earliest_finish_datetime(mut self, earliest_finish_date: DateTime<Utc>) -> Self
+    {
+        self.earliest_finish_date = Some(earliest_finish_date);
+        self
+    }
+
+    pub fn build(self) -> OperationParameter
+    {
+        OperationParameter {
+            work_order_number: self.work_order_number.unwrap(),
+            number: self.number.unwrap(),
+            duration: self.duration.unwrap(),
+            operating_time: self.operating_time.unwrap(),
+            work_remaining: self.work_remaining.unwrap(),
+            resource: self.resource.unwrap(),
+            forced_start_date: self.forced_start_date.unwrap(),
+            earliest_start_date: self.earliest_start_date.unwrap(),
+            earliest_finish_date: self.earliest_finish_date.unwrap(),
+        }
+    }
+}
+
 // How should the parameters be build here?
-impl TacticalParameter
+impl TacticalWorkOrder
 {
     pub fn new(
         work_order: &WorkOrder,
@@ -190,6 +582,11 @@ impl TacticalParameter
             // So we have to create something that will let us fix the tactical work_orders. The
             // enum here is a great bet.
         })
+    }
+
+    pub fn builder() -> TacticalWorkOrderBuilder
+    {
+        TacticalWorkOrderBuilder::new()
     }
 }
 

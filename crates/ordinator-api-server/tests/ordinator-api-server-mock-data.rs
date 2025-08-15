@@ -12,12 +12,11 @@ use ordinator_orchestrator::logging::setup_logging;
 #[ignore]
 async fn test_complete_system() -> anyhow::Result<()>
 {
+    let current_datetime = Utc.with_ymd_and_hms(2025, 1, 13, 7, 0, 0).unwrap();
     let scheduling_environment =
-        fixtures::scheduling_environment_master_test::load_scheduling_environment();
+        fixtures::scheduling_environment_master_test::load_scheduling_environment(current_datetime);
 
-    let environment = ordinator_orchestrator::Environment::Test(
-        Utc.with_ymd_and_hms(2025, 1, 1, 7, 0, 0).unwrap(),
-    );
+    let environment = ordinator_orchestrator::Environment::Test(current_datetime);
 
     let (orchestrator, error_handle, system_clock_handle) =
         Orchestrator::<TotalSystemSolution>::builder()

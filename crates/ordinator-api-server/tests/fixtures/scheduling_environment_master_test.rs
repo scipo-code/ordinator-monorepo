@@ -3,6 +3,7 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::sync::Arc;
 
+use chrono::DateTime;
 use chrono::NaiveDate;
 use chrono::TimeDelta;
 use chrono::TimeZone;
@@ -23,7 +24,9 @@ use ordinator_scheduling_environment::work_order::work_order_info::work_order_ty
 use ordinator_scheduling_environment::worker_environment::TimeInput;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 
-pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironment>>
+pub fn load_scheduling_environment(
+    current_time: DateTime<Utc>,
+) -> Arc<std::sync::Mutex<SchedulingEnvironment>>
 {
     let asset = Asset::Test;
     let asset_string = asset.to_string().to_lowercase();
@@ -40,10 +43,7 @@ pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironme
         number_of_days: 42,
     };
 
-    let time_environment = create_time_environment(
-        Utc.with_ymd_and_hms(2025, 1, 13, 7, 0, 0).unwrap(),
-        &time_input,
-    );
+    let time_environment = create_time_environment(current_time, &time_input);
 
     let work_order_policies =
         "temp_scheduling_environment_database/work_order_policies/work_order_policies_df.toml";

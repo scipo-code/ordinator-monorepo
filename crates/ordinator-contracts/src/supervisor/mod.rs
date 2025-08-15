@@ -150,7 +150,7 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
                     .scheduled_work_order_activities
                     // This value should be gotten from the
                     .iter()
-                    .filter(|f| f.1.active_datetimes().contains(&day.date))
+                    .filter(|f| f.1.active_datetimes().contains(&day.0))
                     .find(|e| e.0 == *work_order_activity);
 
                 if let Some(_operational_assignment) = operational_assignments_by_day {
@@ -181,7 +181,7 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
             let day_subtable = DaySubtable {
                 work_order_activities_per_work_center,
             };
-            days.insert(NaiveDateDto::from(day.date), day_subtable);
+            days.insert(NaiveDateDto::from(day.0), day_subtable);
         }
         Ok(Self { days })
     }

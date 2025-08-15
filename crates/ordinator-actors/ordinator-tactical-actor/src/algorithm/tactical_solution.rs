@@ -333,7 +333,7 @@ impl Display for OperationSolution
     {
         write!(f, "{:?}", self.work_order_activity)?;
         for scheduled in &self.scheduled {
-            write!(f, "{} on {}", scheduled.1, scheduled.0)?
+            write!(f, "{} on {:?}", scheduled.1, scheduled.0)?
         }
         Ok(())
     }

@@ -8,26 +8,26 @@ use std::ops::DerefMut;
 use std::sync::Arc;
 use std::sync::Mutex;
 
+use algorithm::OperationalAlgorithm;
 use algorithm::operational_parameter::OperationalParameters;
 use algorithm::operational_solution::OperationalSolution;
-use algorithm::OperationalAlgorithm;
 use anyhow::Result;
 use arc_swap::ArcSwap;
 use bus::BusReader;
 use flume::Sender;
 use messages::OperationalRequestMessage;
 use messages::OperationalResponseMessage;
+use ordinator_actor_core::Actor;
 use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
-use ordinator_actor_core::Actor;
 use ordinator_configuration::SystemConfigurations;
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
 // You are beginning to see the truth. That there are no shortcuts
 // to be made here and no.
@@ -97,7 +97,7 @@ where
         .algorithm(|ab| {
             ab.id(id)
                 // So this function returns a `Result`
-                .parameters_and_solution(
+                .parameters_and_solution_from_scheduling_environment(
                     &scheduling_environment_guard.lock().unwrap(),
                 )?
                 .system_solution_arc_swap(shared_solution_arc_swap)

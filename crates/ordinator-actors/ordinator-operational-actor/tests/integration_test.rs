@@ -458,7 +458,7 @@ fn start_operational_actor()
     .algorithm(|ab| {
         ab.id(operational_id.clone())
             // So this function returns a `Result`
-            .parameters_and_solution(&scheduling_environment.lock().unwrap())
+            .parameters_and_solution_from_scheduling_environment(&scheduling_environment.lock().unwrap())
             .unwrap()
             .system_solution_arc_swap(_system_solution.clone())
     })

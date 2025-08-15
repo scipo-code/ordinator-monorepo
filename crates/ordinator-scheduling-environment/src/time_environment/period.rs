@@ -24,7 +24,6 @@ pub struct Period
     period_string: String,
     start_date: DateTime<Utc>,
     end_date: DateTime<Utc>,
-    pub day_indices: Vec<u64>,
     pub year: i32,
     pub start_week: u32,
     pub finish_week: u32,
@@ -71,7 +70,7 @@ impl std::fmt::Debug for Period
 #[allow(dead_code)]
 impl Period
 {
-    pub fn new(start_date: DateTime<Utc>, end_date: DateTime<Utc>, day_indices: Vec<u64>)
+    pub fn new(start_date: DateTime<Utc>, end_date: DateTime<Utc>)
         -> Period
     {
         let mut year = start_date.year();
@@ -96,7 +95,7 @@ impl Period
             year,
             start_week,
             finish_week: end_week,
-            day_indices,
+            
         }
     }
 
@@ -150,12 +149,7 @@ impl Add<Duration> for Period
     {
         let start_date = self.start_date + rhs;
         let end_date = self.end_date + rhs;
-        let day_indices = self
-            .day_indices
-            .iter()
-            .map(|i| i + rhs.num_days() as u64)
-            .collect();
-        Period::new(start_date, end_date, day_indices)
+        Period::new(start_date, end_date)
     }
 }
 
@@ -167,8 +161,7 @@ impl Sub<Duration> for Period
     {
         let start_date = self.start_date - rhs;
         let end_date = self.end_date - rhs;
-        let day_indices = self.day_indices.iter().map(|i| i + 14).collect();
-        Period::new(start_date, end_date, day_indices)
+        Period::new(start_date, end_date)
     }
 }
 
@@ -180,8 +173,7 @@ impl Add<Duration> for &Period
     {
         let start_date = self.start_date + rhs;
         let end_date = self.end_date + rhs;
-        let day_indices = self.day_indices.iter().map(|i| i + 14).collect();
-        Period::new(start_date, end_date, day_indices)
+        Period::new(start_date, end_date)
     }
 }
 
@@ -266,7 +258,6 @@ impl FromStr for Period
             start_week,
             finish_week,
             //WARN [ ] 2025-07-02 We should be very careful about doing this/
-            day_indices: vec![],
         })
     }
 }
@@ -312,7 +303,7 @@ mod tests
         // Setup initial period
         let initial_start_date = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
         let initial_end_date = Utc.with_ymd_and_hms(2023, 1, 14, 23, 59, 59).unwrap();
-        let period = Period::new(initial_start_date, initial_end_date, vec![]);
+        let period = Period::new(initial_start_date, initial_end_date);
 
         // Define the duration to add (e.g., 1 month)
         let duration_to_add = Duration::weeks(2); // Adjust as per your Duration type
@@ -331,7 +322,7 @@ mod tests
         // Setup initial period
         let initial_start_date = Utc.with_ymd_and_hms(2023, 12, 18, 0, 0, 0).unwrap();
         let initial_end_date = Utc.with_ymd_and_hms(2023, 12, 31, 23, 59, 59).unwrap();
-        let period = Period::new(initial_start_date, initial_end_date, vec![]);
+        let period = Period::new(initial_start_date, initial_end_date);
 
         // Define the duration to add (e.g., 1 month)
         let duration_to_add = Duration::weeks(2); // Adjust as per your Duration type
@@ -441,7 +432,6 @@ mod tests
         let new_period = Period::new(
             period.start_datetime().to_owned() + Duration::weeks(2),
             period.finish_datetime().to_owned() + Duration::weeks(2),
-            vec![],
         );
 
         assert_eq!(new_period.period_string, "2025-W1-2".to_string());

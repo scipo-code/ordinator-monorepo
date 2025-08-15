@@ -548,12 +548,12 @@ impl TacticalForceType
     pub fn get_contained_date(&self) -> NaiveDate
     {
         match self {
-            TacticalForceType::OnlyStartDay(day) => day.date,
+            TacticalForceType::OnlyStartDay(day) => day.0,
             TacticalForceType::IndividualActivities(start_days_per_activity, _) => {
                 start_days_per_activity
                     .first()
                     .expect("A Day should always be contained in a period.")
-                    .date
+                    .0
             }
         }
     }
@@ -565,7 +565,7 @@ impl TacticalForceType
             TacticalForceType::IndividualActivities(_, excluded_days) => excluded_days
                 .iter()
                 .flatten()
-                .all(|f| per.day_indices.contains(&(f.day_index as u64))),
+                .all(|day| per.contains_date(day.0)),
         }
     }
 }
@@ -722,7 +722,7 @@ impl WorkOrder
                 // TODO [ ] include
                 let day = days
                     .iter()
-                    .find(|f| f.date == *naive_date)
+                    .find(|f| f.0 == *naive_date)
                     .context("naive_date not found in TimeEnvironment")?
                     .clone();
                 // You need more complex logic to fix more of the code here.

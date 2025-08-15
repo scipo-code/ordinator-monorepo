@@ -164,12 +164,12 @@ where
     //
     // What should be done? Keep the current setup. But move the Options in the the
     // Algortihm.
-    pub fn parameters_and_solution(
+    pub fn parameters_and_solution_from_scheduling_environment(
         mut self,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>
     {
-        let parameters = P::from_source(
+        let parameters = P::from_scheduling_environment(
             self.id.as_ref().expect("Call `id()` build method first"),
             scheduling_environment,
         )?;
