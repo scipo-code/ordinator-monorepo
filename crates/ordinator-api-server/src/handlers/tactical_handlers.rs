@@ -1,3 +1,4 @@
+use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use anyhow::Context;
@@ -16,8 +17,15 @@ use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::StateLink;
 use ordinator_orchestrator::SystemSolutions;
+use ordinator_orchestrator::TacticalInterface;
 use ordinator_orchestrator::TacticalRequestMessage;
 use ordinator_orchestrator::TacticalStatusMessage;
+use ordinator_orchestrator::WorkOrderNumber;
+use serde::Serialize;
+use ts_rs::TS;
+use utoipa::ToSchema;
+
+use crate::routes::api::AppError;
 
 // So each handler should construct a specific message. That is the key point
 // here. This function uses the orchestrator to send any kind of message. Which
@@ -37,7 +45,7 @@ use ordinator_orchestrator::TacticalStatusMessage;
 pub async fn status<Ss>(
     State(orchestrator): State<Arc<Orchestrator<Ss>>>,
     Path(asset): Path<Asset>,
-) -> Result<Response>
+) -> Result<Response, AppError>
 where
     Ss: SystemSolutions,
 {
@@ -182,6 +190,21 @@ where
     ).into_response())
 }
 
+#[derive(Serialize, TS, ToSchema)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+pub struct DailyLoad
+{
+    work: f64,
+    day: NaiveDateDto,
+}
+
+#[derive(Serialize, TS, ToSchema)]
+#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+pub struct DailyLoadingDto
+{
+    resources: BTreeMap<String, Vec<DailyLoad>>,
+}
+
 #[utoipa::path(
     get,
     tag = "Scheduler",
@@ -210,10 +233,40 @@ where
         .map_err(|_| AppError::Anyhow(format!("No TacticalSolution exists for Asset: {}", &asset)))?
         .tactical_loadings();
 
-    Ok(Json(tactical_days).into_response())
+    let days = orchestrator
+        .scheduling_environment
+        .lock()
+        .unwrap_or_else(|_| panic!("Could not lock the SystemSolution for Asset: {}", &asset))
+        .time_environment
+        .days
+        .clone();
+
+    if tactical_days
+        .values()
+        .all(|work_vec| work_vec.len() == days.len())
+    {
+        let daily_loadings = tactical_days
+            .into_iter()
+            .map(|(resource, work_vec)| {
+                let daily_loads = work_vec
+                    .into_iter()
+                    .zip(days.iter())
+                    .map(|(work, day)| DailyLoad {
+                        work: work.to_f64(),
+                        day: NaiveDateDto::from(day.date),
+                    })
+                    .collect();
+                (resource.to_string(), daily_loads)
+            })
+            .collect::<BTreeMap<_, Vec<_>>>();
+
+        Ok(Json(DailyLoadingDto {
+            resources: daily_loadings,
+        })
+        .into_response())
+    } else {
+        Err(AppError::Anyhow(
+            "Days and dailyloading does not match".to_string(),
+        ))
+    }
 }
-
-use ordinator_orchestrator::TacticalInterface;
-use ordinator_orchestrator::WorkOrderNumber;
-
-use crate::routes::api::AppError;
