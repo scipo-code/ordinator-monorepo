@@ -1,4 +1,4 @@
-import { assignWorkOrderToPeriod, fetchWorkorderInfo } from "@scipo-code/shared";
+import { assignWorkOrderToPeriod, fetchWorkorderInfo, useVersionChangeDetector } from "@scipo-code/shared";
 import { useParams } from "react-router-dom"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -133,6 +133,11 @@ export default function WorkorderOverview() {
     enabled: !!workorder && !!asset,
   })
 
+  useVersionChangeDetector(
+    asset ? `api/v1/solution_status/${encodeURIComponent(asset)}/tactical` : "",
+    ["workorderInfo"],
+    200
+  );
 
   const {
     data: periods = [], isLoading: isPeriodsLoading, error: errorPeriod

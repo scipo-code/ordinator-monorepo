@@ -103,7 +103,7 @@ export default function ResourceView() {
         </div>
       </div>
 
-      <div className="flex flex-1 min-h-0 gap-2 overflow-hidden w-full border">
+      <div className="flex flex-1 min-h-0 gap-2 overflow-hidden w-full">
         <div className="flex-1 min-h-0">
         {selectedResources.length > 0 ? (
             <GanttView
