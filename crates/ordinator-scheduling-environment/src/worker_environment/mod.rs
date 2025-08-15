@@ -437,22 +437,97 @@ mod tests
 
     use chrono::NaiveDateTime;
 
-    use super::ActorSpecifications;
     use crate::Asset;
     use crate::worker_environment::ActorSpecification;
     use crate::worker_environment::IdString;
+    use crate::worker_environment::InputOperational;
     use crate::worker_environment::availability::Availability;
+    use crate::worker_environment::resources::ActorCompositeId;
     use crate::worker_environment::resources::Resources;
 
+    //
     #[test]
     fn test_add_technician()
     {
         // You have to mock all these dependencies to test the code.
 
-        let mut actor_specification = ActorSpecifications {
-            strategic: todo!(),
-            tactical: todo!(),
-            supervisors: vec![],
+        #[derive(Debug)]
+        struct TestActorSpecification
+        {
+            operational: HashMap<IdString, InputOperational>,
+        }
+
+        impl ActorSpecification for TestActorSpecification
+        {
+            fn strategic_options(&self) -> &super::StrategicOptions
+            {
+                todo!()
+            }
+
+            fn strategic(&self) -> &super::InputStrategic
+            {
+                todo!()
+            }
+
+            fn tactical(&self) -> &super::InputTactical
+            {
+                todo!()
+            }
+
+            fn supervisor(&self) -> &Vec<super::InputSupervisor>
+            {
+                todo!()
+            }
+
+            fn operational(&self) -> &HashMap<IdString, InputOperational>
+            {
+                todo!()
+            }
+
+            fn technician_availability(
+                &self,
+            ) -> std::collections::BTreeMap<
+                IdString,
+                (
+                    std::collections::BTreeSet<Availability>,
+                    std::collections::HashSet<Resources>,
+                ),
+            >
+            {
+                todo!()
+            }
+
+            fn add_operational(
+                &mut self,
+                id: &IdString,
+                assets: Vec<Asset>,
+                resources: Vec<Resources>,
+                start_date: chrono::DateTime<chrono::Utc>,
+                finish_date: chrono::DateTime<chrono::Utc>,
+                // This should return a
+            ) -> anyhow::Result<super::resources::ActorCompositeId>
+            {
+                let availability = Availability::new(start_date, finish_date, assets)?;
+
+                self.operational
+                    .entry(id.clone())
+                    .and_modify(|e| {
+                        e.operational_configuration
+                            .availability
+                            .insert(availability.clone());
+                    })
+                    .or_insert(InputOperational::new(
+                        id.clone(),
+                        resources.clone(),
+                        6.0,
+                        availability.clone(),
+                    ));
+
+                Ok(ActorCompositeId::new(id, resources, availability))
+            }
+        }
+
+        let mut actor_specification = TestActorSpecification {
             operational: HashMap::new(),
         };
 
@@ -467,12 +542,19 @@ mod tests
         let resources = vec![Resources::MtnLagg];
 
         actor_specification
-            .add_operational(&id_string, assets, resources, start_date, finish_date)
+            .add_operational(
+                &id_string,
+                assets.clone(),
+                resources.clone(),
+                start_date,
+                finish_date,
+            )
             .unwrap();
 
         assert!(actor_specification.operational.contains_key(&id_string));
 
-        let availability_test_mock = Availability::new(start_date, finish_date, assets).unwrap();
+        let availability_test_mock =
+            Availability::new(start_date, finish_date, assets.clone()).unwrap();
         assert!(
             actor_specification
                 .operational
@@ -496,16 +578,22 @@ mod tests
         let start_date_2 = NaiveDateTime::from_str("2025-09-06T07:00:00")
             .unwrap()
             .and_utc();
-        let finish_date_2 = NaiveDateTime::from_str("2025-09-010T07:00:00")
+        let finish_date_2 = NaiveDateTime::from_str("2025-09-10T07:00:00")
             .unwrap()
             .and_utc();
 
         actor_specification
-            .add_operational(&id_string, assets, resources, start_date_2, finish_date_2)
+            .add_operational(
+                &id_string,
+                assets.clone(),
+                resources,
+                start_date_2,
+                finish_date_2,
+            )
             .unwrap();
 
         let availability_test_mock_2 =
-            Availability::new(start_date_2, finish_date_2, assets).unwrap();
+            Availability::new(start_date_2, finish_date_2, assets.clone()).unwrap();
         assert!(
             actor_specification
                 .operational
