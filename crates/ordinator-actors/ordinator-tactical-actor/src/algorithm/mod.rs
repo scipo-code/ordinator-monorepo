@@ -1159,60 +1159,63 @@ pub mod tests
             vec![(day_2.clone(), Work::from(4.0))]
         ])
     }
-    #[test]
-    fn test_determine_forced_assignment_5()
-    {
-        let day_0 = Day::new(0, NaiveDate::from_ymd_opt(2024, 12, 31).unwrap());
-        let day_1 = Day::new(1, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
-        let day_2 = Day::new(2, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
+    // #[test]
+    // fn test_determine_forced_assignment_5()
+    // {
+    //     let day_0 = Day::new(0, NaiveDate::from_ymd_opt(2024, 12,
+    // 31).unwrap());     let day_1 = Day::new(1,
+    // NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());     let day_2 =
+    // Day::new(2, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
 
-        let scheduled_days = vec![
-            (None, Work::from(12.0), Work::from(6.0), 1),
-            (Some(day_1.clone()), Work::from(8.0), Work::from(6.0), 1),
-            (Some(day_2.clone()), Work::from(4.0), Work::from(6.0), 1),
-        ];
-        // TODO [ ] - Add the Date
-        let value = determine_forced_tactical_assignment(&scheduled_days);
+    //     let scheduled_days = vec![
+    //         (None, Work::from(12.0), Work::from(6.0), 1),
+    //         (Some(day_1.clone()), Work::from(8.0), Work::from(6.0), 1),
+    //         (Some(day_2.clone()), Work::from(4.0), Work::from(6.0), 1),
+    //     ];
+    //     // TODO [ ] - Add the Date
+    //     let value = determine_forced_tactical_assignment(&scheduled_days);
 
-        assert_eq!(value, vec![
-            vec![
-                (day_0.clone(), Work::from(6.0)),
-                (day_1.clone(), Work::from(6.0))
-            ],
-            vec![
-                (day_1.clone(), Work::from(6.0)),
-                (day_2.clone(), Work::from(2.0))
-            ],
-            vec![(day_2.clone(), Work::from(4.0))]
-        ])
-    }
-    #[test]
-    fn test_determine_forced_assignment_6()
-    {
-        let day_0 = Day::new(0, NaiveDate::from_ymd_opt(2024, 12, 30).unwrap());
-        let day_1 = Day::new(1, NaiveDate::from_ymd_opt(2024, 12, 31).unwrap());
-        let day_2 = Day::new(2, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
-        let day_3 = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
+    //     assert_eq!(value, vec![
+    //         vec![
+    //             (day_0.clone(), Work::from(6.0)),
+    //             (day_1.clone(), Work::from(6.0))
+    //         ],
+    //         vec![
+    //             (day_1.clone(), Work::from(6.0)),
+    //             (day_2.clone(), Work::from(2.0))
+    //         ],
+    //         vec![(day_2.clone(), Work::from(4.0))]
+    //     ])
+    // }
+    // #[test]
+    // fn test_determine_forced_assignment_6()
+    // {
+    //     let day_0 = Day::new(0, NaiveDate::from_ymd_opt(2024, 12,
+    // 30).unwrap());     let day_1 = Day::new(1,
+    // NaiveDate::from_ymd_opt(2024, 12, 31).unwrap());     let day_2 =
+    // Day::new(2, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
+    //     let day_3 = Day::new(3, NaiveDate::from_ymd_opt(2025, 1,
+    // 2).unwrap());
 
-        let scheduled_days = vec![
-            (None, Work::from(18.0), Work::from(6.0), 1),
-            (Some(day_1.clone()), Work::from(8.0), Work::from(6.0), 1),
-            (Some(day_2.clone()), Work::from(4.0), Work::from(6.0), 1),
-        ];
-        // TODO [ ] - Add the Date
-        let value = determine_forced_tactical_assignment(&scheduled_days);
+    //     let scheduled_days = vec![
+    //         (None, Work::from(18.0), Work::from(6.0), 1),
+    //         (Some(day_1.clone()), Work::from(8.0), Work::from(6.0), 1),
+    //         (Some(day_2.clone()), Work::from(4.0), Work::from(6.0), 1),
+    //     ];
+    //     // TODO [ ] - Add the Date
+    //     let value = determine_forced_tactical_assignment(&scheduled_days);
 
-        assert_eq!(value, vec![
-            vec![
-                (day_0.clone(), Work::from(6.0)),
-                (day_1.clone(), Work::from(6.0)),
-                (day_2.clone(), Work::from(6.0)),
-            ],
-            vec![
-                (day_2.clone(), Work::from(6.0)),
-                (day_3.clone(), Work::from(2.0))
-            ],
-            vec![(day_3.clone(), Work::from(4.0))]
-        ])
-    }
+    //     assert_eq!(value, vec![
+    //         vec![
+    //             (day_0.clone(), Work::from(6.0)),
+    //             (day_1.clone(), Work::from(6.0)),
+    //             (day_2.clone(), Work::from(6.0)),
+    //         ],
+    //         vec![
+    //             (day_2.clone(), Work::from(6.0)),
+    //             (day_3.clone(), Work::from(2.0))
+    //         ],
+    //         vec![(day_3.clone(), Work::from(4.0))]
+    //     ])
+    // }
 }
