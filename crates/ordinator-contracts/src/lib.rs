@@ -146,7 +146,8 @@ impl TryFrom<DateTimeDto> for DateTime<Utc>
     fn try_from(value: DateTimeDto) -> Result<Self, Self::Error>
     {
         let dt = DateTime::parse_from_rfc3339(&value.0)?;
-        Ok(dt.to_utc()) }
+        Ok(dt.to_utc())
+    }
 }
 
 pub type TotalSystemSolution =

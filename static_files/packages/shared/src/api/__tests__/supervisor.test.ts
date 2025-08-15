@@ -5,7 +5,6 @@ import {
   fetchTechnicianAvailability,
 } from "../supervisor.ts";
 import { CreateTechnicianDto } from "../../types/CreateTechnicianDto.ts";
-import { SupervisorAllAvailableTechnicians } from "../../types/SupervisorAllAvailableTechnicians.ts";
 
 describe("supervisor API", () => {
   describe("fetchMainTable", () => {
