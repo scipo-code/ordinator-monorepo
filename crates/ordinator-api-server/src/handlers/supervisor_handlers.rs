@@ -416,8 +416,10 @@ pub async fn add_technician(
         finish,
     } = payload;
 
-    let start_date = DateTime::try_from(start).map_err(|e| AppError::Anyhow(e.to_string()))?;
-    let finish_date = DateTime::try_from(finish).map_err(|e| AppError::Anyhow(e.to_string()))?;
+    let start_date = DateTime::try_from(start)
+        .map_err(|e| AppError::Anyhow(format!("Error at start date: {}.", e.to_string())))?;
+    let finish_date = DateTime::try_from(finish)
+        .map_err(|e| AppError::Anyhow(format!("Error at finish date: {}.", e.to_string())))?;
 
     let mut resources = vec![];
     for resource_string in resources_string {

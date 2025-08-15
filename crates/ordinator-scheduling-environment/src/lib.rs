@@ -428,9 +428,11 @@ impl Display for Asset
 
 impl Asset
 {
+    /// Matches an asset value as string to Asset variant.
     pub fn new_from_string(asset_string: &str) -> Option<Asset>
     {
-        match asset_string {
+        // NOTE: the to_uppercase. Requires the matching is on uppercase always.
+        match asset_string.to_uppercase().as_str() {
             "DF" => Some(Asset::DF),
             "DM" => Some(Asset::DM),
             "DE" => Some(Asset::DE),
@@ -449,8 +451,6 @@ impl Asset
             "VA" => Some(Asset::VA),
             "VB" => Some(Asset::VB),
             "TEST" => Some(Asset::Test),
-            "test" => Some(Asset::Test),
-            "Test" => Some(Asset::Test),
             _ => None,
         }
     }

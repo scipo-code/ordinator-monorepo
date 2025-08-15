@@ -7,6 +7,9 @@ run-test:
 bs-test:
     bs target/debug/deps/ordinator_tactical_actor-cd5c23df1ab83245 
 
+test-front-ends:
+    cargo test test_complete_system -- --ignored --nocapture & cd static_files/packages/shared/ && pnpm test:run && pkill -f test_complete_system 
+
 export-ts-bindings:
     cargo +nightly test export_bindings
 
@@ -29,9 +32,11 @@ create-required-directories:
     mkdir -p ./dist/benches
     mkdir -p ./dist/profiling
     mkdir -p ./dist/xlsx_dumps
+    mkdir -p ./dist/dist
     cp -r configuration ./dist/configuration
     cp .env.example ./dist/.env.example
     cp -r temp_scheduling_environment_database ./dist/temp_scheduling_environment_database
+    cp -r ./dist/static_files ./dist/dist/
 
 build-ordinator-for-deployment-windows: (build-ordinator-frontends) (build-ordinator-api-windows) (create-required-directories)
 

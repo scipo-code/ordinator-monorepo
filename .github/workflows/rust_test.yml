@@ -18,6 +18,26 @@ jobs:
           override: true
       - name: Run tests
         run: cargo test --verbose 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install pnpm
+        run: npm install -g pnpm
+      - name: Install frontend dependencies
+        run: cd static_files/packages/shared/ && pnpm install
+      - name: Start backend server
+        run: cp .env.example .env && cargo test test_complete_system -- --ignored --nocapture &
+        env:
+          BACKGROUND: true
+      - name: Wait for server to be ready
+        run: |
+          # Check the port used in the .env file.
+          timeout 60 bash -c 'until curl -f http://localhost:3000/hello || curl -f http://127.0.0.1:3000/health; do sleep 2; done' || echo "Server not ready after 60s"
+      - name: Run frontend tests
+        run: cd static_files/packages/shared/ && pnpm test:run
+      - name: Stop backend server
+        run: pkill -f test_complete_system || true 
       # - name: Run clippy
       #   run: cargo clippy --verbose
       # - name: Install cargo-audit

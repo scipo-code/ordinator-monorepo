@@ -8,7 +8,10 @@
     "build": "tsc --build",
     "dev": "tsc --build --watch",
     "fail": " --name index.ts --structure flat --exportStar --include '**/*.ts' --includeExtension",
-    "generate-exports": "barrelsby --directory src/types --delete --exclude index.ts"
+    "generate-exports": "barrelsby --directory src/types --delete --exclude index.ts",
+    "test": "bash -c 'source .env.test && vitest'",
+    "test:run": "bash -c 'source .env.test && vitest run'",
+    "test:watch": "bash -c 'source .env.test && vitest --watch'"
   },
   "peerDependencies": {
     "ag-grid-community": ">=33.0.0",

@@ -1,4 +1,4 @@
-import { assignWorkordertoPeriod, fetchWorkorderInfo } from "@scipo-code/shared";
+import { assignWorkOrderToPeriod, fetchWorkorderInfo } from "@scipo-code/shared";
 import { useParams } from "react-router-dom"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +11,7 @@ import { PeriodDto } from "@scipo-code/shared";
 import { PeriodAssignment } from "@/components/PeriodAssignment";
 import { useCallback } from "react";
 import { TacticalDayAssignment } from "@/components/TacticalDayAssignment";
+import { toast } from "sonner";
 
 
 function WorkorderCard({
@@ -38,11 +39,16 @@ function WorkorderCard({
           {renderFlag("SCH", wo.sch)}
           {renderFlag("AWSC", wo.awsc)}
           {renderFlag("Vendor", wo.vendor)}
+          {renderFlag("SECE", wo.sece)}
         </CardTitle>
         <CardDescription>
           <div className="flex flex-col space-y-0.5">
             <span>Main Workcenter: {wo.main_work_center}</span>
             <span>Functional Location: {wo.functional_location}</span>
+            <span>Basic Start Date: {wo.basic_start_date}</span>
+            <span>Basic Finish Date: {wo.basic_finish_date}</span>
+            <span>EASD - LAFD: {wo.earliest_allowed_start_date} - {wo.latest_allowed_finish_date}</span>
+            <span>Priority: {wo.priority}</span>
           </div>
         </CardDescription>
       </CardHeader>
@@ -56,7 +62,7 @@ function WorkorderCard({
               <TableHead>Work Center</TableHead>
               <TableHead>Number of People</TableHead>
               <TableHead>Unloading Point Period</TableHead>
-              <TableHead>Unloading Point Code</TableHead>
+              <TableHead>Scheduled Start</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -66,8 +72,8 @@ function WorkorderCard({
                   <TableCell className="text-right">{a.work_remaining}</TableCell>
                   <TableCell>{a.work_center}</TableCell>
                   <TableCell className="text-right">{a.number_of_people}</TableCell>
-                  <TableCell>{a.unloading_point_period}</TableCell>
                   <TableCell>{a.unloading_point_string}</TableCell>
+                  <TableCell>{a.scheduled_start_date}</TableCell>
                 </TableRow>
               ))}
           </TableBody>
@@ -141,16 +147,17 @@ export default function WorkorderOverview() {
       asset: string,
       workorder: string,
       period: PeriodDto,
-    }) => assignWorkordertoPeriod(asset,workorder, period),
+    }) => assignWorkOrderToPeriod(asset,workorder, period),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['workorderInfo', {workorder, asset}]
       });
+      toast("Period Assigned Succesfully");
     },
 
     onError: (error: Error) => {
-      console.error("Failed to assign period: ", error);
+      toast.error(`Failed to assign period: ${error}`);
     },
   });
 
@@ -181,6 +188,7 @@ export default function WorkorderOverview() {
     )
     
   }
+
   
   return (
     <div className="px-4 py-4">
@@ -191,21 +199,6 @@ export default function WorkorderOverview() {
          onAssignPeriod={handleAssignPeriod}
          isAssigning={assignMutation.isPending}
       />
-
-      {assignMutation.error && (
-        <div className="max-w-4xl mt-4 p-4 bg-red-50 border border-red-200 rounded">
-          <p className="text-red-800">
-            Failed to assign period: {assignMutation.error.message}
-          </p>
-        </div>
-      )}
-
-
-      {assignMutation.isSuccess && (
-        <div className="max-w-4xl mt-4 p-4 bg-green-50 border border-green-200 rounded">
-          <p className="text-green-800">Period assigned successfully!</p>
-        </div>
-      )}
     </div>
 
   )}

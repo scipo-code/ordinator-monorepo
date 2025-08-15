@@ -1,16 +1,27 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { NaiveDateDto, TechnicianAvailability, useDays, useTechnicianAvailability } from "@scipo-code/shared";
-import { format } from "date-fns";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {  TechnicianAvailability, useDays, useTechnicianAvailability } from "@scipo-code/shared";
+import {  ChevronLeft, ChevronRight } from "lucide-react";
 import 'react-day-picker/dist/style.css';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { GanttView, ResourceSidebar as ResourceSidebar } from "@/components/ResourceView";
+import { Card, CardContent } from "@/components/ui/card";
 
+
+
+const groupTechniciansByResources = (technicians: TechnicianAvailability[]) => {
+  const grouped = new Map<string, TechnicianAvailability[]>();
+
+  technicians.forEach(tech => {
+    const resourceKey = tech.resources.sort().join(' / ');
+    if (!grouped.has(resourceKey)) {
+      grouped.set(resourceKey, []);
+    }
+    grouped.get(resourceKey)!.push(tech)
+  })
+
+  return grouped;
+}
 
 export default function ResourceView() {
   const { asset } = useParams();
@@ -21,17 +32,41 @@ export default function ResourceView() {
   const supervisorId = "main";
   const { data: availableTechnicians, isLoading: isTechniciansLoading } = useTechnicianAvailability(asset || "", supervisorId);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
+  const [selectedResources, setSelectedResources] = useState<string[]>([]);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+
+  const resources = availableTechnicians ? [...new Set(availableTechnicians.all_technicians.flatMap(tech => tech.resources) || [])] : [];
+
+  useEffect(() => {
+    if (resources.length > 0 && selectedResources.length === 0 && !hasUserInteracted) {
+      setSelectedResources([resources[0]]);
+    }
+  }, [selectedResources.length, resources, hasUserInteracted]);
+
+  const toggleWorkCenter = (workCenter: string) => {
+    setSelectedResources(prev =>
+      prev.includes(workCenter)
+        ? prev.filter(wc => wc !== workCenter)
+        : [...prev, workCenter]
+    );
+  };
+
+  const clearSelection = () =>  {
+    setHasUserInteracted(true);
+    setSelectedResources([]);
+  }
+
+  const selectAll = () => {
+    setSelectedResources(resources);
+  }
 
   if (!asset) return <div>Asset not found</div>;
-  
   if (isDaysLoading || isTechniciansLoading) return <div>Loading...</div>;
   if (!days || !availableTechnicians) {
     return <div>Error loading data</div>;
   };
 
   const weekDays = days.slice(currentDayIndex, currentDayIndex + 14);
-
-  const workCenters = [...new Set(availableTechnicians.all_technicians.flatMap(tech => tech.resources) || [])];
 
   const navigatePeriod = (direction: 'prev' | 'next') => {
     setCurrentDayIndex(prev => {
@@ -40,13 +75,19 @@ export default function ResourceView() {
     });
   };
 
-  
-
   const canGoPrevPeriod = currentDayIndex > 0;
   const canGoNextPeriod = currentDayIndex + 7 < (days.length || 0);
 
+
+
+  const filteredTechnicians = availableTechnicians.all_technicians.filter(tech =>
+    tech.resources.some(resource => selectedResources.includes(resource))
+  );
+
+  const groupedTechnicians = groupTechniciansByResources(filteredTechnicians);
+  
   return (
-    <div className="p-4 flex flex-col flex-1 min-h-0 overflow-hidden">
+    <div className="p-4 flex flex-col grow min-h-0">
       <div className="flex items-center justify-between mb-4 shrink-0">
         <h2 className="text-2xl font-bold">Resource Availability</h2>
         <div className="flex items-center gap-2">
@@ -62,141 +103,32 @@ export default function ResourceView() {
         </div>
       </div>
 
-      <Tabs defaultValue={workCenters[0]} className="flex flex-col flex-1 min-h-0">
-        <TabsList className="shrink-0">
-          {workCenters.map(workCenter => (
-            <TabsTrigger key={workCenter} value={workCenter}>
-              {workCenter}
-              <Badge variant="secondary" className="ml-2">
-                {availableTechnicians.all_technicians.filter(tech => tech.resources.includes(workCenter)).length}
-              </Badge>
-            </TabsTrigger>
-          ))}
-        </TabsList>
-
-        {workCenters.map(workCenter => (
-          <TabsContent key={workCenter} value={workCenter} className="flex-1 min-h-0">
+      <div className="flex flex-1 min-h-0 gap-2 overflow-hidden w-full border">
+        <div className="flex-1 min-h-0">
+        {selectedResources.length > 0 ? (
             <GanttView
-              technicians={availableTechnicians.all_technicians.filter(tech => tech.resources.includes(workCenter))}
+              groupedTechnicians={groupedTechnicians}
               weekDays={weekDays}
+            /> ) : (
+            <Card className="flex-1 min-h-0 flex flex-col h-full w-full">
+              <CardContent className="flex-1 flex items-center justify-center text-gray-500">
+                Please select a work center to view technicians
+              </CardContent>
+            </Card>
+            )
+          }
+        </div>
+        <div className="w-60">
+          <ResourceSidebar resources={resources}
+            selectedResources={selectedResources}
+            onToggle={toggleWorkCenter}
+            toggleAll={selectAll}
+            onClear={clearSelection}
+            technicians={availableTechnicians}
             />
-          </TabsContent>
-        ))}
-      </Tabs>
-    </div>
-  );
-}
-
-interface GanttViewProps {
-  technicians: TechnicianAvailability[];
-  weekDays: NaiveDateDto[];
-}
-
-function GanttView({ technicians, weekDays }: GanttViewProps) {
-  return (
-    <Card className="flex-1 min-h-0 flex flex-col">
-      <CardHeader className="shrink-0">
-        <div className="flex items-center justify-between">
-        <CardTitle className="text-lg">
-          Weekly Availability
-         </CardTitle>
-         <AddTechnicianDialog/>
         </div>
-      </CardHeader>
-      <CardContent className="flex-1 min-h-0 overflow-auto">
-        <div>
-          {/* Day headers */}
-          <div className="grid grid-cols-15 gap-1 mb-2 sticky top-0 bg-white z-10">
-            <div className="font-medium p-2">Technician</div>
-            {weekDays.map(day => (
-              <div key={day} className="font-medium p-2 text-center border rounded">
-                <div>{format(day, "EEE")}</div>
-                <div className="text-sm text-gray-500">{format(day, "MMM d")}</div>
-              </div>
-            ))}
-          </div>
-          
-          {/* Technician rows */}
-          {technicians.map(technician => (
-            <TechnicianRow key={technician.id} technician={technician} weekDays={weekDays} />
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-interface TechnicianRowProps {
-  technician: TechnicianAvailability;
-  weekDays: NaiveDateDto[];
-}
-
-function TechnicianRow({ technician, weekDays }: TechnicianRowProps) {
-  return (
-    <div className="grid grid-cols-15 gap-1 mb-2">
-      <div className="p-2 font-medium border rounded bg-gray-50">
-        {technician.id}
       </div>
-      {weekDays.map(day => (
-        <DayCell key={day} stringDay={day} technician={technician} />
-      ))}
     </div>
   );
 }
 
-interface DayCellProps {
-  stringDay: NaiveDateDto;
-  technician: TechnicianAvailability;
-}
-
-function DayCell({ stringDay, technician }: DayCellProps) {
-  const isAvailable = stringDay >= technician.start && stringDay <= technician.end;
-  
-  
-  return (
-    <div className={`flex justify-center border rounded p-2 min-h-[60px] ${isAvailable ? 'bg-green-100' : 'bg-white'}`}>
-      {isAvailable ? 'Available' : null }
-    </div>
-  );
-}
-
-
-
-function AddTechnicianDialog() {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">Add Technician</Button>
-      </DialogTrigger>
-
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add Technician</DialogTitle>
-        </DialogHeader>
-        <Calendar mode="range" numberOfMonths={1}/>
-      </DialogContent>
-    </Dialog>
-  )
-}
-
-
-
-// function CalendarPopover() {
-
-
-  
-//   return (
-//     <Popover>
-//       <PopoverTrigger asChild>
-//         <Button
-//           variant="outline"
-//         >
-//           <CalendarIcon/>
-//         </Button>
-//       </PopoverTrigger>
-//       <PopoverContent>
-//       </PopoverContent>
-//     </Popover>
-        
-//   )
-// }

@@ -18,7 +18,9 @@ use ordinator_contracts::scheduler::WorkOrderSingleRowSimpleDto;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::OrchestratorRequest;
+use ordinator_orchestrator::Resources;
 use ordinator_orchestrator::WorkOrderNumber;
+use strum::IntoEnumIterator;
 
 use crate::routes::api::AppError;
 
@@ -166,6 +168,20 @@ pub async fn system_clock(
         .to_rfc3339();
 
     Ok(Json(system_datetime).into_response())
+}
+
+#[utoipa::path(get,
+    tag = "General",
+    path = "/resources",
+    responses((status = 200,body = String))
+)]
+pub async fn resources(
+    State(_orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+) -> Response
+{
+    let resources: Vec<_> = Resources::iter().map(|r| r.to_string()).collect();
+
+    Json(resources).into_response()
 }
 
 // This should I think that the best thing to do here is to make the

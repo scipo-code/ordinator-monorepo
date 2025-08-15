@@ -108,7 +108,7 @@ where
 }
 
 #[utoipa::path(
-    patch,
+    post,
     tag = "Scheduler",
     path = "/assign_start_day_for_work_order/{asset}/{work_order_number}/",
     params (
