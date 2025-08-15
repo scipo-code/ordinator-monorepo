@@ -32,6 +32,7 @@ pub const RESEARCH: &str = "research";
 #[tokio::main]
 async fn main() -> Result<()>
 {
+    info!(target: "stdout", "System initialized (0 of 4): loading environment");
     dotenvy::dotenv()
         .context("You need to provide an .env file. Look at the .env.example for guidance")?;
 
@@ -46,19 +47,20 @@ async fn main() -> Result<()>
     //  dotenvy::var("DEPLOY_ENVIRONMENT");` instead of `Option::Some(current_time)`
     // TODO [ ] This is quite annoying.}
 
+    let asset = Asset::DF;
     let environment = ordinator_orchestrator::Environment::Test(current_time);
     let (orchestrator, error_handle, system_clock_handle) =
         Orchestrator::<TotalSystemSolution>::builder()
             .logging(setup_logging())
             .system_clock(&environment)
             .system_configurations()
-            .scheduling_environment_from_database()?
+            .scheduling_environment_from_database(&asset)?
             .build()?;
 
     // WARN: Manually add `Asset`s here. Everything added here should be done from
     // the API in actual production. So this is only a temporary solution.
 
-    orchestrator.asset_factory(&Asset::DF)?;
+    orchestrator.asset_factory(&asset)?;
 
     let server = start_application(orchestrator, &environment);
 

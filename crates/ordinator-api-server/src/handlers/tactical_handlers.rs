@@ -133,11 +133,7 @@ where
     let mut scheduling_environment_lock = orchestrator.scheduling_environment.lock().unwrap();
 
     let materials_to_periods = &scheduling_environment_lock
-        .worker_environment
-        .actor_specification
-        .get(&_asset)
-        .context("Asset not available in ActorSpecifications")
-        .map_err(|e| AppError::Anyhow(e.to_string()))?
+        .material_repo
         .material_to_period
         .clone();
 

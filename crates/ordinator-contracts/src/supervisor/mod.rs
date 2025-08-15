@@ -1,14 +1,17 @@
 use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 use std::collections::HashMap;
+use std::collections::HashSet;
+use std::string::String;
 
 use anyhow::Context;
 use ordinator_scheduling_environment::time_environment::TimeEnvironment;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrders;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::worker_environment::IdString;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
 use ordinator_supervisor_actor::messages::SupervisorResponseMessage;
 use ordinator_supervisor_actor::messages::responses::SupervisorResponseStatus;
@@ -16,7 +19,6 @@ use serde::Serialize;
 use ts_rs::TS;
 use utoipa::ToSchema;
 
-use crate::AssetNames;
 use crate::IdDto;
 use crate::IdStringDto;
 use crate::MaterialStatusDto;
@@ -202,7 +204,6 @@ pub enum SupervisorResponseMessageDto
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct SupervisorResponseStatusDto
 {
-    pub supervisor_resource: Vec<IdDto>,
     pub delegated_work_order_activities: usize,
     pub objective: u64,
 }
@@ -212,11 +213,6 @@ impl From<SupervisorResponseStatus> for SupervisorResponseStatusDto
     fn from(value: SupervisorResponseStatus) -> Self
     {
         Self {
-            supervisor_resource: value
-                .supervisor_resource
-                .into_iter()
-                .map(IdDto::from)
-                .collect(),
             delegated_work_order_activities: value.delegated_work_order_activities,
             objective: value.objective,
         }
@@ -264,7 +260,6 @@ pub struct TechnicianAvailability
 {
     pub id: IdStringDto,
     pub resources: Vec<String>,
-    pub assets: Vec<AssetNames>,
     pub start: NaiveDateDto,
     pub end: NaiveDateDto,
 }
@@ -275,22 +270,29 @@ pub struct SupervisorAllAvailableTechnicians
 {
     all_technicians: Vec<TechnicianAvailability>,
 }
-impl From<BTreeMap<Id, Availability>> for SupervisorAllAvailableTechnicians
+impl From<BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Resources>)>>
+    for SupervisorAllAvailableTechnicians
 {
-    fn from(value: BTreeMap<Id, Availability>) -> Self
+    fn from(
+        value: BTreeMap<String, (std::collections::BTreeSet<Availability>, HashSet<Resources>)>,
+    ) -> Self
     {
         let all_technicians = value
             .iter()
-            .map(|(id, e)| TechnicianAvailability {
-                id: IdStringDto::from(id.clone()),
-                resources: id.1.iter().map(|e| e.to_string()).collect::<Vec<_>>(),
-                assets: id
-                    .2
-                    .iter()
-                    .map(|e| AssetNames(e.to_string()))
-                    .collect::<Vec<_>>(),
-                start: NaiveDateDto(e.start_date.format("%Y-%m-%d").to_string()),
-                end: NaiveDateDto(e.finish_date.format("%Y-%m-%d").to_string()),
+            .flat_map(|(id, e)| {
+                e.0.iter().map(|availability| TechnicianAvailability {
+                    id: IdStringDto::new(id.clone()),
+                    resources: e.1.iter().map(|e| e.to_string()).collect::<Vec<_>>(),
+                    start: NaiveDateDto(
+                        availability.start_datetime().format("%Y-%m-%d").to_string(),
+                    ),
+                    end: NaiveDateDto(
+                        availability
+                            .finish_datetime()
+                            .format("%Y-%m-%d")
+                            .to_string(),
+                    ),
+                })
             })
             .collect();
 

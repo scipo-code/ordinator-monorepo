@@ -12,7 +12,7 @@ use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
 use ordinator_scheduling_environment::worker_environment::SupervisorOptions;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 
 pub struct SupervisorParameters
@@ -20,7 +20,6 @@ pub struct SupervisorParameters
     pub supervisor_work_orders:
         HashMap<WorkOrderNumber, HashMap<ActivityNumber, SupervisorParameter>>,
     pub supervisor_periods: Vec<Period>,
-    pub operational_ids: Vec<Id>,
     pub options: SupervisorOptions,
 }
 
@@ -34,10 +33,8 @@ impl std::fmt::Debug for SupervisorParameters
             write!(
                 f,
                 "Number of WorkOrderActivities: {}\n\
-                Number of responsible operational Actors: {}\n\
                 Supervisor periods: {:#?}",
                 self.supervisor_work_orders.len(),
-                self.operational_ids.len(),
                 self.supervisor_periods,
             )
         } else {
@@ -56,7 +53,7 @@ impl Parameters for SupervisorParameters
     type Key = WorkOrderActivity;
 
     fn from_source(
-        id: &Id,
+        id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>
     {
@@ -71,9 +68,9 @@ impl Parameters for SupervisorParameters
             .actor_specification
             .get(id.asset())
             .unwrap()
-            .supervisors
+            .supervisor()
             .iter()
-            .find(|e| e.id == *id)
+            .find(|e| e.id == *id.0)
             .with_context(|| format!("Missing an Supervisor entry for {id}"))?;
 
         let options = input_supervisor
@@ -91,13 +88,7 @@ impl Parameters for SupervisorParameters
             .work_orders
             .inner
             .iter()
-            .filter(|(_, wo)| {
-                &wo.functional_location().asset
-                    == id
-                        .2
-                        .first()
-                        .expect("TODO: Implement multi-asset technicians")
-            })
+            .filter(|(_, wo)| &wo.functional_location().asset == id.2.main_asset())
         {
             let mut inner_map = HashMap::new();
             for activity_number in work_order.activity_numbers() {
@@ -115,27 +106,9 @@ impl Parameters for SupervisorParameters
             assert!(_assert_option.is_none());
         }
 
-        // FIX
-        // You should not select all agents. You should instead pick the ones that fit
-        // the correct supervisor. WARN
-        // You made a huge mistake here! The types in the `SchedulingEnvironment` was
-        // wrong and then you created state duplication to fix the issue.
-        // You should load in the `Id` directly.
-        let operational_ids: Vec<Id> = scheduling_environment
-            .worker_environment
-            .actor_specification
-            .get(id.asset())
-            .unwrap()
-            .operational
-            .iter()
-            // TODO [ ] - Start here.
-            .map(|e| e.id.clone())
-            .collect();
-
         Ok(Self {
             supervisor_work_orders: supervisor_parameters,
             supervisor_periods: supervisor_periods.to_vec(),
-            operational_ids,
             options,
         })
     }

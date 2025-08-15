@@ -8,7 +8,7 @@ use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Deserialize;
 use serde::Serialize;
@@ -134,9 +134,9 @@ impl TacticalResources
 
 // Is this the correct way to think about the different things? Yes
 // let the caller decide
-impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &Id)> for TacticalResources
+impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for TacticalResources
 {
-    fn from(value: (&ActorLinkToSchedulingEnvironment<'a>, &Id)) -> Self
+    fn from(value: (&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)) -> Self
     {
         // TODO [ ]
         // Move this out of the code and into `configuration`
@@ -162,7 +162,7 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &Id)> for TacticalResource
             .actor_specification
             .get(value.1.asset())
             .expect("Mising actor for the asset")
-            .operational
+            .operational()
             .iter()
         {
             // There is an error here! You are moving slow on this. You should take a small
@@ -174,7 +174,17 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &Id)> for TacticalResource
                     // WARN
                     // There is a logic error here. If we want to compare with the
                     // `StrategicAgent`.
-                    .entry(operational_configuration_all.id.1.first().cloned().unwrap())
+                    .entry(
+                        operational_configuration_all
+                            .1
+                            .operational_configuration
+                            .resources
+                            .iter()
+                            // ISSUE #000 - add multi-skill to tactical.
+                            .next()
+                            .cloned()
+                            .unwrap(),
+                    )
                     .or_insert_with(|| {
                         Days::zero_from_existing(&Days {
                             days: value
@@ -188,8 +198,9 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &Id)> for TacticalResource
                         })
                     });
 
-                resource_periods.days[i] +=
-                    Work::from(operational_configuration_all.hours_per_day * gradual_reduction(i));
+                resource_periods.days[i] += Work::from(
+                    operational_configuration_all.1.hours_per_day * gradual_reduction(i),
+                );
             }
         }
         TacticalResources::new(tactical_resources_inner)

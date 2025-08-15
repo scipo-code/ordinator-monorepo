@@ -7,7 +7,7 @@ use ordinator_actor_core::Actor;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::Assignment;
+use ordinator_scheduling_environment::assignments::AnyAssignment;
 
 use super::TacticalRequestMessage;
 use super::TacticalResponseMessage;
@@ -73,18 +73,15 @@ where
                 let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 
                 let work_orders = &scheduling_environment_guard.work_orders.inner.clone();
-                let work_order_configurations = &scheduling_environment_guard
-                    .worker_environment
-                    .actor_specification
-                    .get(self.actor_id.asset())
-                    .unwrap()
-                    .work_order_configurations
-                    .clone();
+                let work_order_configurations =
+                    &scheduling_environment_guard.work_order_policies.clone();
 
-                let assignments = scheduling_environment_guard
+                let assignments: Vec<_> = scheduling_environment_guard
                     .assignments
                     .assignment_for_tactical()
-                    .clone();
+                    .iter()
+                    .map(|e| (*e.0, e.1.clone()))
+                    .collect();
 
                 drop(scheduling_environment_guard);
                 for work_order_number in modified_work_orders {
@@ -96,11 +93,12 @@ where
                         )
                     })?;
 
-                    let start_days_for_activities: HashMap<Option<u64>, &Assignment> = assignments
-                        .iter()
-                        .filter(|e| e.0 == work_order_number)
-                        .map(|e| (e.1, &e.2))
-                        .collect::<HashMap<_, _>>();
+                    let start_days_for_activities: HashMap<Option<u64>, AnyAssignment> =
+                        assignments
+                            .iter()
+                            .filter(|e| e.1.work_order_number() == work_order_number)
+                            .map(|e| (e.1.activity_number(), e.1.clone()))
+                            .collect::<HashMap<_, _>>();
 
                     // FIX
                     // The solution should also be updated here. Think about how you can make

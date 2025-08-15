@@ -106,16 +106,14 @@ where
         Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>;
     type Options = StrategicOptions;
 
+    /// Reasons:
+    /// * Update internal state based on [`SystemSolution`]
+    /// * Force schedule [`WorkOrder`] that demand it
+    /// * 
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
-        // This function makes the code work correctly with the
-        //
-        let mut work_order_numbers: Vec<ForcedWorkOrder> = vec![];
+
         let mut state_change = true;
-
-        // This is the problem. What is the best way around it?
-        // We should create a method to update the
-
         let periods = self.parameters.strategic_periods.clone();
         // So the strategic actually loops over all the parameters.
         for (work_order_number, strategic_parameter) in self
@@ -123,14 +121,18 @@ where
             .strategic_work_order_parameters
             .clone()
             .iter()
+
         {
+            // Tactical model takes precedence over the strategic
             let tactical_scheduled_period = self
                 .loaded_system_solution
                 .tactical_actor_solution()
                 .ok()
-                .and_then(|solution| solution.tactical_period(work_order_number, &periods));
+                .and_then(|tactical_solution| {
+                    tactical_solution.tactical_period(work_order_number, &periods)
+                });
 
-            let scheduled_period = self
+            let strategic_scheduled_period = self
                 .solution
                 .strategic_scheduled_work_orders
                 .get_mut(work_order_number)
@@ -138,97 +140,30 @@ where
                     format!("{work_order_number:?}\nis not found in the StrategicAlgorithm")
                 })?;
 
-            // Does the `locked_in_period` make sense? Yes it does but only
-            // if the code actually does the correct thing here. If you put the
-            // the code in the Tactical should this still hold? I am not really
-            // sure here? The
-            // This is no longer true. If there is a WorkOrder in the
-            // Tactical then we should work on the
-            // So the Tactical should only overwrite if the Tactical is forced.
-            // But if the Tactical is forced the forced day should align with the
-            // Strategic. What is the best approach forward here?
-            // So now the `locked_in_period` comes from the `SchedulingEnvironment`
-            // and both the Strategic and the Tactical are corresponding.
-            //
-            // Under the new design I think that this is acceptable again.
-            // Yes becaues if the `locked_in_period` is true it is by
-            // default the same as what is found in the `TacticalActor`
-
-            // One of the most important things to understand is the trade off coming from
-            // encapsulation. That is the most difficult thing in all this. I think that
-            // there are many possible different trade offs that can be made
-            // here but the most important is getting this running and quickly.
-            //
-            // If this value is some. It means that the Tactical Algorithm has scheduled the
-            // work order.
-
+            // If the [`TacticalAlgorithm`] have the [`WorkOrder`] the [`Strategic`]
+            // should respect this, but not schedule it and use resources.
             if let Some(tactical_period) = tactical_scheduled_period {
-                *scheduled_period = WhereIsWorkOrder::Tactical(tactical_period.clone())
+                if *strategic_scheduled_period != WhereIsWorkOrder::Tactical(tactical_period.clone()) {
+                    state_change = true
+                };
+                *strategic_scheduled_period = WhereIsWorkOrder::Tactical(tactical_period.clone())
             }
-            // Actually here you should simply update the Solution based on the
-            // Tactical
-            //
-            // The Tactical should not be scheduled forced scheduled. It should be
-            // handled
-            //
-            // I feel like this should be simplified as well. I do not see the
-            // path forward here.
-            //
-            // What should be changed here? I am really not sure. I think that
-            // the best approach is to make the system work with.
-            //
-            // CRUCIAL INSIGHT:
-            // 1. Use the forced,
-            // 2. Use the from the other actor solutions.
-            // 3. Use the free
-            //
-            // So 1. here is from the `SchedulingEnvironment` and it is the
-            // same for every actor. 2. is an interaction that exists between
-            // the `Tactical` and `Strategic` to divide work between them.
-            //
-            // `WhereIsWorkOrder` is now only a type for handling interactions
-            // between the `Strategic` and the `Tactical`.
-            //
 
-            if strategic_parameter.locked_in_period == scheduled_period.clone() {
+            if strategic_parameter.locked_in_period == strategic_scheduled_period.clone() {
                 continue;
-            } else if let WhereIsWorkOrder::Tactical(_period) = scheduled_period {
-            }
-
-            if strategic_parameter.locked_in_period.is_strategic() {
-                work_order_numbers.push(ForcedWorkOrder::Locked(*work_order_number));
-            } else if let Some(_tactical_period) = tactical_scheduled_period {
-
-                // Here the solution should turn into a
-                //
-                // ESSAY: What should happen here? Being in here means that the
-                // Tactical has the solution. And that means that the Strategic
-                // should do nothing. It should not unschedule the WorkOrder.
-                //
-                // That is the job of the Tactical
-                //
-                // We should do nothing. Then we should make the code work
-                // correctly with the
-                // work_order_numbers.push(ForcedWorkOrder::FromTactical((
-                //     *work_order_number,
-                //     tactical_period.clone(),
-                // )));
-            }
+            } 
+            state_change = true;
         }
-        // [ ] I believe that you simply have to make this work now
+
         // CRUCIAL: forced is always part of the `incorporate` shared state. This means
         // that if a solution leaves the
         //
         // You should look into the Tactical Solution and make sure that the code
         // is performing as expected.
-        for forced_work_order_numbers in work_order_numbers.iter() {
-            state_change = true;
-            self.schedule_forced_strategic_work_order(forced_work_order_numbers)
-                .with_context(|| {
-                    format!("{forced_work_order_numbers:#?} could not be force scheduled")
-                })?;
-        }
+        // I believe that this function should determine itself what is actually forced.
+        // The incorporate should only update the [`StrategicParameters`]. 
 
+        self.force_schedule()?;
         Ok(state_change)
     }
 
@@ -384,6 +319,31 @@ where
     fn algorithm_util_methods(&mut self) -> &mut Self::Algorithm
     {
         &mut self.0
+    }
+
+    fn force_schedule(&mut self) -> Result<()> {
+
+        // [`StrategicParameter::locked_in_period`] should be derived from the
+        // [`SchedulingEnvironment`]. 
+        let forced_work_orders: Vec<_> = self
+            .parameters
+            .strategic_work_order_parameters
+            .iter()
+            .filter(|e|e.1.locked_in_period.strategic_forced())
+            .map(|e|{
+                // This is technical debt. 
+                // TODO [ ] - remove the `ForcedWorkOrder` if necessary.
+                ForcedWorkOrder::Locked(*e.0)
+            }).collect();
+
+        for forced_work_order_numbers in &forced_work_orders {
+            self.schedule_forced_strategic_work_order(forced_work_order_numbers)
+                .with_context(|| {
+                    format!("{forced_work_order_numbers:#?} could not be force scheduled")
+                })?;
+        }
+
+        Ok(())
     }
 }
 
@@ -921,7 +881,7 @@ where
             .every_work_order()
             .get(work_order_number)
             .expect("This should always be initialized")
-            .is_strategic()
+            .strategic_forced()
     }
 
     /// This function updates the StrategicResources based on the a provided
@@ -1524,7 +1484,7 @@ fn determine_forced_work_order_resource_loadings(
             let operational_resource = OperationalResource::new(
                 &(resources.to_string() + "_dummy"),
                 Work::from(0.0),
-                vec![*resources],
+                HashSet::from([*resources]),
             );
             resources_store_dummy = Some(operational_resource);
             qualified_technicians.push(resources_store_dummy.as_mut().unwrap());
@@ -1812,8 +1772,8 @@ fn determine_difference_resources(
 
 pub fn calculate_period_difference(scheduled_period: &Period, latest_period: &Period) -> i64
 {
-    let scheduled_period_date = scheduled_period.finish_date().to_owned();
-    let latest_date = latest_period.finish_date();
+    let scheduled_period_date = scheduled_period.finish_datetime().to_owned();
+    let latest_date = latest_period.finish_datetime();
     let duration = scheduled_period_date.signed_duration_since(latest_date);
     let days = duration.num_days();
     std::cmp::max(days / 7, 0) as i64
@@ -1966,7 +1926,7 @@ where
                     "The StrategicParameter should always be available for the StrategicSolution",
                 );
 
-            if strategic_parameter.locked_in_period.is_strategic() {
+            if strategic_parameter.locked_in_period.strategic_forced() {
                 continue;
             }
 
@@ -2041,29 +2001,29 @@ mod tests
         let capacity_resource = HashMap::from([
             (
                 "Test one".to_string(),
-                OperationalResource::new("Test one", Work::from(5.0), vec![Resources::MtnMech]),
+                OperationalResource::new("Test one", Work::from(5.0), HashSet::from([Resources::MtnMech])),
             ),
             (
                 "Test two".to_string(),
-                OperationalResource::new("Test two", Work::from(4.0), vec![Resources::MtnElec]),
+                OperationalResource::new("Test two", Work::from(4.0), HashSet::from([Resources::MtnElec])),
             ),
             (
                 "Test three".to_string(),
-                OperationalResource::new("Test three", Work::from(3.0), vec![Resources::MtnScaf]),
+                OperationalResource::new("Test three", Work::from(3.0), HashSet::from([Resources::MtnScaf])),
             ),
         ]);
         let loading_resource = HashMap::from([
             (
                 "Test one".to_string(),
-                OperationalResource::new("Test one", Work::from(2.0), vec![Resources::MtnMech]),
+                OperationalResource::new("Test one", Work::from(2.0), HashSet::from([Resources::MtnMech])),
             ),
             (
                 "Test two".to_string(),
-                OperationalResource::new("Test two", Work::from(2.0), vec![Resources::MtnElec]),
+                OperationalResource::new("Test two", Work::from(2.0), HashSet::from([Resources::MtnElec])),
             ),
             (
                 "Test three".to_string(),
-                OperationalResource::new("Test three", Work::from(2.0), vec![Resources::MtnScaf]),
+                OperationalResource::new("Test three", Work::from(2.0), HashSet::from([Resources::MtnScaf])),
             ),
         ]);
 
@@ -2072,15 +2032,15 @@ mod tests
         let difference_actual = HashMap::from([
             (
                 "Test one".to_string(),
-                OperationalResource::new("Test one", Work::from(3.0), vec![Resources::MtnMech]),
+                OperationalResource::new("Test one", Work::from(3.0), HashSet::from([Resources::MtnMech])),
             ),
             (
                 "Test two".to_string(),
-                OperationalResource::new("Test two", Work::from(2.0), vec![Resources::MtnElec]),
+                OperationalResource::new("Test two", Work::from(2.0), HashSet::from([Resources::MtnElec])),
             ),
             (
                 "Test three".to_string(),
-                OperationalResource::new("Test three", Work::from(1.0), vec![Resources::MtnScaf]),
+                OperationalResource::new("Test three", Work::from(1.0), HashSet::from([Resources::MtnScaf])),
             ),
         ]);
 
@@ -2102,7 +2062,7 @@ mod tests
         let operational_resource = OperationalResource::new(
             operational_id,
             capacity,
-            vec![Resources::MtnMech, Resources::MtnElec, Resources::Prodtech],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec, Resources::Prodtech]),
         );
 
         let operational_resources_by_period =
@@ -2159,7 +2119,7 @@ mod tests
         let operational_resource = OperationalResource::new(
             operational_id,
             capacity,
-            vec![Resources::MtnMech, Resources::MtnElec, Resources::Prodtech],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec, Resources::Prodtech]),
         );
 
         let operational_resources_by_period =
@@ -2223,7 +2183,7 @@ mod tests
         let operational_resource = OperationalResource::new(
             operational_id,
             capacity,
-            vec![Resources::MtnMech, Resources::MtnElec, Resources::Prodtech],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec, Resources::Prodtech]),
         );
 
         let operational_resources_by_period =
@@ -2285,12 +2245,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2319,12 +2279,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2355,12 +2315,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2382,12 +2342,12 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(20.0),
-            vec![Resources::MtnScaf, Resources::MtnElec],
+            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
         );
 
         let mut strategic_resource = StrategicResources::default();
@@ -2406,12 +2366,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2444,12 +2404,12 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(50.0),
-            vec![Resources::MtnScaf, Resources::MtnElec],
+            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
         );
         let mut strategic_resources = StrategicResources::default();
 
@@ -2468,12 +2428,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2499,12 +2459,12 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(20.0),
-            vec![Resources::MtnScaf, Resources::MtnElec],
+            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
         );
         let mut strategic_resources = StrategicResources::default();
 
@@ -2523,12 +2483,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(30.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(30.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2556,15 +2516,15 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(30.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(30.0),
-            vec![Resources::MtnScaf, Resources::MtnElec],
+            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
         );
         let operational_resource_3 =
-            OperationalResource::new("VEN-MECH_dummy", Work::from(20.0), vec![Resources::VenMech]);
+            OperationalResource::new("VEN-MECH_dummy", Work::from(20.0), HashSet::from([Resources::VenMech]));
 
         let mut strategic_resources = StrategicResources::default();
 
@@ -2589,12 +2549,12 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(20.0),
-                vec![Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(20.0),
-                vec![Resources::MtnScaf, Resources::MtnElec],
+                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
             ),
         ];
 
@@ -2610,12 +2570,12 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(-20.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(-20.0),
-            vec![Resources::MtnScaf, Resources::MtnElec],
+            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
         );
         let mut strategic_resources_manual = StrategicResources::default();
 
@@ -2646,17 +2606,17 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(6.0),
-                vec![Resources::MtnMech, Resources::Prodtech, Resources::MtnElec],
+                HashSet::from([Resources::MtnMech, Resources::Prodtech, Resources::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_2",
                 Work::from(0.0),
-                vec![Resources::MtnScaf, Resources::MtnRigg, Resources::MtnLagg],
+                HashSet::from([Resources::MtnScaf, Resources::MtnRigg, Resources::MtnLagg]),
             ),
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(2.0),
-                vec![Resources::MtnInst, Resources::MtnMech, Resources::MtnElec],
+                HashSet::from([Resources::MtnInst, Resources::MtnMech, Resources::MtnElec]),
             ),
         ];
 
@@ -2729,12 +2689,12 @@ mod tests
         let operational_resource_0 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(40.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
 
         strategic_resources.insert_operational_resource(periods[0].clone(), operational_resource_0);
@@ -2952,7 +2912,7 @@ mod tests
         let operational_resource_0 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            vec![Resources::MtnMech, Resources::MtnElec],
+            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
         );
 
         strategic_resources.insert_operational_resource(periods[0].clone(), operational_resource_0);

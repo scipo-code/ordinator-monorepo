@@ -28,7 +28,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
 // Again there are here multiple ways of doing things. You should be careful
 // I think that the best approach is to put the... You could reformulate
@@ -128,7 +128,7 @@ impl Parameters for OperationalParameters
 
     // Do we even want the code to look like this in the first place?
     fn from_source(
-        id: &Id,
+        id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
         // This is not needed. It should always be a part of your SchedulingEnvironment.
         // Yes this is the best approach here.
@@ -175,33 +175,35 @@ impl Parameters for OperationalParameters
             .worker_environment
             .actor_specification
             .get(id.asset())
-            .unwrap()
-            .operational
+            .with_context(|| format!("{:#?}", id.asset()))?
+            .operational()
             .iter()
-            .find(|oca| id == &oca.id)
+            .find(|oca| id.0 == *oca.0)
             .with_context(|| format!("OperationalActor: {:#?} does not exist", id))?;
 
+        // TODO [ ] Start operational for each `Availability`
         Ok(Self {
             work_order_parameters,
             work_order_activity_relations,
-            availability: operational_configuration
-                .operational_configuration
-                .availability
-                .clone(),
+            availability: id.2.clone(),
             off_shift_interval: operational_configuration
+                .1
                 .operational_configuration
                 .off_shift_interval
                 .clone(),
             break_interval: operational_configuration
+                .1
                 .operational_configuration
                 .break_interval
                 .clone(),
             toolbox_interval: operational_configuration
+                .1
                 .operational_configuration
                 .toolbox_interval
                 .clone(),
             options: OperationalOptions {
                 number_of_removed_activities: operational_configuration
+                    .1
                     .operational_options
                     .number_of_removed_activities,
             },

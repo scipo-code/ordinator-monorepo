@@ -1,4 +1,6 @@
+use std::panic::Location;
 use std::path::Path;
+use std::path::PathBuf;
 use std::sync::Arc;
 
 use chrono::NaiveDate;
@@ -8,14 +10,16 @@ use chrono::Utc;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::WorkOrderNumber;
 use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_environment::materials::MaterialRepo;
+use ordinator_scheduling_environment::materials::MaterialToPeriod;
 use ordinator_scheduling_environment::time_environment::create_time_environment;
+use ordinator_scheduling_environment::work_order::WorkOrderPolicies;
 use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
 use ordinator_scheduling_environment::work_order::work_order_info::priority::Priority;
 use ordinator_scheduling_environment::work_order::work_order_info::revision::Revision;
 use ordinator_scheduling_environment::work_order::work_order_info::system_condition::SystemCondition;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_text::WorkOrderText;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
-use ordinator_scheduling_environment::worker_environment::ActorEnvironment;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 
@@ -24,24 +28,12 @@ pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironme
     let asset = Asset::Test;
     let asset_string = asset.to_string().to_lowercase();
 
-    let path = format!(
+    let path_to_workers = PathBuf::from(format!(
         "temp_scheduling_environment_database/actor_specifications/actor_specification_{asset_string}.toml",
-    );
-    let path_to_data = Path::new(env!("CARGO_MANIFEST_DIR")).join(path);
+    ));
+    let path_to_workers = Path::new(env!("CARGO_MANIFEST_DIR")).join(path_to_workers);
 
-    println!("{}\n{}", path_to_data.display(), line!());
-    // println!("{:?}", std::fs::canonicalize(path_to_data.clone()).unwrap());
-
-    // We do not want to test against data files. I think that the best approach
-    // here will be to test against something else.
-    let worker_environment = ActorEnvironment::builder()
-        .actor_environment(Asset::Test, path_to_data)
-        // What should be done here? I think that the best approach is to make
-        // the system work.
-        .unwrap()
-        .build();
-    // Should you build the actors yourself. Or do something different? I think that
-    // the best approach here is to do the same thing again.
+    println!("{}\n{}", path_to_workers.display(), Location::caller());
 
     let time_input = TimeInput {
         number_of_periods: 5,
@@ -53,8 +45,29 @@ pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironme
         &time_input,
     );
 
+    let work_order_policies =
+        "temp_scheduling_environment_database/work_order_policies/work_order_policies_df.toml";
+    let path_to_work_order_policies =
+        Path::new(env!("CARGO_MANIFEST_DIR")).join(work_order_policies);
+
+    let contents = std::fs::read_to_string(path_to_work_order_policies).unwrap();
+    let work_order_policies: WorkOrderPolicies =
+        toml::from_str(&contents).expect("Could not read WorkOrderPolicies");
+
+    let material_to_period =
+        "temp_scheduling_environment_database/material_repo/material_to_period.toml";
+    let path_to_material_to_period = Path::new(env!("CARGO_MANIFEST_DIR")).join(material_to_period);
+
+    let material_to_period_string = std::fs::read_to_string(path_to_material_to_period).unwrap();
+
+    let material_to_period: MaterialToPeriod = toml::from_str(&material_to_period_string).unwrap();
+
+    let material_repo = MaterialRepo::new(material_to_period);
+
     SchedulingEnvironment::builder()
-        .worker_environment(worker_environment)
+        .worker_environment_from_toml(path_to_workers, asset).expect("Test WorkerEnvironment could not be built")
+        .work_order_policies(work_order_policies)
+        .material_repo(material_repo)
         .work_orders_builder(|wo_builder| {
             wo_builder
                 .work_order_builder(WorkOrderNumber(1001), |wob| {
@@ -168,5 +181,5 @@ pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironme
                 })
         })
     .time_environment(time_environment)
-    .build()
+    .build().expect("Could not build SchedulingEnvironment")
 }

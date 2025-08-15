@@ -10,7 +10,7 @@ use ordinator_operational_actor::algorithm::operational_solution::OperationalSol
 use ordinator_operational_actor::OperationalApi;
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
@@ -69,7 +69,7 @@ where
     // So the `Id` is actually not only an ID, it specifies everything that is
     // unique to that specific actor. I think that is the reason that the system
     // works so well here.
-    pub fn start_strategic_actor(&mut self, id: &Id) -> Result<()>
+    pub fn start_strategic_actor(&mut self, id: &ActorCompositeId) -> Result<()>
     {
         // Insert an entry on the SchedulingEnvironment
         let build_dependencies = self.extract_factory_dependencies(id.asset())?;
@@ -105,7 +105,7 @@ where
         Ok(())
     }
 
-    pub fn start_tactical_actor(&mut self, id: &Id) -> Result<()>
+    pub fn start_tactical_actor(&mut self, id: &ActorCompositeId) -> Result<()>
     {
         // TODO [ ] - Insert entry into the `SchedulingEnvironment`
         let build_dependencies = self.extract_factory_dependencies(id.asset())?;
@@ -131,7 +131,7 @@ where
     }
 
     // TODO [ ] - Move the ActorSpecification into the SchedulingEnvironment.
-    pub fn start_supervisor_actor(&mut self, id: &Id) -> Result<()>
+    pub fn start_supervisor_actor(&mut self, id: &ActorCompositeId) -> Result<()>
     {
         // TODO [ ] - Insert entry into the `SchedulingEnvironment`
         let build_dependencies = self.extract_factory_dependencies(id.asset())?;
@@ -162,7 +162,7 @@ where
     // probably be to
     //
     // Use this to
-    pub fn start_operational_actor(&self, id: &Id) -> Result<(), StartError>
+    pub fn start_operational_actor(&self, id: &ActorCompositeId) -> Result<(), StartError>
     {
         // Here you should have typed Errors instead of what you are doing here.
         let build_dependencies = self

@@ -1,4 +1,3 @@
-use std::collections::HashSet;
 use std::fmt::Debug;
 
 use anyhow::Context;
@@ -8,7 +7,6 @@ use ordinator_actor_core::Actor;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
 use tracing::Level;
 use tracing::event;
 
@@ -66,32 +64,7 @@ where
                 }
                 Ok(SupervisorResponseMessage::StateLink)
             }
-            StateLink::WorkerEnvironment => {
-                let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
-
-                let operational_agents = scheduling_environment_guard
-                    .worker_environment
-                    .actor_specification
-                    .get(self.actor_id.asset())
-                    .unwrap()
-                    .operational
-                    .iter()
-                    .map(|e| &e.id)
-                    .collect::<HashSet<&Id>>();
-
-                event!(
-                    Level::ERROR,
-                    does_state_ids_and_addr_ids_match = self
-                        .algorithm
-                        .loaded_system_solution
-                        .all_operational()
-                        .iter()
-                        .eq(operational_agents.iter().copied()),
-                    "Check this error later. FIX: YOU SHOULD call '.send()' instead of '.do_send()' and use the lldb debugger to trace the flow."
-                );
-
-                Ok(SupervisorResponseMessage::StateLink)
-            }
+            StateLink::WorkerEnvironment => Ok(SupervisorResponseMessage::StateLink),
             StateLink::TimeEnvironment => todo!(),
         }
     }
@@ -120,7 +93,6 @@ where
                     supervisor_status_message
                 );
                 let supervisor_status = SupervisorResponseStatus {
-                    supervisor_resource: self.algorithm.parameters.operational_ids.clone(),
                     delegated_work_order_activities: self.algorithm.solution.count_unique_woa(),
                     objective: self.algorithm.solution.objective_value,
                 };

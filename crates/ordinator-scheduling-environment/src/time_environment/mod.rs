@@ -29,15 +29,6 @@ pub struct TimeEnvironment
     pub periods: Vec<Period>,
     pub days: Vec<Day>,
 }
-#[derive(Eq, PartialEq, Debug, Serialize, Deserialize, Clone)]
-pub struct MaterialToPeriod
-{
-    pub nmat: usize,
-    pub smat: usize,
-    pub cmat: usize,
-    pub pmat: usize,
-    pub wmat: usize,
-}
 
 impl TimeEnvironment
 {

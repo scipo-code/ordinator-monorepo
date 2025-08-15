@@ -34,7 +34,7 @@ pub struct SystemConfigurations
     pub data_locations: BaptisteToml,
     pub throttling: Throttling,
     pub user_interface: EventColors,
-    pub database_config: PathBuf,
+    pub temp_database_path: PathBuf,
 }
 
 impl SystemConfigurationTrait for SystemConfigurations {}
@@ -60,7 +60,7 @@ impl SystemConfigurations
         let event_colors: EventColors = toml::from_str(&event_colors_contents).unwrap();
 
         let database_path_string =
-            &dotenvy::var("DATABASE_PATH").expect("Could not read database path");
+            &dotenvy::var("WORK_ORDERS_PATH").expect("Could not read database path");
 
         let database_path = std::path::Path::new(database_path_string);
 
@@ -71,7 +71,7 @@ impl SystemConfigurations
             data_locations,
             throttling,
             user_interface: event_colors,
-            database_config: database_path.to_owned(),
+            temp_database_path: database_path.to_owned(),
         }))))
     }
 

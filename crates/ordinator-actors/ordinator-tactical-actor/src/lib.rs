@@ -26,7 +26,7 @@ use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use priority_queue::PriorityQueue;
 
@@ -86,7 +86,7 @@ where
     type Communication = Communication<TacticalRequestMessage, TacticalResponseMessage>;
 
     fn construct_actor(
-        id: Id,
+        id: ActorCompositeId,
         scheduling_environment_guard: Arc<Mutex<SchedulingEnvironment>>,
         shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,

@@ -1,7 +1,7 @@
 use std::fs::File;
-use std::io::Read;
 use std::io::Write;
 use std::path::Path;
+use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::Mutex;
 
@@ -11,9 +11,9 @@ use arc_swap::ArcSwap;
 use chrono::DateTime;
 use chrono::Utc;
 use ordinator_configuration::SystemConfigurations;
+use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
-
-use super::model_initializers;
+use ordinator_total_data_processing::sources::baptiste_csv_reader_merges::load_csv_data;
 
 pub struct DataBaseConnection;
 
@@ -22,57 +22,72 @@ pub struct DataBaseConnection;
 // connection. I do not think that is a good approach
 // here. You should be able to interact with the data
 // continuously for this to work.
+//
 impl DataBaseConnection
 {
     pub fn scheduling_environment(
         current_time: DateTime<Utc>,
-        system_configuration: Arc<ArcSwap<SystemConfigurations>>,
+        asset: Asset,
+        system_configurations: Arc<ArcSwap<SystemConfigurations>>,
     ) -> Result<Arc<Mutex<SchedulingEnvironment>>>
     {
-        let database_path = &system_configuration.load().database_config;
+        // [`TimeEnvironment`] data
+        let path_to_time_environment = PathBuf::from(
+            "./temp_scheduling_environment_database/time_environment/time_input.toml",
+        );
+
+        // [`WorkOrders`] data
+        let path_to_work_orders = system_configurations.load().temp_database_path.clone();
+        let csv_data_locations = &system_configurations.load().data_locations;
+
+        // [`WorkerEnvironment`] data
+        let asset_string = asset.to_string().to_lowercase();
+        let path = format!(
+            "temp_scheduling_environment_database/actor_specifications/actor_specification_{asset_string}.toml",
+        );
+        #[cfg(test)]
+        let path_to_workers = Path::new(env!("CARGO_MANIFEST_DIR")).join(path);
+        #[cfg(not(test))]
+        let path_to_workers = Path::new("./").join(path);
+
+        let database_path = &system_configurations.load().temp_database_path;
+
+        let path_to_work_order_policies = PathBuf::from(format!(
+            "temp_scheduling_environment_database/work_order_policies/work_order_policies_{asset_string}.toml",
+        ));
+        let path_to_material_to_period = PathBuf::from(
+            "temp_scheduling_environment_database/material_repo/material_to_period.toml",
+        );
+
         if database_path.exists() {
-            initialize_from_database(database_path)
+            SchedulingEnvironment::builder()
+                .work_orders_from_json(path_to_work_orders)?
+                .time_environment_from_toml(path_to_time_environment, current_time)?
+                .worker_environment_from_toml(path_to_workers, asset)?
+                .work_order_policies_from_toml(path_to_work_order_policies)?
+                .material_repo_from_toml(path_to_material_to_period)?
+                .build()
         } else {
-            initialize_from_source_data_and_initialize_database(
-                current_time,
-                system_configuration.load(),
-            )
-            .context("Could not write SchedulingEnvironment to database.")
+            let work_orders = load_csv_data(csv_data_locations).with_context(|| {
+                format!("SchedulingEnvironment could not be built from {csv_data_locations:#?}",)
+            })?;
+
+            let work_orders_json = serde_json::to_string(&work_orders)
+                .context("Could not make a string value out of WorkOrders")?;
+
+            let mut file = File::create(path_to_work_orders)
+                .context("Could not create work_orders.json file")?;
+
+            file.write_all(work_orders_json.as_bytes())
+                .context("Could not write bytes to work_orders.json file")?;
+
+            SchedulingEnvironment::builder()
+                .worker_environment_from_toml(path_to_workers, asset)?
+                .time_environment_from_toml(path_to_time_environment, current_time)?
+                .work_orders(work_orders)
+                .work_order_policies_from_toml(path_to_work_order_policies)?
+                .material_repo_from_toml(path_to_material_to_period)?
+                .build()
         }
     }
-}
-
-// TODO 2025-07-02 [ ] This logic is completely wrong. You should move the
-// deserialization code out of the [`SchedulingEnvironment`].
-fn initialize_from_database(path: &Path) -> Result<Arc<Mutex<SchedulingEnvironment>>>
-{
-    let mut file = File::open(path)?;
-    let mut data = String::new();
-
-    file.read_to_string(&mut data)?;
-
-    Ok(Arc::new(Mutex::new(serde_json::from_str::<
-        SchedulingEnvironment,
-    >(&data).context("Could not build the SchedulingEnvironment from the JSON file\n1. Did you modify the schema (SchedulingEnvironment)?\n2. Is the data corrupted?")?)))
-}
-
-fn initialize_from_source_data_and_initialize_database(
-    current_time: DateTime<Utc>,
-    system_configurations: arc_swap::Guard<Arc<SystemConfigurations>>,
-) -> Result<Arc<Mutex<SchedulingEnvironment>>>
-{
-    let file_path = system_configurations.database_config.clone();
-    let scheduling_environment =
-        model_initializers::initialize_scheduling_environment(current_time, system_configurations)
-            .context("Could not initialize the SchedulingEnvironment from source data")?;
-
-    let json_scheduling_environment =
-        serde_json::to_string(&*scheduling_environment.lock().unwrap()).unwrap();
-    // TODO [ ]
-    // Make database integration here.
-    let mut file = File::create(file_path).unwrap();
-
-    file.write_all(json_scheduling_environment.as_bytes())
-        .unwrap();
-    Ok(scheduling_environment)
 }

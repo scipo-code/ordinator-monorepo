@@ -28,7 +28,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Serialize;
 use thiserror::Error;
@@ -105,7 +105,7 @@ where
     pub strategic: Option<SolutionState<S>>,
     pub tactical: Option<SolutionState<T>>,
     pub supervisor: Option<SolutionState<U>>,
-    pub operational: HashMap<Id, SolutionState<V>>,
+    pub operational: HashMap<ActorCompositeId, SolutionState<V>>,
 }
 
 // ISSUE #000 [ ] - this whole [`SystemSolution`] should be reworked. It should
@@ -168,25 +168,28 @@ pub trait SystemSolutions: Clone + Sized
     fn new() -> Self;
     fn strategic(&self) -> Result<&Self::Strategic>;
 
-    fn strategic_swap(&mut self, id: &Id, solution: SolutionState<Self::Strategic>)
+    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Strategic>)
     where
         Self::Strategic: Solution;
     fn tactical_actor_solution(&self) -> Result<&Self::Tactical>;
 
-    fn tactical_swap(&mut self, id: &Id, solution: SolutionState<Self::Tactical>)
+    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Tactical>)
     where
         Self::Tactical: Solution;
     fn supervisor_actor_solutions(&self) -> Result<&Self::Supervisor>;
 
-    fn supervisor_swap(&mut self, id: &Id, solution: SolutionState<Self::Supervisor>)
+    fn supervisor_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Supervisor>)
     where
         Self::Supervisor: Solution;
-    fn operational_actor_solutions(&self, id: &Id) -> Result<&Self::Operational>;
+    fn operational_actor_solutions(&self, id: &ActorCompositeId) -> Result<&Self::Operational>;
 
-    fn all_operational(&self) -> HashSet<Id>;
+    fn all_operational(&self) -> HashSet<ActorCompositeId>;
     // If you make all Id's internal you could simply work on those?
-    fn operational_swap(&mut self, id: &Id, solution: SolutionState<Self::Operational>)
-    where
+    fn operational_swap(
+        &mut self,
+        id: &ActorCompositeId,
+        solution: SolutionState<Self::Operational>,
+    ) where
         Self::Operational: Solution;
 }
 
@@ -241,7 +244,7 @@ where
             .inner)
     }
 
-    fn operational_actor_solutions(&self, id: &Id) -> Result<&Self::Operational>
+    fn operational_actor_solutions(&self, id: &ActorCompositeId) -> Result<&Self::Operational>
     {
         Ok(&self
             .operational
@@ -251,35 +254,38 @@ where
     }
 
     // Can you even do this? Is this allowed? I do not t
-    fn operational_swap(&mut self, id: &Id, solution: SolutionState<Self::Operational>)
-    where
+    fn operational_swap(
+        &mut self,
+        id: &ActorCompositeId,
+        solution: SolutionState<Self::Operational>,
+    ) where
         Self::Operational: Solution,
     {
         self.operational.insert(id.clone(), solution);
     }
 
-    fn strategic_swap(&mut self, id: &Id, solution: SolutionState<Self::Strategic>)
+    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Strategic>)
     where
         Self::Strategic: Solution,
     {
         self.strategic = Some(solution);
     }
 
-    fn tactical_swap(&mut self, id: &Id, solution: SolutionState<Self::Tactical>)
+    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Tactical>)
     where
         Self::Tactical: Solution,
     {
         self.tactical = Some(solution);
     }
 
-    fn supervisor_swap(&mut self, id: &Id, solution: SolutionState<Self::Supervisor>)
+    fn supervisor_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Supervisor>)
     where
         Self::Supervisor: Solution,
     {
         self.supervisor = Some(solution);
     }
 
-    fn all_operational(&self) -> HashSet<Id>
+    fn all_operational(&self) -> HashSet<ActorCompositeId>
     {
         self.operational.keys().cloned().collect()
     }
@@ -296,7 +302,7 @@ where
     ///
     /// I really do not like this trait declaration. Something has to change?
     fn from_source(
-        id: &Id,
+        id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>;
 
@@ -493,14 +499,14 @@ impl<T> WhereIsWorkOrder<T>
         matches!(self, WhereIsWorkOrder::NotScheduled)
     }
 
-    pub fn is_strategic(&self) -> bool
+    pub fn strategic_forced(&self) -> bool
     {
         matches!(self, WhereIsWorkOrder::Strategic(_))
     }
 
     pub fn is_strategic_or_tactical(&self) -> bool
     {
-        self.is_tactical() || self.is_strategic()
+        self.is_tactical() || self.strategic_forced()
     }
 }
 
@@ -517,7 +523,7 @@ pub trait SwapSolution<Ss>: Solution + Sized
 where
     Ss: SystemSolutions,
 {
-    fn swap(id: &Id, solution: SolutionState<Self>, system_solution: &mut Ss);
+    fn swap(id: &ActorCompositeId, solution: SolutionState<Self>, system_solution: &mut Ss);
 
     // fn perform_swap(id: &Id, solution: Self, system_solution:
     // Self::SystemSolution) {
@@ -529,7 +535,7 @@ pub trait SupervisorInterface
 where
     Self: Clone + std::fmt::Debug + Eq + PartialEq,
 {
-    fn delegated_tasks(&self, operational_agent: &Id) -> HashSet<WorkOrderActivity>;
+    fn delegated_tasks(&self, operational_agent: &ActorCompositeId) -> HashSet<WorkOrderActivity>;
     // Where should the `Delegate` be located?
     // I believe that the best place is in the `actor-core` the issue is that you
     // wanted to use these interface for the `orchestrator` as well and that is not
@@ -552,8 +558,11 @@ where
     // then afterwards you look at all four of these traits and then make a
     // common! Bullseye! This is the approach abstract should always be created
     // with evidence not blind faith.
-    fn delegates_for_agent(&self, operational_agent: &Id) -> HashMap<WorkOrderActivity, Delegate>;
-    fn count_delegate_types(&self, operational_agent: &Id) -> (u64, u64, u64);
+    fn delegates_for_agent(
+        &self,
+        operational_agent: &ActorCompositeId,
+    ) -> HashMap<WorkOrderActivity, Delegate>;
+    fn count_delegate_types(&self, operational_agent: &ActorCompositeId) -> (u64, u64, u64);
 }
 // The `solution` should be updated on the `SharedSolution` not the
 // individual solution. These interfaces are implemented on the
@@ -618,7 +627,7 @@ where
     type Communication;
 
     fn construct_actor(
-        id: Id,
+        id: ActorCompositeId,
         scheduling_environment: Arc<Mutex<SchedulingEnvironment>>,
         system_solution_arc_swap: Arc<ArcSwap<Ss>>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,
@@ -644,15 +653,12 @@ mod tests
             type Objective = u64;
             type Parameters = ();
 
-            fn from_parameters(parameters: &Self::Parameters) -> anyhow::Result<Self>
+            fn from_parameters(_parameters: &Self::Parameters) -> anyhow::Result<Self>
             {
                 todo!()
             }
 
-            fn update_objective(&mut self, other_objective: Self::Objective)
-            {
-                ()
-            }
+            fn update_objective(&mut self, _other_objective: Self::Objective) {}
         }
         let mut solution = SolutionState::new(TestSolution);
 

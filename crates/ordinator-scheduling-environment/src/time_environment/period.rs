@@ -112,11 +112,11 @@ impl Period
     {
         let first = std::cmp::max(
             self.start_date.date_naive(),
-            availability.start_date.date_naive(),
+            availability.start_date(),
         );
         let second = std::cmp::max(
             self.end_date.date_naive(),
-            availability.finish_date.date_naive(),
+            availability.finish_date(),
         );
 
         let range = second - first;
@@ -131,12 +131,12 @@ impl Period
         self.period_string.clone()
     }
 
-    pub fn start_date(&self) -> &DateTime<Utc>
+    pub fn start_datetime(&self) -> &DateTime<Utc>
     {
         &self.start_date
     }
 
-    pub fn finish_date(&self) -> &DateTime<Utc>
+    pub fn finish_datetime(&self) -> &DateTime<Utc>
     {
         &self.end_date
     }
@@ -439,8 +439,8 @@ mod tests
         let period = Period::from_str("2024-W51-52").unwrap();
 
         let new_period = Period::new(
-            period.start_date().to_owned() + Duration::weeks(2),
-            period.finish_date().to_owned() + Duration::weeks(2),
+            period.start_datetime().to_owned() + Duration::weeks(2),
+            period.finish_datetime().to_owned() + Duration::weeks(2),
             vec![],
         );
 

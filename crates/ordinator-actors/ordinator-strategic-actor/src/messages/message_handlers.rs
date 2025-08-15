@@ -1,26 +1,26 @@
 use std::any::type_name;
 use std::fmt::Debug;
 
-use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::bail;
 use colored::Colorize;
-use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::Actor;
+use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use tracing::event;
 use tracing::Level;
+use tracing::event;
 
 use super::StrategicRequestMessage;
 use super::StrategicResponseMessage;
 use super::StrategicSchedulingEnvironmentCommands;
 use super::StrategicStatusMessage;
+use crate::algorithm::StrategicAlgorithm;
 use crate::algorithm::strategic_parameters::WorkOrderParameter;
 use crate::algorithm::strategic_resources::StrategicResources;
 use crate::algorithm::strategic_solution::StrategicSolution;
-use crate::algorithm::StrategicAlgorithm;
 use crate::messages::StrategicRequestScheduling;
 use crate::messages::StrategicResponseScheduling;
 
@@ -431,13 +431,11 @@ where
                                     "{work_order_number:?} is not present in SchedulingEnvironment",
                                 )
                             })?;
-                    let actor_specification = scheduling_environment_guard
-                        .worker_environment
-                        .actor_specification
-                        .get(self.actor_id.asset())
-                        .expect("Missing Asset for ActorSpecification");
-                    let work_order_configurations = &actor_specification.work_order_configurations;
-                    let material_to_period = &actor_specification.material_to_period;
+                    let work_order_configurations =
+                        &scheduling_environment_guard.work_order_policies;
+                    let material_to_period = &scheduling_environment_guard
+                        .material_repo
+                        .material_to_period;
 
                     let strategic_parameter = WorkOrderParameter::builder()
                         .with_scheduling_environment(

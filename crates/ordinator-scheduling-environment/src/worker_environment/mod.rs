@@ -4,7 +4,11 @@ pub mod resources;
 pub mod worker;
 
 use std::collections::BTreeMap;
+use std::collections::BTreeSet;
 use std::collections::HashMap;
+use std::collections::HashSet;
+use std::fmt::Debug;
+use std::panic::Location;
 use std::path::PathBuf;
 
 use anyhow::Context;
@@ -14,40 +18,43 @@ use chrono::DateTime;
 use chrono::NaiveTime;
 use chrono::Utc;
 use crew::OperationalConfiguration;
-use resources::Id;
+use resources::ActorCompositeId;
+use resources::Resources;
 use serde::Deserialize;
 use serde::Serialize;
 
 use crate::Asset;
-use crate::time_environment::MaterialToPeriod;
 use crate::time_environment::TimeInterval;
-use crate::work_order::WorkOrderConfigurations;
 
 pub type OperationalId = String;
+
+// ESSAY:
+//
 // There is something rotten about all this! I think that the best
 // approach is to create something that will allow us to better
 // forcast how the system will behave.
-#[derive(Default, Serialize, Deserialize, Debug)]
-pub struct ActorEnvironment
+#[derive(Deserialize, Serialize, Debug)]
+pub struct ActorEnvironment<A>
+where
+    A: ActorSpecification + Debug + ?Sized,
 {
-    // I think that the actor environment is the correct term here.
-    // Changes to the parameters should be changable in the application
-    // itself. Where does that leave all this. Maybe we should actually
-    // just make the... I think that we would require to make the. There
-    // will be required some extreme logic here.
-    pub actor_specification: HashMap<Asset, ActorSpecifications>,
+    pub actor_specification: HashMap<Asset, Box<A>>,
 }
 
-pub struct ActorEnvironmentBuilder
+pub struct ActorEnvironmentBuilder<A>
+where
+    A: ActorSpecification + Debug + ?Sized,
 {
-    pub actor_environment: HashMap<Asset, ActorSpecifications>,
+    pub actor_environment: HashMap<Asset, Box<A>>,
 }
 
-impl ActorEnvironment
+impl<A> ActorEnvironment<A>
+where
+    A: ActorSpecification + Debug + ?Sized,
 {
     // TODO [ ]
     // This should be refactored!
-    pub fn builder() -> ActorEnvironmentBuilder
+    pub fn builder() -> ActorEnvironmentBuilder<A>
     {
         ActorEnvironmentBuilder {
             actor_environment: HashMap::default(),
@@ -61,65 +68,150 @@ pub enum EmptyFull
     Full,
 }
 
-impl ActorEnvironmentBuilder
+impl<A> ActorEnvironmentBuilder<A>
+where
+    A: ActorSpecification + ?Sized + Debug,
 {
-    pub fn build(self) -> ActorEnvironment
+    pub fn build(self) -> ActorEnvironment<A>
     {
         ActorEnvironment {
             actor_specification: self.actor_environment,
         }
     }
 
-    // We should insert... This builder is a little bothersome.
-    // Ideally we need to provide a resource file for each of the different.
-    // assets. That means that this should be callable many times over for
-    // this to work.
-    pub fn actor_environment(mut self, asset: Asset, path_to_data: PathBuf) -> Result<Self>
+    pub fn add_actor_specification(mut self, asset: Asset, actor_specification: Box<A>) -> Self
+    {
+        self.actor_environment.insert(asset, actor_specification);
+        self
+    }
+}
+
+pub trait ActorSpecification: Send + Sync + Debug
+{
+    fn strategic_options(&self) -> &StrategicOptions;
+
+    fn strategic(&self) -> &InputStrategic;
+
+    fn tactical(&self) -> &InputTactical;
+
+    fn supervisor(&self) -> &Vec<InputSupervisor>;
+
+    fn operational(&self) -> &HashMap<IdString, InputOperational>;
+
+    // let lock = orchestrator.actor_registries.lock().unwrap();
+    // let asset = Asset::try_from(asset).map_err(|e|
+    // AppError::Anyhow(e.to_string()))?;
+
+    fn technician_availability(
+        &self,
+    ) -> BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Resources>)>;
+
+    fn add_operational(
+        &mut self,
+        id: &IdString,
+        assets: Vec<Asset>,
+        resources: Vec<Resources>,
+        start_date: DateTime<Utc>,
+        finish_date: DateTime<Utc>,
+        // This should return a
+    ) -> anyhow::Result<ActorCompositeId>;
+}
+
+//
+// ISSUE #004 [ ] - make a trait implementation for this.
+pub type IdString = String;
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ActorSpecifications
+{
+    pub strategic: InputStrategic,
+    pub tactical: InputTactical,
+    pub supervisors: Vec<InputSupervisor>,
+    pub operational: HashMap<IdString, InputOperational>,
+    // QUESTION [x] Is this the way to do it?
+    // It cannot be like this. The idea of a relational database is beginning
+    // to make a lot of sense.
+}
+
+impl ActorSpecification for ActorSpecifications
+{
+    fn operational(&self) -> &HashMap<IdString, InputOperational>
+    {
+        &self.operational
+    }
+
+    fn strategic_options(&self) -> &StrategicOptions
+    {
+        &self.strategic.strategic_options
+    }
+
+    fn supervisor(&self) -> &Vec<InputSupervisor>
+    {
+        &self.supervisors
+    }
+
+    fn tactical(&self) -> &InputTactical
+    {
+        &self.tactical
+    }
+
+    fn strategic(&self) -> &InputStrategic
+    {
+        &self.strategic
+    }
+
+    fn technician_availability(
+        &self,
+    ) -> BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Resources>)>
+    {
+        self.operational
+            .iter()
+            .map(|e| {
+                (
+                    e.0.clone(),
+                    (
+                        e.1.operational_configuration.availability.clone(),
+                        e.1.operational_configuration.resources.clone(),
+                    ),
+                )
+            })
+            .collect()
+    }
+
+    fn add_operational(
+        &mut self,
+        id: &IdString,
+        assets: Vec<Asset>,
+        resources: Vec<Resources>,
+        start_date: DateTime<Utc>,
+        finish_date: DateTime<Utc>,
+        // This should return a
+    ) -> anyhow::Result<ActorCompositeId>
+    {
+        let availability = Availability::new(start_date, finish_date, assets)?;
+
+        self.operational
+            .entry(id.clone())
+            .and_modify(|e| {
+                e.operational_configuration
+                    .availability
+                    .insert(availability.clone());
+            })
+            .or_insert(InputOperational::new(
+                id.clone(),
+                resources.clone(),
+                6.0,
+                availability.clone(),
+            ));
+
+        Ok(ActorCompositeId::new(id, resources, availability))
+    }
+}
+
+impl ActorSpecifications
+{
+    pub fn actor_specification_from_toml(path_to_data: PathBuf) -> Result<Self>
     {
         println!("{}", std::env::current_dir()?.display());
-
-        // This should then be changed into something different for this to
-        // work. You need to put it into the Asset and the ... I think that
-        // it is okay to simply hard code the information for now. Hmm...
-        // The issues comes from the difference between using the toml file
-        // for initialization and using it for data storage... I think that
-        // for now you should simply follow the same model that is used in
-        // for the work orders: If the database file is missing you should
-        // perform a complete reinitialization of the system. And if not
-        // you should simply use the JSON file.
-        //
-        // For now the most important thing is getting all the data into the
-        // `SchedulingEnvironment`
-        // WARN This should not be needed to solve this problem. Keep it for now
-        // DATE 2025-05-01
-        // let list_of_actor_specification = vec![
-        //     (
-        //
-        //         Asset::DF,
-        //         "./configuration/actor_specification/actor_specification_df.toml",
-        //     ),
-        //     (
-        //         Asset::HB,
-        //         "./configuration/actor_specification/actor_specification_hb.toml",
-        //     ),
-        //     (
-        //         Asset::HD,
-        //         "./configuration/actor_specification/actor_specification_hd.toml",
-        //     ),
-        //     (
-        //         Asset::Test,
-
-        //         "./configuration/actor_specification/actor_specification_test.toml",
-        //     ),
-        //     (
-        //         Asset::TE,
-        //         "./configuration/actor_specification/actor_specification_te.toml",
-        //     ),
-        // ];
-
-        // You should put the data into the toml? Yes I think that is the best approach
-        // here.
-
         let contents = std::fs::read_to_string(&path_to_data).with_context(|| {
             format!(
                 "Could not read string for ActorSpecification\nPath: {}",
@@ -127,67 +219,15 @@ impl ActorEnvironmentBuilder
             )
         })?;
 
-        let actor_specifications: ActorSpecifications =
+        let actor_specifications: Self  =
             toml::from_str(&contents).with_context(|| {
                 format!(
-                    "Could not deserialize into ActorSpecification. File: {}, Line: {}\nContent String\n{contents}",
-                    file!(),
-                    line!()
+                    "Could not deserialize into ActorSpecification. Location: {}\nContent String\n{contents}",
+                    Location::caller()
                 )
             })?;
 
-        self.actor_environment.insert(asset, actor_specifications);
-        Ok(self)
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct ActorSpecifications
-{
-    pub strategic: InputStrategic,
-    pub tactical: InputTactical,
-    pub supervisors: Vec<InputSupervisor>,
-    // QUESTION
-    // Why not just store the OperationalParameters here?
-    // Hmm... because the WorkOrders should not be part of this
-    // what about the options? The options should be defined in
-    // a separate config file
-    // TODO [ ] Make separate config files for options
-    pub operational: Vec<InputOperational>,
-    // QUESTION [ ] Is this the way to do it?
-    // It cannot be like this. The idea of a relational database is beginning
-    // to make a lot of sense.
-    pub work_order_configurations: WorkOrderConfigurations,
-    pub material_to_period: MaterialToPeriod,
-}
-
-impl ActorSpecifications
-{
-    pub fn add_operational(
-        &mut self,
-        id: &Id,
-        start_date: DateTime<Utc>,
-        finish_date: DateTime<Utc>,
-    ) -> anyhow::Result<()>
-    {
-        let availability = Availability::new(start_date, finish_date)?;
-        let input_operational = InputOperational::new(id.clone(), 6.0, availability);
-
-        self.operational.push(input_operational);
-        Ok(())
-    }
-
-    pub fn technician_availability(&self) -> BTreeMap<Id, Availability>
-    {
-        self.operational
-            .iter()
-            .map(|e| {
-                (
-                    e.id.clone(),
-                    e.operational_configuration.availability.clone(),
-                )
-            })
-            .collect()
+        Ok(actor_specifications)
     }
 }
 
@@ -207,7 +247,7 @@ pub struct TimeInput
 #[derive(Eq, PartialEq, Serialize, Deserialize, Debug)]
 pub struct InputStrategic
 {
-    pub id: Id,
+    pub id: IdString,
     pub number_of_strategic_periods: usize,
     pub strategic_options: StrategicOptions,
 }
@@ -215,7 +255,7 @@ pub struct InputStrategic
 #[derive(Eq, PartialEq, Serialize, Deserialize, Debug)]
 pub struct InputTactical
 {
-    pub id: Id,
+    pub id: IdString,
     pub number_of_tactical_days: usize,
     pub tactical_options: TacticalOptions,
 }
@@ -223,7 +263,7 @@ pub struct InputTactical
 #[derive(Eq, Hash, PartialEq, Serialize, Deserialize, Debug)]
 pub struct InputSupervisor
 {
-    pub id: Id,
+    pub id: IdString,
     pub number_of_supervisor_periods: u64,
     pub supervisor_options: SupervisorOptions,
 }
@@ -233,7 +273,7 @@ pub struct InputSupervisor
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct InputOperational
 {
-    pub id: Id,
+    pub id: IdString,
     pub hours_per_day: f64,
     pub operational_configuration: OperationalConfiguration,
     pub operational_options: OperationalOptions,
@@ -241,10 +281,18 @@ pub struct InputOperational
 
 impl InputOperational
 {
-    pub fn new(id: Id, hours_per_day: f64, availability: Availability) -> Self
+    pub fn new(
+        id: IdString,
+        resources: Vec<Resources>,
+        hours_per_day: f64,
+
+        availability: Availability,
+    ) -> Self
     {
+        let resources = resources.iter().cloned().collect::<HashSet<_>>();
+        let availabilities = BTreeSet::from([availability]);
         let operational_configuration = OperationalConfiguration::new(
-            availability,
+            availabilities,
             TimeInterval {
                 start: NaiveTime::from_hms_opt(11, 0, 0).unwrap(),
                 end: NaiveTime::from_hms_opt(12, 0, 0).unwrap(),
@@ -257,6 +305,7 @@ impl InputOperational
                 start: NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
                 end: NaiveTime::from_hms_opt(8, 0, 0).unwrap(),
             },
+            resources,
         );
 
         let operational_options = OperationalOptions {
@@ -264,7 +313,7 @@ impl InputOperational
         };
 
         Self {
-            id,
+            id: id.clone(),
             hours_per_day,
             operational_configuration,
             operational_options,
@@ -368,6 +417,7 @@ mod tests
 
     //     assert_eq!(system_agents.operational[0].id.1, [Resources::MtnElec]);
 
+    use std::collections::HashMap;
     //     assert_eq!(
     //         system_agents.operational[0]
     //             .operational_configuration
@@ -383,4 +433,185 @@ mod tests
     //         NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
     //     );
     // }
+    use std::str::FromStr;
+
+    use chrono::NaiveDateTime;
+
+    use crate::Asset;
+    use crate::worker_environment::ActorSpecification;
+    use crate::worker_environment::IdString;
+    use crate::worker_environment::InputOperational;
+    use crate::worker_environment::availability::Availability;
+    use crate::worker_environment::resources::ActorCompositeId;
+    use crate::worker_environment::resources::Resources;
+
+    //
+    #[test]
+    fn test_add_technician()
+    {
+        // You have to mock all these dependencies to test the code.
+
+        #[derive(Debug)]
+        struct TestActorSpecification
+        {
+            operational: HashMap<IdString, InputOperational>,
+        }
+
+        impl ActorSpecification for TestActorSpecification
+        {
+            fn strategic_options(&self) -> &super::StrategicOptions
+            {
+                todo!()
+            }
+
+            fn strategic(&self) -> &super::InputStrategic
+            {
+                todo!()
+            }
+
+            fn tactical(&self) -> &super::InputTactical
+            {
+                todo!()
+            }
+
+            fn supervisor(&self) -> &Vec<super::InputSupervisor>
+            {
+                todo!()
+            }
+
+            fn operational(&self) -> &HashMap<IdString, InputOperational>
+            {
+                todo!()
+            }
+
+            fn technician_availability(
+                &self,
+            ) -> std::collections::BTreeMap<
+                IdString,
+                (
+                    std::collections::BTreeSet<Availability>,
+                    std::collections::HashSet<Resources>,
+                ),
+            >
+            {
+                todo!()
+            }
+
+            fn add_operational(
+                &mut self,
+                id: &IdString,
+                assets: Vec<Asset>,
+                resources: Vec<Resources>,
+                start_date: chrono::DateTime<chrono::Utc>,
+                finish_date: chrono::DateTime<chrono::Utc>,
+                // This should return a
+            ) -> anyhow::Result<super::resources::ActorCompositeId>
+            {
+                let availability = Availability::new(start_date, finish_date, assets)?;
+
+                self.operational
+                    .entry(id.clone())
+                    .and_modify(|e| {
+                        e.operational_configuration
+                            .availability
+                            .insert(availability.clone());
+                    })
+                    .or_insert(InputOperational::new(
+                        id.clone(),
+                        resources.clone(),
+                        6.0,
+                        availability.clone(),
+                    ));
+
+                Ok(ActorCompositeId::new(id, resources, availability))
+            }
+        }
+
+        let mut actor_specification = TestActorSpecification {
+            operational: HashMap::new(),
+        };
+
+        let start_date = NaiveDateTime::from_str("2025-09-01T07:00:00")
+            .unwrap()
+            .and_utc();
+        let finish_date = NaiveDateTime::from_str("2025-09-04T07:00:00")
+            .unwrap()
+            .and_utc();
+        let assets = vec![Asset::Test];
+        let id_string: IdString = "OP-01-test".to_string();
+        let resources = vec![Resources::MtnLagg];
+
+        actor_specification
+            .add_operational(
+                &id_string,
+                assets.clone(),
+                resources.clone(),
+                start_date,
+                finish_date,
+            )
+            .unwrap();
+
+        assert!(actor_specification.operational.contains_key(&id_string));
+
+        let availability_test_mock =
+            Availability::new(start_date, finish_date, assets.clone()).unwrap();
+        assert!(
+            actor_specification
+                .operational
+                .get(&id_string)
+                .unwrap()
+                .operational_configuration
+                .availability
+                .contains(&availability_test_mock)
+        );
+        assert!(
+            actor_specification
+                .operational
+                .get(&id_string)
+                .unwrap()
+                .operational_configuration
+                .availability
+                .len()
+                == 1
+        );
+
+        let start_date_2 = NaiveDateTime::from_str("2025-09-06T07:00:00")
+            .unwrap()
+            .and_utc();
+        let finish_date_2 = NaiveDateTime::from_str("2025-09-10T07:00:00")
+            .unwrap()
+            .and_utc();
+
+        actor_specification
+            .add_operational(
+                &id_string,
+                assets.clone(),
+                resources,
+                start_date_2,
+                finish_date_2,
+            )
+            .unwrap();
+
+        let availability_test_mock_2 =
+            Availability::new(start_date_2, finish_date_2, assets.clone()).unwrap();
+        assert!(
+            actor_specification
+                .operational
+                .get(&id_string)
+                .unwrap()
+                .operational_configuration
+                .availability
+                .contains(&availability_test_mock_2)
+        );
+        assert!(
+            actor_specification
+                .operational
+                .get(&id_string)
+                .unwrap()
+                .operational_configuration
+                .availability
+                .len()
+                == 2
+        );
+    }
 }

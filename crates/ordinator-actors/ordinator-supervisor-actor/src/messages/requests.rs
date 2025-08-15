@@ -1,5 +1,5 @@
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -7,12 +7,12 @@ use serde::Serialize;
 pub struct SupervisorSchedulingMessage
 {
     pub work_order_activity: WorkOrderActivity,
-    pub id_operational: Id,
+    pub id_operational: ActorCompositeId,
 }
 
 impl SupervisorSchedulingMessage
 {
-    pub fn new(work_order_activity: WorkOrderActivity, id_operational: Id) -> Self
+    pub fn new(work_order_activity: WorkOrderActivity, id_operational: ActorCompositeId) -> Self
     {
         Self {
             work_order_activity,

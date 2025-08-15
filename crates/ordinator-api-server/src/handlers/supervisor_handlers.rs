@@ -20,7 +20,6 @@ use ordinator_contracts::supervisor::SupervisorMainTableDto;
 use ordinator_contracts::supervisor::SupervisorResourcesDto;
 use ordinator_contracts::supervisor::SupervisorResponseMessageDto;
 use ordinator_orchestrator::Asset;
-use ordinator_orchestrator::Id;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::Resources;
 use ordinator_orchestrator::StartError;
@@ -108,10 +107,6 @@ pub async fn technician_availability(
     Path((asset, _supervisor_id)): Path<(Asset, String)>,
 ) -> Result<Json<SupervisorAllAvailableTechnicians>, AppError>
 {
-    // let lock = orchestrator.actor_registries.lock().unwrap();
-    // let asset = Asset::try_from(asset).map_err(|e|
-    // AppError::Anyhow(e.to_string()))?;
-
     let supervisor_all_available_technicians: SupervisorAllAvailableTechnicians = orchestrator
         .scheduling_environment
         .lock()
@@ -335,13 +330,16 @@ pub async fn assign_to_technicians(
             "ActorSpecification not found for Asset".to_string(),
         ))?;
 
+    // Here you simply have to make the assignment. The Bus::<StateLink> will have
+    // the interation with multiple people.
     let technician = actor_specification
-        .operational
+        .operational()
         .iter()
-        .filter(|e| technicians.contains(&e.id.0))
-        .map(|e| e.id.clone())
+        .filter(|e| technicians.contains(e.0))
+        .map(|e| e.0.clone())
         .collect::<Vec<_>>();
-    let material_to_period = &actor_specification.material_to_period;
+
+    let material_to_period = &scheduling_environment_lock.material_repo.material_to_period;
 
     let forced_work_order = scheduling_environment_lock
         .work_orders
@@ -436,9 +434,7 @@ pub async fn add_technician(
     let asset = Asset::try_from(asset)
         .map_err(|_e| AppError::Anyhow("Incorrect asset name".to_string()))?;
 
-    let id = Id::new(&id, resources, vec![asset.clone()]);
-
-    orchestrator
+    let actor_composite_id = orchestrator
         .scheduling_environment
         .lock()
         .unwrap()
@@ -447,20 +443,21 @@ pub async fn add_technician(
         .get_mut(&asset)
         .context("No ActorSpecification available to Asset")
         .map_err(|e| AppError::Anyhow(e.to_string()))?
-        .add_operational(&id, start_date, finish_date)
+        .add_operational(
+            &id,
+            vec![asset.clone()],
+            resources.clone(),
+            start_date,
+            finish_date,
+        )
         .map_err(|e| AppError::Anyhow(e.to_string()))?;
-    // .operational
-    // .push(input_operational);
 
-    // Change the `Vec<InputOperational>`. You need complex validation on the code
-    // there. Availavilities cannot be overlapping.
-    // There should only be a single actor for an Id, not many different ones.
-    if let Err(started) = orchestrator.start_operational_actor(&id) {
+    if let Err(started) = orchestrator.start_operational_actor(&actor_composite_id) {
         match started {
             StartError::AlreadyRunning => {
                 return Ok(Json(format!(
                     "Technician {} already exists and is running",
-                    id.0
+                    id
                 )));
             }
             StartError::CouldNotConstruct => {
@@ -475,7 +472,7 @@ pub async fn add_technician(
     }
     Ok(Json(format!(
         "Technician {} successfully created and started",
-        id.0
+        id
     )))
 }
 

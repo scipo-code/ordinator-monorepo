@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use ordinator_operational_actor::messages::OperationalRequestMessage;
 use ordinator_operational_actor::messages::OperationalResponseMessage;
 use ordinator_orchestrator_actor_traits::Communication;
-use ordinator_scheduling_environment::worker_environment::resources::Id;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_strategic_actor::messages::StrategicRequestMessage;
 use ordinator_strategic_actor::messages::StrategicResponseMessage;
 use ordinator_supervisor_actor::messages::SupervisorRequestMessage;
@@ -16,9 +16,9 @@ pub struct ActorRegistry
     pub strategic_agent_sender: Communication<StrategicRequestMessage, StrategicResponseMessage>,
     pub tactical_agent_sender: Communication<TacticalRequestMessage, TacticalResponseMessage>,
     pub supervisor_agent_senders:
-        HashMap<Id, Communication<SupervisorRequestMessage, SupervisorResponseMessage>>,
+        HashMap<ActorCompositeId, Communication<SupervisorRequestMessage, SupervisorResponseMessage>>,
     pub operational_agent_senders:
-        HashMap<Id, Communication<OperationalRequestMessage, OperationalResponseMessage>>,
+        HashMap<ActorCompositeId, Communication<OperationalRequestMessage, OperationalResponseMessage>>,
 }
 
 impl ActorRegistry
