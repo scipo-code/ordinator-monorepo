@@ -175,8 +175,8 @@ impl Parameters for OperationalParameters
             .worker_environment
             .actor_specification
             .get(id.asset())
-            .unwrap()
-            .operational
+            .with_context(|| format!("{:#?}", id.asset()))?
+            .operational()
             .iter()
             .find(|oca| id.0 == *oca.0)
             .with_context(|| format!("OperationalActor: {:#?} does not exist", id))?;

@@ -2,7 +2,6 @@ mod actor_factory;
 pub mod actor_registry;
 pub mod database;
 pub mod logging;
-pub mod model_initializers;
 pub(crate) mod system_solution_tester;
 
 use std::collections::HashMap;
@@ -559,7 +558,7 @@ where
             let periods = &scheduling_environment_guard.time_environment.periods;
             let days = &scheduling_environment_guard.time_environment.days;
 
-            let input_strategic = &actor_specifications.strategic;
+            let input_strategic = &actor_specifications.strategic();
 
             let strategic_id = ActorCompositeId::new(
                 &input_strategic.id,
@@ -568,7 +567,8 @@ where
                     *periods.first().unwrap().start_datetime(),
                     *periods
                         .get(input_strategic.number_of_strategic_periods - 1)
-                        .unwrap()
+                        .or_else(|| periods.last())
+                        .expect("Time not initialized correctly")
                         .finish_datetime(),
                     vec![asset.clone()],
                 )?,
@@ -578,10 +578,10 @@ where
             // ESSAY: #20250814-1
             // You should make the time_environment into a system clock. No that
             // fits into a port, and the adapter will then handle the relehj
-            let input_tactical = &actor_specifications.tactical;
+            let input_tactical = &actor_specifications.tactical();
             debug!(target: "developer", days = ?days);
             let tactical_id = ActorCompositeId::new(
-                &actor_specifications.tactical.id,
+                &actor_specifications.tactical().id,
                 vec![],
                 Availability::new(
                     days.first()
@@ -591,6 +591,7 @@ where
                         .context("Could not make a DateTime in Availability for TacticalActor")?
                         .and_utc(),
                     days.get(input_tactical.number_of_tactical_days - 1)
+                        .or_else(|| days.last())
                         .unwrap()
                         .date
                         .and_hms_opt(0, 0, 0)
@@ -600,7 +601,7 @@ where
                 )?,
             );
 
-            let supervisors = &actor_specifications.supervisors;
+            let supervisors = actor_specifications.supervisor();
 
             let mut supervisor_ids: Vec<ActorCompositeId> = vec![];
             for input_supervisor in supervisors {
@@ -621,7 +622,7 @@ where
             }
 
             let operationals: Vec<ActorCompositeId> = actor_specifications
-                .operational
+                .operational()
                 .iter()
                 // TODO [ ] Start here.
                 // Loop over all the availabilities in the system using `InputOperational`.
@@ -842,9 +843,10 @@ impl OrchestratorBuilder<StepSchedulingEnvironment>
 {
     pub fn scheduling_environment_from_database(
         self,
+        asset: &Asset,
     ) -> anyhow::Result<OrchestratorBuilder<StepBuild>>
     {
-        let recv = &self
+        let system_clock_at_initialization = self
             .system_clock_tick_receiver
             .as_ref()
             .expect("previous builder created this")
@@ -856,9 +858,13 @@ impl OrchestratorBuilder<StepSchedulingEnvironment>
             .expect("Previous builder created this")
             .clone();
 
-        let scheduling_environment =
-            DataBaseConnection::scheduling_environment(*recv, system_configurations.clone())
-                .context("Could not build SchedulingEnvironment")?;
+        // ISSUE #000 - Asset should not be specified here.
+        let scheduling_environment = DataBaseConnection::scheduling_environment(
+            system_clock_at_initialization,
+            asset.clone(),
+            system_configurations.clone(),
+        )
+        .context("Could not build SchedulingEnvironment")?;
 
         Ok(OrchestratorBuilder::<StepBuild> {
             logging: self.logging,

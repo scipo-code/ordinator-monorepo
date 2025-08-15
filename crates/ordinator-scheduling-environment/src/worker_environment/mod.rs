@@ -7,6 +7,8 @@ use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::fmt::Debug;
+use std::panic::Location;
 use std::path::PathBuf;
 
 use anyhow::Context;
@@ -22,35 +24,37 @@ use serde::Deserialize;
 use serde::Serialize;
 
 use crate::Asset;
-use crate::time_environment::MaterialToPeriod;
 use crate::time_environment::TimeInterval;
-use crate::work_order::WorkOrderConfigurations;
 
 pub type OperationalId = String;
+
+// ESSAY:
+//
 // There is something rotten about all this! I think that the best
 // approach is to create something that will allow us to better
 // forcast how the system will behave.
-#[derive(Default, Serialize, Deserialize, Debug)]
-pub struct ActorEnvironment
+#[derive(Deserialize, Serialize, Debug)]
+pub struct ActorEnvironment<A>
+where
+    A: ActorSpecification + Debug + ?Sized,
 {
-    // I think that the actor environment is the correct term here.
-    // Changes to the parameters should be changable in the application
-    // itself. Where does that leave all this. Maybe we should actually
-    // just make the... I think that we would require to make the. There
-    // will be required some extreme logic here.
-    pub actor_specification: HashMap<Asset, ActorSpecifications>,
+    pub actor_specification: HashMap<Asset, Box<A>>,
 }
 
-pub struct ActorEnvironmentBuilder
+pub struct ActorEnvironmentBuilder<A>
+where
+    A: ActorSpecification + Debug + ?Sized,
 {
-    pub actor_environment: HashMap<Asset, ActorSpecifications>,
+    pub actor_environment: HashMap<Asset, Box<A>>,
 }
 
-impl ActorEnvironment
+impl<A> ActorEnvironment<A>
+where
+    A: ActorSpecification + Debug + ?Sized,
 {
     // TODO [ ]
     // This should be refactored!
-    pub fn builder() -> ActorEnvironmentBuilder
+    pub fn builder() -> ActorEnvironmentBuilder<A>
     {
         ActorEnvironmentBuilder {
             actor_environment: HashMap::default(),
@@ -64,86 +68,56 @@ pub enum EmptyFull
     Full,
 }
 
-impl ActorEnvironmentBuilder
+impl<A> ActorEnvironmentBuilder<A>
+where
+    A: ActorSpecification + ?Sized + Debug,
 {
-    pub fn build(self) -> ActorEnvironment
+    pub fn build(self) -> ActorEnvironment<A>
     {
         ActorEnvironment {
             actor_specification: self.actor_environment,
         }
     }
 
-    // We should insert... This builder is a little bothersome.
-    // Ideally we need to provide a resource file for each of the different.
-    // assets. That means that this should be callable many times over for
-    // this to work.
-    pub fn actor_environment(mut self, asset: Asset, path_to_data: PathBuf) -> Result<Self>
+    pub fn add_actor_specification(mut self, asset: Asset, actor_specification: Box<A>) -> Self
     {
-        println!("{}", std::env::current_dir()?.display());
-
-        // This should then be changed into something different for this to
-        // work. You need to put it into the Asset and the ... I think that
-        // it is okay to simply hard code the information for now. Hmm...
-        // The issues comes from the difference between using the toml file
-        // for initialization and using it for data storage... I think that
-        // for now you should simply follow the same model that is used in
-        // for the work orders: If the database file is missing you should
-        // perform a complete reinitialization of the system. And if not
-        // you should simply use the JSON file.
-        //
-        // For now the most important thing is getting all the data into the
-        // `SchedulingEnvironment`
-        // WARN This should not be needed to solve this problem. Keep it for now
-        // DATE 2025-05-01
-        // let list_of_actor_specification = vec![
-        //     (
-        //
-        //         Asset::DF,
-        //         "./configuration/actor_specification/actor_specification_df.toml",
-        //     ),
-        //     (
-        //         Asset::HB,
-        //         "./configuration/actor_specification/actor_specification_hb.toml",
-        //     ),
-        //     (
-        //         Asset::HD,
-        //         "./configuration/actor_specification/actor_specification_hd.toml",
-        //     ),
-        //     (
-        //         Asset::Test,
-
-        //         "./configuration/actor_specification/actor_specification_test.toml",
-        //     ),
-        //     (
-        //         Asset::TE,
-        //         "./configuration/actor_specification/actor_specification_te.toml",
-        //     ),
-        // ];
-
-        // You should put the data into the toml? Yes I think that is the best approach
-        // here.
-
-        let contents = std::fs::read_to_string(&path_to_data).with_context(|| {
-            format!(
-                "Could not read string for ActorSpecification\nPath: {}",
-                path_to_data.display()
-            )
-        })?;
-
-        let actor_specifications: ActorSpecifications =
-            toml::from_str(&contents).with_context(|| {
-                format!(
-                    "Could not deserialize into ActorSpecification. File: {}, Line: {}\nContent String\n{contents}",
-                    file!(),
-                    line!()
-                )
-            })?;
-
-        self.actor_environment.insert(asset, actor_specifications);
-        Ok(self)
+        self.actor_environment.insert(asset, actor_specification);
+        self
     }
 }
 
+pub trait ActorSpecification: Send + Sync + Debug
+{
+    fn strategic_options(&self) -> &StrategicOptions;
+
+    fn strategic(&self) -> &InputStrategic;
+
+    fn tactical(&self) -> &InputTactical;
+
+    fn supervisor(&self) -> &Vec<InputSupervisor>;
+
+    fn operational(&self) -> &HashMap<IdString, InputOperational>;
+
+    // let lock = orchestrator.actor_registries.lock().unwrap();
+    // let asset = Asset::try_from(asset).map_err(|e|
+    // AppError::Anyhow(e.to_string()))?;
+
+    fn technician_availability(
+        &self,
+    ) -> BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Resources>)>;
+
+    fn add_operational(
+        &mut self,
+        id: &IdString,
+        assets: Vec<Asset>,
+        resources: Vec<Resources>,
+        start_date: DateTime<Utc>,
+        finish_date: DateTime<Utc>,
+        // This should return a
+    ) -> anyhow::Result<ActorCompositeId>;
+}
+
+//
 // ISSUE #004 [ ] - make a trait implementation for this.
 pub type IdString = String;
 #[derive(Serialize, Deserialize, Debug)]
@@ -156,13 +130,54 @@ pub struct ActorSpecifications
     // QUESTION [x] Is this the way to do it?
     // It cannot be like this. The idea of a relational database is beginning
     // to make a lot of sense.
-    pub work_order_configurations: WorkOrderConfigurations,
-    pub material_to_period: MaterialToPeriod,
 }
 
-impl ActorSpecifications
+impl ActorSpecification for ActorSpecifications
 {
-    pub fn add_operational(
+    fn operational(&self) -> &HashMap<IdString, InputOperational>
+    {
+        &self.operational
+    }
+
+    fn strategic_options(&self) -> &StrategicOptions
+    {
+        &self.strategic.strategic_options
+    }
+
+    fn supervisor(&self) -> &Vec<InputSupervisor>
+    {
+        &self.supervisors
+    }
+
+    fn tactical(&self) -> &InputTactical
+    {
+        &self.tactical
+    }
+
+    fn strategic(&self) -> &InputStrategic
+    {
+        &self.strategic
+    }
+
+    fn technician_availability(
+        &self,
+    ) -> BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Resources>)>
+    {
+        self.operational
+            .iter()
+            .map(|e| {
+                (
+                    e.0.clone(),
+                    (
+                        e.1.operational_configuration.availability.clone(),
+                        e.1.operational_configuration.resources.clone(),
+                    ),
+                )
+            })
+            .collect()
+    }
+
+    fn add_operational(
         &mut self,
         id: &IdString,
         assets: Vec<Asset>,
@@ -190,23 +205,29 @@ impl ActorSpecifications
 
         Ok(ActorCompositeId::new(id, resources, availability))
     }
+}
 
-    pub fn technician_availability(
-        &self,
-    ) -> BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Resources>)>
+impl ActorSpecifications
+{
+    pub fn actor_specification_from_toml(path_to_data: PathBuf) -> Result<Self>
     {
-        self.operational
-            .iter()
-            .map(|e| {
-                (
-                    e.0.clone(),
-                    (
-                        e.1.operational_configuration.availability.clone(),
-                        e.1.operational_configuration.resources.clone(),
-                    ),
+        println!("{}", std::env::current_dir()?.display());
+        let contents = std::fs::read_to_string(&path_to_data).with_context(|| {
+            format!(
+                "Could not read string for ActorSpecification\nPath: {}",
+                path_to_data.display()
+            )
+        })?;
+
+        let actor_specifications: Self  =
+            toml::from_str(&contents).with_context(|| {
+                format!(
+                    "Could not deserialize into ActorSpecification. Location: {}\nContent String\n{contents}",
+                    Location::caller()
                 )
-            })
-            .collect()
+            })?;
+
+        Ok(actor_specifications)
     }
 }
 
@@ -418,6 +439,7 @@ mod tests
 
     use super::ActorSpecifications;
     use crate::Asset;
+    use crate::worker_environment::ActorSpecification;
     use crate::worker_environment::IdString;
     use crate::worker_environment::availability::Availability;
     use crate::worker_environment::resources::Resources;
@@ -432,29 +454,6 @@ mod tests
             tactical: todo!(),
             supervisors: vec![],
             operational: HashMap::new(),
-            work_order_configurations: crate::work_order::WorkOrderConfigurations {
-                order_type_weights: HashMap::new(),
-                status_weights: HashMap::new(),
-                vis_priority_map: HashMap::new(),
-                wdf_priority_map: HashMap::new(),
-                wgn_priority_map: HashMap::new(),
-                wpm_priority_map: HashMap::new(),
-                clustering_weights: crate::work_order::ClusteringWeights {
-                    asset: 0,
-                    sector: 0,
-                    system: 0,
-                    subsystem: 0,
-                    equipment_tag: 0,
-                },
-                operating_time: 6,
-            },
-            material_to_period: crate::time_environment::MaterialToPeriod {
-                nmat: 0,
-                smat: 0,
-                cmat: 0,
-                pmat: 0,
-                wmat: 0,
-            },
         };
 
         let start_date = NaiveDateTime::from_str("2025-09-01T07:00:00")

@@ -73,13 +73,8 @@ where
                 let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 
                 let work_orders = &scheduling_environment_guard.work_orders.inner.clone();
-                let work_order_configurations = &scheduling_environment_guard
-                    .worker_environment
-                    .actor_specification
-                    .get(self.actor_id.asset())
-                    .unwrap()
-                    .work_order_configurations
-                    .clone();
+                let work_order_configurations =
+                    &scheduling_environment_guard.work_order_policies.clone();
 
                 let assignments: Vec<_> = scheduling_environment_guard
                     .assignments

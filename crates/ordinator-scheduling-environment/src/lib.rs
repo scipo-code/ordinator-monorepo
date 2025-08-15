@@ -1,5 +1,6 @@
 #![feature(iter_map_windows)]
 pub mod assignments;
+pub mod materials;
 pub mod time_environment;
 pub mod work_order;
 pub mod worker_environment;
@@ -8,39 +9,55 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use std::fmt::Display;
 use std::fmt::{self};
+use std::fs::File;
+use std::io::Read;
 use std::option::Option;
+use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::Mutex;
 
+use anyhow::Context;
 use anyhow::Result;
 use assignments::Assignment;
 use assignments::SavedAssignment;
 use chrono::DateTime;
 use chrono::NaiveDate;
 use chrono::Utc;
+use materials::MaterialRepo;
+use materials::MaterialToPeriod;
 use serde::Deserialize;
 use serde::Serialize;
 use strum_macros::EnumIter;
 use time_environment::TimeEnvironmentBuilder;
+use time_environment::create_time_environment;
 use time_environment::period::Period;
 use uuid::Uuid;
+use work_order::WorkOrderPolicies;
 use work_order::WorkOrders;
 use work_order::WorkOrdersBuilder;
+use worker_environment::ActorSpecification;
+use worker_environment::ActorSpecifications;
+use worker_environment::TimeInput;
 
 use self::time_environment::TimeEnvironment;
 use self::worker_environment::ActorEnvironment;
 
+// ESSAY: #20250814
+// All of these sould be `dyn` so you might aswell do it correctly now.
+// If you need `Serialize` and `Deserialize` you should implement that
+// on the concrete types.
 /// This is the main entrypoint into the domain models it is from here
 /// you can access every aggregate root.
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Debug)]
 pub struct SchedulingEnvironment
 {
     pub work_orders: WorkOrders,
-    pub worker_environment: ActorEnvironment,
+    pub worker_environment: ActorEnvironment<dyn ActorSpecification>,
     pub time_environment: TimeEnvironment,
 
+    pub work_order_policies: WorkOrderPolicies,
+    pub material_repo: MaterialRepo,
     pub assignments: SavedAssignment,
-    // material
 }
 
 pub enum TimeType
@@ -81,8 +98,12 @@ pub enum TimeType
 pub struct SchedulingEnvironmentBuilder
 {
     work_orders: Option<WorkOrders>,
-    worker_environment: Option<ActorEnvironment>,
+    worker_environment: Option<ActorEnvironment<dyn ActorSpecification>>,
     time_environment: Option<TimeEnvironment>,
+    work_order_policies: Option<WorkOrderPolicies>,
+
+    material_repo: Option<MaterialRepo>,
+    assignments: Option<SavedAssignment>,
 }
 
 impl SchedulingEnvironment
@@ -93,6 +114,9 @@ impl SchedulingEnvironment
             work_orders: None,
             worker_environment: None,
             time_environment: None,
+            work_order_policies: None,
+            material_repo: None,
+            assignments: None,
         }
     }
 }
@@ -112,42 +136,32 @@ pub trait SystemConfigurationTrait {}
 
 pub trait DatabaseConfigurationTrait {}
 
+// ISSUE #000 - turn the builder into a typestate pattern.
 impl SchedulingEnvironmentBuilder
 {
     // QUESTION
     // Do you believe that this is the most appropriate way of structuring the code
     // here? Yes I think that this is the best way of doing it.
-    pub fn build(mut self) -> Arc<Mutex<SchedulingEnvironment>>
+    pub fn build(mut self) -> Result<Arc<Mutex<SchedulingEnvironment>>>
     {
         // The `WorkOrder` have to help in deriving the `SavedAssignment`.
         //
         let work_orders = self
             .work_orders
-            .expect("You should build the WorkOrders with the correct parameters injected.");
+            .context("You should build the WorkOrders with the correct parameters injected.")?;
 
         let mut assignments = HashMap::new();
 
         let time_environment = self
             .time_environment
-            .expect("Time environment should be present");
+            .context("Time environment should be present")?;
 
         let worker_environment = self
             .worker_environment
             .take()
-            .expect("ActorEnvironment should always be available.");
-
-        let _material_to_period = &worker_environment
-            .actor_specification
-            .iter()
-            .nth(0)
-            .unwrap()
-            .1
-            .material_to_period;
+            .context("ActorEnvironment should always be available.")?;
 
         for work_order_number in work_orders.inner.keys() {
-            // This methods is created in exactly the same way here.
-            // The fundamental issue is that you do not understand the business logic here.
-
             // ISSUE #002 - make the [`AssignmentRepo`]
             // let forced_work_order = work_order
             //     .forced_work_order(
@@ -161,7 +175,7 @@ impl SchedulingEnvironmentBuilder
             // Yes that is the approach forward. o
             //
             //
-            // You should not be smart, scalable.
+            // You should not be smart but scalable.
 
             // Something here is tripping you up. You need to make the code work as well as
             // possible with the
@@ -178,18 +192,59 @@ impl SchedulingEnvironmentBuilder
             assignments.insert(Uuid::new_v4(), assignment);
         }
         let saved_assignments = SavedAssignment::new(assignments);
-        Arc::new(Mutex::new(SchedulingEnvironment {
+        // ISSUE TODO [ ] - make a TypeState builder for the SchedulingEnvironment.
+
+        let work_order_policies = self
+            .work_order_policies
+            .context("WorkOrderPolicies not added to SchedulingEnvironmentBuilder")?;
+        let material_repo = self
+            .material_repo
+            .context("MaterialRepo not added to the SchedulingEnvironmentBuilder")?;
+        Ok(Arc::new(Mutex::new(SchedulingEnvironment {
             work_orders,
             worker_environment,
             time_environment,
             assignments: saved_assignments,
-        }))
+            work_order_policies,
+            material_repo,
+        })))
     }
 
     pub fn time_environment(mut self, time_environment: TimeEnvironment) -> Self
     {
         self.time_environment = Some(time_environment);
         self
+    }
+
+    pub fn work_order_policies(mut self, work_order_policies: WorkOrderPolicies) -> Self
+    {
+        self.work_order_policies = Some(work_order_policies);
+        self
+    }
+
+    pub fn material_repo(mut self, material_repo: MaterialRepo) -> Self
+    {
+        self.material_repo = Some(material_repo);
+        self
+    }
+
+    pub fn time_environment_from_toml(
+        mut self,
+        path_to_time_environment: PathBuf,
+        current_time: DateTime<Utc>,
+    ) -> Result<Self>
+    {
+        let time_input_string = std::fs::read_to_string(path_to_time_environment)
+            .with_context(|| format!("Could not load TimeEnvironment Config. {}", line!()))?;
+
+        let time_input: TimeInput = toml::from_str(&time_input_string).with_context(|| {
+            format!("Could not deserialize the TimeInput config. Input:\n{time_input_string}")
+        })?;
+
+        let time_environment = create_time_environment(current_time, &time_input);
+
+        self.time_environment = Some(time_environment);
+        Ok(self)
     }
 
     pub fn time_environment_builder<F>(mut self, f: F) -> Self
@@ -204,7 +259,10 @@ impl SchedulingEnvironmentBuilder
         self
     }
 
-    pub fn worker_environment(mut self, worker_environment: ActorEnvironment) -> Self
+    pub fn worker_environment(
+        mut self,
+        worker_environment: ActorEnvironment<dyn ActorSpecification>,
+    ) -> Self
     {
         self.worker_environment = Some(worker_environment);
         self
@@ -214,6 +272,18 @@ impl SchedulingEnvironmentBuilder
     {
         self.work_orders = Some(work_orders);
         self
+    }
+
+    pub fn work_orders_from_json(mut self, path_to_work_orders: PathBuf) -> Result<Self>
+    {
+        let mut file = File::open(path_to_work_orders)?;
+        let mut data = String::new();
+
+        file.read_to_string(&mut data)?;
+
+        let work_orders = serde_json::from_str::<WorkOrders>(&data).context("Could not build the WorkOrders from the JSON file\n1. Did you modify the schema (WorkOrders)?\n2. Is the data corrupted?")?;
+        self.work_orders = Some(work_orders);
+        Ok(self)
     }
 
     pub fn work_orders_builder<F>(mut self, f: F) -> Self
@@ -227,6 +297,52 @@ impl SchedulingEnvironmentBuilder
         self.work_orders = Some(work_orders_builder.build());
         self
     }
+
+    pub fn worker_environment_from_toml(
+        mut self,
+        path_to_workers: PathBuf,
+        asset: Asset,
+    ) -> anyhow::Result<Self>
+    {
+        let actor_environment = ActorEnvironment::<dyn ActorSpecification>::builder()
+            .add_actor_specification(
+                asset.clone(),
+                Box::new(ActorSpecifications::actor_specification_from_toml(
+                    path_to_workers,
+                )?),
+            )
+            .build();
+
+        self.worker_environment = Some(actor_environment);
+        Ok(self)
+    }
+
+    pub fn work_order_policies_from_toml(
+        mut self,
+        path_to_work_order_policies: PathBuf,
+    ) -> Result<Self>
+    {
+        let contents = std::fs::read_to_string(path_to_work_order_policies).unwrap();
+        let work_order_policies: WorkOrderPolicies =
+            toml::from_str(&contents).expect("Could not read WorkOrderPolicies");
+
+        self.work_order_policies = Some(work_order_policies);
+        Ok(self)
+    }
+
+    pub fn material_repo_from_toml(mut self, path_to_material_to_period: PathBuf) -> Result<Self>
+    {
+        let material_to_period_string =
+            std::fs::read_to_string(path_to_material_to_period).unwrap();
+
+        let material_to_period: MaterialToPeriod =
+            toml::from_str(&material_to_period_string).unwrap();
+
+        let material_repo = MaterialRepo::new(material_to_period);
+
+        self.material_repo = Some(material_repo);
+        Ok(self)
+    }
 }
 
 // Do we want this? Yes I think that is a really good idea.
@@ -238,7 +354,7 @@ impl fmt::Display for SchedulingEnvironment
             .worker_environment
             .actor_specification
             .iter()
-            .map(|e| e.1.operational.len())
+            .map(|e| e.1.operational().len())
             .sum::<usize>();
         write!(
             f,

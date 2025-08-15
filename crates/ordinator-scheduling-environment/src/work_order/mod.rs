@@ -43,7 +43,7 @@ use self::work_order_info::work_order_type::WorkOrderType;
 use super::time_environment::period::Period;
 use super::worker_environment::resources::Resources;
 use crate::Asset;
-use crate::time_environment::MaterialToPeriod;
+use crate::materials::MaterialToPeriod;
 use crate::time_environment::day::Day;
 use crate::worker_environment::IdString;
 use crate::worker_environment::resources::ActorCompositeId;
@@ -485,7 +485,7 @@ pub enum ActivityRelation
 // from the `scheduling_environment`
 #[allow(dead_code)]
 #[derive(Eq, PartialEq, Serialize, Deserialize, Debug, Clone)]
-pub struct WorkOrderConfigurations
+pub struct WorkOrderPolicies
 {
     pub order_type_weights: HashMap<String, u64>,
     pub status_weights: HashMap<String, u64>,
@@ -944,7 +944,7 @@ impl WorkOrder
 
     pub fn work_order_value(
         &self,
-        work_order_configurations: &WorkOrderConfigurations,
+        work_order_configurations: &WorkOrderPolicies,
     ) -> Result<WorkOrderValue>
     {
         // FIX

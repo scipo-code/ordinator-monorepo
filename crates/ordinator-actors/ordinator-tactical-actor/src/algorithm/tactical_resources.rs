@@ -162,7 +162,7 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for Ta
             .actor_specification
             .get(value.1.asset())
             .expect("Mising actor for the asset")
-            .operational
+            .operational()
             .iter()
         {
             // There is an error here! You are moving slow on this. You should take a small

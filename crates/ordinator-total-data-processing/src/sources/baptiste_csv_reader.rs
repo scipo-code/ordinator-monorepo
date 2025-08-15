@@ -1,98 +1,16 @@
 use std::collections::HashMap;
 use std::error::Error;
-use std::fs;
 use std::fs::File;
 use std::hash::Hash;
-use std::path::Path;
 use std::path::PathBuf;
-use std::sync::Arc;
-use std::sync::Mutex;
 
-use anyhow::Context;
 use anyhow::Result;
-use chrono::DateTime;
-use chrono::Utc;
-use ordinator_configuration::SystemConfigurations;
-use ordinator_scheduling_environment::time_environment::create_time_environment;
-use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
-use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
-use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::worker_environment::ActorEnvironment;
-use ordinator_scheduling_environment::worker_environment::TimeInput;
-use ordinator_scheduling_environment::Asset;
-use ordinator_scheduling_environment::IntoSchedulingEnvironment;
-use ordinator_scheduling_environment::SchedulingEnvironment;
-use serde::de::DeserializeOwned;
+use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
+use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
 use serde::Deserialize;
-
-use super::baptiste_csv_reader_merges::load_csv_data;
-
-#[derive(Default)]
-pub struct TotalSap {}
-
-// What does this type need to hold in order to be successful?
-//
-
-// This is made in a completely idiotic way! You should have reuse the builder
-// structure in all of this, to centralize the creation. The idea is good but
-// you need to focus on having the builder integrated into the system. I cannot
-// determine how to do this in the best way! I think... You have two different
-// ways of doing this. This should
-// TODO LIST
-// [ ] Centralize `TimeEnvironment`
-// [ ] Centralize `WorkerEnvironment`
-// [ ]
-// TODO [ ]
-// You should make a new type to hold the data here.
-impl IntoSchedulingEnvironment for TotalSap
-{
-    type S = SystemConfigurations;
-
-    fn into_scheduling_environment(
-        self,
-        current_time: DateTime<Utc>,
-        system_configuration: &Self::S,
-    ) -> Result<Arc<Mutex<SchedulingEnvironment>>>
-    {
-        let time_input_string = fs::read_to_string(
-            "./temp_scheduling_environment_database/time_environment/time_input.toml",
-        )
-        .with_context(|| format!("Could not load TimeEnvironment Config. {}", line!()))?;
-        let time_input: TimeInput = toml::from_str(&time_input_string).with_context(|| {
-            format!("Could not deserialize the TimeInput config. Input:\n{time_input_string}")
-        })?;
-        let asset = Asset::DF;
-        let asset_string = asset.to_string().to_lowercase();
-
-        let path = format!(
-            "temp_scheduling_environment_database/actor_specifications/actor_specification_{asset_string}.toml",
-        );
-        #[cfg(test)]
-        let path_to_data = Path::new(env!("CARGO_MANIFEST_DIR")).join(path);
-        #[cfg(not(test))]
-        let path_to_data = Path::new("./").join(path);
-
-        Ok(SchedulingEnvironment::builder()
-            .worker_environment(
-                ActorEnvironment::builder()
-                    .actor_environment(Asset::DF, path_to_data)?
-                    .build(), // Add more assets here.
-            )
-            .time_environment(create_time_environment(current_time, &time_input))
-            .work_orders(
-                load_csv_data(&system_configuration.data_locations)
-                    .with_context(|| {
-                        format!(
-                            "SchedulingEnvironment could not be built from {}",
-                            std::any::type_name_of_val(&system_configuration.data_locations)
-                        )
-                    })
-                    .context("Could not create WorkOrders")?,
-            )
-            .build())
-    }
-}
+use serde::de::DeserializeOwned;
 
 pub fn populate_csv_structures<C>(file_path: &PathBuf) -> Result<C::Container, Box<dyn Error>>
 where

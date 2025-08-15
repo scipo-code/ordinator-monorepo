@@ -68,7 +68,7 @@ impl Parameters for SupervisorParameters
             .actor_specification
             .get(id.asset())
             .unwrap()
-            .supervisors
+            .supervisor()
             .iter()
             .find(|e| e.id == *id.0)
             .with_context(|| format!("Missing an Supervisor entry for {id}"))?;

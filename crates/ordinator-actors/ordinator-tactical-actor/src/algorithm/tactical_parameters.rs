@@ -16,8 +16,8 @@ use ordinator_scheduling_environment::assignments::AnyAssignment;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrder;
-use ordinator_scheduling_environment::work_order::WorkOrderConfigurations;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::WorkOrderPolicies;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Operation;
 use ordinator_scheduling_environment::work_order::operation::Work;
@@ -47,7 +47,7 @@ impl Parameters for TacticalParameters
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>
     {
-        let tactical_options = &scheduling_environment
+        let actor_specification = &scheduling_environment
             .worker_environment
             .actor_specification
             .get(id.asset())
@@ -57,6 +57,8 @@ impl Parameters for TacticalParameters
                     id.asset()
                 )
             })?;
+
+        let work_order_policies = &scheduling_environment.work_order_policies;
 
         let work_orders = scheduling_environment
             .work_orders
@@ -83,17 +85,13 @@ impl Parameters for TacticalParameters
                     // This should also be found inside of the database.
                     // There is something that has to be inverted here. You are not designing this
                     // is the best possible way.
-                    create_tactical_parameter(
-                        wo,
-                        start_days_for_activities,
-                        &tactical_options.work_order_configurations,
-                    )?,
+                    create_tactical_parameter(wo, start_days_for_activities, work_order_policies)?,
                 ))
             })
             .collect::<Result<HashMap<WorkOrderNumber, TacticalParameter>>>()?;
 
         let tactical_days = scheduling_environment.time_environment.days[0..min(
-            tactical_options.tactical.number_of_tactical_days,
+            actor_specification.tactical().number_of_tactical_days,
             scheduling_environment.time_environment.days.len(),
         )]
             .to_vec();
@@ -101,7 +99,7 @@ impl Parameters for TacticalParameters
             tactical_work_orders,
             tactical_days,
             tactical_capacity,
-            tactical_options: tactical_options.tactical.tactical_options.clone(),
+            tactical_options: actor_specification.tactical().tactical_options.clone(),
         })
     }
 
@@ -128,7 +126,7 @@ impl Parameters for TacticalParameters
 pub fn create_tactical_parameter(
     work_order: &WorkOrder,
     start_days_for_activities: HashMap<Option<ActivityNumber>, AnyAssignment>,
-    work_order_configuration: &WorkOrderConfigurations,
+    work_order_configuration: &WorkOrderPolicies,
 ) -> Result<TacticalParameter>
 {
     let mut operation_parameters = BTreeMap::new();
@@ -172,7 +170,7 @@ impl TacticalParameter
     pub fn new(
         work_order: &WorkOrder,
         // This should be a part of the options.
-        work_order_configuration: &WorkOrderConfigurations,
+        work_order_configuration: &WorkOrderPolicies,
         operation_parameters: BTreeMap<ActivityNumber, OperationParameter>,
     ) -> Result<Self>
     {

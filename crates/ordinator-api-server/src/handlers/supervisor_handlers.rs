@@ -107,10 +107,6 @@ pub async fn technician_availability(
     Path((asset, _supervisor_id)): Path<(Asset, String)>,
 ) -> Result<Json<SupervisorAllAvailableTechnicians>, AppError>
 {
-    // let lock = orchestrator.actor_registries.lock().unwrap();
-    // let asset = Asset::try_from(asset).map_err(|e|
-    // AppError::Anyhow(e.to_string()))?;
-
     let supervisor_all_available_technicians: SupervisorAllAvailableTechnicians = orchestrator
         .scheduling_environment
         .lock()
@@ -337,13 +333,13 @@ pub async fn assign_to_technicians(
     // Here you simply have to make the assignment. The Bus::<StateLink> will have
     // the interation with multiple people.
     let technician = actor_specification
-        .operational
+        .operational()
         .iter()
         .filter(|e| technicians.contains(e.0))
         .map(|e| e.0.clone())
         .collect::<Vec<_>>();
 
-    let material_to_period = &actor_specification.material_to_period;
+    let material_to_period = &scheduling_environment_lock.material_repo.material_to_period;
 
     let forced_work_order = scheduling_environment_lock
         .work_orders

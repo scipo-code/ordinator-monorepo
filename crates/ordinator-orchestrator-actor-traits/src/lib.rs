@@ -185,8 +185,11 @@ pub trait SystemSolutions: Clone + Sized
 
     fn all_operational(&self) -> HashSet<ActorCompositeId>;
     // If you make all Id's internal you could simply work on those?
-    fn operational_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Operational>)
-    where
+    fn operational_swap(
+        &mut self,
+        id: &ActorCompositeId,
+        solution: SolutionState<Self::Operational>,
+    ) where
         Self::Operational: Solution;
 }
 
@@ -251,8 +254,11 @@ where
     }
 
     // Can you even do this? Is this allowed? I do not t
-    fn operational_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Operational>)
-    where
+    fn operational_swap(
+        &mut self,
+        id: &ActorCompositeId,
+        solution: SolutionState<Self::Operational>,
+    ) where
         Self::Operational: Solution,
     {
         self.operational.insert(id.clone(), solution);
@@ -552,7 +558,10 @@ where
     // then afterwards you look at all four of these traits and then make a
     // common! Bullseye! This is the approach abstract should always be created
     // with evidence not blind faith.
-    fn delegates_for_agent(&self, operational_agent: &ActorCompositeId) -> HashMap<WorkOrderActivity, Delegate>;
+    fn delegates_for_agent(
+        &self,
+        operational_agent: &ActorCompositeId,
+    ) -> HashMap<WorkOrderActivity, Delegate>;
     fn count_delegate_types(&self, operational_agent: &ActorCompositeId) -> (u64, u64, u64);
 }
 // The `solution` should be updated on the `SharedSolution` not the

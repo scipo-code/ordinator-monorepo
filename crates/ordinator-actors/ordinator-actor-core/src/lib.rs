@@ -154,8 +154,10 @@ where
             {
                 Ok(throttling) => throttling,
                 Err(err) => {
+                    let error_message = format!("{err:#?}");
                     self.error_channel
                         .send(err)
+                        .with_context(|| error_message)
                         .expect("If error channel is down, everything is down");
                     9999
                 }

@@ -9,15 +9,15 @@ use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
-use ordinator_scheduling_environment::time_environment::MaterialToPeriod;
+use ordinator_scheduling_environment::materials::MaterialToPeriod;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::ClusteringWeights;
 use ordinator_scheduling_environment::work_order::ForcedWorkOrder;
 use ordinator_scheduling_environment::work_order::TacticalForceType;
 use ordinator_scheduling_environment::work_order::WorkOrder;
-use ordinator_scheduling_environment::work_order::WorkOrderConfigurations;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::WorkOrderPolicies;
 use ordinator_scheduling_environment::work_order::WorkOrders;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::StrategicOptions;
@@ -78,9 +78,9 @@ impl Parameters for StrategicParameters
             .get(id.asset())
             .unwrap();
 
-        let strategic_options = &actor_specifications.strategic.strategic_options;
-        let work_order_configurations = &actor_specifications.work_order_configurations;
-        let material_to_period = &actor_specifications.material_to_period;
+        let strategic_options = actor_specifications.strategic_options();
+        let work_order_configurations = &scheduling_environment.work_order_policies;
+        let material_to_period = &scheduling_environment.material_repo.material_to_period;
 
         // You need to develop this together with Dall!
         // Okay so you should put the
@@ -120,8 +120,8 @@ impl Parameters for StrategicParameters
         let strategic_clustering = StrategicClustering::calculate_clustering_values(
             asset,
             work_orders,
-            &actor_specifications
-                .work_order_configurations
+            &scheduling_environment
+                .work_order_policies
                 .clustering_weights,
         )?;
 
@@ -267,7 +267,7 @@ impl WorkOrderParameterBuilder
         work_order: &WorkOrder,
         periods: &[Period],
         days: &[Day],
-        work_order_configurations: &WorkOrderConfigurations,
+        work_order_configurations: &WorkOrderPolicies,
         // Then you can also move this one out of the system.
         material_to_period: &MaterialToPeriod,
     ) -> Result<Self>

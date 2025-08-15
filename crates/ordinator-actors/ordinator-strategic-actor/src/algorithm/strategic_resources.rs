@@ -45,7 +45,7 @@ impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for S
 
         for (i, period) in value.0.time_environment.periods.iter().enumerate() {
             let mut operational_resource_map = HashMap::new();
-            for operational_agent in &value
+            for operational_agent in value
                 .0
                 .worker_environment
                 .actor_specification
@@ -54,7 +54,7 @@ impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for S
                     format!("Missing Actor: {:?} in the SchedulingEnvironment", value.1)
                 })
                 .expect("Missing the required Actor")
-                .operational
+                .operational()
             {
                 // What is it that you are trying to do here? You want to instantiate an agent
                 // TODO: Could you reuse the OperationalResource. No could you inplement a

@@ -37,6 +37,8 @@ use ordinator_scheduling_environment::work_order::work_order_info::system_condit
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_text::WorkOrderText;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
 use ordinator_scheduling_environment::worker_environment::ActorEnvironment;
+use ordinator_scheduling_environment::worker_environment::ActorSpecification;
+use ordinator_scheduling_environment::worker_environment::ActorSpecifications;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
@@ -259,11 +261,11 @@ fn start_operational_actor()
 
     // We do not want to test against data files. I think that the best approach
     // here will be to test against something else.
-    let worker_environment = ActorEnvironment::builder()
-        .actor_environment(Asset::Test, path_to_data)
-        // What should be done here? I think that the best approach is to make
-        // the system work.
-        .unwrap()
+    let worker_environment = ActorEnvironment::<dyn ActorSpecification>::builder()
+        .add_actor_specification(
+            asset,
+            Box::new(ActorSpecifications::actor_specification_from_toml(path_to_data).unwrap()),
+        )
         .build();
     // Should you build the actors yourself. Or do something different? I think that
     // the best approach here is to do the same thing again.
@@ -389,7 +391,7 @@ fn start_operational_actor()
                 })
         })
     .time_environment(time_environment)
-        .build();
+        .build().expect("Could not build SchedulingEnvironment");
 
     // Get it to work first, then change the API
     // TODO [ ] 2025-07-09 make a module that contains SchedulingEnvironment
@@ -401,7 +403,7 @@ fn start_operational_actor()
         .actor_specification
         .get(&Asset::Test)
         .unwrap()
-        .operational
+        .operational()
         .iter()
         .next()
         .unwrap()
@@ -415,7 +417,7 @@ fn start_operational_actor()
         .actor_specification
         .get(&Asset::Test)
         .unwrap()
-        .supervisors
+        .supervisor()
         .first()
         .unwrap()
         .id
