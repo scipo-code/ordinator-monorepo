@@ -1278,9 +1278,7 @@ pub mod tests
     }
     #[derive(Clone, Debug, Eq, PartialEq)]
     struct Strategic;
-    impl StrategicInterface for Strategic{
-        
-    } 
+    impl StrategicInterface for Strategic {}
     impl Solution for Strategic
     {
         type Objective = ();
@@ -1298,9 +1296,7 @@ pub mod tests
     }
     #[derive(Clone, Debug, Eq, PartialEq)]
     struct Tactical;
-    impl TacticalInterface for Tactical{
-        
-    } 
+    impl TacticalInterface for Tactical {}
     impl Solution for Tactical
     {
         type Objective = ();
@@ -1318,9 +1314,7 @@ pub mod tests
     }
     #[derive(Clone, Debug, Eq, PartialEq)]
     struct Supervisor;
-    impl SupervisorInterface for Supervisor{
-        
-    } 
+    impl SupervisorInterface for Supervisor {}
     impl Solution for Supervisor
     {
         type Objective = ();

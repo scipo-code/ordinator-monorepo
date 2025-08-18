@@ -131,80 +131,82 @@ impl TacticalInterface for TestTactical
         todo!()
     }
 }
-impl SystemSolutions for TestSystemSolution<SupervisorSolution>
-{
-    type Operational = OperationalSolution;
-    type Strategic = TestStrategic;
-    type Supervisor = SupervisorSolution;
-    type Tactical = TestTactical;
 
-    fn new() -> Self
-    {
-        todo!()
-    }
+// impl Supervisor
+// impl SystemSolutions for TestSystemSolution<SupervisorSolution>
+// {
+//     type Operational = OperationalSolution;
+//     type Strategic = TestStrategic;
+//     type Supervisor = SupervisorSolution;
+//     type Tactical = TestTactical;
 
-    fn strategic(&self) -> anyhow::Result<&Self::Strategic>
-    {
-        todo!()
-    }
+//     fn new() -> Self
+//     {
+//         todo!()
+//     }
 
-    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<TestStrategic>)
-    where
-        Self::Strategic: ordinator_orchestrator_actor_traits::Solution,
-    {
-        todo!()
-    }
+//     fn strategic(&self) -> anyhow::Result<&Self::Strategic>
+//     {
+//         todo!()
+//     }
 
-    fn tactical_actor_solution(&self) -> anyhow::Result<&Self::Tactical>
-    {
-        todo!()
-    }
+//     fn strategic_swap(&mut self, id: &ActorCompositeId, solution:
+// SolutionState<TestStrategic>)     where
+//         Self::Strategic: ordinator_orchestrator_actor_traits::Solution,
+//     {
+//         todo!()
+//     }
 
-    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<TestTactical>)
-    where
-        Self::Tactical: ordinator_orchestrator_actor_traits::Solution,
-    {
-        todo!()
-    }
+//     fn tactical_actor_solution(&self) -> anyhow::Result<&Self::Tactical>
+//     {
+//         todo!()
+//     }
 
-    fn supervisor_actor_solutions(&self) -> anyhow::Result<&Self::Supervisor>
-    {
-        Ok(self.supervisor.as_ref().unwrap())
-    }
+//     fn tactical_swap(&mut self, id: &ActorCompositeId, solution:
+// SolutionState<TestTactical>)     where
+//         Self::Tactical: ordinator_orchestrator_actor_traits::Solution,
+//     {
+//         todo!()
+//     }
 
-    fn supervisor_swap(
-        &mut self,
-        id: &ActorCompositeId,
-        solution: SolutionState<SupervisorSolution>,
-    ) where
-        Self::Supervisor: ordinator_orchestrator_actor_traits::Solution,
-    {
-        todo!()
-    }
+//     fn supervisor_actor_solutions(&self) -> anyhow::Result<&Self::Supervisor>
+//     {
+//         Ok(self.supervisor.as_ref().unwrap())
+//     }
 
-    fn operational_actor_solutions(
-        &self,
-        id: &ActorCompositeId,
-    ) -> anyhow::Result<&Self::Operational>
-    {
-        todo!()
-    }
+//     fn supervisor_swap(
+//         &mut self,
+//         id: &ActorCompositeId,
+//         solution: SolutionState<SupervisorSolution>,
+//     ) where
+//         Self::Supervisor: ordinator_orchestrator_actor_traits::Solution,
+//     {
+//         todo!()
+//     }
 
-    fn all_operational(&self) -> std::collections::HashSet<ActorCompositeId>
-    {
-        todo!()
-    }
+//     fn operational_actor_solutions(
+//         &self,
+//         id: &ActorCompositeId,
+//     ) -> anyhow::Result<&Self::Operational>
+//     {
+//         todo!()
+//     }
 
-    fn operational_swap(
-        &mut self,
-        id: &ActorCompositeId,
-        solution: SolutionState<OperationalSolution>,
-    ) where
-        Self::Operational: Solution,
-    {
-        self.operational.insert(id.clone(), solution);
-    }
-}
+//     fn all_operational(&self) -> std::collections::HashSet<ActorCompositeId>
+//     {
+//         todo!()
+//     }
+
+//     fn operational_swap(
+//         &mut self,
+//         id: &ActorCompositeId,
+//         solution: SolutionState<OperationalSolution>,
+//     ) where
+//         Self::Operational: Solution,
+//     {
+//         self.operational.insert(id.clone(), solution);
+//     }
+// }
 
 impl Solution for TestTactical
 {
@@ -458,7 +460,7 @@ fn start_operational_actor()
     .algorithm(|ab| {
         ab.id(operational_id.clone())
             // So this function returns a `Result`
-            .parameters_and_solution_from_scheduling_environment(&scheduling_environment.lock().unwrap())
+            .parameters_and_solution(&scheduling_environment.lock().unwrap())
             .unwrap()
             .system_solution_arc_swap(_system_solution.clone())
     })

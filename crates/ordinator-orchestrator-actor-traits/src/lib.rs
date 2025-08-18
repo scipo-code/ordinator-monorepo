@@ -158,33 +158,42 @@ where
 
 // This is made completely wrong. I am not sure what the
 // best approach of solving it will be.
-pub trait SystemSolutions: Clone + Sized
+pub trait StrategicSolutions
 {
     type Strategic: StrategicInterface;
-    type Tactical: TacticalInterface;
-    type Supervisor: SupervisorInterface;
-    type Operational: OperationalInterface + Solution;
 
-    fn new() -> Self;
     fn strategic(&self) -> Result<&Self::Strategic>;
-
     fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Strategic>)
     where
         Self::Strategic: Solution;
-    fn tactical_actor_solution(&self) -> Result<&Self::Tactical>;
+}
 
+pub trait TacticalSolutions
+{
+    type Tactical: TacticalInterface;
+
+    fn tactical_actor_solution(&self) -> Result<&Self::Tactical>;
     fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Tactical>)
     where
         Self::Tactical: Solution;
-    fn supervisor_actor_solutions(&self) -> Result<&Self::Supervisor>;
+}
 
+pub trait SupervisorSolutions
+{
+    type Supervisor: SupervisorInterface;
+
+    fn supervisor_actor_solutions(&self) -> Result<&Self::Supervisor>;
     fn supervisor_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Supervisor>)
     where
         Self::Supervisor: Solution;
-    fn operational_actor_solutions(&self, id: &ActorCompositeId) -> Result<&Self::Operational>;
+}
 
+pub trait OperationalSolutions
+{
+    type Operational: OperationalInterface + Solution;
+
+    fn operational_actor_solutions(&self, id: &ActorCompositeId) -> Result<&Self::Operational>;
     fn all_operational(&self) -> HashSet<ActorCompositeId>;
-    // If you make all Id's internal you could simply work on those?
     fn operational_swap(
         &mut self,
         id: &ActorCompositeId,
@@ -193,29 +202,20 @@ pub trait SystemSolutions: Clone + Sized
         Self::Operational: Solution;
 }
 
-// ISSUE #000 [ ] - use trait composition instead of a single large trait.
-#[allow(dead_code, unused_variables)]
-impl<S, T, U, V> SystemSolutions for SystemSolution<S, T, U, V>
+pub trait SystemSolutions:
+    Clone + Sized + StrategicSolutions + TacticalSolutions + SupervisorSolutions + OperationalSolutions
+{
+    fn new() -> Self;
+}
+
+impl<S, T, U, V> StrategicSolutions for SystemSolution<S, T, U, V>
 where
     S: StrategicInterface + Solution,
     T: TacticalInterface + Solution,
     U: SupervisorInterface + Solution,
     V: OperationalInterface + Solution,
 {
-    type Operational = V;
     type Strategic = S;
-    type Supervisor = U;
-    type Tactical = T;
-
-    fn new() -> Self
-    {
-        Self {
-            strategic: None,
-            tactical: None,
-            supervisor: None,
-            operational: HashMap::default(),
-        }
-    }
 
     fn strategic(&self) -> Result<&Self::Strategic>
     {
@@ -226,6 +226,23 @@ where
             .inner)
     }
 
+    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Strategic>)
+    where
+        Self::Strategic: Solution,
+    {
+        todo!()
+    }
+}
+
+impl<S, T, U, V> TacticalSolutions for SystemSolution<S, T, U, V>
+where
+    S: StrategicInterface + Solution,
+    T: TacticalInterface + Solution,
+    U: SupervisorInterface + Solution,
+    V: OperationalInterface + Solution,
+{
+    type Tactical = T;
+
     fn tactical_actor_solution(&self) -> Result<&Self::Tactical>
     {
         Ok(&self
@@ -235,6 +252,23 @@ where
             .inner)
     }
 
+    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Tactical>)
+    where
+        Self::Tactical: Solution,
+    {
+        self.tactical = Some(solution);
+    }
+}
+
+impl<S, T, U, V> SupervisorSolutions for SystemSolution<S, T, U, V>
+where
+    S: StrategicInterface + Solution,
+    T: TacticalInterface + Solution,
+    U: SupervisorInterface + Solution,
+    V: OperationalInterface + Solution,
+{
+    type Supervisor = U;
+
     fn supervisor_actor_solutions(&self) -> Result<&Self::Supervisor>
     {
         Ok(&self
@@ -243,6 +277,23 @@ where
             .with_context(|| "SupervisorActor SystemSolution not found")?
             .inner)
     }
+
+    fn supervisor_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Supervisor>)
+    where
+        Self::Supervisor: Solution,
+    {
+        self.supervisor = Some(solution);
+    }
+}
+
+impl<S, T, U, V> OperationalSolutions for SystemSolution<S, T, U, V>
+where
+    S: StrategicInterface + Solution,
+    T: TacticalInterface + Solution,
+    U: SupervisorInterface + Solution,
+    V: OperationalInterface + Solution,
+{
+    type Operational = V;
 
     fn operational_actor_solutions(&self, id: &ActorCompositeId) -> Result<&Self::Operational>
     {
@@ -264,30 +315,29 @@ where
         self.operational.insert(id.clone(), solution);
     }
 
-    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Strategic>)
-    where
-        Self::Strategic: Solution,
-    {
-        self.strategic = Some(solution);
-    }
-
-    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Tactical>)
-    where
-        Self::Tactical: Solution,
-    {
-        self.tactical = Some(solution);
-    }
-
-    fn supervisor_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Supervisor>)
-    where
-        Self::Supervisor: Solution,
-    {
-        self.supervisor = Some(solution);
-    }
-
     fn all_operational(&self) -> HashSet<ActorCompositeId>
     {
         self.operational.keys().cloned().collect()
+    }
+}
+
+// ISSUE #000 [ ] - use trait composition instead of a single large trait.
+#[allow(dead_code, unused_variables)]
+impl<S, T, U, V> SystemSolutions for SystemSolution<S, T, U, V>
+where
+    S: StrategicInterface + Solution,
+    T: TacticalInterface + Solution,
+    U: SupervisorInterface + Solution,
+    V: OperationalInterface + Solution,
+{
+    fn new() -> Self
+    {
+        Self {
+            strategic: None,
+            tactical: None,
+            supervisor: None,
+            operational: HashMap::default(),
+        }
     }
 }
 
