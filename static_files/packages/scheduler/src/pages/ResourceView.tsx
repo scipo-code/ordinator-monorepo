@@ -1,5 +1,5 @@
+import { ResourceCard } from "@scipo-code/shared";
 import { useParams } from "react-router-dom";
-
 
 
 
@@ -9,6 +9,10 @@ export default function ResourceView() {
   
 
   return (
-    <p>jHello</p>
+    <div>
+      {asset}
+      <ResourceCard />
+    </div>
+
   )
 }
