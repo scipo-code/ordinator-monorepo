@@ -18,7 +18,6 @@
 /temp_scheduling_environment_database/*.json
 /temp_scheduling_environment_database/*.csv
 # Datafiles
-**.svg
 **.png
 **.csv
 **.xlsx
