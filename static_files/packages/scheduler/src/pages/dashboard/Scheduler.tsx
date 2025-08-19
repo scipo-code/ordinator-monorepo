@@ -83,7 +83,6 @@ const Scheduler: React.FC = () => {
           <StagnationDot stagnations={query.data?.stagnation_iterations} />
         </div>
       </div>
-      <div className="flex-1 min-h-0">
         <AgGridReact
           className='h-full w-full'
           rowData={workOrders}
@@ -96,10 +95,8 @@ const Scheduler: React.FC = () => {
             resizable: true,
             sortable: true,
             filter: true,
-            flex: 1,
           }}
         />
-      </div>
     </div>
   );
 };
