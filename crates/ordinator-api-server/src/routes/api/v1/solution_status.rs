@@ -11,7 +11,13 @@ pub async fn solution_status_routes(
 {
     OpenApiRouter::new()
         .routes(routes!(
+            crate::handlers::solution_status_handlers::strategic_solution_status
+        ))
+        .routes(routes!(
             crate::handlers::solution_status_handlers::tactical_solution_status
+        ))
+        .routes(routes!(
+            crate::handlers::solution_status_handlers::supervisor_solution_status
         ))
         // .route("/{asset}/{supervisor_id}", get(status))
         .with_state(state)

@@ -3,7 +3,7 @@ import { SidebarProvider } from "./components/ui/sidebar";
 import { SidebarItem } from "@scipo-code/shared";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Toaster } from "@/components/ui/sonner";
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Calendar, Home, Search, Settings, Users } from "lucide-react";
 import { useMemo } from "react";
 
 export default function Layout() {
@@ -23,8 +23,8 @@ export default function Layout() {
         },
         {
           title: "Resources",
-          url: "#",
-          icon: Inbox,
+          url: `${asset}/resources`,
+          icon: Users,
         },
         {
           title: "Calendar",

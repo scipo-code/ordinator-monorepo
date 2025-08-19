@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { NaiveDateDto, SupervisorMainTableDto, useDays, useSystemClock } from '@scipo-code/shared';
+import { NaiveDateDto, StagnationDot, SupervisorMainTableDto, useDays, useSystemClock, useVersionChangeDetector } from '@scipo-code/shared';
 import { useSupervisorMainTable } from "@scipo-code/shared";
 import { format, parseISO } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -30,6 +30,12 @@ export default function MainTable() {
   // in the future!
   const supervisorId = "main";
   const { data: mainTableData } = useSupervisorMainTable(asset || "", supervisorId, selectedDay ? selectedDay : undefined );
+
+  const query = useVersionChangeDetector(
+    asset ? `api/v1/solution_status/${encodeURIComponent(asset)}/supervisor` : "",
+    ["supervisorMainTable"],
+    1000
+  );
 
 
   useEffect(() => {
@@ -57,42 +63,48 @@ export default function MainTable() {
   return (
     <div className="p-4 flex flex-col flex-1 min-h-0 overflow-hidden">
       <h2 className="text-2xl font-bold mb-4 shrink-0">Work Schedule - {asset} : Server clock - {format(parseISO(systemclock), "PPP p")}</h2>
-      <div className="flex items-center gap-2 mb-4 shrink-0">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            const currentIndex = days?.indexOf(selectedDay!) || 0;
-            if (currentIndex > 0) setSelectedDay(days![currentIndex -1]);
-          }}
-          disabled={!days || !selectedDay || days.indexOf(selectedDay) === 0}
-        >
-        <ChevronLeft className="h-4 w-4" />
-        </Button>
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-2 mb-4 shrink-0">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const currentIndex = days?.indexOf(selectedDay!) || 0;
+              if (currentIndex > 0) setSelectedDay(days![currentIndex -1]);
+            }}
+            disabled={!days || !selectedDay || days.indexOf(selectedDay) === 0}
+          >
+          <ChevronLeft className="h-4 w-4" />
+          </Button>
 
-        <Select value={selectedDay || ""} onValueChange={(value) => setSelectedDay(value as NaiveDateDto)}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Select date" />
-          </SelectTrigger>
-          <SelectContent>
-            {days?.map(day => (
-              <SelectItem key={day} value={day}>{day}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          <Select value={selectedDay || ""} onValueChange={(value) => setSelectedDay(value as NaiveDateDto)}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Select date" />
+            </SelectTrigger>
+            <SelectContent>
+              {days?.map(day => (
+                <SelectItem key={day} value={day}>{day}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
         
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            const currentIndex = days?.indexOf(selectedDay!) || 0;
-            if (currentIndex < (days?.length || 0) - 1) setSelectedDay(days![currentIndex +1]);
-          }}
-          disabled={!days || !selectedDay || days.indexOf(selectedDay) === (days?.length || 0) -1}
-        >
-        <ChevronRight className="h-4 w-4" />
-        </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const currentIndex = days?.indexOf(selectedDay!) || 0;
+              if (currentIndex < (days?.length || 0) - 1) setSelectedDay(days![currentIndex +1]);
+            }}
+            disabled={!days || !selectedDay || days.indexOf(selectedDay) === (days?.length || 0) -1}
+          >
+          <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+        <div className='flex items-center gap-2 px-2 py-1 text-gray-700 text-xs rounded-md font-medium'>
+          Version: {query.data?.version}
+          <StagnationDot stagnations={query.data?.stagnation_iterations} />
+        </div>
       </div>
       <WorkSchedule data={mainTableData} selectedDay={selectedDay} />
 

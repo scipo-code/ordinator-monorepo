@@ -1,10 +1,12 @@
 import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 import { useTableColDefs } from './scheduler/ColDef';
 import { parseISO, format } from 'date-fns';
 import { fetchWorkOrders, useSystemClock } from "@scipo-code/shared";
+import { useVersionChangeDetector } from '@scipo-code/shared';
+import { StagnationDot } from '@scipo-code/shared';
 
 
 // import { agGridThemeLight } from "./theme";
@@ -15,11 +17,6 @@ const Scheduler: React.FC = () => {
   const { asset } = useParams<{ asset: string }>();
   const columns = useTableColDefs();
     
-  /* Safeguard against missing /asset */
-  if (!asset) {
-    return <Navigate to="/dashboard/DF" replace />;
-  }
-
   /* Fetch with React Query */
   const {
     data: workOrders = [],          // default ↠ empty array
@@ -34,6 +31,14 @@ const Scheduler: React.FC = () => {
     retry: 2,                       // exponential-backoff retries
     staleTime: 60_000,              // cache 1 min
   });
+
+
+  const query = useVersionChangeDetector(
+    asset ? `api/v1/solution_status/${encodeURIComponent(asset)}/tactical`: "",
+    ["workOrders"],
+    1000
+  );
+  
 
   const { data: systemclock } = useSystemClock();
 
@@ -71,7 +76,13 @@ const Scheduler: React.FC = () => {
 
   return (
     <div className="p-4 flex flex-col flex-1 min-h-0 overflow-hidden">
-      <h2 className="text-2xl font-bold mb-4 shrink-0">Work Orders - {asset}: {format(parseISO(systemclock), "PPP p")}</h2>
+      <div className="flex justify-between">
+        <h2 className="text-2xl font-bold mb-4 shrink-0">Work Orders - {asset}: {format(parseISO(systemclock), "PPP p")}</h2>
+        <div className='flex items-center gap-2 px-2 py-1 text-gray-700 text-xs rounded-md font-medium'>
+          Version: {query.data?.version}
+          <StagnationDot stagnations={query.data?.stagnation_iterations} />
+        </div>
+      </div>
       <div className="flex-1 min-h-0">
         <AgGridReact
           className='h-full w-full'

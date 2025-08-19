@@ -16,6 +16,7 @@ export * from "./OperationDto.ts";
 export * from "./Percentage.ts";
 export * from "./PeriodDto.ts";
 export * from "./PeriodStatus.ts";
+export * from "./SolutionVersionDto.ts";
 export * from "./SchedulerWorkOrderDto.ts";
 export * from "./SchedulingData.ts";
 export * from "./SingleRowDto.ts";
