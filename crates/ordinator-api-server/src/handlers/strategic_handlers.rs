@@ -149,11 +149,13 @@ pub async fn get_single_work_order_with_schedule(
 )]
 pub async fn work_orders_with_suggested_period<Ss>(
     State(orchestrator): State<Arc<Orchestrator<Ss>>>,
-    Path(asset): Path<Asset>,
+    Path(asset): Path<AssetNames>,
 ) -> Result<Response, AppError>
 where
     Ss: SystemSolutions,
 {
+    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
     let strategic_periods = orchestrator
         .system_solutions
         .lock()

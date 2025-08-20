@@ -44,11 +44,13 @@ use crate::routes::api::AppError;
 )]
 pub async fn status<Ss>(
     State(orchestrator): State<Arc<Orchestrator<Ss>>>,
-    Path(asset): Path<Asset>,
+    Path(asset): Path<AssetNames>,
 ) -> Result<Response, AppError>
 where
     Ss: SystemSolutions,
 {
+    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
     let message = TacticalRequestMessage::Status(TacticalStatusMessage::General);
 
     let hash_map = orchestrator.actor_registries.lock().unwrap();
@@ -95,11 +97,13 @@ where
 )]
 pub async fn start_days_for_activities<Ss>(
     State(orchestrator): State<Arc<Orchestrator<Ss>>>,
-    Path(asset): Path<Asset>,
+    Path(asset): Path<AssetNames>,
 ) -> Result<Response, AppError>
 where
     Ss: SystemSolutions,
 {
+    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
     let tactical_days = orchestrator
         .system_solutions
         .lock()
@@ -129,12 +133,14 @@ where
 pub async fn assign_start_day_for_work_order<Ss>(
     State(orchestrator): State<Arc<Orchestrator<Ss>>>,
     // TODO [ ] `asset` should be used for authentication.
-    Path((_asset, work_order_number)): Path<(Asset, WorkOrderNumber)>,
+    Path((asset, work_order_number)): Path<(AssetNames, WorkOrderNumber)>,
     Json(basic_start_date_dto): Json<NaiveDateDto>,
 ) -> Result<Response, AppError>
 where
     Ss: SystemSolutions,
 {
+    let _asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
     let basic_start_date: NaiveDate = basic_start_date_dto
         .try_into()
         .map_err(|e: ParseError| AppError::Anyhow(e.to_string()))?;
@@ -216,11 +222,13 @@ pub struct DailyLoadingDto
 )]
 pub async fn daily_loadings<Ss>(
     State(orchestrator): State<Arc<Orchestrator<Ss>>>,
-    Path(asset): Path<Asset>,
+    Path(asset): Path<AssetNames>,
 ) -> Result<Response, AppError>
 where
     Ss: SystemSolutions,
 {
+    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
     let tactical_days = orchestrator
         .system_solutions
         .lock()

@@ -6,12 +6,10 @@ use axum::Json;
 use axum::debug_handler;
 use axum::extract::Path;
 use axum::extract::State;
-
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::IdDto;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::technician::OperationalAssignmentsDto;
-
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::OperationalRequestMessage;
 use ordinator_orchestrator::OperationalResponseMessage;
@@ -45,9 +43,11 @@ use crate::routes::api::AppError;
 pub async fn operational_ids(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     // This is actually not the best way of coding it?
-    Path(asset): Path<Asset>,
+    Path(asset): Path<AssetNames>,
 ) -> Result<Json<Vec<IdDto>>, AppError>
 {
+    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
     Ok(Json(
         orchestrator
             .actor_registries
@@ -104,10 +104,12 @@ pub async fn activities_for_technician(
 #[allow(unused)]
 pub async fn operational_handler_for_operational_agent(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    Path(asset): Path<Asset>,
+    Path(asset): Path<AssetNames>,
     Path(technician_id): Path<String>,
 ) -> Result<Json<OperationalResponseMessage>>
 {
+    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
     // INFO; So state link should not be possible to send here. This will be
     // a very good exercise in how to use the `pub` keyword in a good way.
     // I really think that a large `enum` is a fine approach. Otherwise
@@ -133,7 +135,9 @@ pub async fn operational_handler_for_operational_agent(
 }
 
 // pub async fn operational_handler_alloperationalstatus(Path(asset):
-// Path<Asset>) -> Result<Json> {
+// Path<AssetNames>) -> Result<Json> {
+// let asset = Asset::try_from(asset).map_err(|e|
+// AppError::Anyhow(e.to_string()))?;
 
 // }
 //             let operational_request_status =

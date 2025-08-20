@@ -38,9 +38,11 @@ pub struct SolutionVersionDto
 )]
 pub async fn tactical_solution_status(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    Path(asset): Path<Asset>,
+    Path(asset): Path<AssetNames>,
 ) -> Result<Json<SolutionVersionDto>, AppError>
 {
+    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
     let stagnation_and_version = orchestrator
         .system_solutions
         .lock()
@@ -77,9 +79,11 @@ pub async fn tactical_solution_status(
 )]
 pub async fn strategic_solution_status(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    Path(asset): Path<Asset>,
+    Path(asset): Path<AssetNames>,
 ) -> Result<Json<SolutionVersionDto>, AppError>
 {
+    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
     let stagnation_and_version = orchestrator
         .system_solutions
         .lock()
@@ -116,9 +120,11 @@ pub async fn strategic_solution_status(
 )]
 pub async fn supervisor_solution_status(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    Path(asset): Path<Asset>,
+    Path(asset): Path<AssetNames>,
 ) -> Result<Json<SolutionVersionDto>, AppError>
 {
+    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
     let stagnation_and_version = orchestrator
         .system_solutions
         .lock()
