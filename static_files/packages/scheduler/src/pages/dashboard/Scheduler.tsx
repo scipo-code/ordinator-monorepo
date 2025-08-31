@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
@@ -29,13 +29,14 @@ const Scheduler: React.FC = () => {
     enabled: !!asset,
     queryFn: () => fetchWorkOrders(asset!),
     retry: 2,                       // exponential-backoff retries
-    staleTime: 60_000,              // cache 1 min
+    staleTime: 0,
   });
 
 
+  const invalidationKeys = useMemo(() => ["workOrders"], []);
   const query = useVersionChangeDetector(
     asset ? `api/v1/solution_status/${encodeURIComponent(asset)}/tactical`: "",
-    ["workOrders"],
+    invalidationKeys,
     1000
   );
   
