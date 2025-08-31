@@ -20,10 +20,10 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@yourorg/shared": [
+      "@scipo-code/shared": [
         "packages/shared/src"
       ],
-      "@yourorg/shared/*": [
+      "@scipo-code/shared/*": [
         "packages/shared/src/*"
       ]
     }
