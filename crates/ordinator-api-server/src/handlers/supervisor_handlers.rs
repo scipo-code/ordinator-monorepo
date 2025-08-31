@@ -55,9 +55,12 @@ use crate::routes::api::AppError;
 )]
 pub async fn status(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    Path((asset, supervisor_id)): Path<(Asset, String)>,
+    Path((asset, supervisor_id)): Path<(AssetNames, String)>,
 ) -> Result<Json<SupervisorResponseMessageDto>, AppError>
 {
+    let asset = Asset::try_from(asset)
+        .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
+
     let lock = orchestrator.actor_registries.lock().unwrap();
     let supervisor_agent_senders = &lock
         .get(&asset)
@@ -104,9 +107,11 @@ pub async fn technician_availability(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     // TODO [ ]
     // The `_supervisor_id` should be used in the future when we have additional
-    Path((asset, _supervisor_id)): Path<(Asset, String)>,
+    Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
 ) -> Result<Json<SupervisorAllAvailableTechnicians>, AppError>
 {
+    let asset = Asset::try_from(asset)
+        .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
     let supervisor_all_available_technicians: SupervisorAllAvailableTechnicians = orchestrator
         .scheduling_environment
         .lock()
@@ -141,12 +146,14 @@ pub async fn all_technicians(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     // TODO [ ]
     // The `_supervisor_id` should be used in the future when we have additional
-    Path((asset, _supervisor_id)): Path<(Asset, String)>,
+    Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
 ) -> Result<Json<SupervisorResourcesDto>, AppError>
 {
     // let lock = orchestrator.actor_registries.lock().unwrap();
     // let asset = Asset::try_from(asset).map_err(|e|
     // AppError::Anyhow(e.to_string()))?;
+    let asset = Asset::try_from(asset)
+        .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
 
     let supervisor_resources: SupervisorResourcesDto = orchestrator
         .system_solutions
