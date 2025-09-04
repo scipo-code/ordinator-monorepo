@@ -259,15 +259,6 @@ impl SchedulingEnvironmentBuilder
         self
     }
 
-    pub fn worker_environment(
-        mut self,
-        worker_environment: ActorEnvironment<dyn ActorSpecification>,
-    ) -> Self
-    {
-        self.worker_environment = Some(worker_environment);
-        self
-    }
-
     pub fn work_orders(mut self, work_orders: WorkOrders) -> Self
     {
         self.work_orders = Some(work_orders);
@@ -298,6 +289,15 @@ impl SchedulingEnvironmentBuilder
         self
     }
 
+    pub fn worker_environment(
+        mut self,
+        worker_environment: ActorEnvironment<dyn ActorSpecification>,
+    ) -> Self
+    {
+        self.worker_environment = Some(worker_environment);
+        self
+    }
+
     pub fn worker_environment_from_toml(
         mut self,
         path_to_workers: PathBuf,
@@ -315,6 +315,41 @@ impl SchedulingEnvironmentBuilder
 
         self.worker_environment = Some(actor_environment);
         Ok(self)
+    }
+
+    pub fn add_actor_specification<F>(mut self, asset: Asset, f: F) -> Self
+    where
+        F: FnOnce(
+            worker_environment::ActorSpecificationBuilder,
+        ) -> worker_environment::ActorSpecificationBuilder,
+    {
+        let actor_spec_builder = ActorSpecifications::builder();
+        let actor_spec_builder = f(actor_spec_builder);
+
+        let actor_spec = actor_spec_builder
+            .build()
+            .expect("Failed to build ActorSpecifications");
+
+        let actor_environment = self
+            .worker_environment
+            .take()
+            .unwrap_or_else(|| ActorEnvironment::<dyn ActorSpecification>::builder().build())
+            .actor_specification;
+
+        let mut updated_environment = ActorEnvironment::<dyn ActorSpecification>::builder();
+
+        // Re-add existing specifications
+        for (existing_asset, existing_spec) in actor_environment {
+            updated_environment =
+                updated_environment.add_actor_specification(existing_asset, existing_spec);
+        }
+
+        // Add the new specification
+        updated_environment =
+            updated_environment.add_actor_specification(asset, Box::new(actor_spec));
+
+        self.worker_environment = Some(updated_environment.build());
+        self
     }
 
     pub fn work_order_policies_from_toml(

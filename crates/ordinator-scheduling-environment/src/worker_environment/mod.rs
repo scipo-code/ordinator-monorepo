@@ -209,6 +209,11 @@ impl ActorSpecification for ActorSpecifications
 
 impl ActorSpecifications
 {
+    pub fn builder() -> ActorSpecificationBuilder
+    {
+        ActorSpecificationBuilder::new()
+    }
+
     pub fn actor_specification_from_toml(path_to_data: PathBuf) -> Result<Self>
     {
         println!("{}", std::env::current_dir()?.display());
@@ -236,6 +241,81 @@ pub struct TimeInput
 {
     pub number_of_periods: u64,
     pub number_of_days: u64,
+}
+
+pub struct ActorSpecificationBuilder
+{
+    strategic: Option<InputStrategic>,
+    tactical: Option<InputTactical>,
+    supervisors: Option<Vec<InputSupervisor>>,
+    operational: Option<HashMap<IdString, InputOperational>>,
+}
+
+impl ActorSpecificationBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            strategic: None,
+            tactical: None,
+            supervisors: None,
+            operational: None,
+        }
+    }
+
+    pub fn strategic<F>(mut self, f: F) -> Self
+    where
+        F: FnOnce(InputStrategicBuilder) -> InputStrategicBuilder,
+    {
+        let strategic_builder = InputStrategic::builder();
+        let strategic_builder = f(strategic_builder);
+        self.strategic = Some(strategic_builder.build());
+        self
+    }
+
+    pub fn tactical<F>(mut self, f: F) -> Self
+    where
+        F: FnOnce(InputTacticalBuilder) -> InputTacticalBuilder,
+    {
+        let tactical_builder = InputTactical::builder();
+        let tactical_builder = f(tactical_builder);
+        self.tactical = Some(tactical_builder.build());
+        self
+    }
+
+    pub fn supervisors<F>(mut self, f: F) -> Self
+    where
+        F: FnOnce(SupervisorsBuilder) -> SupervisorsBuilder,
+    {
+        let supervisors_builder = SupervisorsBuilder::new();
+        let supervisors_builder = f(supervisors_builder);
+        self.supervisors = Some(supervisors_builder.build());
+        self
+    }
+
+    pub fn operational<F>(mut self, f: F) -> Self
+    where
+        F: FnOnce(OperationalBuilder) -> OperationalBuilder,
+    {
+        let operational_builder = OperationalBuilder::new();
+        let operational_builder = f(operational_builder);
+        self.operational = Some(operational_builder.build());
+        self
+    }
+
+    pub fn build(self) -> Result<ActorSpecifications>
+    {
+        Ok(ActorSpecifications {
+            strategic: self
+                .strategic
+                .ok_or_else(|| anyhow::anyhow!("Strategic configuration is required"))?,
+            tactical: self
+                .tactical
+                .ok_or_else(|| anyhow::anyhow!("Tactical configuration is required"))?,
+            supervisors: self.supervisors.unwrap_or_default(),
+            operational: self.operational.unwrap_or_default(),
+        })
+    }
 }
 
 // This should be handled as well. What should you do not? I think that a
@@ -379,6 +459,474 @@ pub struct OperationalOptions
 {
     pub number_of_removed_activities: usize,
 }
+
+pub struct InputStrategicBuilder
+{
+    id: Option<IdString>,
+    number_of_strategic_periods: Option<usize>,
+    strategic_options: Option<StrategicOptions>,
+}
+
+impl InputStrategicBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            id: None,
+            number_of_strategic_periods: None,
+            strategic_options: None,
+        }
+    }
+
+    pub fn id(mut self, id: &str) -> Self
+    {
+        self.id = Some(id.to_string());
+        self
+    }
+
+    pub fn number_of_strategic_periods(mut self, periods: usize) -> Self
+    {
+        self.number_of_strategic_periods = Some(periods);
+        self
+    }
+
+    pub fn strategic_options<F>(mut self, f: F) -> Self
+    where
+        F: FnOnce(StrategicOptionsBuilder) -> StrategicOptionsBuilder,
+    {
+        let options_builder = StrategicOptionsBuilder::new();
+        let options_builder = f(options_builder);
+        self.strategic_options = Some(options_builder.build());
+        self
+    }
+
+    pub fn build(self) -> InputStrategic
+    {
+        InputStrategic {
+            id: self.id.expect("id is required"),
+            number_of_strategic_periods: self
+                .number_of_strategic_periods
+                .expect("number_of_strategic_periods is required"),
+            strategic_options: self
+                .strategic_options
+                .expect("strategic_options is required"),
+        }
+    }
+}
+
+impl InputStrategic
+{
+    pub fn builder() -> InputStrategicBuilder
+    {
+        InputStrategicBuilder::new()
+    }
+}
+
+pub struct InputTacticalBuilder
+{
+    id: Option<IdString>,
+    number_of_tactical_days: Option<usize>,
+    tactical_options: Option<TacticalOptions>,
+}
+
+impl InputTacticalBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            id: None,
+            number_of_tactical_days: None,
+            tactical_options: None,
+        }
+    }
+
+    pub fn id(mut self, id: &str) -> Self
+    {
+        self.id = Some(id.to_string());
+        self
+    }
+
+    pub fn number_of_tactical_days(mut self, days: usize) -> Self
+    {
+        self.number_of_tactical_days = Some(days);
+        self
+    }
+
+    pub fn tactical_options<F>(mut self, f: F) -> Self
+    where
+        F: FnOnce(TacticalOptionsBuilder) -> TacticalOptionsBuilder,
+    {
+        let options_builder = TacticalOptionsBuilder::new();
+        let options_builder = f(options_builder);
+        self.tactical_options = Some(options_builder.build());
+        self
+    }
+
+    pub fn build(self) -> InputTactical
+    {
+        InputTactical {
+            id: self.id.expect("id is required"),
+            number_of_tactical_days: self
+                .number_of_tactical_days
+                .expect("number_of_tactical_days is required"),
+            tactical_options: self.tactical_options.expect("tactical_options is required"),
+        }
+    }
+}
+
+impl InputTactical
+{
+    pub fn builder() -> InputTacticalBuilder
+    {
+        InputTacticalBuilder::new()
+    }
+}
+
+pub struct SupervisorsBuilder
+{
+    supervisors: Vec<InputSupervisor>,
+}
+
+impl SupervisorsBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            supervisors: Vec::new(),
+        }
+    }
+
+    pub fn supervisor<F>(mut self, f: F) -> Self
+    where
+        F: FnOnce(InputSupervisorBuilder) -> InputSupervisorBuilder,
+    {
+        let supervisor_builder = InputSupervisorBuilder::new();
+        let supervisor_builder = f(supervisor_builder);
+        self.supervisors.push(supervisor_builder.build());
+        self
+    }
+
+    pub fn build(self) -> Vec<InputSupervisor>
+    {
+        self.supervisors
+    }
+}
+
+pub struct InputSupervisorBuilder
+{
+    id: Option<IdString>,
+    number_of_supervisor_periods: Option<u64>,
+    supervisor_options: Option<SupervisorOptions>,
+}
+
+impl InputSupervisorBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            id: None,
+            number_of_supervisor_periods: None,
+            supervisor_options: None,
+        }
+    }
+
+    pub fn id(mut self, id: &str) -> Self
+    {
+        self.id = Some(id.to_string());
+        self
+    }
+
+    pub fn number_of_supervisor_periods(mut self, periods: u64) -> Self
+    {
+        self.number_of_supervisor_periods = Some(periods);
+        self
+    }
+
+    pub fn supervisor_options<F>(mut self, f: F) -> Self
+    where
+        F: FnOnce(SupervisorOptionsBuilder) -> SupervisorOptionsBuilder,
+    {
+        let options_builder = SupervisorOptionsBuilder::new();
+        let options_builder = f(options_builder);
+        self.supervisor_options = Some(options_builder.build());
+        self
+    }
+
+    pub fn build(self) -> InputSupervisor
+    {
+        InputSupervisor {
+            id: self.id.expect("id is required"),
+            number_of_supervisor_periods: self
+                .number_of_supervisor_periods
+                .expect("number_of_supervisor_periods is required"),
+            supervisor_options: self
+                .supervisor_options
+                .expect("supervisor_options is required"),
+        }
+    }
+}
+
+pub struct OperationalBuilder
+{
+    operational: HashMap<IdString, InputOperational>,
+}
+
+impl OperationalBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            operational: HashMap::new(),
+        }
+    }
+
+    pub fn operational<F>(mut self, id: &str, f: F) -> Self
+    where
+        F: FnOnce(InputOperationalBuilder) -> InputOperationalBuilder,
+    {
+        let operational_builder = InputOperationalBuilder::new();
+        let operational_builder = f(operational_builder);
+        self.operational.insert(id.to_string(), operational_builder.build());
+        self
+    }
+
+    pub fn build(self) -> HashMap<IdString, InputOperational>
+    {
+        self.operational
+    }
+}
+
+pub struct InputOperationalBuilder
+{
+    id: Option<IdString>,
+    hours_per_day: Option<f64>,
+    operational_configuration: Option<OperationalConfiguration>,
+    operational_options: Option<OperationalOptions>,
+}
+
+impl InputOperationalBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            id: None,
+            hours_per_day: None,
+            operational_configuration: None,
+            operational_options: None,
+        }
+    }
+
+    pub fn id(mut self, id: &str) -> Self
+    {
+        self.id = Some(id.to_string());
+        self
+    }
+
+    pub fn hours_per_day(mut self, hours: f64) -> Self
+    {
+        self.hours_per_day = Some(hours);
+        self
+    }
+
+    pub fn operational_configuration(mut self, config: OperationalConfiguration) -> Self
+    {
+        self.operational_configuration = Some(config);
+        self
+    }
+
+    pub fn operational_options<F>(mut self, f: F) -> Self
+    where
+        F: FnOnce(OperationalOptionsBuilder) -> OperationalOptionsBuilder,
+    {
+        let options_builder = OperationalOptionsBuilder::new();
+        let options_builder = f(options_builder);
+        self.operational_options = Some(options_builder.build());
+        self
+    }
+
+    pub fn build(self) -> InputOperational
+    {
+        InputOperational {
+            id: self.id.expect("id is required"),
+            hours_per_day: self.hours_per_day.expect("hours_per_day is required"),
+            operational_configuration: self
+                .operational_configuration
+                .expect("operational_configuration is required"),
+            operational_options: self
+                .operational_options
+                .expect("operational_options is required"),
+        }
+    }
+}
+
+pub struct StrategicOptionsBuilder
+{
+    number_of_removed_work_orders: Option<usize>,
+    urgency_weight: Option<usize>,
+    resource_penalty_weight: Option<usize>,
+    clustering_weight: Option<usize>,
+}
+
+impl StrategicOptionsBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            number_of_removed_work_orders: None,
+            urgency_weight: None,
+            resource_penalty_weight: None,
+            clustering_weight: None,
+        }
+    }
+
+    pub fn number_of_removed_work_orders(mut self, count: usize) -> Self
+    {
+        self.number_of_removed_work_orders = Some(count);
+        self
+    }
+
+    pub fn urgency_weight(mut self, weight: usize) -> Self
+    {
+        self.urgency_weight = Some(weight);
+        self
+    }
+
+    pub fn resource_penalty_weight(mut self, weight: usize) -> Self
+    {
+        self.resource_penalty_weight = Some(weight);
+        self
+    }
+
+    pub fn clustering_weight(mut self, weight: usize) -> Self
+    {
+        self.clustering_weight = Some(weight);
+        self
+    }
+
+    pub fn build(self) -> StrategicOptions
+    {
+        StrategicOptions {
+            number_of_removed_work_orders: self
+                .number_of_removed_work_orders
+                .expect("number_of_removed_work_orders is required"),
+            urgency_weight: self.urgency_weight.expect("urgency_weight is required"),
+            resource_penalty_weight: self
+                .resource_penalty_weight
+                .expect("resource_penalty_weight is required"),
+            clustering_weight: self
+                .clustering_weight
+                .expect("clustering_weight is required"),
+        }
+    }
+}
+
+pub struct TacticalOptionsBuilder
+{
+    number_of_removed_work_orders: Option<usize>,
+    urgency: Option<usize>,
+    resource_penalty: Option<usize>,
+}
+
+impl TacticalOptionsBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            number_of_removed_work_orders: None,
+            urgency: None,
+            resource_penalty: None,
+        }
+    }
+
+    pub fn number_of_removed_work_orders(mut self, count: usize) -> Self
+    {
+        self.number_of_removed_work_orders = Some(count);
+        self
+    }
+
+    pub fn urgency(mut self, urgency: usize) -> Self
+    {
+        self.urgency = Some(urgency);
+        self
+    }
+
+    pub fn resource_penalty(mut self, penalty: usize) -> Self
+    {
+        self.resource_penalty = Some(penalty);
+        self
+    }
+
+    pub fn build(self) -> TacticalOptions
+    {
+        TacticalOptions {
+            number_of_removed_work_orders: self
+                .number_of_removed_work_orders
+                .expect("number_of_removed_work_orders is required"),
+            urgency: self.urgency.expect("urgency is required"),
+            resource_penalty: self.resource_penalty.expect("resource_penalty is required"),
+        }
+    }
+}
+
+pub struct SupervisorOptionsBuilder
+{
+    number_of_unassigned_work_orders: Option<usize>,
+}
+
+impl SupervisorOptionsBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            number_of_unassigned_work_orders: None,
+        }
+    }
+
+    pub fn number_of_unassigned_work_orders(mut self, count: usize) -> Self
+    {
+        self.number_of_unassigned_work_orders = Some(count);
+        self
+    }
+
+    pub fn build(self) -> SupervisorOptions
+    {
+        SupervisorOptions {
+            number_of_unassigned_work_orders: self
+                .number_of_unassigned_work_orders
+                .expect("number_of_unassigned_work_orders is required"),
+        }
+    }
+}
+
+pub struct OperationalOptionsBuilder
+{
+    number_of_removed_activities: Option<usize>,
+}
+
+impl OperationalOptionsBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            number_of_removed_activities: None,
+        }
+    }
+
+    pub fn number_of_removed_activities(mut self, count: usize) -> Self
+    {
+        self.number_of_removed_activities = Some(count);
+        self
+    }
+
+    pub fn build(self) -> OperationalOptions
+    {
+        OperationalOptions {
+            number_of_removed_activities: self
+                .number_of_removed_activities
+                .expect("number_of_removed_activities is required"),
+        }
+    }
+}
 #[cfg(test)]
 mod tests
 {
@@ -439,6 +987,7 @@ mod tests
 
     use crate::Asset;
     use crate::worker_environment::ActorSpecification;
+    use crate::worker_environment::ActorSpecifications;
     use crate::worker_environment::IdString;
     use crate::worker_environment::InputOperational;
     use crate::worker_environment::availability::Availability;
@@ -446,6 +995,51 @@ mod tests
     use crate::worker_environment::resources::Resources;
 
     //
+    #[test]
+    fn test_actor_specification_builder()
+    {
+        let actor_spec = ActorSpecifications::builder()
+            .strategic(|builder| {
+                builder
+                    .id("strategic-001")
+                    .number_of_strategic_periods(5)
+                    .strategic_options(|options| {
+                        options
+                            .number_of_removed_work_orders(10)
+                            .urgency_weight(3)
+                            .resource_penalty_weight(2)
+                            .clustering_weight(1)
+                    })
+            })
+            .tactical(|builder| {
+                builder
+                    .id("tactical-001")
+                    .number_of_tactical_days(7)
+                    .tactical_options(|options| {
+                        options
+                            .number_of_removed_work_orders(5)
+                            .urgency(2)
+                            .resource_penalty(1)
+                    })
+            })
+            .supervisors(|builder| {
+                builder.supervisor(|sup| {
+                    sup.id("supervisor-001")
+                        .number_of_supervisor_periods(3)
+                        .supervisor_options(|options| options.number_of_unassigned_work_orders(2))
+                })
+            })
+            .build()
+            .expect("Failed to build ActorSpecifications");
+
+        assert_eq!(actor_spec.strategic.id, "strategic-001");
+        assert_eq!(actor_spec.strategic.number_of_strategic_periods, 5);
+        assert_eq!(actor_spec.tactical.id, "tactical-001");
+        assert_eq!(actor_spec.tactical.number_of_tactical_days, 7);
+        assert_eq!(actor_spec.supervisors.len(), 1);
+        assert_eq!(actor_spec.supervisors[0].id, "supervisor-001");
+    }
+
     #[test]
     fn test_add_technician()
     {
