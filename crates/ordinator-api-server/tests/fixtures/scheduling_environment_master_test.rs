@@ -3,15 +3,19 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::sync::Arc;
 
+use chrono::DateTime;
 use chrono::NaiveDate;
+use chrono::NaiveTime;
 use chrono::TimeDelta;
 use chrono::TimeZone;
 use chrono::Utc;
 use ordinator_orchestrator::Asset;
+use ordinator_orchestrator::Availability;
 use ordinator_orchestrator::WorkOrderNumber;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::materials::MaterialRepo;
 use ordinator_scheduling_environment::materials::MaterialToPeriod;
+use ordinator_scheduling_environment::time_environment::TimeInterval;
 use ordinator_scheduling_environment::time_environment::create_time_environment;
 use ordinator_scheduling_environment::work_order::WorkOrderPolicies;
 use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
@@ -97,6 +101,153 @@ pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironme
                             .number_of_supervisor_periods(2)
                             .supervisor_options(|f| f.number_of_unassigned_work_orders(10))
                     })
+                })
+                .operational(|operational_builder| {
+                    operational_builder
+                        .operational("TEST-OP-001-01", |operational_actor| {
+                            operational_actor
+                                .hours_per_day(6.0)
+                                .operational_configuration(|config| {
+                                    config
+                                        .add_availability(
+                                            Availability::new(
+                                                DateTime::parse_from_rfc3339(
+                                                    "2025-01-13T07:00:00Z",
+                                                )
+                                                .unwrap()
+                                                .to_utc(),
+                                                DateTime::parse_from_rfc3339(
+                                                    "2025-01-27T15:00:00Z",
+                                                )
+                                                .unwrap()
+                                                .to_utc(),
+                                                vec![Asset::Test],
+                                            )
+                                            .unwrap(),
+                                        )
+                                        .add_resource(Resources::MtnMech)
+                                        .break_interval(
+                                            TimeInterval::new(
+                                                NaiveTime::from_hms_opt(11, 0, 0).unwrap(),
+                                                NaiveTime::from_hms_opt(12, 0, 0).unwrap(),
+                                            )
+                                            .unwrap(),
+                                        )
+                                        .off_shift_interval(
+                                            TimeInterval::new(
+                                                NaiveTime::from_hms_opt(19, 0, 0).unwrap(),
+                                                NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
+                                            )
+                                            .unwrap(),
+                                        )
+                                        .toolbox_interval(
+                                            TimeInterval::new(
+                                                NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
+                                                NaiveTime::from_hms_opt(8, 0, 0).unwrap(),
+                                            )
+                                            .unwrap(),
+                                        )
+                                })
+                                .operational_options(|options| {
+                                    options.number_of_removed_activities(10)
+                                })
+                        })
+                        .operational("TEST-OP-001-02", |operational_actor_2| {
+                            operational_actor_2
+                                .hours_per_day(6.0)
+                                .operational_configuration(|config| {
+                                    config
+                                        .add_availability(
+                                            Availability::new(
+                                                DateTime::parse_from_rfc3339(
+                                                    "2025-01-13T07:00:00Z",
+                                                )
+                                                .unwrap()
+                                                .to_utc(),
+                                                DateTime::parse_from_rfc3339(
+                                                    "2025-01-27T15:00:00Z",
+                                                )
+                                                .unwrap()
+                                                .to_utc(),
+                                                vec![Asset::Test],
+                                            )
+                                            .unwrap(),
+                                        )
+                                        .add_resource(Resources::MtnMech)
+                                        .break_interval(
+                                            TimeInterval::new(
+                                                NaiveTime::from_hms_opt(11, 0, 0).unwrap(),
+                                                NaiveTime::from_hms_opt(12, 0, 0).unwrap(),
+                                            )
+                                            .unwrap(),
+                                        )
+                                        .off_shift_interval(
+                                            TimeInterval::new(
+                                                NaiveTime::from_hms_opt(19, 0, 0).unwrap(),
+                                                NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
+                                            )
+                                            .unwrap(),
+                                        )
+                                        .toolbox_interval(
+                                            TimeInterval::new(
+                                                NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
+                                                NaiveTime::from_hms_opt(8, 0, 0).unwrap(),
+                                            )
+                                            .unwrap(),
+                                        )
+                                })
+                                .operational_options(|options| {
+                                    options.number_of_removed_activities(10)
+                                })
+                        })
+                        .operational("TEST-OP-002-01", |operational_actor_2| {
+                            operational_actor_2
+                                .hours_per_day(6.0)
+                                .operational_configuration(|config| {
+                                    config
+                                        .add_availability(
+                                            Availability::new(
+                                                DateTime::parse_from_rfc3339(
+                                                    "2025-01-13T07:00:00Z",
+                                                )
+                                                .unwrap()
+                                                .to_utc(),
+                                                DateTime::parse_from_rfc3339(
+                                                    "2025-01-27T15:00:00Z",
+                                                )
+                                                .unwrap()
+                                                .to_utc(),
+                                                vec![Asset::Test],
+                                            )
+                                            .unwrap(),
+                                        )
+                                        .add_resource(Resources::MtnInst)
+                                        .break_interval(
+                                            TimeInterval::new(
+                                                NaiveTime::from_hms_opt(11, 0, 0).unwrap(),
+                                                NaiveTime::from_hms_opt(12, 0, 0).unwrap(),
+                                            )
+                                            .unwrap(),
+                                        )
+                                        .off_shift_interval(
+                                            TimeInterval::new(
+                                                NaiveTime::from_hms_opt(19, 0, 0).unwrap(),
+                                                NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
+                                            )
+                                            .unwrap(),
+                                        )
+                                        .toolbox_interval(
+                                            TimeInterval::new(
+                                                NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
+                                                NaiveTime::from_hms_opt(8, 0, 0).unwrap(),
+                                            )
+                                            .unwrap(),
+                                        )
+                                })
+                                .operational_options(|options| {
+                                    options.number_of_removed_activities(10)
+                                })
+                        })
                 })
         })
         // .worker_environment_from_toml(path_to_workers, asset)

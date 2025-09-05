@@ -18,6 +18,7 @@ use chrono::DateTime;
 use chrono::NaiveTime;
 use chrono::Utc;
 use crew::OperationalConfiguration;
+use crew::OperationalConfigurationBuilder;
 use resources::ActorCompositeId;
 use resources::Resources;
 use serde::Deserialize;
@@ -684,9 +685,10 @@ impl OperationalBuilder
     where
         F: FnOnce(InputOperationalBuilder) -> InputOperationalBuilder,
     {
-        let operational_builder = InputOperationalBuilder::new();
+        let operational_builder = InputOperationalBuilder::new(id.to_string());
         let operational_builder = f(operational_builder);
-        self.operational.insert(id.to_string(), operational_builder.build());
+        self.operational
+            .insert(id.to_string(), operational_builder.build());
         self
     }
 
@@ -698,7 +700,7 @@ impl OperationalBuilder
 
 pub struct InputOperationalBuilder
 {
-    id: Option<IdString>,
+    id: IdString,
     hours_per_day: Option<f64>,
     operational_configuration: Option<OperationalConfiguration>,
     operational_options: Option<OperationalOptions>,
@@ -706,31 +708,19 @@ pub struct InputOperationalBuilder
 
 impl InputOperationalBuilder
 {
-    pub fn new() -> Self
+    pub fn new(id: String) -> Self
     {
         Self {
-            id: None,
+            id,
             hours_per_day: None,
             operational_configuration: None,
             operational_options: None,
         }
     }
 
-    pub fn id(mut self, id: &str) -> Self
-    {
-        self.id = Some(id.to_string());
-        self
-    }
-
     pub fn hours_per_day(mut self, hours: f64) -> Self
     {
         self.hours_per_day = Some(hours);
-        self
-    }
-
-    pub fn operational_configuration(mut self, config: OperationalConfiguration) -> Self
-    {
-        self.operational_configuration = Some(config);
         self
     }
 
@@ -744,10 +734,20 @@ impl InputOperationalBuilder
         self
     }
 
+    pub fn operational_configuration<F>(mut self, f: F) -> Self
+    where
+        F: FnOnce(OperationalConfigurationBuilder) -> OperationalConfigurationBuilder,
+    {
+        let config_builder = OperationalConfigurationBuilder::new();
+        let config_builder = f(config_builder);
+        self.operational_configuration = Some(config_builder.build());
+        self
+    }
+
     pub fn build(self) -> InputOperational
     {
         InputOperational {
-            id: self.id.expect("id is required"),
+            id: self.id,
             hours_per_day: self.hours_per_day.expect("hours_per_day is required"),
             operational_configuration: self
                 .operational_configuration
