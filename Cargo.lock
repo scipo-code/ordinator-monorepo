@@ -1484,6 +1484,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "ordinator-monorepo"
+version = "0.0.1"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "ordinator-api-server",
+ "ordinator-contracts",
+ "ordinator-orchestrator",
+ "ordinator-scheduling-environment",
+ "tokio",
+ "toml",
+]
+
+[[package]]
 name = "ordinator-operational-actor"
 version = "0.1.0"
 dependencies = [

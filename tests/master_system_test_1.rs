@@ -8,6 +8,7 @@ use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::logging::setup_logging;
 
+
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 #[ignore]
 async fn test_complete_system() -> anyhow::Result<()>
