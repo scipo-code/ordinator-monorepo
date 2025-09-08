@@ -1,6 +1,6 @@
 mod material;
 
-mod throttling;
+pub mod throttling;
 pub mod time_input;
 pub mod toml_baptiste;
 mod user_interface;

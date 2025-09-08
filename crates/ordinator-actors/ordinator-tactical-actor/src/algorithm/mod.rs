@@ -549,13 +549,14 @@ where
         {
             info!(
                 target: "research",
-                tactical_objective_value_better = tactical_objective_value.as_value()
+                tactical_objective_accepted = tactical_objective_value.as_value(),
+                reason = "optimization loop found a better solution",
             );
             Ok(ObjectiveValueType::Better(tactical_objective_value))
         } else {
             trace!(
                 target: "research",
-                tactical_objective_value_worse = tactical_objective_value.as_value()
+                tactical_objective_rejected = tactical_objective_value.as_value()
             );
             Ok(ObjectiveValueType::Worse)
         }
@@ -862,6 +863,11 @@ where
             .collect();
 
         self.force_schedule_tactical_work_orders(forced_work_orders)
+    }
+
+    fn throttling(&self, throttling: &ordinator_configuration::throttling::Throttling) -> u64
+    {
+        throttling.tactical_throttling
     }
 }
 

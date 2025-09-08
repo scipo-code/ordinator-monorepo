@@ -21,7 +21,7 @@ use super::supervisor_parameters::SupervisorParameters;
 
 pub type SupervisorObjectiveValue = u64;
 
-#[derive(PartialEq, Eq, Default, Clone)]
+#[derive(Debug, PartialEq, Eq, Default, Clone)]
 pub struct SupervisorSolution
 {
     pub(crate) objective_value: SupervisorObjectiveValue,
@@ -41,26 +41,25 @@ impl SupervisorSolution
     }
 }
 
-impl std::fmt::Debug for SupervisorSolution
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
-    {
-        if f.alternate() {
-            write!(
-                f,
-                "SupervisorSolution \
-                {{\n\
-                \tobjective_value: {:#?}\n\
-                \toperational_state_machine: {}\n\
-                }}",
-                self.objective_value,
-                self.operational_state_machine.len(),
-            )
-        } else {
-            panic!()
-        }
-    }
-}
+// impl std::fmt::Debug for SupervisorSolution
+// {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+//     {
+//         if f.alternate() {
+//             write!(
+//                 f,
+//                 "SupervisorSolution \
+//                 {{\n\
+//                 \tobjective_value: {:#?}\n\
+//                 \toperational_state_machine: {}\n\
+//                 }}",
+//                 self.objective_value,
+//                 self.operational_state_machine.len(),
+//             )
+//         } else {
+//         }
+//     }
+// }
 
 impl Solution for SupervisorSolution
 {

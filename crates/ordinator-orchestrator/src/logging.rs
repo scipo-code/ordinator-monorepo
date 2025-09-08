@@ -143,7 +143,6 @@ pub fn setup_logging() -> LogHandles
 
     let developer_layer = fmt::layer()
         .with_writer(developer_writer)
-        .json()
         .with_ansi(true)
         .with_file(true) // Include file name in logs
         .with_thread_ids(true)

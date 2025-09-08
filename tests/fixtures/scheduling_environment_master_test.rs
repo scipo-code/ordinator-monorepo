@@ -74,8 +74,6 @@ pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironme
 
     SchedulingEnvironment::builder()
         .add_actor_specification(Asset::Test, worker_builder)
-        // .worker_environment_from_toml(path_to_workers, asset)
-        // .expect("Test WorkerEnvironment could not be built")
         .work_order_policies(work_order_policies)
         .material_repo(material_repo)
         .work_orders_builder(work_order_builder)
@@ -237,7 +235,7 @@ fn work_order_builder(
         })
         .work_order_builder(WorkOrderNumber(2300001234), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -315,7 +313,7 @@ fn worker_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificatio
     actor_builder
         .strategic(|strategic| {
             strategic
-                .id("TEST STRATEGIC")
+                .id("TEST_STRATEGIC")
                 .number_of_strategic_periods(52)
                 .strategic_options(|f| {
                     f.number_of_removed_work_orders(5)
@@ -326,7 +324,7 @@ fn worker_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificatio
         })
         .tactical(|tactical| {
             tactical
-                .id("TEST  TACTICAL")
+                .id("TEST_TACTICAL")
                 .number_of_tactical_days(120)
                 .tactical_options(|f| {
                     f.number_of_removed_work_orders(20)
@@ -336,14 +334,14 @@ fn worker_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificatio
         })
         .supervisors(|supervisor| {
             supervisor.supervisor(|f| {
-                f.id("TEST SUPERVISOR")
+                f.id("TEST_SUPERVISOR")
                     .number_of_supervisor_periods(2)
                     .supervisor_options(|f| f.number_of_unassigned_work_orders(10))
             })
         })
         .operational(|operational_builder| {
             operational_builder
-                .operational("TEST-OP-001-01", |operational_actor| {
+                .operational("TEST_OP-001-01", |operational_actor| {
                     operational_actor
                         .hours_per_day(6.0)
                         .operational_configuration(|config| {
@@ -385,7 +383,7 @@ fn worker_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificatio
                         })
                         .operational_options(|options| options.number_of_removed_activities(10))
                 })
-                .operational("TEST-OP-001-02", |operational_actor_2| {
+                .operational("TEST_OP-001-02", |operational_actor_2| {
                     operational_actor_2
                         .hours_per_day(6.0)
                         .operational_configuration(|config| {
@@ -402,7 +400,9 @@ fn worker_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificatio
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnMech)
+                                .add_resource(Resources::MtnElec)
+                                // THIS IS WHAT YOU SHOULD NOT DO! Each you are spilling out 3 types
+                                // that should be encapsulated.
                                 .break_interval(
                                     TimeInterval::new(
                                         NaiveTime::from_hms_opt(11, 0, 0).unwrap(),
@@ -427,7 +427,7 @@ fn worker_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificatio
                         })
                         .operational_options(|options| options.number_of_removed_activities(10))
                 })
-                .operational("TEST-OP-002-01", |operational_actor_2| {
+                .operational("TEST_OP-002-01", |operational_actor_2| {
                     operational_actor_2
                         .hours_per_day(6.0)
                         .operational_configuration(|config| {

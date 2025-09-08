@@ -218,13 +218,14 @@ where
         {
             info!(
                 target: "research",
-                strategic_objective_value_better = strategic_objective_value.as_value()
+                strategic_objective_accepted = strategic_objective_value.as_value(),
+                reason = "optimization loop found a better solution",
             );
             Ok(ObjectiveValueType::Better(strategic_objective_value))
         } else {
             trace!(
                 target: "research",
-                strategic_objective_value_worse = strategic_objective_value.as_value()
+                strategic_objective_rejected = strategic_objective_value.as_value()
             );
             Ok(ObjectiveValueType::Worse)
         }
@@ -351,6 +352,10 @@ where
         }
 
         Ok(())
+    }
+
+    fn throttling(&self, throttling: &ordinator_configuration::throttling::Throttling) -> u64 {
+        throttling.strategic_throttling
     }
 }
 

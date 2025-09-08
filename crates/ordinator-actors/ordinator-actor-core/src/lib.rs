@@ -30,6 +30,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use tracing::Level;
 use tracing::event;
+use tracing::info;
 
 use self::traits::ActorBasedLargeNeighborhoodSearch;
 
@@ -99,6 +100,7 @@ where
     // One thing is for sure. Now is not the time to fix this.
     pub fn run(&mut self)
     {
+        info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
         let mut schedule_iteration = ScheduleIteration::default();
 
         // I do not understand what I should be doing here? I think that the best
@@ -119,11 +121,13 @@ where
                 .send(anyhow!(actor_error))
                 .expect("If this happens no amount of error handling will save the program")
         }
+        info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
 
         schedule_iteration.increment();
 
         // There is something fundamental that you are not getting here.
         loop {
+            info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
             while let Ok(state_link) = self.state_link_receiver.try_recv() {
                 match self.handle_state_link(state_link) {
                     // TODO [ ] 2025-07-15 This message could be used to communicate with
@@ -137,6 +141,7 @@ where
                 }
             }
 
+            info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
             while let Ok(message) = self.receiver_from_orchestrator.try_recv() {
                 match self.handle_request_message(message) {
                     Ok(_) => (),
@@ -145,25 +150,15 @@ where
                     ),
                 }
             }
+            info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
 
-            let sleep_duration = match self
-                .configurations
-                .load()
-                .throttling
-                .get_throttling(&self.actor_id.0)
-            {
-                Ok(throttling) => throttling,
-                Err(err) => {
-                    let error_message = format!("{err:#?}");
-                    self.error_channel
-                        .send(err)
-                        .with_context(|| error_message)
-                        .expect("If error channel is down, everything is down");
-                    9999
-                }
-            };
+            let throttling = &self.configurations.load().throttling;
 
+            let sleep_duration = self.algorithm.throttling(throttling);
+
+            info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
             std::thread::sleep(std::time::Duration::from_millis(sleep_duration));
+            info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
             if let Err(actor_error) = self
                 .algorithm
                 // Ahh the issue is that you cannot put this kind of thing in here. The issue comes

@@ -209,14 +209,15 @@ where
                     / all_work_order_activities.len() as f64;
             info!(
                 target: "research",
-                supervisor_objective_value_better = objective_value,
+                supervisor_objective_accepted = objective_value,
                 share_of_schedule_work_order_activities = share_of_schedule_work_order_activities,
+                reason = "optimization loop found a better solution",
             );
             Ok(ObjectiveValueType::Better(objective_value))
         } else {
             trace!(
                 target: "research",
-                supervisor_objective_value_worse = objective_value
+                supervisor_objective_rejected = objective_value
             );
             Ok(ObjectiveValueType::Worse)
         }
@@ -261,6 +262,7 @@ where
         // the code runs correctly with
         // TODO [ ]
         // Debug the SupervisorActor.
+        info!(target: "developer", supervisor_solution = ?self.solution);
         ensure!(
             self.loaded_system_solution
                 .strategic()
@@ -565,6 +567,11 @@ where
     fn force_schedule(&mut self) -> Result<()>
     {
         todo!()
+    }
+
+    fn throttling(&self, throttling: &ordinator_configuration::throttling::Throttling) -> u64
+    {
+        throttling.supervisor_throttling
     }
 }
 

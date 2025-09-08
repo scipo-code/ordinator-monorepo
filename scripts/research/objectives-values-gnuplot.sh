@@ -1,17 +1,74 @@
 # This is the script associated with the `test_complete_system` integration test.
 
-cat logging/logs/ordinator.research.log | jq 'select(.threadName == "TEST-OP-002-01" and (.fields | has("operational_objective_value_better")) ) |[ 
+jq '
+  select(.threadName == "TEST_STRATEGIC" and (.fields | has("strategic_objective_accepted"))) |
+  [ 
   .timestamp, 
-  .fields.operational_objective_value_better.hands_on_tool_time, 
-  .fields.operational_objective_value_better.assess, 
-  .fields.operational_objective_value_better.assign, 
-  .fields.operational_objective_value_better.total_work_order_activities 
-  ] | @tsv' | sed 's/"//g' | sed 's/\\t/\t/g' | gnuplot -e " set terminal png size 800,600; set output 'plot.png'; set datafile separator '\t'; set xdata time; set timefmt '%Y-%m-%dT%H:%M:%SZ'; set format x '%H:%M:%S'; set xlabel 'Time'; set ylabel 'Objective Value'; set title 'Objective Values Over Time'; plot '-' using 1:2 with linespoints title 'Objective Values';"
+  .fields.strategic_objective_accepted.objective_value, 
+  .fields.strategic_objective_accepted.urgency[1], 
+  .fields.strategic_objective_accepted.resource_penalty[1], 
+  .fields.strategic_objective_accepted.clustering_value[1]
+  ] |
+  @tsv' logging/logs/ordinator.research.log | sed 's/"//g' | sed 's/\\t/\t/g' > ./scripts/research/data/strategic.txt
 
-# gnuplot -e "set terminal png size 800,600; set output 'plot.png'; set datafile separator '\t'; set xlabel 'Time'; set ylabel 'Objective Value'; set title 'Objective Values Over Time'; plot '-' using 2 with linespoints title 'Objective Values'" 
+jq '
+  select(.threadName == "TEST_TACTICAL" and (.fields | has("tactical_objective_accepted"))) |
+  [ 
+  .timestamp, 
+  .fields.tactical_objective_accepted.objective_value, 
+  .fields.tactical_objective_accepted.urgency[1], 
+  .fields.tactical_objective_accepted.resource_penalty[1] 
+  ] |
+  @tsv' logging/logs/ordinator.research.log | sed 's/"//g' | sed 's/\\t/\t/g' > ./scripts/research/data/tactical.txt
+
+jq '
+  select(.threadName == "TEST_SUPERVISOR" and (.fields | has("supervisor_objective_accepted"))) |
+  [ 
+  .timestamp, 
+  .fields.supervisor_objective_accepted 
+  ] |
+  @tsv' logging/logs/ordinator.research.log | sed 's/"//g' | sed 's/\\t/\t/g' > ./scripts/research/data/supervisor.txt
+
+jq '
+  select(.threadName == "TEST_OP-001-01" and (.fields | has("operational_objective_accepted"))) |
+  [ 
+  .timestamp, 
+  .fields.operational_objective_accepted.hands_on_tool_time, 
+  .fields.operational_objective_accepted.assess, 
+  .fields.operational_objective_accepted.assign, 
+  .fields.operational_objective_accepted.total_work_order_activities 
+  ] |
+  @tsv' logging/logs/ordinator.research.log | sed 's/"//g' | sed 's/\\t/\t/g' > ./scripts/research/data/operational-001-01.txt
+
+jq '
+  select(.threadName == "TEST_OP-001-02" and (.fields | has("operational_objective_accepted"))) |
+  [ 
+  .timestamp, 
+  .fields.operational_objective_accepted.hands_on_tool_time, 
+  .fields.operational_objective_accepted.assess, 
+  .fields.operational_objective_accepted.assign, 
+  .fields.operational_objective_accepted.total_work_order_activities 
+  ] |
+  @tsv' logging/logs/ordinator.research.log | sed 's/"//g' | sed 's/\\t/\t/g' > ./scripts/research/data/operational-001-02.txt
+
+jq '
+  select(.threadName == "TEST_OP-002-01" and (.fields | has("operational_objective_accepted"))) |
+  [ 
+  .timestamp, 
+  .fields.operational_objective_accepted.hands_on_tool_time, 
+  .fields.operational_objective_accepted.assess, 
+  .fields.operational_objective_accepted.assign, 
+  .fields.operational_objective_accepted.total_work_order_activities 
+  ] |
+  @tsv' logging/logs/ordinator.research.log | sed 's/"//g' | sed 's/\\t/\t/g' > ./scripts/research/data/operational-002-01.txt
 
 
-# cargo run | jq -r '[.timestamp, .fields.objective.objective] | @tsv' | gnuplot -e "set terminal png size 800,600; set output 'plot.png'; set datafile separator '\t'; set xlabel 'Time'; set ylabel 'Objective Value'; set title 'Objective Values Over Time'; plot '-' using 2 with linespoints title 'Objective Values'"
 
-
-# k | [.timestamp, .value] | @tsv' | gnuplot -e "plot '-' using 1:2 with lines"
+gnuplot -e "
+  strategic='scripts/research/data/strategic.txt';
+  tactical='scripts/research/data/tactical.txt';
+  supervisor='scripts/research/data/supervisor.txt';
+  operational_1='scripts/research/data/operational-001-01.txt';
+  operational_2='scripts/research/data/operational-001-02.txt';
+  operational_3='scripts/research/data/operational-002-01.txt';
+" ./scripts/research/3-by-2-objective-value-plot.gp

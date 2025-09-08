@@ -274,7 +274,7 @@ where
     // construct them directly to avoid state duplictions.
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
-        let operational_shared_solution = self
+        let supervisor_work_order_activities_for_technician = self
             .loaded_system_solution
             .supervisor_actor_solutions()
             .with_context(|| {
@@ -283,16 +283,15 @@ where
                     self.id
                 )
             })?
-            // The fact that this error was not propagated with `with_context` caused you a 5 minute
-            // delay and significant redirections.
             .delegates_for_agent(&self.id);
+
+        info!(target: "developer", supervisor_work_order_activities_for_technician = ?supervisor_work_order_activities_for_technician, operational_solution =?self.solution
+            .scheduled_work_order_activities);
 
         self.solution
             .scheduled_work_order_activities
-            // We retain all `OperationalSolution`s which are not `Delegate::Drop` where
-            // the `Delegate` variant is decided by the the `SupervisorActor`.
             .retain(|(woa, _)| {
-                !operational_shared_solution
+                !supervisor_work_order_activities_for_technician
                     .get(woa)
                     .unwrap_or({
                         // NOTE [ ]
@@ -332,6 +331,7 @@ where
         ObjectiveValueType<<<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective>,
     >
     {
+        info!(target: "developer", operational_solution = ?self.solution.scheduled_work_order_activities);
         let operational_events: Vec<Assignment> = self
             .solution
             .scheduled_work_order_activities
@@ -530,13 +530,14 @@ where
         if self.solution.objective_value > old_objective_value {
             info!(
                 target: "research",
-                operational_objective_value_better = new_objective_value.as_value()
+                operational_objective_accepted = new_objective_value.as_value(),
+                reason = "optimization loop found a better solution"
             );
             Ok(ObjectiveValueType::Better(new_objective_value))
         } else {
             trace!(
                 target: "research",
-                operational_objective_value_worse = new_objective_value.as_value()
+                operational_objective_rejected = new_objective_value.as_value()
             );
             Ok(ObjectiveValueType::Worse)
         }
@@ -848,6 +849,11 @@ where
     fn force_schedule(&mut self) -> Result<()>
     {
         todo!()
+    }
+
+    fn throttling(&self, throttling: &ordinator_configuration::throttling::Throttling) -> u64
+    {
+        throttling.operational_throttling
     }
 }
 

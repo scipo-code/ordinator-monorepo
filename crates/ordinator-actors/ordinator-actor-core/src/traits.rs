@@ -3,11 +3,10 @@ use std::sync::MutexGuard;
 
 use anyhow::Context;
 use anyhow::Result;
+use ordinator_configuration::throttling::Throttling;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use serde::Serialize;
-use tracing::Level;
-use tracing::event;
 use tracing::info;
 use valuable::Valuable;
 
@@ -37,6 +36,7 @@ pub trait ActorBasedLargeNeighborhoodSearch
         where
             <<<Self as ActorBasedLargeNeighborhoodSearch>::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective: Valuable
     {
+        info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
         // The options should be a part of the `Algorithm`... No part of the... It
         // should either be a part of the Algorithm or a Part of the Actor. If
         // it is a part of the actor it should be dependency injected. I think that this
@@ -61,6 +61,7 @@ pub trait ActorBasedLargeNeighborhoodSearch
         self.schedule()
             .with_context(|| format!("Could not schedule\n{current_solution:#?}"))?;
 
+        info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
         let objective_value_type = self.calculate_objective_value().with_context(|| {
             format!(
                 "Could not calculate the objective value\nLocation: {}:{}",
@@ -69,11 +70,7 @@ pub trait ActorBasedLargeNeighborhoodSearch
             )
         })?;
 
-        event!(
-            Level::INFO,
-            better_objective = ?objective_value_type
-        );
-
+        info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
         match objective_value_type {
             ObjectiveValueType::Better(objective_value) => {
                 info!(target: "research", objective_value = objective_value.as_value());
@@ -86,6 +83,7 @@ pub trait ActorBasedLargeNeighborhoodSearch
                 .swap_to_old_solution(current_solution),
             ObjectiveValueType::Force => todo!(),
         }
+        info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
         Ok(())
     }
 
@@ -142,6 +140,7 @@ pub trait ActorBasedLargeNeighborhoodSearch
     }
 
     fn incorporate_system_solution(&mut self) -> Result<bool>;
+    fn throttling(&self, throttling: &Throttling) -> u64;
 }
 
 pub trait AbLNSUtils

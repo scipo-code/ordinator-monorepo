@@ -75,7 +75,7 @@ pub struct Orchestrator<Ss>
     pub scheduling_environment: Arc<std::sync::Mutex<SchedulingEnvironment>>,
     pub system_solutions: std::sync::Mutex<HashMap<Asset, Arc<ArcSwap<Ss>>>>,
     pub actor_registries: std::sync::Mutex<HashMap<Asset, ActorRegistry>>,
-    pub error_channels: (Sender<anyhow::Error>, Receiver<anyhow::Error>),
+    pub error_sender: Sender<anyhow::Error>,
     pub state_link_bus: std::sync::Mutex<bus::Bus<StateLink>>,
     pub system_configurations: Arc<ArcSwap<SystemConfigurations>>,
     pub database_connections: DataBaseConnection,
@@ -479,10 +479,11 @@ impl ActorRegistry
 
 pub type OrchestratorBuildOutput<Ss> = Result<(
     Arc<Orchestrator<Ss>>,
-    JoinHandle<Result<()>>,
+    Receiver<anyhow::Error>,
     JoinHandle<()>,
 )>;
 
+#[derive(Clone)]
 pub enum Environment
 {
     Prod,
@@ -514,25 +515,6 @@ where
             scheduling_environment: None,
             _marker: PhantomData::<StepLogging>,
         }
-    }
-
-    // This is made in a wrong way. You should put the code into the
-    // What should be done here? You need to provide the Orchestrator with
-    // a `SchedulingEnvironment` so that you can test it. At the moment the
-    //
-    // scheduling environment can only be supplied through files.
-    // Make the builder afterwards. Now you have to focus on the
-    async fn actor_error_handler(error_receiver: Receiver<anyhow::Error>) -> Result<()>
-    {
-        // This function will become important if [`ActorError`]s should
-        // not simply crash the Actors
-        // loop {
-        match error_receiver.recv_async().await {
-            // This is the actor error
-            Ok(actor_error) => Err(actor_error),
-            Err(_) => Err(anyhow!("All actors are down")),
-        }
-        // }
     }
 
     pub fn asset_factory(&self, asset: &Asset) -> Result<&Self>
@@ -656,7 +638,7 @@ where
             dependencies.1.clone(),
             dependencies.2.clone(),
             self.state_link_bus.lock().unwrap().add_rx(),
-            self.error_channels.0.clone(),
+            self.error_sender.clone(),
         )
         .with_context(|| format!("Could not construct StartegicActor {strategic_id}"))?;
 
@@ -669,7 +651,7 @@ where
             dependencies.1.clone(),
             dependencies.2.clone(),
             self.state_link_bus.lock().unwrap().add_rx(),
-            self.error_channels.0.clone(),
+            self.error_sender.clone(),
         )
         .with_context(|| format!("{tactical_id} could not be constructed"))?;
 
@@ -686,7 +668,7 @@ where
                 dependencies.1.clone(),
                 dependencies.2.clone(),
                 self.state_link_bus.lock().unwrap().add_rx(),
-                self.error_channels.0.clone(),
+                self.error_sender.clone(),
             )?;
 
             supervisor_communications.insert(supervisor_id.clone(), supervisor_communication);
@@ -700,7 +682,7 @@ where
                 dependencies.1.clone(),
                 dependencies.2.clone(),
                 self.state_link_bus.lock().unwrap().add_rx(),
-                self.error_channels.0.clone(),
+                self.error_sender.clone(),
             )?;
 
             operational_communications.insert(operational_id.clone(), operational_communication);
@@ -909,11 +891,8 @@ impl OrchestratorBuilder<StepBuild>
             + 'static
             + Debug,
     {
-        let error_channels: (Sender<anyhow::Error>, Receiver<anyhow::Error>) = flume::bounded(0);
-
-        let error_task_handle: JoinHandle<Result<()>> = tokio::spawn(
-            Orchestrator::<Ss>::actor_error_handler(error_channels.1.clone()),
-        );
+        let (sender, receiver): (Sender<anyhow::Error>, Receiver<anyhow::Error>) =
+            flume::bounded(0);
 
         // WARN THIS SHOULD BE CHANGED
         // The primary issue here is that the code is not made for testing. That is a
@@ -938,7 +917,6 @@ impl OrchestratorBuilder<StepBuild>
             scheduling_environment: self.scheduling_environment.expect("Should be type safe"),
             system_solutions: std::sync::Mutex::new(HashMap::new()),
             actor_registries: std::sync::Mutex::new(HashMap::new()),
-            error_channels,
             state_link_bus,
             system_configurations: self.system_configurations.expect("Should be type safe"),
             // We are not using it yet and you should remove it from the system
@@ -950,11 +928,12 @@ impl OrchestratorBuilder<StepBuild>
                 .system_clock_time_commands_sender
                 .expect("Should be type safe"),
             log_handles: self.logging.expect("Should be type safe"),
+            error_sender: sender,
         };
         info!(target: "stdout", "System initialized (2 of 4): orchestrator");
         Ok((
             Arc::new(orchestrator),
-            error_task_handle,
+            receiver,
             self.system_clock_handle.expect("Should be type safe"),
         ))
     }

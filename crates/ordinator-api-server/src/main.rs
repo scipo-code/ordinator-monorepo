@@ -75,7 +75,7 @@ async fn main() -> Result<()>
     //    panic!();
     tokio::select! {
         res = handle => res?,
-        res = server => res?.await?,
+        res = server => res?,
         res = error_handle => res??,
         res = system_clock_handle => res?,
     }
