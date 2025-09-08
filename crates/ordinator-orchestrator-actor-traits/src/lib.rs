@@ -32,6 +32,7 @@ use ordinator_scheduling_environment::worker_environment::resources::ActorCompos
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Serialize;
 use thiserror::Error;
+use valuable::Valuable;
 
 #[derive(Error, Debug)]
 pub enum ActorError
@@ -326,7 +327,7 @@ where
 // Should this function have an option or not? Yes it should.
 pub trait Solution: Sized + Debug
 {
-    type Objective: Debug;
+    type Objective: Debug + Valuable;
     type Parameters;
 
     // The weightings are found inside of the

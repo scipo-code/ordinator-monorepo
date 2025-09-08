@@ -22,6 +22,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use serde::Serialize;
+use valuable::Valuable;
 
 // This is for the `constracts`, `conversions`, and the `orchstrator` to handle.
 use super::ContainOrNextOrNone;
@@ -32,7 +33,7 @@ use super::operational_parameter::OperationalParameters;
 
 /// You want this to be a struct so that you can implement methods and
 /// formatting and logging.
-#[derive(Serialize, Copy, PartialEq, PartialOrd, Ord, Eq, Debug, Default, Clone)]
+#[derive(Serialize, Copy, PartialEq, PartialOrd, Ord, Eq, Debug, Default, Clone, Valuable)]
 pub struct OperationalObjectiveValue
 {
     /// utilization

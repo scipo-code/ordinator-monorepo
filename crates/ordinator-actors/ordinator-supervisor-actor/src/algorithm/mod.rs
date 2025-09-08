@@ -36,6 +36,8 @@ use supervisor_solution::SupervisorSolution;
 use tracing::Level;
 #[allow(unused_imports)]
 use tracing::event;
+use tracing::info;
+use tracing::trace;
 
 pub struct SupervisorAlgorithm<Ss>(Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>)
 where
@@ -205,15 +207,15 @@ where
             let share_of_schedule_work_order_activities =
                 every_operational_assigned_or_assess_work_order_activity.len() as f64
                     / all_work_order_activities.len() as f64;
-            event!(
-                Level::INFO,
+            info!(
+                target: "research",
                 supervisor_objective_value_better = objective_value,
                 share_of_schedule_work_order_activities = share_of_schedule_work_order_activities,
             );
             Ok(ObjectiveValueType::Better(objective_value))
         } else {
-            event!(
-                Level::INFO,
+            trace!(
+                target: "research",
                 supervisor_objective_value_worse = objective_value
             );
             Ok(ObjectiveValueType::Worse)

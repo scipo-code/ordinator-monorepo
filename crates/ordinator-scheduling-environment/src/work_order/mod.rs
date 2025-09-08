@@ -1332,7 +1332,7 @@ impl WorkOrder
             operation_views.push(operation_view);
         }
 
-        let work_order_view = WorkOrderView {
+        WorkOrderView {
             work_order_number: self.work_order_number,
             priority: self.work_order_info.priority.to_string(),
             revision: self.work_order_info.revision.to_string(),
@@ -1389,8 +1389,7 @@ impl WorkOrder
                 .clone(),
             room: self.work_order_info.work_order_info_detail.room.clone(),
             vendor: self.vendor(),
-        };
-        work_order_view
+        }
     }
 }
 // The issue with what you are doing is that we can keep implementing stuff like

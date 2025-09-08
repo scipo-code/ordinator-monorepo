@@ -1,5 +1,5 @@
 mod material;
-mod resources;
+
 mod throttling;
 pub mod time_input;
 pub mod toml_baptiste;

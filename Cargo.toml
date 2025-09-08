@@ -57,6 +57,7 @@ strip = "none"
 
 [workspace.dependencies]
 anyhow = "*"
+bus = "2.4.1"
 thiserror = "*"
 arc-swap = "*" 
 chrono = { version = "*", features = ["serde"] }
@@ -77,11 +78,13 @@ strum = "*"
 strum_macros = "*"
 tokio = { version ="*", features = [ "signal", "macros", "rt-multi-thread"] }
 toml = "*"
-tracing = "*"
+tracing = {version = "*", features = ["valuable"]}
 tracing-appender = "*"
 tracing-flame = "*"
-tracing-subscriber ={version = "*", features = ["std", "fmt", "env-filter", "json"]} 
+tracing-subscriber ={version = "*", features = ["std", "fmt", "env-filter", "json", "valuable"]} 
+valuable = {version = "*", features = ["derive"]}
+
 # tikv-jemallocator = "0.6"
 
-
-
+[lints.clippy]
+new_without_defualt = "allow"

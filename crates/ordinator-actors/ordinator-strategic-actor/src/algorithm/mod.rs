@@ -42,9 +42,10 @@ use strategic_resources::StrategicResources;
 use strategic_solution::StrategicObjectiveValue;
 use strategic_solution::StrategicSolution;
 use strum::IntoEnumIterator;
-use tracing::event;
+use tracing::info;
 use tracing::instrument;
-use tracing::Level;
+use tracing::trace;
+use valuable::Valuable;
 
 use crate::messages::requests::StrategicRequestResource;
 use crate::messages::requests::StrategicRequestScheduling;
@@ -215,10 +216,16 @@ where
         if strategic_objective_value.objective_value
             < self.solution.objective_value().objective_value
         {
-            event!(Level::INFO, strategic_objective_value_better = ?strategic_objective_value);
+            info!(
+                target: "research",
+                strategic_objective_value_better = strategic_objective_value.as_value()
+            );
             Ok(ObjectiveValueType::Better(strategic_objective_value))
         } else {
-            event!(Level::INFO, strategic_objective_value_worse = ?strategic_objective_value);
+            trace!(
+                target: "research",
+                strategic_objective_value_worse = strategic_objective_value.as_value()
+            );
             Ok(ObjectiveValueType::Worse)
         }
     }

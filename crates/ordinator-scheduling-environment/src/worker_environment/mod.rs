@@ -620,6 +620,14 @@ pub struct InputSupervisorBuilder
     supervisor_options: Option<SupervisorOptions>,
 }
 
+impl Default for InputSupervisorBuilder
+{
+    fn default() -> Self
+    {
+        Self::new()
+    }
+}
+
 impl InputSupervisorBuilder
 {
     pub fn new() -> Self

@@ -26,9 +26,6 @@ use tracing::info;
 
 pub const RESEARCH: &str = "research";
 
-// TODO [x] Make the `orchestrator` testable
-// TODO [ ] Create custom `SchedulingEnvironment`
-// The goal is to build a testable system that is small scale.
 #[tokio::main]
 async fn main() -> Result<()>
 {

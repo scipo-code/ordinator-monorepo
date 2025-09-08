@@ -9,6 +9,7 @@ use serde::Serialize;
 use tracing::Level;
 use tracing::event;
 use tracing::info;
+use valuable::Valuable;
 
 pub type ActorLinkToSchedulingEnvironment<'a> = MutexGuard<'a, SchedulingEnvironment>;
 
@@ -33,6 +34,8 @@ pub trait ActorBasedLargeNeighborhoodSearch
     // but we do not want that
     // ISSUE #129
     fn run_lns_iteration(&mut self) -> Result<()>
+        where
+            <<<Self as ActorBasedLargeNeighborhoodSearch>::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective: Valuable
     {
         // The options should be a part of the `Algorithm`... No part of the... It
         // should either be a part of the Algorithm or a Part of the Actor. If
@@ -73,7 +76,7 @@ pub trait ActorBasedLargeNeighborhoodSearch
 
         match objective_value_type {
             ObjectiveValueType::Better(objective_value) => {
-                info!(target: "research", objective_value = ?objective_value);
+                info!(target: "research", objective_value = objective_value.as_value());
                 self.algorithm_util_methods()
                     .update_objective(objective_value);
                 self.make_atomic_pointer_swap();

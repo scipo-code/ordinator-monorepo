@@ -15,6 +15,7 @@ use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::StrategicOptions;
 use serde::Deserialize;
 use serde::Serialize;
+use valuable::Valuable;
 
 use super::strategic_parameters::StrategicParameters;
 use super::strategic_resources::OperationalResource;
@@ -146,7 +147,7 @@ impl Debug for StrategicSolution
     }
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone, Valuable)]
 pub struct StrategicObjectiveValue
 {
     pub objective_value: i64,

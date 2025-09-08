@@ -195,7 +195,7 @@ fn create_periods(current_time: DateTime<Utc>, number_of_periods: u64, days: &[D
     // Get the ISO week number
     let week_number = chrono::Datelike::iso_week(&start_time).week();
     // Determine target week number: If current is even, target is the previous odd
-    let target_week = if week_number % 2 == 0 {
+    let target_week = if week_number.is_multiple_of(2) {
         week_number - 1
     } else {
         week_number

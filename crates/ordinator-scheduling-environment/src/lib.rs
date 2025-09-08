@@ -95,6 +95,7 @@ pub enum TimeType
 //
 // Do not think about DDD at the moment. Simply make the data structure
 // to support two different kinds of
+#[allow(dead_code)]
 pub struct SchedulingEnvironmentBuilder
 {
     work_orders: Option<WorkOrders>,

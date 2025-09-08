@@ -157,7 +157,7 @@ impl SupervisorSolution
     {
         self.operational_state_machine
             .iter()
-            .filter(|e| (e.1.is_assign() || e.1.is_assess()))
+            .filter(|e| e.1.is_assign() || e.1.is_assess())
             .map(|(e, _)| (e.0.clone(), e.1))
             .collect()
     }
@@ -235,9 +235,10 @@ impl SupervisorSolution
         Ok(out)
     }
 
+    #[allow(dead_code)]
     pub(crate) fn get_iter(
-        &self,
-    ) -> std::collections::hash_map::Iter<(ActorCompositeId, WorkOrderActivity), Delegate>
+        &'_ self,
+    ) -> std::collections::hash_map::Iter<'_, (ActorCompositeId, WorkOrderActivity), Delegate>
     {
         self.operational_state_machine.iter()
     }
