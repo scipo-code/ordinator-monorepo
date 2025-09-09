@@ -235,10 +235,9 @@ impl OperationalSolution
         // same formulation. This means that a simply if statement here is a really bad
         // idea. You need to trace it up to the root.
         //
-        for (index, operational_solution) in self
+        for (index, ((woa_0, operational_assignment_0), (woa_1, operational_assignment_1))) in self
             .scheduled_work_order_activities
             .iter()
-            .map(|os| os.1.clone())
             .collect::<Vec<_>>()
             .windows(2)
             .map(|x| (&x[0], &x[1]))
@@ -246,8 +245,11 @@ impl OperationalSolution
         {
             // If this is a start-start relation then it should be reverted. to
             // `operational_solution.0.start_time` otherwise simply stay as-is.
-            //
-            // Go for a walk and then come back.
+
+            // TODO START HERE.
+            self.scheduled_work_order_activities.iter().enumerate().find(|(woa, woa)|  {
+                woa.
+            });
             let latest_work_order_activity_in_solution = self
                 .scheduled_work_order_activities
                 .iter()
@@ -260,13 +262,8 @@ impl OperationalSolution
                     // implementation. finish_time() is not the best approach here.
                     // You need to get the relation in here to do this. I think that this
                     // is in the wrong place of the code.
-                    // You can learn a lot here! Keep it up.
                     // You have to find the index of the `activity_number`. This is currently
                     // unknowable. Where should you pull it in from?
-                    // You need an `activity_index`. This only counts for the last thing. I think
-                    // that we should.
-                    // This is only the
-                    // All error cases should be handled.
                     match activity_relation {
                         ActivityRelation::StartStart => d.1.start_time().cmp(&e.1.start_time()),
                         ActivityRelation::FinishStart => d.1.finish_time().cmp(&e.1.finish_time()),
@@ -282,14 +279,13 @@ impl OperationalSolution
             // TODO ISSUE [ ] 2025-07-15 use `ActivityRelation::PostPone` to move the start
             // date further.
             let start_of_solution_window = match latest_work_order_activity_in_solution {
-                Some(op_ass) => operational_solution
-                    .0
+                Some(op_ass) => /*_0*/
                     .finish_time()
                     .max(op_ass.finish_time()),
-                None => operational_solution.0.finish_time(),
+                None => /*_0*/.finish_time(),
             };
 
-            let end_of_solution_window = operational_solution.1.start_time();
+            let end_of_solution_window = /*_1*/.start_time();
 
             if start_of_solution_window
                 < assignments

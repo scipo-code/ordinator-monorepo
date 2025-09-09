@@ -12,6 +12,7 @@
 
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::bail;
 use chrono::TimeZone;
 use chrono_tz::Europe::Copenhagen;
 use ordinator_api_server::start_application;
@@ -21,7 +22,6 @@ use ordinator_orchestrator::Orchestrator;
 // use std::fs::File;
 // use std::io::Read;
 use ordinator_orchestrator::logging::setup_logging;
-use tokio::signal;
 use tracing::info;
 
 pub const RESEARCH: &str = "research";
@@ -46,7 +46,7 @@ async fn main() -> Result<()>
 
     let asset = Asset::DF;
     let environment = ordinator_orchestrator::Environment::Test(current_time);
-    let (orchestrator, error_handle, system_clock_handle) =
+    let (orchestrator, error_receiver, _system_clock_handle) =
         Orchestrator::<TotalSystemSolution>::builder()
             .logging(setup_logging())
             .system_clock(&environment)
@@ -59,28 +59,18 @@ async fn main() -> Result<()>
 
     orchestrator.asset_factory(&asset)?;
 
-    let server = start_application(orchestrator, &environment);
-
-    let handle = tokio::spawn(async move {
-        signal::ctrl_c().await.expect("");
-
-        info!(target: "stdout", "Server shutting down");
-
-        panic!();
-        // server.await.unwrap().abort();
-    });
-
-    // => {
-    //    info!(target: "stdout", "System shutting down");
-    //    panic!();
     tokio::select! {
-        res = handle => res?,
-        res = server => res?,
-        res = error_handle => res??,
-        res = system_clock_handle => res?,
+        result = start_application(orchestrator.clone(), &environment) => {
+            info!(target: "stdout", server_shutdown_message = ?result, "Main server shutting down");
+            Ok(())
+        }
+        result = error_receiver.recv_async() => {
+            tracing::error!(ordinator_error_message = ?result, "Ordinator
+            Scheduling Systems experienced a catastraphoic error");
+            bail!("Ordinator Scheduling Systems experienced a catastraphoic
+            error:\n{:?}", result );
+        }
     }
-
-    Ok(())
 }
 
 // WARN [ ] 2025-07-02 move this to the api module. This is good inspiration.

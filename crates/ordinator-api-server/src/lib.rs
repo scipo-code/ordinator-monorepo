@@ -24,15 +24,6 @@ pub async fn start_application(
     environment: &Environment,
 ) -> anyhow::Result<()>
 {
-    // let index_service =
-    // get_service(ServeDir::new("./static_files/index")).handle_error(     |err:
-    // std::io::Error| async move {         (
-    //             StatusCode::INTERNAL_SERVER_ERROR,
-    //             format!("Unhandled internal server error: {err}"),
-    //         )
-    //     },
-    // );
-
     let scheduler_files = ServeDir::new("./dist/static_files/scheduler/");
     let supervisor_files = ServeDir::new("./dist/static_files/supervisor//");
 
@@ -72,6 +63,7 @@ pub async fn start_application(
     let addr = SocketAddr::from((address, port));
     info!(target: "stdout", "System initialized (4 of 4): ordinator-api-server");
     info!(target: "stdout", "Access the API documentation at: http://{}:{}/swagger", &addr.ip(), &addr.port());
+
     axum_server::bind(addr)
         .serve(merged_app.into_make_service())
         .await

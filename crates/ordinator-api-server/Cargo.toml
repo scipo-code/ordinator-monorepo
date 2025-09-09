@@ -8,28 +8,28 @@ edition = "2024"
 ordinator-orchestrator = { path = "../ordinator-orchestrator" }
 ordinator-contracts = { path = "../ordinator-contracts" }
 
+# actix-files.workspace = true
+# actix-rt.workspace = true 
+# actix-web.workspace = true 
+anyhow.workspace = true 
 axum = {version = "*", features = ["macros", "tokio"]}
 axum-extra = {version = "*", features = ["query"]}
 axum-server = "*"
+chrono-tz.workspace = true
 chrono.workspace = true
+dotenvy.workspace = true 
+serde.workspace = true
+serde_json.workspace = true
+strum.workspace = true
+thiserror.workspace = true 
+tokio.workspace = true 
 tower = "*"
 tower-http = { version = "*", features = ["fs"]}
-# actix-files = { workspace = true}
-# actix-rt = { workspace = true }
-# actix-web = { workspace = true }
-anyhow = { workspace = true }
-thiserror = { workspace = true }
-dotenvy = { workspace = true }
-tokio = { workspace = true }
-tracing = { workspace = true }
-serde = {workspace = true}
-serde_json = {workspace = true}
-strum = {workspace = true}
+tracing.workspace = true 
+ts-rs = "*"
 utoipa = {version = "*", features = ["yaml", "axum_extras"]}
 utoipa-axum = "*" 
 utoipa-swagger-ui = {version = "*", features = ["axum"]}
-chrono-tz.workspace = true
-ts-rs = "*"
 
 [dev-dependencies]
 ordinator-scheduling-environment.path = "../ordinator-scheduling-environment"

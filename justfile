@@ -1,5 +1,5 @@
 run:
-    cargo run --release --bin ordinator-api-server 2> temp_output_from_program.log
+    cargo run --release -p ordinator-api-server 2> temp_output_from_program.log
 
 run-test:
     cargo test test_complete_system -- --ignored --nocapture 2> temp_output_from_program.log

@@ -1496,6 +1496,7 @@ dependencies = [
  "ordinator-scheduling-environment",
  "tokio",
  "toml",
+ "tracing",
 ]
 
 [[package]]

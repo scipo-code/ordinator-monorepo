@@ -891,7 +891,7 @@ impl OrchestratorBuilder<StepBuild>
             + 'static
             + Debug,
     {
-        let (sender, receiver): (Sender<anyhow::Error>, Receiver<anyhow::Error>) =
+        let (sender, error_receiver): (Sender<anyhow::Error>, Receiver<anyhow::Error>) =
             flume::bounded(0);
 
         // WARN THIS SHOULD BE CHANGED
@@ -933,7 +933,7 @@ impl OrchestratorBuilder<StepBuild>
         info!(target: "stdout", "System initialized (2 of 4): orchestrator");
         Ok((
             Arc::new(orchestrator),
-            receiver,
+            error_receiver,
             self.system_clock_handle.expect("Should be type safe"),
         ))
     }

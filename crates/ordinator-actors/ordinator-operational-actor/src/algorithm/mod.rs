@@ -602,10 +602,10 @@ where
                 .parameters
                 .work_order_parameters
                 .keys()
-                .filter(|d| d.0 == work_order_activity.0)
-                .map(|e| e.1)
+                .filter(|woa| woa.0 == work_order_activity.0)
+                .map(|woa| woa.1)
                 .sorted()
-                .find_position(|f| *f == work_order_activity.1)
+                .find_position(|activity_index| *activity_index == work_order_activity.1)
                 .ok_or(anyhow::anyhow!(
                     "You should always be able to locate a work_order_activity".to_string()
                 ))?;
@@ -797,6 +797,7 @@ where
         let mut rng = rand::rng();
         let operational_solutions_len = self.solution.scheduled_work_order_activities.len();
 
+        // You should remove a whole work order.
         let operational_solutions_filtered: Vec<WorkOrderActivity> =
             self.solution.scheduled_work_order_activities[1..operational_solutions_len - 1]
                 .choose_multiple(
@@ -805,6 +806,11 @@ where
                 )
                 .map(|operational_solution| operational_solution.0)
                 .collect();
+
+        let removed_work_orders = operational_solutions_filtered
+            .iter()
+            .map(|e| e.0)
+            .collect::<HashSet<_>>();
 
         ensure!(
             (self
@@ -826,17 +832,29 @@ where
                 .0
                 == WorkOrderNumber(0))
         );
-        for operational_solution in &operational_solutions_filtered {
-            self.unschedule_single_work_order_activity((
-                operational_solution.0,
-                operational_solution.1,
-            ))
-            .with_context(|| {
-                format!(
-                    "{:?} from {:?}\ncould not be unscheduled",
-                    operational_solution, &operational_solutions_filtered
-                )
-            })?
+
+        let work_order_activities: Vec<_> = self
+            .solution
+            .scheduled_work_order_activities
+            .iter()
+            .map(|(e, _)| e)
+            .cloned()
+            .collect();
+
+        for work_order_number in &removed_work_orders {
+            for activity in work_order_activities
+                .iter()
+                .filter(|e| e.0 == *work_order_number)
+                .map(|e| e.1)
+            {
+                self.unschedule_single_work_order_activity((*work_order_number, activity))
+                    .with_context(|| {
+                        format!(
+                            "{:?} from {:?}\ncould not be unscheduled",
+                            work_order_number, &operational_solutions_filtered
+                        )
+                    })?
+            }
         }
         Ok(())
     }

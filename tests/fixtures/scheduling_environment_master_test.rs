@@ -1,6 +1,4 @@
-use std::panic::Location;
 use std::path::Path;
-use std::path::PathBuf;
 use std::sync::Arc;
 
 use chrono::DateTime;
@@ -30,17 +28,6 @@ use ordinator_scheduling_environment::worker_environment::resources::Resources;
 
 pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironment>>
 {
-    let asset = Asset::Test;
-    let asset_string = asset.to_string().to_lowercase();
-
-    // ISSUE [ ] - this should be removed to and replaced with builders.
-    let path_to_workers = PathBuf::from(format!(
-        "temp_scheduling_environment_database/actor_specifications/actor_specification_{asset_string}.toml",
-    ));
-    let path_to_workers = Path::new(env!("CARGO_MANIFEST_DIR")).join(path_to_workers);
-
-    println!("{}\n{}", path_to_workers.display(), Location::caller());
-
     let time_input = TimeInput {
         number_of_periods: 5,
         number_of_days: 42,
