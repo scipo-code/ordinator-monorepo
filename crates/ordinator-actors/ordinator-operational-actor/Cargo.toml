@@ -9,14 +9,13 @@ ordinator-orchestrator-actor-traits = {path = "../../ordinator-orchestrator-acto
 ordinator-scheduling-environment = {path = "../../ordinator-scheduling-environment"}
 ordinator-configuration = {path = "../../ordinator-configuration"}
 
-anyhow. workspace = true
+anyhow.workspace = true
 arc-swap.workspace = true
 bus.workspace = true
 chrono.workspace = true
 colored.workspace = true
 flume.workspace = true
 itertools.workspace = true
-proptest.workspace = true
 rand.workspace = true
 serde.workspace = true
 tracing.workspace = true
@@ -24,4 +23,5 @@ valuable.workspace = true
 
 [dev-dependencies]
 mockall = {workspace = true}
+proptest.workspace = true
 ordinator-supervisor-actor.path = "../ordinator-supervisor-actor/"
