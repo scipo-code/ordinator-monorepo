@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::ops::ControlFlow;
 
 // You cannot know what the right thing is here as you do not know the state of the
 // program. You have to continuously have to work on
@@ -16,6 +17,7 @@ use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
+use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
@@ -61,9 +63,9 @@ impl From<(u64, u64, u64, u64)> for OperationalObjectiveValue
 #[derive(PartialEq, Eq, Default, Clone)]
 pub struct OperationalSolution
 {
-    pub objective_value: OperationalObjectiveValue,
-    pub scheduled_work_order_activities: Vec<(WorkOrderActivity, OperationalAssignment)>,
-    pub non_productive: Vec<Assignment>,
+    pub(crate) objective_value: OperationalObjectiveValue,
+    pub(crate) scheduled_work_order_activities: Vec<(WorkOrderActivity, OperationalAssignment)>,
+    pub(crate) non_productive: Vec<Assignment>,
 }
 
 // NOTE [ ]
@@ -198,7 +200,7 @@ impl GetMarginalFitness for HashMap<ActorCompositeId, OperationalSolution>
     }
 }
 
-// I think that we should have a Generic solution struct.
+/// These are methods for the public API of the `OperationalSolution`.
 impl OperationalSolution
 {
     pub fn is_operational_solution_already_scheduled(
@@ -210,11 +212,31 @@ impl OperationalSolution
             .iter()
             .any(|(woa, _)| *woa == work_order_activity)
     }
+
+    pub fn operational_assignments_by_day(
+        &self,
+        work_order_activity: &WorkOrderActivity,
+        day: &Day,
+    ) -> Option<&((WorkOrderNumber, u64), OperationalAssignment)>
+    {
+        self.scheduled_work_order_activities
+            // This value should be gotten from the
+            .iter()
+            .filter(|f| f.1.active_datetimes().contains(&day.date))
+            .find(|e| e.0 == *work_order_activity)
+    }
+
+    pub fn all_scheduled_work_order_activities(
+        &self,
+    ) -> Vec<((WorkOrderNumber, u64), OperationalAssignment)>
+    {
+        self.scheduled_work_order_activities.clone()
+    }
 }
 
 impl OperationalSolution
 {
-    pub fn try_insert(
+    pub(super) fn try_insert(
         &mut self,
         work_order_activity: WorkOrderActivity,
         assignments: Vec<Assignment>,
@@ -235,7 +257,10 @@ impl OperationalSolution
         // same formulation. This means that a simply if statement here is a really bad
         // idea. You need to trace it up to the root.
         //
-        for (index, ((woa_0, operational_assignment_0), (woa_1, operational_assignment_1))) in self
+        for (
+            window_index,
+            ((_woa_0, operational_assignment_0), (_woa_1, operational_assignment_1)),
+        ) in self
             .scheduled_work_order_activities
             .iter()
             .collect::<Vec<_>>()
@@ -247,9 +272,15 @@ impl OperationalSolution
             // `operational_solution.0.start_time` otherwise simply stay as-is.
 
             // TODO START HERE.
-            self.scheduled_work_order_activities.iter().enumerate().find(|(woa, woa)|  {
-                woa.
-            });
+            // we want to loop through the whole of the solution... Actually we want to loop
+            // from the reverse side
+            //
+            if let ControlFlow::Break(_) =
+                self.check_precedence_constraint(work_order_activity, window_index)
+            {
+                continue;
+            }
+
             let latest_work_order_activity_in_solution = self
                 .scheduled_work_order_activities
                 .iter()
@@ -279,13 +310,13 @@ impl OperationalSolution
             // TODO ISSUE [ ] 2025-07-15 use `ActivityRelation::PostPone` to move the start
             // date further.
             let start_of_solution_window = match latest_work_order_activity_in_solution {
-                Some(op_ass) => /*_0*/
+                Some(op_ass) => operational_assignment_0
                     .finish_time()
                     .max(op_ass.finish_time()),
-                None => /*_0*/.finish_time(),
+                None => operational_assignment_0.finish_time(),
             };
 
-            let end_of_solution_window = /*_1*/.start_time();
+            let end_of_solution_window = operational_assignment_1.start_time();
 
             if start_of_solution_window
                 < assignments
@@ -297,8 +328,10 @@ impl OperationalSolution
                 let operational_solution = OperationalAssignment::new(assignments);
 
                 if !self.is_operational_solution_already_scheduled(work_order_activity) {
-                    self.scheduled_work_order_activities
-                        .insert(index + 1, (work_order_activity, operational_solution));
+                    self.scheduled_work_order_activities.insert(
+                        window_index + 1,
+                        (work_order_activity, operational_solution),
+                    );
                     let assignments = self
                         .scheduled_work_order_activities
                         .iter()
@@ -312,6 +345,36 @@ impl OperationalSolution
         }
 
         Some(work_order_activity)
+    }
+
+    fn check_precedence_constraint(
+        &self,
+        work_order_activity: (WorkOrderNumber, u64),
+        window_index: usize,
+    ) -> ControlFlow<()>
+    {
+        let mut smallest: (usize, u64) = (0, u64::MIN);
+        let mut largest: (usize, u64) = (0, u64::MAX);
+        for (solution_index, work_order_activity_solution) in
+            self.scheduled_work_order_activities.iter().enumerate()
+        {
+            if work_order_activity_solution.0.0 == work_order_activity.0 {
+                if work_order_activity_solution.0.1 < work_order_activity.1
+                    && smallest.1 < work_order_activity_solution.0.1
+                {
+                    smallest = (solution_index, work_order_activity_solution.0.1);
+                } else if work_order_activity.1 < work_order_activity_solution.0.1
+                    && work_order_activity_solution.0.1 < largest.1
+                {
+                    largest = (solution_index, work_order_activity_solution.0.1)
+                }
+            }
+        }
+
+        if window_index < smallest.0 || largest.0 <= window_index {
+            return ControlFlow::Break(());
+        }
+        ControlFlow::Continue(())
     }
 
     pub fn containing_operational_solution(&self, time: DateTime<Utc>) -> ContainOrNextOrNone
@@ -347,8 +410,8 @@ pub struct OperationalAssignment
     // This is an auxilliary objective value. Where should it lie to solve this issue? You
     // need one per `WorkOrderActivity` so removing it does not really make that much sense
     // I think that you have to store them in the solution.
-    pub marginal_fitness: MarginalFitness,
-    pub assignments: Vec<Assignment>,
+    pub(crate) marginal_fitness: MarginalFitness,
+    pub(crate) assignments: Vec<Assignment>,
 }
 
 impl OperationalAssignment
@@ -492,26 +555,88 @@ impl Assignment
 #[cfg(test)]
 mod tests
 {
+    use std::ops::ControlFlow;
+
     use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
+    use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+
+    use crate::algorithm::operational_solution::OperationalAssignment;
+    use crate::algorithm::operational_solution::OperationalSolution;
 
     #[test]
-    fn test_marginal_fitness_debug()
+    fn test_check_precedence_constraint()
     {
-        let marginal_fitness = MarginalFitness::Scheduled(3600);
+        let scheduled_work_order_activities = vec![
+            (
+                (WorkOrderNumber(2233990001), 10),
+                OperationalAssignment {
+                    marginal_fitness: MarginalFitness::None,
+                    assignments: vec![],
+                },
+            ),
+            (
+                (WorkOrderNumber(2233990002), 20),
+                OperationalAssignment {
+                    marginal_fitness: MarginalFitness::None,
+                    assignments: vec![],
+                },
+            ),
+            (
+                (WorkOrderNumber(2233990001), 30),
+                OperationalAssignment {
+                    marginal_fitness: MarginalFitness::None,
+                    assignments: vec![],
+                },
+            ),
+            (
+                (WorkOrderNumber(2233990003), 40),
+                OperationalAssignment {
+                    marginal_fitness: MarginalFitness::None,
+                    assignments: vec![],
+                },
+            ),
+            (
+                (WorkOrderNumber(2233990001), 50),
+                OperationalAssignment {
+                    marginal_fitness: MarginalFitness::None,
+                    assignments: vec![],
+                },
+            ),
+            (
+                (WorkOrderNumber(2233990004), 60),
+                OperationalAssignment {
+                    marginal_fitness: MarginalFitness::None,
+                    assignments: vec![],
+                },
+            ),
+        ];
+        let operational_solution = OperationalSolution {
+            objective_value: super::OperationalObjectiveValue {
+                hands_on_tool_time: 0,
+                assess: 0,
+                assign: 0,
+                total_work_order_activities: 0,
+            },
+            scheduled_work_order_activities,
+            non_productive: vec![],
+        };
 
-        let formatted_marginal_fitness = format!("{marginal_fitness:?}");
+        let work_order_activity = (WorkOrderNumber(2233990001), 35);
 
-        assert_eq!(
-            formatted_marginal_fitness,
-            "MarginalFitness::Scheduled(3600, 1, 0)"
-        );
-    }
+        let window_indices = [0, 1, 2, 3, 4];
+        let result = [
+            ControlFlow::Break(()),
+            ControlFlow::Break(()),
+            ControlFlow::Continue(()),
+            ControlFlow::Continue(()),
+            ControlFlow::Break(()),
+        ];
 
-    #[test]
-    fn test_try_insert()
-    {
+        for window_index in window_indices.iter().enumerate() {
+            let control_flow = operational_solution
+                .check_precedence_constraint(work_order_activity, *window_index.1);
 
-        // let operational_actor = OperationalActor::from(value)
-        // try_insert( );
+            assert!(control_flow == result[window_index.0])
+        }
     }
 }

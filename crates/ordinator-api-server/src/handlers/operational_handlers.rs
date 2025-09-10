@@ -6,12 +6,10 @@ use axum::Json;
 use axum::debug_handler;
 use axum::extract::Path;
 use axum::extract::State;
-
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::IdDto;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::technician::OperationalAssignmentsDto;
-
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::OperationalRequestMessage;
 use ordinator_orchestrator::OperationalResponseMessage;
@@ -91,10 +89,10 @@ pub async fn activities_for_technician(
             .load()
             .operational
             .iter()
-            .find(|e| e.0.0 == technician_id)
+            .find(|actor_solution| actor_solution.0.0 == technician_id)
             .ok_or(AppError::Anyhow(format!("Technician: {technician_id} is not part of the scheduling system\n\nEither you:\n\twrote the ID wrong\n\tThe person has not been added to the system")))?
             .1
-            .scheduled_work_order_activities
+            .all_scheduled_work_order_activities()
             .iter()
             .map(|e|e.clone().into())
             .collect::<Vec<_>>()
