@@ -374,18 +374,9 @@ impl InputOperational
         let availabilities = BTreeSet::from([availability]);
         let operational_configuration = OperationalConfiguration::new(
             availabilities,
-            TimeInterval {
-                start: NaiveTime::from_hms_opt(11, 0, 0).unwrap(),
-                end: NaiveTime::from_hms_opt(12, 0, 0).unwrap(),
-            },
-            TimeInterval {
-                start: NaiveTime::from_hms_opt(19, 0, 0).unwrap(),
-                end: NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
-            },
-            TimeInterval {
-                start: NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
-                end: NaiveTime::from_hms_opt(8, 0, 0).unwrap(),
-            },
+            TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap(),
+            TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
+            TimeInterval::from_hms(7, 0, 0, 8, 0, 0).unwrap(),
             resources,
         );
 

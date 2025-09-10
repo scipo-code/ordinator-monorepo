@@ -38,6 +38,18 @@ impl Availability
         })
     }
 
+    pub fn from_rfc3339_strings(
+        start_rfc3339: &str,
+        finish_rfc3339: &str,
+        assets: Vec<Asset>,
+    ) -> anyhow::Result<Self>
+    {
+        let start_date = DateTime::parse_from_rfc3339(start_rfc3339)?.to_utc();
+        let finish_date = DateTime::parse_from_rfc3339(finish_rfc3339)?.to_utc();
+        
+        Self::new(start_date, finish_date, assets)
+    }
+
     pub fn duration(&self) -> TimeDelta
     {
         self.finish_datetime - self.start_datetime

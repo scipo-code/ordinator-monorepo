@@ -286,38 +286,22 @@ fn worker_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificatio
                         .operational_configuration(|config| {
                             config
                                 .add_availability(
-                                    Availability::new(
-                                        DateTime::parse_from_rfc3339("2025-01-13T07:00:00Z")
-                                            .unwrap()
-                                            .to_utc(),
-                                        DateTime::parse_from_rfc3339("2025-01-27T15:00:00Z")
-                                            .unwrap()
-                                            .to_utc(),
+                                    Availability::from_rfc3339_strings(
+                                        "2025-01-13T07:00:00Z",
+                                        "2025-01-27T15:00:00Z",
                                         vec![Asset::Test],
                                     )
                                     .unwrap(),
                                 )
                                 .add_resource(Resources::MtnMech)
                                 .break_interval(
-                                    TimeInterval::new(
-                                        NaiveTime::from_hms_opt(11, 0, 0).unwrap(),
-                                        NaiveTime::from_hms_opt(12, 0, 0).unwrap(),
-                                    )
-                                    .unwrap(),
+                                    TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap(),
                                 )
                                 .off_shift_interval(
-                                    TimeInterval::new(
-                                        NaiveTime::from_hms_opt(19, 0, 0).unwrap(),
-                                        NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
-                                    )
-                                    .unwrap(),
+                                    TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
                                 )
                                 .toolbox_interval(
-                                    TimeInterval::new(
-                                        NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
-                                        NaiveTime::from_hms_opt(8, 0, 0).unwrap(),
-                                    )
-                                    .unwrap(),
+                                    TimeInterval::from_hms(7, 0, 0, 8, 0, 0).unwrap(),
                                 )
                         })
                         .operational_options(|options| options.number_of_removed_activities(10))
@@ -328,13 +312,9 @@ fn worker_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificatio
                         .operational_configuration(|config| {
                             config
                                 .add_availability(
-                                    Availability::new(
-                                        DateTime::parse_from_rfc3339("2025-01-13T07:00:00Z")
-                                            .unwrap()
-                                            .to_utc(),
-                                        DateTime::parse_from_rfc3339("2025-01-27T15:00:00Z")
-                                            .unwrap()
-                                            .to_utc(),
+                                    Availability::from_rfc3339_strings(
+                                        "2025-01-13T07:00:00Z",
+                                        "2025-01-27T15:00:00Z",
                                         vec![Asset::Test],
                                     )
                                     .unwrap(),
@@ -343,25 +323,13 @@ fn worker_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificatio
                                 // THIS IS WHAT YOU SHOULD NOT DO! Each you are spilling out 3 types
                                 // that should be encapsulated.
                                 .break_interval(
-                                    TimeInterval::new(
-                                        NaiveTime::from_hms_opt(11, 0, 0).unwrap(),
-                                        NaiveTime::from_hms_opt(12, 0, 0).unwrap(),
-                                    )
-                                    .unwrap(),
+                                    TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap(),
                                 )
                                 .off_shift_interval(
-                                    TimeInterval::new(
-                                        NaiveTime::from_hms_opt(19, 0, 0).unwrap(),
-                                        NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
-                                    )
-                                    .unwrap(),
+                                    TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
                                 )
                                 .toolbox_interval(
-                                    TimeInterval::new(
-                                        NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
-                                        NaiveTime::from_hms_opt(8, 0, 0).unwrap(),
-                                    )
-                                    .unwrap(),
+                                    TimeInterval::from_hms(7, 0, 0, 8, 0, 0).unwrap(),
                                 )
                         })
                         .operational_options(|options| options.number_of_removed_activities(10))
@@ -372,38 +340,22 @@ fn worker_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificatio
                         .operational_configuration(|config| {
                             config
                                 .add_availability(
-                                    Availability::new(
-                                        DateTime::parse_from_rfc3339("2025-01-13T07:00:00Z")
-                                            .unwrap()
-                                            .to_utc(),
-                                        DateTime::parse_from_rfc3339("2025-01-27T15:00:00Z")
-                                            .unwrap()
-                                            .to_utc(),
+                                    Availability::from_rfc3339_strings(
+                                        "2025-01-13T07:00:00Z",
+                                        "2025-01-27T15:00:00Z",
                                         vec![Asset::Test],
                                     )
                                     .unwrap(),
                                 )
                                 .add_resource(Resources::MtnInst)
                                 .break_interval(
-                                    TimeInterval::new(
-                                        NaiveTime::from_hms_opt(11, 0, 0).unwrap(),
-                                        NaiveTime::from_hms_opt(12, 0, 0).unwrap(),
-                                    )
-                                    .unwrap(),
+                                    TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap(),
                                 )
                                 .off_shift_interval(
-                                    TimeInterval::new(
-                                        NaiveTime::from_hms_opt(19, 0, 0).unwrap(),
-                                        NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
-                                    )
-                                    .unwrap(),
+                                    TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
                                 )
                                 .toolbox_interval(
-                                    TimeInterval::new(
-                                        NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
-                                        NaiveTime::from_hms_opt(8, 0, 0).unwrap(),
-                                    )
-                                    .unwrap(),
+                                    TimeInterval::from_hms(7, 0, 0, 8, 0, 0).unwrap(),
                                 )
                         })
                         .operational_options(|options| options.number_of_removed_activities(10))

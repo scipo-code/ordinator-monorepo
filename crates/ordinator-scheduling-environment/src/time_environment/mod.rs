@@ -111,6 +111,16 @@ impl TimeInterval
         Ok(Self { start, end })
     }
 
+    pub fn from_hms(start_hour: u32, start_min: u32, start_sec: u32, end_hour: u32, end_min: u32, end_sec: u32) -> Result<Self>
+    {
+        let start = NaiveTime::from_hms_opt(start_hour, start_min, start_sec)
+            .ok_or_else(|| anyhow::anyhow!("Invalid start time: {}:{}:{}", start_hour, start_min, start_sec))?;
+        let end = NaiveTime::from_hms_opt(end_hour, end_min, end_sec)
+            .ok_or_else(|| anyhow::anyhow!("Invalid end time: {}:{}:{}", end_hour, end_min, end_sec))?;
+        
+        Self::new(start, end)
+    }
+
     pub fn from_date_times(start_date_time: DateTime<Utc>, finish_date_time: DateTime<Utc>)
     -> Self
     {
