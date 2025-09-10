@@ -47,7 +47,6 @@ use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use rand::seq::IndexedRandom;
 use tracing::Level;
-use tracing::debug;
 use tracing::event;
 use tracing::info;
 use tracing::trace;
@@ -539,7 +538,7 @@ where
                 target: "research",
                 operational_objective_rejected = new_objective_value.as_value()
             );
-            Ok(ObjectiveValueType::Worse)
+            Ok(ObjectiveValueType::Worse(new_objective_value))
         }
     }
 
@@ -614,7 +613,6 @@ where
                 value if value.0 >= 1 => activity_relations[value.0 - 1].clone(),
                 _ => ActivityRelation::FinishStart,
             };
-            debug!(target: "debug", work_order_activity = format!("{:#?}", work_order_activity), assignmends = format!("{:#?}", assignments) );
             self.solution
                 .try_insert(*work_order_activity, assignments, activity_relation);
         }

@@ -15,7 +15,6 @@ use anyhow::Context;
 use anyhow::Result;
 use availability::Availability;
 use chrono::DateTime;
-use chrono::NaiveTime;
 use chrono::Utc;
 use crew::OperationalConfiguration;
 use crew::OperationalConfigurationBuilder;

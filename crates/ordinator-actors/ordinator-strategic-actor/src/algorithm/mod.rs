@@ -197,37 +197,37 @@ where
         >,
     >
     {
-        let mut strategic_objective_value =
+        let mut new_objective_value =
             StrategicObjectiveValue::new(&self.parameters.strategic_options);
 
-        self.determine_urgency(&mut strategic_objective_value)
+        self.determine_urgency(&mut new_objective_value)
             .context("could not determine strategic urgency")?;
 
-        self.determine_resource_penalty(&mut strategic_objective_value);
+        self.determine_resource_penalty(&mut new_objective_value);
 
-        self.determine_clustering(&mut strategic_objective_value)
+        self.determine_clustering(&mut new_objective_value)
             .context("Could not determine StrategicObjective value")?;
 
-        strategic_objective_value.aggregate_objectives();
+        new_objective_value.aggregate_objectives();
 
         // This should not happen. We should always work on self and then
         // substitute out the remaining parts.
         // panic!();
-        if strategic_objective_value.objective_value
+        if new_objective_value.objective_value
             < self.solution.objective_value().objective_value
         {
             info!(
                 target: "research",
-                strategic_objective_accepted = strategic_objective_value.as_value(),
+                strategic_objective_accepted = new_objective_value.as_value(),
                 reason = "optimization loop found a better solution",
             );
-            Ok(ObjectiveValueType::Better(strategic_objective_value))
+            Ok(ObjectiveValueType::Better(new_objective_value))
         } else {
             trace!(
                 target: "research",
-                strategic_objective_rejected = strategic_objective_value.as_value()
+                strategic_objective_rejected = new_objective_value.as_value()
             );
-            Ok(ObjectiveValueType::Worse)
+            Ok(ObjectiveValueType::Worse(new_objective_value))
         }
     }
 

@@ -46,23 +46,44 @@ impl Delegate
     {
         match self {
             Delegate::Assess => *self = Delegate::Unassign,
-            Delegate::Assign => todo!(),
-            Delegate::Unassign => todo!(),
-            Delegate::Drop => todo!(),
-            Delegate::Done => todo!(),
-            Delegate::Fixed => todo!(),
+            Delegate::Assign => {
+                panic!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Unassign => {
+                panic!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Drop => {
+                panic!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Done => {
+                panic!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Fixed => {
+                panic!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
         }
     }
 
-    pub fn state_change_to_assign(&mut self)
+    // Break now! You need to grap some fresh air now.
+    pub fn state_change_to_assign(&mut self) -> Result<()>
     {
         match self {
             Delegate::Assess => *self = Delegate::Assign,
-            Delegate::Assign => todo!(),
-            Delegate::Unassign => todo!(),
-            Delegate::Drop => todo!(),
-            Delegate::Done => todo!(),
-            Delegate::Fixed => todo!(),
+            Delegate::Assign => {
+                panic!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Unassign => {
+                panic!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Drop => {
+                panic!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Done => {
+                panic!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Fixed => {
+                panic!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
         }
     }
 }

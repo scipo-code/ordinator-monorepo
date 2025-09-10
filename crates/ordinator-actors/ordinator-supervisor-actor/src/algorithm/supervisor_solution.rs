@@ -200,35 +200,17 @@ impl SupervisorSolution
         Ss: SystemSolutions,
     {
         let mut out = Vec::new();
-
-        for (id_woa, delegate) in &self.operational_state_machine {
-            if id_woa.1 != *work_order_activity {
-                continue;
-            }
-
-            // How should we handle this edge case? I think that the most important
-            // thing here is to make the system. Able to function... The real issue
-            // is that there is state present in `self.operational_state_machine` that
-            // is not available in the operational_actor_solutions.
-            //
-            // The issue here is whether we should accept the delay here and give the
-            // responsibility for eventual consistency to the higher levels.
-            //
-            // Okay, this can introduce really annoying bugs into the system. But that said
-            // this is still a non.
-            let op = match loaded_shared_solution
-                .operational_actor_solutions(&id_woa.0)
-                .ok()
-            {
-                Some(solution) => {
-                    solution.marginal_fitness_for_operational_actor(work_order_activity)
+        for (id_woa, delegate) in self
+            .operational_state_machine
+            .iter()
+            .filter(|e| e.0.1 != *work_order_activity)
+        {
+            if let Ok(solution) = loaded_shared_solution.operational_actor_solutions(&id_woa.0) {
+                let op = solution.marginal_fitness_for_operational_actor(work_order_activity);
+                if let Some(fitness) = op {
+                    out.push((id_woa.0.clone(), delegate.clone(), fitness.clone()));
                 }
-                None => continue,
             };
-
-            if let Some(fitness) = op {
-                out.push((id_woa.0.clone(), delegate.clone(), fitness.clone()));
-            }
         }
 
         Ok(out)

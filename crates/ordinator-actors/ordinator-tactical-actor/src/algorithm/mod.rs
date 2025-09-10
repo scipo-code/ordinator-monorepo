@@ -558,7 +558,7 @@ where
                 target: "research",
                 tactical_objective_rejected = tactical_objective_value.as_value()
             );
-            Ok(ObjectiveValueType::Worse)
+            Ok(ObjectiveValueType::Worse(tactical_objective_value))
         }
     }
 

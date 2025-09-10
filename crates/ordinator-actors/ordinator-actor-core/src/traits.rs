@@ -78,10 +78,10 @@ pub trait ActorBasedLargeNeighborhoodSearch
                     .update_objective(objective_value);
                 self.make_atomic_pointer_swap();
             }
-            ObjectiveValueType::Worse => self
+            ObjectiveValueType::Worse(_) => self
                 .algorithm_util_methods()
                 .swap_to_old_solution(current_solution),
-            ObjectiveValueType::Force => todo!(),
+            ObjectiveValueType::Force(_) => todo!(),
         }
         info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
         Ok(())
@@ -121,7 +121,6 @@ pub trait ActorBasedLargeNeighborhoodSearch
     {
         self.algorithm_util_methods().load_shared_solution();
 
-        // Crucial, the issue is with the `incorporate_system_solution`.
         let state_change = self.incorporate_system_solution()?;
 
         if state_change {
@@ -132,7 +131,18 @@ pub trait ActorBasedLargeNeighborhoodSearch
             // self.schedule().unwrap();
             // We have to determine where the error is located. If this fails we have to go
             // into the crate and start unit testing.
-            self.calculate_objective_value().with_context(|| format!("Could not calculate the objective value after a incorporating state from the system solution\nLocation: {}:{}", file!(), line!()))?;
+            let objective = self.calculate_objective_value().with_context(|| format!("Could not calculate the objective value after a incorporating state from the system solution\nLocation: {}:{}", file!(), line!()))?;
+            match objective {
+                ObjectiveValueType::Better(objective) => {
+                    self.algorithm_util_methods().update_objective(objective);
+                }
+                ObjectiveValueType::Worse(objective) => {
+                    self.algorithm_util_methods().update_objective(objective);
+                }
+                ObjectiveValueType::Force(objective) => {
+                    self.algorithm_util_methods().update_objective(objective);
+                }
+            }
             self.make_atomic_pointer_swap();
         }
 
@@ -162,8 +172,8 @@ pub trait AbLNSUtils
 pub enum ObjectiveValueType<O>
 {
     Better(O),
-    Worse,
-    Force,
+    Worse(O),
+    Force(O),
 }
 
 pub trait ObjectiveValue: Serialize {}
