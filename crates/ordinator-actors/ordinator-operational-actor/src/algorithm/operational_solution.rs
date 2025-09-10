@@ -281,40 +281,43 @@ impl OperationalSolution
                 continue;
             }
 
-            let latest_work_order_activity_in_solution = self
-                .scheduled_work_order_activities
-                .iter()
-                .filter(|f| f.0.0 == work_order_activity.0)
-                .filter(|f| f.0.1 < work_order_activity.1)
-                .max_by(|d, e| {
-                    // If the relation between work_order `operational_solution.0` and key.1 is
-                    // start-start we should take the start time of the two. This means that there
-                    // are multiple things that are wrong here. You should aim to make the correct
-                    // implementation. finish_time() is not the best approach here.
-                    // You need to get the relation in here to do this. I think that this
-                    // is in the wrong place of the code.
-                    // You have to find the index of the `activity_number`. This is currently
-                    // unknowable. Where should you pull it in from?
-                    match activity_relation {
-                        ActivityRelation::StartStart => d.1.start_time().cmp(&e.1.start_time()),
-                        ActivityRelation::FinishStart => d.1.finish_time().cmp(&e.1.finish_time()),
-                        // TODO [ ] 2025-07-15 fix this after the
-                        ActivityRelation::Postpone(_time_delta) => {
-                            d.1.finish_time().cmp(&e.1.finish_time())
-                        }
-                    }
-                })
-                .map(|f| &f.1);
+            // let latest_work_order_activity_in_solution = self
+            //     .scheduled_work_order_activities
+            //     .iter()
+            //     .filter(|f| f.0.0 == work_order_activity.0)
+            //     .filter(|f| f.0.1 < work_order_activity.1)
+            //     .max_by(|d, e| {
+            //         // If the relation between work_order `operational_solution.0` and
+            // key.1 is         // start-start we should take the start time of
+            // the two. This means that there         // are multiple things
+            // that are wrong here. You should aim to make the correct         //
+            // implementation. finish_time() is not the best approach here.
+            //         // You need to get the relation in here to do this. I think that this
+            //         // is in the wrong place of the code.
+            //         // You have to find the index of the `activity_number`. This is
+            // currently         // unknowable. Where should you pull it in
+            // from?         match activity_relation {
+            //             ActivityRelation::StartStart =>
+            // d.1.start_time().cmp(&e.1.start_time()),
+            // ActivityRelation::FinishStart => d.1.finish_time().cmp(&e.1.finish_time()),
+            //             // TODO [ ] 2025-07-15 fix this after the
+            //             ActivityRelation::Postpone(_time_delta) => {
+            //                 d.1.finish_time().cmp(&e.1.finish_time())
+            //             }
+            //         }
+            //     })
+            //     .map(|f| &f.1);
 
             // TODO ISSUE [ ] 2025-07-15 add `StartStart` logic here.
             // TODO ISSUE [ ] 2025-07-15 use `ActivityRelation::PostPone` to move the start
             // date further.
-            let start_of_solution_window = match latest_work_order_activity_in_solution {
-                Some(op_ass) => operational_assignment_0
-                    .finish_time()
-                    .max(op_ass.finish_time()),
-                None => operational_assignment_0.finish_time(),
-            };
+            //
+            // match activity_relation {
+            //     ActivityRelation::StartStart => {}
+            //     ActivityRelation::FinishStart => todo!(),
+            //     ActivityRelation::Postpone(time_delta) => todo!(),
+            // }
+            let start_of_solution_window = operational_assignment_0.finish_time();
 
             let end_of_solution_window = operational_assignment_1.start_time();
 
@@ -353,8 +356,8 @@ impl OperationalSolution
         window_index: usize,
     ) -> ControlFlow<()>
     {
-        let mut smallest: (usize, u64) = (0, u64::MIN);
-        let mut largest: (usize, u64) = (0, u64::MAX);
+        let mut smallest: (usize, u64) = (usize::MIN, u64::MIN);
+        let mut largest: (usize, u64) = (usize::MAX, u64::MAX);
         for (solution_index, work_order_activity_solution) in
             self.scheduled_work_order_activities.iter().enumerate()
         {
@@ -637,6 +640,48 @@ mod tests
                 .check_precedence_constraint(work_order_activity, *window_index.1);
 
             assert!(control_flow == result[window_index.0])
+        }
+    }
+    #[test]
+    fn test_check_precedence_constraint_1()
+    {
+        let scheduled_work_order_activities = vec![
+            (
+                (WorkOrderNumber(0), 0),
+                OperationalAssignment {
+                    marginal_fitness: MarginalFitness::None,
+                    assignments: vec![],
+                },
+            ),
+            (
+                (WorkOrderNumber(0), 0),
+                OperationalAssignment {
+                    marginal_fitness: MarginalFitness::None,
+                    assignments: vec![],
+                },
+            ),
+        ];
+        let operational_solution = OperationalSolution {
+            objective_value: super::OperationalObjectiveValue {
+                hands_on_tool_time: 0,
+                assess: 0,
+                assign: 0,
+                total_work_order_activities: 0,
+            },
+            scheduled_work_order_activities,
+            non_productive: vec![],
+        };
+
+        let work_order_activity = (WorkOrderNumber(2233990001), 35);
+
+        let window_indices = [0];
+        let result = [ControlFlow::Continue(())];
+
+        for window_index in window_indices.iter().enumerate() {
+            let control_flow = operational_solution
+                .check_precedence_constraint(work_order_activity, *window_index.1);
+
+            assert_eq!(control_flow, result[window_index.0])
         }
     }
 }
