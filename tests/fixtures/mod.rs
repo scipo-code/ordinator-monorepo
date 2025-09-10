@@ -1,2 +1,4 @@
 // Should should maybe move this test somewhere else.
-pub(crate) mod scheduling_environment_master_test;
+pub mod scheduling_environment_master_test;
+pub mod work_orders;
+pub mod workers;
