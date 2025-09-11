@@ -216,17 +216,8 @@ where
         if new_objective_value.objective_value
             < self.solution.objective_value().objective_value
         {
-            info!(
-                target: "research",
-                strategic_objective_accepted = new_objective_value.as_value(),
-                reason = "optimization loop found a better solution",
-            );
             Ok(ObjectiveValueType::Better(new_objective_value))
         } else {
-            trace!(
-                target: "research",
-                strategic_objective_rejected = new_objective_value.as_value()
-            );
             Ok(ObjectiveValueType::Worse(new_objective_value))
         }
     }

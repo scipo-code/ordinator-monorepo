@@ -70,7 +70,7 @@ pub trait ActorBasedLargeNeighborhoodSearch
 
         match objective_value_type {
             ObjectiveValueType::Better(objective_value) => {
-                info!(target: "research", objective_value = objective_value.as_value());
+                info!(target: "research", objective_value = objective_value.as_value(), reason = "optimization loop found a better solution");
                 self.algorithm_util_methods()
                     .update_objective(objective_value);
                 self.make_atomic_pointer_swap();
@@ -127,15 +127,21 @@ pub trait ActorBasedLargeNeighborhoodSearch
             // self.schedule().unwrap();
             // We have to determine where the error is located. If this fails we have to go
             // into the crate and start unit testing.
+            // It does not make sense that the `calculate_objective_value` itself does this.
+            // The `calculate_objective` has no state to allow it to make that.
+            // decision.
             let objective = self.calculate_objective_value().with_context(|| format!("Could not calculate the objective value after a incorporating state from the system solution\nLocation: {}:{}", file!(), line!()))?;
             match objective {
                 ObjectiveValueType::Better(objective) => {
+                    info!(target: "research", objective_value = objective.as_value(), reason = "state incorporation from system solution");
                     self.algorithm_util_methods().update_objective(objective);
                 }
                 ObjectiveValueType::Worse(objective) => {
+                    info!(target: "research", objective_value = objective.as_value(), reason = "state incorporation from system solution");
                     self.algorithm_util_methods().update_objective(objective);
                 }
                 ObjectiveValueType::Force(objective) => {
+                    info!(target: "research", objective_value = objective.as_value(), reason = "state incorporation from system solution");
                     self.algorithm_util_methods().update_objective(objective);
                 }
             }

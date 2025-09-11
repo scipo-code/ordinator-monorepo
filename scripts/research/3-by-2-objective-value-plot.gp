@@ -4,8 +4,7 @@ set output 'plot.png'
 set multiplot layout 3,2
 set fit errorvariables
 
-set datafile separator '\t' missing "NaN"
-
+set datafile separator '\t'
 set xdata time
 set timefmt '%Y-%m-%dT%H:%M:%SZ'
 set format x '%H:%M:%S'
@@ -13,7 +12,7 @@ set xlabel 'Time'
 set ylabel 'Objective Value'
 
 set title 'Strategic Objective Values Over Time'
-plot strategic using 1:2 with linespoints title 'Urgency'  
+plot tactical using 1:2 with linespoints title 'Urgency'  
 
 set title 'Tactical Objective Values Over Time'
 plot tactical using 1:2 with linespoints title 'Urgency'  

@@ -21,6 +21,7 @@ use tracing_subscriber::fmt::Layer;
 use tracing_subscriber::fmt::format::Format;
 use tracing_subscriber::fmt::format::Json;
 use tracing_subscriber::fmt::format::JsonFields;
+use tracing_subscriber::fmt::time::FormatTime;
 use tracing_subscriber::fmt::{self};
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::reload::Handle;
@@ -129,7 +130,6 @@ pub fn setup_logging() -> LogHandles
     let developer_targets = Targets::new().with_target("developer", Level::TRACE);
     let business_event_targets = Targets::new().with_target("business_events", Level::INFO);
     let stdout_targets = Targets::new().with_target("stdout", Level::TRACE);
-
     // Make the logging layers
     let research_layer = fmt::layer()
         .with_writer(research_writer)

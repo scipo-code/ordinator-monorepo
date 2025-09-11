@@ -547,17 +547,8 @@ where
 
         if tactical_objective_value.objective_value < self.solution.objective_value.objective_value
         {
-            info!(
-                target: "research",
-                tactical_objective_accepted = tactical_objective_value.as_value(),
-                reason = "optimization loop found a better solution",
-            );
             Ok(ObjectiveValueType::Better(tactical_objective_value))
         } else {
-            trace!(
-                target: "research",
-                tactical_objective_rejected = tactical_objective_value.as_value()
-            );
             Ok(ObjectiveValueType::Worse(tactical_objective_value))
         }
     }

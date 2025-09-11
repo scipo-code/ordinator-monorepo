@@ -49,8 +49,6 @@ use rand::seq::IndexedRandom;
 use tracing::Level;
 use tracing::event;
 use tracing::info;
-use tracing::trace;
-use valuable::Valuable;
 
 #[derive(Debug)]
 pub struct OperationalAlgorithm<Ss>(Algorithm<OperationalSolution, OperationalParameters, (), Ss>)
@@ -527,17 +525,8 @@ where
         // way.
         self.solution.objective_value = new_objective_value;
         if self.solution.objective_value > old_objective_value {
-            info!(
-                target: "research",
-                operational_objective_accepted = new_objective_value.as_value(),
-                reason = "optimization loop found a better solution"
-            );
             Ok(ObjectiveValueType::Better(new_objective_value))
         } else {
-            trace!(
-                target: "research",
-                operational_objective_rejected = new_objective_value.as_value()
-            );
             Ok(ObjectiveValueType::Worse(new_objective_value))
         }
     }

@@ -82,7 +82,7 @@ toml = "*"
 tracing = {version = "*", features = ["valuable"]}
 tracing-appender = "*"
 tracing-flame = "*"
-tracing-subscriber ={version = "*", features = ["std", "fmt", "env-filter", "json", "valuable"]} 
+tracing-subscriber ={version = "*", features = ["std", "fmt", "env-filter", "json", "valuable", "time"]} 
 valuable = {version = "*", features = ["derive"]}
 
 # tikv-jemallocator = "0.6"

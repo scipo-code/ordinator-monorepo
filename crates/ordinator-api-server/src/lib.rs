@@ -64,6 +64,8 @@ pub async fn start_application(
     info!(target: "stdout", "System initialized (4 of 4): ordinator-api-server");
     info!(target: "stdout", "Access the API documentation at: http://{}:{}/swagger", &addr.ip(), &addr.port());
 
+    info!(target: "research", "READY");
+
     axum_server::bind(addr)
         .serve(merged_app.into_make_service())
         .await

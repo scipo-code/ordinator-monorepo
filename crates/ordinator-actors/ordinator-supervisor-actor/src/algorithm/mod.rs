@@ -174,50 +174,8 @@ where
             // NOTE [ ] 2025-07-03 We should work on getting this to work correctly
             // with
             //
-            let mut every_operational_assigned_or_assess_work_order_activity: HashSet<(
-                WorkOrderNumber,
-                ActivityNumber,
-            )> = HashSet::new();
-            for operational_id in self.loaded_system_solution.all_operational() {
-                let total_number_of_assess_or_assign = self
-                    .loaded_system_solution
-                    .operational_actor_solutions(&operational_id)
-                    .with_context(|| {
-                        format!("The operational_actor: {operational_id} does not exist")
-                    })?;
-
-                let operational_scheduled_work_order_activities =
-                    total_number_of_assess_or_assign.scheduled_activities_for_operational_actor();
-                every_operational_assigned_or_assess_work_order_activity =
-                    every_operational_assigned_or_assess_work_order_activity
-                        .union(&operational_scheduled_work_order_activities)
-                        .cloned()
-                        .collect::<HashSet<_>>();
-            }
-            let all_work_order_activities = self
-                .solution
-                .operational_state_machine
-                .keys()
-                .map(|e| e.1)
-                .collect::<HashSet<_>>();
-
-            let share_of_schedule_work_order_activities =
-                every_operational_assigned_or_assess_work_order_activity.len() as f64
-                    / all_work_order_activities.len() as f64;
-            event!(
-                target: "research",
-                Level::INFO,
-                supervisor_objective_accepted = new_objective_value,
-                share_of_schedule_work_order_activities = share_of_schedule_work_order_activities,
-                reason = "optimization loop found a better solution",
-            );
             Ok(ObjectiveValueType::Better(new_objective_value))
         } else {
-            event!(
-                target: "research",
-                Level::TRACE,
-                supervisor_objective_rejected = new_objective_value
-            );
             Ok(ObjectiveValueType::Worse(new_objective_value))
         }
     }

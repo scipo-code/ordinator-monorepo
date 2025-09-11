@@ -240,7 +240,7 @@ impl OperationalSolution
         &mut self,
         work_order_activity: WorkOrderActivity,
         assignments: Vec<Assignment>,
-        activity_relation: ActivityRelation,
+        _activity_relation: ActivityRelation,
     ) -> Option<WorkOrderActivity>
     {
         // ESSAY [ ]
