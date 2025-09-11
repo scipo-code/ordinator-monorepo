@@ -23,8 +23,6 @@ use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
-use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
-use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
@@ -286,7 +284,7 @@ where
                 .expect("The SupervisorParameter should always be available")
                 .number_of_people;
 
-            let mut operational_status_by_work_order_activity =
+            let operational_status_by_work_order_activity =
                 self.solution.operational_status_by_work_order_activity(
                     work_order_activity,
                     &self.loaded_system_solution,
@@ -407,30 +405,6 @@ where
 
     fn unschedule(&mut self) -> Result<()>
     {
-        let DEBUG_current_activities = self
-            .solution
-            .operational_state_machine
-            .keys()
-            .map(|(_, woa)| *woa)
-            .collect::<HashSet<WorkOrderActivity>>();
-
-        for work_order_activity in DEBUG_current_activities {
-            let number_of_people = self
-                .parameters
-                .supervisor_work_orders
-                .get(&work_order_activity.0)
-                .unwrap()
-                .get(&work_order_activity.1)
-                .unwrap()
-                .number_of_people;
-            let value = self
-                .solution
-                .operational_state_machine
-                .iter()
-                .filter(|e| e.0.1 == work_order_activity && e.1.is_assign())
-                .count();
-            ensure!(value as u64 <= number_of_people, Location::caller());
-        }
         let mut rng = rng();
         let work_order_numbers = self.solution.get_assigned_and_unassigned_work_orders();
 
@@ -449,30 +423,7 @@ where
                 .filter(|(key, _)| key.1.0 == *work_order_number)
                 .for_each(|(_, delegate)| *delegate = Delegate::Assess);
         }
-        let DEBUG_current_activities = self
-            .solution
-            .operational_state_machine
-            .keys()
-            .map(|(_, woa)| *woa)
-            .collect::<HashSet<WorkOrderActivity>>();
 
-        for work_order_activity in DEBUG_current_activities {
-            let number_of_people = self
-                .parameters
-                .supervisor_work_orders
-                .get(&work_order_activity.0)
-                .unwrap()
-                .get(&work_order_activity.1)
-                .unwrap()
-                .number_of_people;
-            let value = self
-                .solution
-                .operational_state_machine
-                .iter()
-                .filter(|e| e.0.1 == work_order_activity && e.1.is_assign())
-                .count();
-            ensure!(value as u64 <= number_of_people, Location::caller());
-        }
         Ok(())
     }
 
@@ -494,30 +445,6 @@ where
             .strategic()?
             .supervisor_tasks(&self.parameters.supervisor_periods);
 
-        let DEBUG_current_activities = self
-            .solution
-            .operational_state_machine
-            .keys()
-            .map(|(_, woa)| *woa)
-            .collect::<HashSet<WorkOrderActivity>>();
-
-        for work_order_activity in DEBUG_current_activities {
-            let number_of_people = self
-                .parameters
-                .supervisor_work_orders
-                .get(&work_order_activity.0)
-                .unwrap()
-                .get(&work_order_activity.1)
-                .unwrap()
-                .number_of_people;
-            let value = self
-                .solution
-                .operational_state_machine
-                .iter()
-                .filter(|e| e.0.1 == work_order_activity && e.1.is_assign())
-                .count();
-            ensure!(value as u64 <= number_of_people, Location::caller());
-        }
         // Select only those that are not part of the `SupervisorAgent` already
         let incoming_activities = strategic_activities_in_supervisor_period
             .iter()
@@ -621,30 +548,6 @@ where
                 .difference(&strategic_activities),
         );
 
-        let DEBUG_current_activities = self
-            .solution
-            .operational_state_machine
-            .keys()
-            .map(|(_, woa)| *woa)
-            .collect::<HashSet<WorkOrderActivity>>();
-
-        for work_order_activity in DEBUG_current_activities {
-            let number_of_people = self
-                .parameters
-                .supervisor_work_orders
-                .get(&work_order_activity.0)
-                .unwrap()
-                .get(&work_order_activity.1)
-                .unwrap()
-                .number_of_people;
-            let value = self
-                .solution
-                .operational_state_machine
-                .iter()
-                .filter(|e| e.0.1 == work_order_activity && e.1.is_assign())
-                .count();
-            ensure!(value as u64 <= number_of_people, Location::caller());
-        }
         // After all the state has been in corporated, an [`ArcSwap`] must be
         // performed.
         // NOTE 2025-06-28
