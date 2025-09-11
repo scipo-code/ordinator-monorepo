@@ -121,19 +121,17 @@ where
                 .send(anyhow!(actor_error))
                 .expect("If this happens no amount of error handling will save the program")
         }
-        info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
 
         schedule_iteration.increment();
 
         // There is something fundamental that you are not getting here.
         loop {
-            info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
             while let Ok(state_link) = self.state_link_receiver.try_recv() {
                 match self.handle_state_link(state_link) {
                     // TODO [ ] 2025-07-15 This message could be used to communicate with
                     // the Orchestrator again.
                     Ok(_e) => {
-                        event!(target: "business_event", Level::INFO, "{}", format!("Actor {} handled a state_link_message\nActorResponse {_e:?}",self.actor_id));
+                        event!(target: "business_event", Level::INFO, "{:?}", format!("Actor {} handled a state_link_message\nActorResponse {_e:?}",self.actor_id));
                     }
                     Err(e) => self.error_channel.send(e).expect(
                         "If this happens no amount of error handling will save the program",
@@ -141,7 +139,6 @@ where
                 }
             }
 
-            info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
             while let Ok(message) = self.receiver_from_orchestrator.try_recv() {
                 match self.handle_request_message(message) {
                     Ok(_) => (),
@@ -150,29 +147,19 @@ where
                     ),
                 }
             }
-            info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
 
             let throttling = &self.configurations.load().throttling;
 
             let sleep_duration = self.algorithm.throttling(throttling);
 
-            info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
             std::thread::sleep(std::time::Duration::from_millis(sleep_duration));
-            info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
-            if let Err(actor_error) = self
-                .algorithm
-                // Ahh the issue is that you cannot put this kind of thing in here. The issue comes
-                // from the fact that the. The Actor needs to run this.
-                // Should the Option be removed? Yes
-                .run_lns_iteration()
-                .with_context(|| {
-                    format!(
-                        "{schedule_iteration:#?}\nActor: {}\nLocation: {}",
-                        self.actor_id,
-                        Location::caller(),
-                    )
-                })
-            {
+            if let Err(actor_error) = self.algorithm.run_lns_iteration().with_context(|| {
+                format!(
+                    "{schedule_iteration:#?}\nActor: {:?}\nLocation: {}",
+                    self.actor_id,
+                    Location::caller(),
+                )
+            }) {
                 self.error_channel
                     .send(actor_error)
                     .expect("If this happens no amount of error handling will save the program")

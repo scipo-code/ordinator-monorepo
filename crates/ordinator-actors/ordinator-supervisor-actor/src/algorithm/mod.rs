@@ -37,8 +37,6 @@ use supervisor_solution::SupervisorSolution;
 use tracing::Level;
 #[allow(unused_imports)]
 use tracing::event;
-use tracing::info;
-use tracing::trace;
 
 pub struct SupervisorAlgorithm<Ss>(Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>)
 where
@@ -208,16 +206,18 @@ where
             let share_of_schedule_work_order_activities =
                 every_operational_assigned_or_assess_work_order_activity.len() as f64
                     / all_work_order_activities.len() as f64;
-            info!(
+            event!(
                 target: "research",
+                Level::INFO,
                 supervisor_objective_accepted = new_objective_value,
                 share_of_schedule_work_order_activities = share_of_schedule_work_order_activities,
                 reason = "optimization loop found a better solution",
             );
             Ok(ObjectiveValueType::Better(new_objective_value))
         } else {
-            trace!(
+            event!(
                 target: "research",
+                Level::TRACE,
                 supervisor_objective_rejected = new_objective_value
             );
             Ok(ObjectiveValueType::Worse(new_objective_value))
@@ -292,23 +292,22 @@ where
                     &self.loaded_system_solution,
                 )?;
 
-            operational_status_by_work_order_activity.retain(|(_, del, mar_fit)| {
-                matches!(del, Delegate::Assess) && matches!(mar_fit, MarginalFitness::Scheduled(_))
-            });
+            // Ahh you filter them out here! So that there will be none left
+            ensure!(
+                operational_status_by_work_order_activity
+                    .iter()
+                    .all(|e| matches!(e.1, Delegate::Assess))
+            );
 
-            operational_status_by_work_order_activity.sort_by_key(|(_agent_id, _, mar_fit)| {
-                match mar_fit {
-                    MarginalFitness::Scheduled(auxillary_operational_objective) => {
-                        *auxillary_operational_objective
-                    }
-                    MarginalFitness::None => panic!(),
-                }
-            });
-
-            // This yields 2
-            let number_of_assigned = operational_status_by_work_order_activity
+            // This should be based on the current solution instead of the derived data!
+            // Crucial insight!
+            let number_of_assigned = self
+                .solution
+                .operational_state_machine
                 .iter()
-                .filter(|(_, delegate, _)| *delegate == Delegate::Assign)
+                .filter(|(b, delegate)| {
+                    work_order_activity == &b.1 && delegate == &&Delegate::Assign
+                })
                 .count() as u64;
 
             let mut remaining_to_assign = number_of_people
@@ -321,9 +320,11 @@ where
                 Location::caller()
             );
 
-            for (actor_id, mut delegate_status, _marginal_fitness) in
+            for (actor_id, mut temporary_technician_delegate, _marginal_fitness) in
                 operational_status_by_work_order_activity.clone()
             {
+                ensure!(matches!(temporary_technician_delegate, Delegate::Assess));
+
                 let value = self
                     .solution
                     .operational_state_machine
@@ -335,20 +336,23 @@ where
                     "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people}\n{}\nto be assigned to `work_order_activity`: {work_order_activity:?}",
                     Location::caller()
                 );
-                let solution =
+                let technician_delegate =
                     self.solution
                         .operational_state_machine
                         .get_mut(&(actor_id.clone(), *work_order_activity)).expect("This value should always be present. Check the generation of keys and values if this fails");
 
-                info!(target: "developer", delegate_status = ?delegate_status, solution_delegate = ?solution, work_order_activity = ?work_order_activity);
+                event!(target: "debug",Level::DEBUG, delegate_status = ?temporary_technician_delegate, solution_delegate = ?technician_delegate, work_order_activity = ?work_order_activity);
                 if remaining_to_assign >= 1 {
                     remaining_to_assign -= 1;
-                    info!(target: "debug", work_order_activity = ?work_order_activity, technician = ?actor_id, "assigning `work_order_activity` to technician");
-                    info!(target: "developer", delegate_status = ?delegate_status, solution_delegate = ?solution, work_order_activity = ?work_order_activity);
+                    event!(target: "debug", Level::DEBUG, work_order_activity = ?work_order_activity, technician = ?actor_id, "assigning `work_order_activity` to technician");
+                    event!(target: "developer", Level::DEBUG, delegate_status = ?temporary_technician_delegate, solution_delegate = ?technician_delegate, work_order_activity = ?work_order_activity);
 
                     // Solution comes from the `Supervisor`.
 
-                    solution.state_change_to_assign();
+                    ensure!(matches!(temporary_technician_delegate, Delegate::Assess));
+                    technician_delegate
+                        .state_change_to_assign()
+                        .with_context(|| format!("{}", Location::caller()))?;
                     let value = self
                         .solution
                         .operational_state_machine
@@ -364,10 +368,14 @@ where
                     // if delegate_status == Delegate::Assign {
                     //     continue;
                     // }
-                    info!(target: "debug", work_order_activity = ?work_order_activity, technician = ?actor_id, "unassigning `work_order_activity` to technician");
-                    info!(target: "developer", delegate_status = ?delegate_status, solution_delegate = ?solution, work_order_activity = ?work_order_activity);
-                    solution.state_change_to_unassign();
-                    delegate_status.state_change_to_unassign();
+                    event!(target: "debug", Level::DEBUG, work_order_activity = ?work_order_activity, technician = ?actor_id, "unassigning `work_order_activity` to technician");
+                    event!(target: "developer", Level::DEBUG, delegate_status = ?temporary_technician_delegate, solution_delegate = ?technician_delegate, work_order_activity = ?work_order_activity);
+                    technician_delegate
+                        .state_change_to_unassign()
+                        .with_context(|| format!("{}", Location::caller()))?;
+                    temporary_technician_delegate
+                        .state_change_to_unassign()
+                        .with_context(|| format!("{}", Location::caller()))?;
                 }
                 let value = self
                     .solution

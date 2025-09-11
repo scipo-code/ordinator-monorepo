@@ -36,7 +36,6 @@ pub trait ActorBasedLargeNeighborhoodSearch
         where
             <<<Self as ActorBasedLargeNeighborhoodSearch>::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective: Valuable
     {
-        info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
         // The options should be a part of the `Algorithm`... No part of the... It
         // should either be a part of the Algorithm or a Part of the Actor. If
         // it is a part of the actor it should be dependency injected. I think that this
@@ -61,7 +60,6 @@ pub trait ActorBasedLargeNeighborhoodSearch
         self.schedule()
             .with_context(|| format!("Could not schedule\n{current_solution:#?}"))?;
 
-        info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
         let objective_value_type = self.calculate_objective_value().with_context(|| {
             format!(
                 "Could not calculate the objective value\nLocation: {}:{}",
@@ -70,7 +68,6 @@ pub trait ActorBasedLargeNeighborhoodSearch
             )
         })?;
 
-        info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
         match objective_value_type {
             ObjectiveValueType::Better(objective_value) => {
                 info!(target: "research", objective_value = objective_value.as_value());
@@ -83,7 +80,6 @@ pub trait ActorBasedLargeNeighborhoodSearch
                 .swap_to_old_solution(current_solution),
             ObjectiveValueType::Force(_) => todo!(),
         }
-        info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
         Ok(())
     }
 

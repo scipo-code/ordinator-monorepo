@@ -21,11 +21,39 @@ use super::supervisor_parameters::SupervisorParameters;
 
 pub type SupervisorObjectiveValue = u64;
 
-#[derive(Debug, PartialEq, Eq, Default, Clone)]
+#[derive(PartialEq, Eq, Default, Clone)]
 pub struct SupervisorSolution
 {
     pub(crate) objective_value: SupervisorObjectiveValue,
     pub(crate) operational_state_machine: HashMap<(ActorCompositeId, WorkOrderActivity), Delegate>,
+}
+
+impl std::fmt::Debug for SupervisorSolution
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        f.debug_struct("SupervisorSolution")
+            .field("objective_value", &self.objective_value)
+            .field(
+                "operational_state_machine_technicians",
+                &self
+                    .operational_state_machine
+                    .iter()
+                    .map(|e| e.0.0.clone())
+                    .collect::<HashSet<_>>()
+                    .len(),
+            )
+            .field(
+                "operational_state_machine_work_order_activities",
+                &self
+                    .operational_state_machine
+                    .iter()
+                    .map(|e| e.0.1)
+                    .collect::<HashSet<_>>()
+                    .len(),
+            )
+            .finish()
+    }
 }
 
 impl SupervisorSolution
@@ -186,14 +214,9 @@ impl SupervisorSolution
             .collect()
     }
 
-    // You have to be afraid of these kind of things here. I believe that the
-    // best approach here is to make something that will allow us to work on the
-    // We want to make this so that the code works on. The code should send the
-    // error to the orchestrator
     pub fn operational_status_by_work_order_activity<Ss>(
         &self,
         work_order_activity: &WorkOrderActivity,
-        // It can only ever reference the `loaded_shared_solution`
         loaded_shared_solution: &Guard<Arc<Ss>>,
     ) -> Result<Vec<(ActorCompositeId, Delegate, MarginalFitness)>>
     where
@@ -203,16 +226,34 @@ impl SupervisorSolution
         for (id_woa, delegate) in self
             .operational_state_machine
             .iter()
-            .filter(|e| e.0.1 != *work_order_activity)
+            // We only take the work_orders_that are actually there.
+            .filter(|id_and_woa| id_and_woa.0.1 == *work_order_activity)
+            .filter(|id_and_woa| id_and_woa.1 == &Delegate::Assess)
         {
-            if let Ok(solution) = loaded_shared_solution.operational_actor_solutions(&id_woa.0) {
-                let op = solution.marginal_fitness_for_operational_actor(work_order_activity);
-                if let Some(fitness) = op {
+            // We only consider the delagates if the operational actor is actually running.
+            if let Ok(operational_solution) =
+                loaded_shared_solution.operational_actor_solutions(&id_woa.0)
+            {
+                // OperationalActor might not have had enough time to incorporate the
+                // state, in that case `None` is returned
+                let op = operational_solution
+                    .marginal_fitness_for_operational_actor(work_order_activity);
+
+                if let Some(fitness) = op
+                    && matches!(fitness, MarginalFitness::Scheduled(_))
+                {
                     out.push((id_woa.0.clone(), delegate.clone(), fitness.clone()));
                 }
             };
         }
 
+        // There can be no duplicates
+        out.sort_by_key(|(_agent_id, _, mar_fit)| match mar_fit {
+            MarginalFitness::Scheduled(auxillary_operational_objective) => {
+                *auxillary_operational_objective
+            }
+            MarginalFitness::None => unreachable!(),
+        });
         Ok(out)
     }
 

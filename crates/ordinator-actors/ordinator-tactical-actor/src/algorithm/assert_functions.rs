@@ -14,7 +14,6 @@ use priority_queue::PriorityQueue;
 use strum::IntoEnumIterator;
 use tracing::Level;
 use tracing::event;
-use tracing::info;
 
 use super::Algorithm;
 use super::tactical_parameters::TacticalParameters;
