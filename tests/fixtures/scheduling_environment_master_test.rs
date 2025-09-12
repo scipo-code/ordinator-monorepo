@@ -9,16 +9,21 @@ use ordinator_scheduling_environment::materials::MaterialRepo;
 use ordinator_scheduling_environment::materials::MaterialToPeriod;
 use ordinator_scheduling_environment::time_environment::create_time_environment;
 use ordinator_scheduling_environment::work_order::WorkOrderPolicies;
+use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
+use ordinator_scheduling_environment::worker_environment::ActorSpecificationBuilder;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
 
 use crate::fixtures::work_orders::phd_work_orders::phd_work_order_builder;
 use crate::fixtures::workers::phd_workers::phd_workers_builder;
 
-pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironment>>
+pub fn load_scheduling_environment(
+    work_order_builder: fn(WorkOrdersBuilder) -> WorkOrdersBuilder,
+    worker_builder: fn(ActorSpecificationBuilder) -> ActorSpecificationBuilder,
+) -> Arc<std::sync::Mutex<SchedulingEnvironment>>
 {
     let time_input = TimeInput {
-        number_of_periods: 5,
-        number_of_days: 42,
+        number_of_periods: 52,
+        number_of_days: 120,
     };
 
     let time_environment = create_time_environment(
@@ -48,10 +53,10 @@ pub fn load_scheduling_environment() -> Arc<std::sync::Mutex<SchedulingEnvironme
     let material_repo = MaterialRepo::new(material_to_period);
 
     SchedulingEnvironment::builder()
-        .add_actor_specification(Asset::Test, phd_workers_builder)
+        .add_actor_specification(Asset::Test, worker_builder)
         .work_order_policies(work_order_policies)
         .material_repo(material_repo)
-        .work_orders_builder(phd_work_order_builder)
+        .work_orders_builder(work_order_builder)
         .time_environment(time_environment)
         .build()
         .expect("Could not build SchedulingEnvironment")
