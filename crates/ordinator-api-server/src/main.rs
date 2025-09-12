@@ -48,7 +48,7 @@ async fn main() -> Result<()>
     let environment = ordinator_orchestrator::Environment::Test(current_time);
     let (orchestrator, error_receiver, _system_clock_handle) =
         Orchestrator::<TotalSystemSolution>::builder()
-            .logging(setup_logging())
+            .logging(setup_logging()?)
             .system_clock(&environment)
             .system_configurations()
             .scheduling_environment_from_database(&asset)?

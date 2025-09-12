@@ -497,7 +497,106 @@ pub struct WorkOrderPolicies
     pub operating_time: u64,
 }
 
-#[derive(Eq, PartialEq, Serialize, Deserialize, Debug, Clone)]
+pub struct WorkOrderPoliciesBuilder
+{
+    order_type_weights: Option<HashMap<String, u64>>,
+    status_weights: Option<HashMap<String, u64>>,
+    vis_priority_map: Option<HashMap<char, u64>>,
+    wdf_priority_map: Option<HashMap<String, u64>>,
+    wgn_priority_map: Option<HashMap<String, u64>>,
+    wpm_priority_map: Option<HashMap<char, u64>>,
+    clustering_weights: Option<ClusteringWeights>,
+    operating_time: Option<u64>,
+}
+
+impl WorkOrderPoliciesBuilder
+{
+    pub fn new() -> Self
+    {
+        Self {
+            order_type_weights: None,
+            status_weights: None,
+            vis_priority_map: None,
+            wdf_priority_map: None,
+            wgn_priority_map: None,
+            wpm_priority_map: None,
+            clustering_weights: None,
+            operating_time: None,
+        }
+    }
+
+    pub fn order_type_weights(mut self, order_type_weights: HashMap<String, u64>) -> Self
+    {
+        self.order_type_weights = Some(order_type_weights);
+        self
+    }
+
+    pub fn status_weights(mut self, status_weights: HashMap<String, u64>) -> Self
+    {
+        self.status_weights = Some(status_weights);
+        self
+    }
+
+    pub fn vis_priority_map(mut self, vis_priority_map: HashMap<char, u64>) -> Self
+    {
+        self.vis_priority_map = Some(vis_priority_map);
+        self
+    }
+
+    pub fn wdf_priority_map(mut self, wdf_priority_map: HashMap<String, u64>) -> Self
+    {
+        self.wdf_priority_map = Some(wdf_priority_map);
+        self
+    }
+
+    pub fn wgn_priority_map(mut self, wgn_priority_map: HashMap<String, u64>) -> Self
+    {
+        self.wgn_priority_map = Some(wgn_priority_map);
+        self
+    }
+
+    pub fn wpm_priority_map(mut self, wpm_priority_map: HashMap<char, u64>) -> Self
+    {
+        self.wpm_priority_map = Some(wpm_priority_map);
+        self
+    }
+
+    pub fn clustering_weights(mut self, clustering_weights: ClusteringWeights) -> Self
+    {
+        self.clustering_weights = Some(clustering_weights);
+        self
+    }
+
+    pub fn operating_time(mut self, operating_time: u64) -> Self
+    {
+        self.operating_time = Some(operating_time);
+        self
+    }
+
+    pub fn build(self) -> WorkOrderPolicies
+    {
+        WorkOrderPolicies {
+            order_type_weights: self.order_type_weights.unwrap_or_default(),
+            status_weights: self.status_weights.unwrap_or_default(),
+            vis_priority_map: self.vis_priority_map.unwrap_or_default(),
+            wdf_priority_map: self.wdf_priority_map.unwrap_or_default(),
+            wgn_priority_map: self.wgn_priority_map.unwrap_or_default(),
+            wpm_priority_map: self.wpm_priority_map.unwrap_or_default(),
+            clustering_weights: self.clustering_weights.unwrap_or_default(),
+            operating_time: self.operating_time.unwrap_or(6),
+        }
+    }
+}
+
+impl WorkOrderPolicies
+{
+    pub fn builder() -> WorkOrderPoliciesBuilder
+    {
+        WorkOrderPoliciesBuilder::new()
+    }
+}
+
+#[derive(Eq, PartialEq, Serialize, Deserialize, Debug, Clone, Default)]
 pub struct ClusteringWeights
 {
     pub asset: u64,

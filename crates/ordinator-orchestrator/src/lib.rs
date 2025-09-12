@@ -19,6 +19,7 @@ use chrono::Utc;
 use flume::Receiver;
 use flume::Sender;
 use ordinator_configuration::SystemConfigurations;
+use ordinator_configuration::throttling::Throttling;
 use ordinator_contracts::orchestrator::OrchestratorResponse;
 use ordinator_operational_actor::OperationalApi;
 use ordinator_operational_actor::algorithm::operational_solution::OperationalSolution;
@@ -809,6 +810,47 @@ impl OrchestratorBuilder<StepConfiguration>
     pub fn system_configurations(self) -> OrchestratorBuilder<StepSchedulingEnvironment>
     {
         let configurations = SystemConfigurations::read_all_configs().unwrap();
+        OrchestratorBuilder::<StepSchedulingEnvironment> {
+            logging: self.logging,
+            system_clock_tick_receiver: self.system_clock_tick_receiver,
+            system_clock_time_commands_sender: self.system_clock_time_commands_sender,
+            system_clock_handle: self.system_clock_handle,
+            system_configurations: Some(configurations),
+            scheduling_environment: None,
+            _marker: PhantomData,
+        }
+    }
+
+    pub fn system_configurations_manual(
+        self,
+        strategic_throttling: u64,
+        tactical_throttling: u64,
+        supervisor_throttling: u64,
+        operational_throttling: u64,
+    ) -> OrchestratorBuilder<StepSchedulingEnvironment>
+    {
+        let throttling = Throttling {
+            strategic_throttling,
+            tactical_throttling,
+            supervisor_throttling,
+            operational_throttling,
+        };
+        let configurations = SystemConfigurations::build_configs(throttling);
+        OrchestratorBuilder::<StepSchedulingEnvironment> {
+            logging: self.logging,
+            system_clock_tick_receiver: self.system_clock_tick_receiver,
+            system_clock_time_commands_sender: self.system_clock_time_commands_sender,
+            system_clock_handle: self.system_clock_handle,
+            system_configurations: Some(configurations),
+            scheduling_environment: None,
+            _marker: PhantomData,
+        }
+    }
+
+    pub fn system_configurations_defaults(self) -> OrchestratorBuilder<StepSchedulingEnvironment>
+    {
+        let configurations = SystemConfigurations::read_all_configs().unwrap();
+
         OrchestratorBuilder::<StepSchedulingEnvironment> {
             logging: self.logging,
             system_clock_tick_receiver: self.system_clock_tick_receiver,

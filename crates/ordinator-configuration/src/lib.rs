@@ -3,7 +3,6 @@ mod material;
 pub mod throttling;
 pub mod time_input;
 pub mod toml_baptiste;
-mod user_interface;
 
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -13,7 +12,6 @@ use arc_swap::ArcSwap;
 use ordinator_scheduling_environment::SystemConfigurationTrait;
 use throttling::Throttling;
 use toml_baptiste::BaptisteToml;
-use user_interface::EventColors;
 
 // QUESTION
 // How should this be handled?
@@ -33,7 +31,6 @@ pub struct SystemConfigurations
 {
     pub data_locations: BaptisteToml,
     pub throttling: Throttling,
-    pub user_interface: EventColors,
     pub temp_database_path: PathBuf,
 }
 
@@ -42,10 +39,13 @@ impl SystemConfigurationTrait for SystemConfigurations {}
 // FIX [ ]
 // This is a good initial approach but remember to make it better if you have to
 // revisit it.
+// It has now come to making it better!
+// There is something completely wrong here.
 impl SystemConfigurations
 {
     pub fn read_all_configs() -> Result<Arc<ArcSwap<SystemConfigurations>>>
     {
+        dbg!(dotenvy::var("CARGO_MANIFEST_DIR").unwrap());
         let baptiste_data_locations_contents =
             std::fs::read_to_string("./configuration/data_locations/baptiste_data_locations.toml")
                 .unwrap();
@@ -54,10 +54,6 @@ impl SystemConfigurations
         let throttling_contents =
             std::fs::read_to_string("./configuration/throttling/throttling.toml").unwrap();
         let throttling: Throttling = toml::from_str(&throttling_contents).unwrap();
-
-        let event_colors_contents =
-            std::fs::read_to_string("./configuration/user_interface/event_colors.toml").unwrap();
-        let event_colors: EventColors = toml::from_str(&event_colors_contents).unwrap();
 
         let database_path_string =
             &dotenvy::var("WORK_ORDERS_PATH").expect("Could not read database path");
@@ -70,9 +66,20 @@ impl SystemConfigurations
         Ok(Arc::new(ArcSwap::new(Arc::new(SystemConfigurations {
             data_locations,
             throttling,
-            user_interface: event_colors,
             temp_database_path: database_path.to_owned(),
         }))))
+    }
+
+    pub fn build_configs(throttling: Throttling) -> Arc<ArcSwap<SystemConfigurations>>
+    {
+        // I believe that it is the best appraoch here to make sure that the
+        // `Configurations` are always created wrapped. Then you will never
+        // make the mistake, of accessing wild and stray configurations.
+        Arc::new(ArcSwap::new(Arc::new(SystemConfigurations {
+            data_locations: BaptisteToml::default(),
+            throttling,
+            temp_database_path: std::path::Path::new("NOT NEEDED IN TESTING").to_owned(),
+        })))
     }
 
     // This is actually a `From <SystemConfiguration> for StrateticOptions`

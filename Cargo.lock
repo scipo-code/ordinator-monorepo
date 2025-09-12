@@ -1494,6 +1494,7 @@ dependencies = [
  "ordinator-contracts",
  "ordinator-orchestrator",
  "ordinator-scheduling-environment",
+ "ordinator-test-support",
  "tokio",
  "toml",
  "tracing",
@@ -1542,6 +1543,7 @@ dependencies = [
  "ordinator-strategic-actor",
  "ordinator-supervisor-actor",
  "ordinator-tactical-actor",
+ "ordinator-test-support",
  "ordinator-total-data-processing",
  "serde",
  "serde_json",
@@ -1668,6 +1670,11 @@ dependencies = [
 [[package]]
 name = "ordinator-test-support"
 version = "0.1.0"
+dependencies = [
+ "chrono",
+ "ordinator-scheduling-environment",
+ "toml",
+]
 
 [[package]]
 name = "ordinator-total-data-processing"

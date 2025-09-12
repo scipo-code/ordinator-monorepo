@@ -42,10 +42,7 @@ use strategic_resources::StrategicResources;
 use strategic_solution::StrategicObjectiveValue;
 use strategic_solution::StrategicSolution;
 use strum::IntoEnumIterator;
-use tracing::info;
 use tracing::instrument;
-use tracing::trace;
-use valuable::Valuable;
 
 use crate::messages::requests::StrategicRequestResource;
 use crate::messages::requests::StrategicRequestScheduling;

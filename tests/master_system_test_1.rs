@@ -17,11 +17,10 @@ use crate::fixtures::workers::phd_workers::phd_workers_builder;
 #[ignore]
 async fn master_system_test_1() -> anyhow::Result<()>
 {
-    let scheduling_environment =
-        fixtures::scheduling_environment_master_test::load_scheduling_environment(
-            phd_work_order_builder,
-            phd_workers_builder,
-        );
+    let scheduling_environment = ordinator_test_support::load_scheduling_environment(
+        phd_work_order_builder,
+        phd_workers_builder,
+    );
 
     let environment = ordinator_orchestrator::Environment::Test(
         Utc.with_ymd_and_hms(2025, 1, 1, 7, 0, 0).unwrap(),
@@ -29,7 +28,7 @@ async fn master_system_test_1() -> anyhow::Result<()>
 
     let (orchestrator, error_receiver, _system_clock_handle) =
         Orchestrator::<TotalSystemSolution>::builder()
-            .logging(setup_logging())
+            .logging(setup_logging()?)
             .system_clock(&environment)
             .system_configurations()
             .scheduling_environment_manual(scheduling_environment)

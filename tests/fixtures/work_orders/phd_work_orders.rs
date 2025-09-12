@@ -64,7 +64,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -112,7 +112,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -160,7 +160,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -208,7 +208,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -256,7 +256,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -304,7 +304,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -352,7 +352,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -400,7 +400,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -448,7 +448,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -496,7 +496,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -544,7 +544,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -592,7 +592,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -640,7 +640,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -688,7 +688,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -736,7 +736,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -784,7 +784,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -832,7 +832,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -880,7 +880,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -928,7 +928,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -976,7 +976,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1024,7 +1024,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1072,7 +1072,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1120,7 +1120,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1168,7 +1168,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1216,7 +1216,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1264,7 +1264,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1312,7 +1312,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1360,7 +1360,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1408,7 +1408,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1456,7 +1456,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1513,7 +1513,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1570,7 +1570,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1627,7 +1627,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1684,7 +1684,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1741,7 +1741,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1798,7 +1798,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1855,7 +1855,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1912,7 +1912,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -1969,7 +1969,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2026,7 +2026,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2092,7 +2092,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2158,7 +2158,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2224,7 +2224,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2290,7 +2290,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2356,7 +2356,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2422,7 +2422,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2488,7 +2488,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2554,7 +2554,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2620,7 +2620,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2686,7 +2686,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2734,7 +2734,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2782,7 +2782,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2830,7 +2830,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2878,7 +2878,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2926,7 +2926,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -2974,7 +2974,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3022,7 +3022,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3070,7 +3070,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3118,7 +3118,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3166,7 +3166,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3214,7 +3214,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3262,7 +3262,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3310,7 +3310,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3358,7 +3358,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3406,7 +3406,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3454,7 +3454,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3502,7 +3502,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3550,7 +3550,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3598,7 +3598,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3646,7 +3646,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3694,7 +3694,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3742,7 +3742,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3790,7 +3790,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3838,7 +3838,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3886,7 +3886,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3934,7 +3934,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -3982,7 +3982,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4030,7 +4030,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4078,7 +4078,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4126,7 +4126,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4174,7 +4174,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4222,7 +4222,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4270,7 +4270,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4318,7 +4318,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4366,7 +4366,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4414,7 +4414,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4462,7 +4462,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4510,7 +4510,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4558,7 +4558,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4606,7 +4606,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4654,7 +4654,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4702,7 +4702,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4750,7 +4750,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4798,7 +4798,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4846,7 +4846,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4894,7 +4894,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4942,7 +4942,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -4990,7 +4990,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -5038,7 +5038,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })
@@ -5086,7 +5086,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
-                    woab.user_status_codes(|user| user.smat(true).rel(true))
+                    woab.user_status_codes(|user| user.smat(true))
                         .system_status_codes(|system| system.rel(true))
                 })
         })

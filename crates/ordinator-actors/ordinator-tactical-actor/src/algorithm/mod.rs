@@ -41,10 +41,7 @@ use tactical_solution::TacticalScheduledOperations;
 use tactical_solution::TacticalSolution;
 use tracing::Level;
 use tracing::event;
-use tracing::info;
-use tracing::trace;
 use tracing::warn;
-use valuable::Valuable;
 
 use self::assert_functions::TacticalAssertions;
 use self::tactical_parameters::TacticalParameters;
