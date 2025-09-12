@@ -3,7 +3,7 @@
 
 rm logging/logs/ordinator.research.log
 
-just run-test &
+cargo test test_complete_system -- --ignored --nocapture 2>temp_output_from_program.log &
 
 while test ! -f ./logging/logs/ordinator.research.log; or grep -q not READY ./logging/logs/ordinator.research.log
     echo "ORDINATOR NOT READY"
@@ -23,7 +23,7 @@ jq '
   .fields.objective_value.resource_penalty[1], 
   .fields.objective_value.clustering_value[1]
   ] |
-  @tsv' logging/logs/ordinator.research.log | sed 's/"//g' | sed 's/\\t/\t/g' >./scripts/research/data/strategic.txt
+  join(" ")' logging/logs/ordinator.research.log | sed 's/"//g' >./scripts/research/data/strategic.dat
 
 jq '
   select(.threadName == "TEST_TACTICAL" and (.fields | has("objective_value"))) |
@@ -33,7 +33,7 @@ jq '
   .fields.objective_value.urgency[1], 
   .fields.objective_value.resource_penalty[1] 
   ] |
-  @tsv' logging/logs/ordinator.research.log | sed 's/"//g' | sed 's/\\t/\t/g' >./scripts/research/data/tactical.txt
+  join(" ")' logging/logs/ordinator.research.log | sed 's/"//g' >./scripts/research/data/tactical.dat
 
 jq '
   select(.threadName == "TEST_SUPERVISOR" and (.fields | has("objective_value"))) |
@@ -41,7 +41,7 @@ jq '
   .timestamp, 
   .fields.objective_value 
   ] |
-  @tsv' logging/logs/ordinator.research.log | sed 's/"//g' | sed 's/\\t/\t/g' >./scripts/research/data/supervisor.txt
+  join(" ")' logging/logs/ordinator.research.log | sed 's/"//g' >./scripts/research/data/supervisor.dat
 
 jq '
   select(.threadName == "TEST_OP-001-01" and (.fields | has("objective_value"))) |
@@ -52,7 +52,7 @@ jq '
   .fields.objective_value.assign, 
   .fields.objective_value.total_work_order_activities 
   ] |
-  @tsv' logging/logs/ordinator.research.log | sed 's/"//g' | sed 's/\\t/\t/g' >./scripts/research/data/operational-001-01.txt
+  join(" ")' logging/logs/ordinator.research.log | sed 's/"//g' >./scripts/research/data/operational-001-01.dat
 
 jq '
   select(.threadName == "TEST_OP-001-02" and (.fields | has("objective_value"))) |
@@ -63,7 +63,7 @@ jq '
   .fields.objective_value.assign, 
   .fields.objective_value.total_work_order_activities 
   ] |
-  @tsv' logging/logs/ordinator.research.log | sed 's/"//g' | sed 's/\\t/\t/g' >./scripts/research/data/operational-001-02.txt
+  join(" ")' logging/logs/ordinator.research.log | sed 's/"//g' >./scripts/research/data/operational-001-02.dat
 
 jq '
   select(.threadName == "TEST_OP-002-01" and (.fields | has("objective_value"))) |
@@ -74,13 +74,13 @@ jq '
   .fields.objective_value.assign, 
   .fields.objective_value.total_work_order_activities 
   ] |
-  @tsv' logging/logs/ordinator.research.log | sed 's/"//g' | sed 's/\\t/\t/g' >./scripts/research/data/operational-002-01.txt
+  join(" ")' logging/logs/ordinator.research.log | sed 's/"//g' >./scripts/research/data/operational-002-01.dat
 
 gnuplot -e "
-  strategic='scripts/research/data/strategic.txt';
-  tactical='scripts/research/data/tactical.txt';
-  supervisor='scripts/research/data/supervisor.txt';
-  operational_1='scripts/research/data/operational-001-01.txt';
-  operational_2='scripts/research/data/operational-001-02.txt';
-  operational_3='scripts/research/data/operational-002-01.txt';
+  strategic='scripts/research/data/strategic.dat';
+  tactical='scripts/research/data/tactical.dat';
+  supervisor='scripts/research/data/supervisor.dat';
+  operational_1='scripts/research/data/operational-001-01.dat';
+  operational_2='scripts/research/data/operational-001-02.dat';
+  operational_3='scripts/research/data/operational-002-01.dat';
 " ./scripts/research/3-by-2-objective-value-plot.gp
