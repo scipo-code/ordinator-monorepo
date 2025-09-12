@@ -97,7 +97,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     .unwrap(),
                                 )
                                 // .add_resource(Resources::MtnInst)
-                                .add_resource(Resources::MtnMech)
+                                .add_resource(Resources::MtnInst)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),

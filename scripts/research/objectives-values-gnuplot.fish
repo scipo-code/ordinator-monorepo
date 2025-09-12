@@ -3,14 +3,14 @@
 
 rm logging/logs/ordinator.research.log
 
-cargo test test_complete_system -- --ignored --nocapture 2>temp_output_from_program.log &
+cargo test master_system_test_2 -- --ignored --nocapture 2>temp_output_from_program.log &
 
 while test ! -f ./logging/logs/ordinator.research.log; or grep -q not READY ./logging/logs/ordinator.research.log
     echo "ORDINATOR NOT READY"
     sleep 1
 end
 
-sleep 30s
+sleep 2m
 
 pkill master_system_t
 

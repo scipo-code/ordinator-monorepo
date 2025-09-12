@@ -1,4 +1,3 @@
-
 mod fixtures;
 
 use anyhow::bail;
@@ -11,16 +10,16 @@ use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::logging::setup_logging;
 use tracing::info;
 
-use crate::fixtures::work_orders::phd_work_orders::phd_work_order_builder;
+use crate::fixtures::work_orders::phd_work_orders_complex::phd_work_order_builder_complex;
 use crate::fixtures::workers::phd_workers::phd_workers_builder;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 #[ignore]
-async fn master_system_test_1() -> anyhow::Result<()>
+async fn master_system_test_2() -> anyhow::Result<()>
 {
     let scheduling_environment =
         fixtures::scheduling_environment_master_test::load_scheduling_environment(
-            phd_work_order_builder,
+            phd_work_order_builder_complex,
             phd_workers_builder,
         );
 

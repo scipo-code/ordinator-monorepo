@@ -13,9 +13,6 @@ use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
 use ordinator_scheduling_environment::worker_environment::ActorSpecificationBuilder;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
 
-use crate::fixtures::work_orders::phd_work_orders::phd_work_order_builder;
-use crate::fixtures::workers::phd_workers::phd_workers_builder;
-
 pub fn load_scheduling_environment(
     work_order_builder: fn(WorkOrdersBuilder) -> WorkOrdersBuilder,
     worker_builder: fn(ActorSpecificationBuilder) -> ActorSpecificationBuilder,
