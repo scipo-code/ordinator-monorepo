@@ -17,7 +17,9 @@ jobs:
           toolchain: nightly
           override: true
       - name: Run tests
-        run: cargo test --workspace --verbose 
+        run: |
+          cp .env.example > 
+          cargo test --workspace --verbose 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
