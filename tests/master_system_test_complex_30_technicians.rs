@@ -10,7 +10,7 @@ use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::logging::setup_logging;
 use tracing::info;
 
-use crate::fixtures::work_orders::phd_work_orders_complex::phd_work_order_builder_complex;
+use crate::fixtures::work_orders::phd_work_orders_complex_11_resources::phd_work_order_builder_complex_11_resources;
 use crate::fixtures::workers::phd_technicians_30::phd_workers_builder;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
@@ -18,7 +18,7 @@ use crate::fixtures::workers::phd_technicians_30::phd_workers_builder;
 async fn master_system_test_complex_3_technicians() -> anyhow::Result<()>
 {
     let scheduling_environment = ordinator_test_support::load_scheduling_environment(
-        phd_work_order_builder_complex,
+        phd_work_order_builder_complex_11_resources,
         phd_workers_builder,
     );
 

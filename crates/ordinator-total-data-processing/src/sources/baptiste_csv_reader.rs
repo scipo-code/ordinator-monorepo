@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::error::Error;
 use std::fs::File;
 use std::hash::Hash;
 use std::path::PathBuf;
@@ -12,7 +11,7 @@ use ordinator_scheduling_environment::work_order::work_order_info::work_order_ty
 use serde::Deserialize;
 use serde::de::DeserializeOwned;
 
-pub fn populate_csv_structures<C>(file_path: &PathBuf) -> Result<C::Container, Box<dyn Error>>
+pub fn populate_csv_structures<C>(file_path: &PathBuf) -> Result<C::Container>
 where
     C: DeserializeOwned + CsvType + std::fmt::Debug,
     C::Container: Default,

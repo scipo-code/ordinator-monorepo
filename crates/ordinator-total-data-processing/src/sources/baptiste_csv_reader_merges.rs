@@ -46,25 +46,25 @@ pub fn load_csv_data(file_path: &BaptisteToml) -> Result<WorkOrders>
 {
     let functional_locations_csv =
         populate_csv_structures::<FunctionalLocationsCsv>(&file_path.mid_functional_locations)
-            .expect("Could not read the csv file");
+            .with_context(||format!("CSV file from SAP extract is not available at: {}", &file_path.mid_functional_locations.display()))?;
 
     let operations_status_csv =
         populate_csv_structures::<OperationsStatusCsv>(&file_path.mid_operations_status)
-            .expect("Could not load the csv file");
+            .with_context(||format!("CSV file from SAP extract is not available at: {}", &file_path.mid_operations_status.display()))?;
 
     let work_center_csv = populate_csv_structures::<WorkCenterCsv>(&file_path.mid_work_center)
-        .expect("Could not read the csv file");
+            .with_context(||format!("CSV file from SAP extract is not available at: {}", &file_path.mid_work_center.display()))?;
 
     let work_operations_csv =
         populate_csv_structures::<WorkOperationsCsv>(&file_path.mid_work_operations)
-            .expect("Could not read the csv file");
+            .with_context(||format!("CSV file from SAP extract is not available at: {}", &file_path.mid_work_operations.display()))?;
 
     let work_orders_csv = populate_csv_structures::<WorkOrdersCsv>(&file_path.mid_work_orders)
-        .expect("Could not read the csv file");
+            .with_context(||format!("CSV file from SAP extract is not available at: {}", &file_path.mid_work_orders.display()))?;
 
     let work_orders_status_csv =
         populate_csv_structures::<WorkOrdersStatusCsv>(&file_path.mid_work_orders_status)
-            .expect("Could not read the csv file");
+            .with_context(||format!("CSV file from SAP extract is not available at: {}", &file_path.mid_work_orders_status.display()))?;
 
     let work_orders_status_agg = WorkOrdersStatusCsvAggregated::new(work_orders_status_csv.clone());
 
