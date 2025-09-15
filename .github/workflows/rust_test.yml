@@ -18,7 +18,7 @@ jobs:
           override: true
       - name: Run tests
         run: |
-          cp .env.example > 
+          cp .env.example .env
           cargo test --workspace --verbose 
       - name: Setup Node.js
         uses: actions/setup-node@v3
