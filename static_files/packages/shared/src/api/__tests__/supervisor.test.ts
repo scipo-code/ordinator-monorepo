@@ -35,7 +35,6 @@ describe("supervisor API", () => {
       // ISSUE #000 supervisor_id = main should be fixed!
       const result = await fetchTechnicianAvailability("Test", "main");
 
-      console.log(result);
       expect(
         result.all_technicians.filter((tech) => tech.id === "TEST_OP-001-01")
           .length,
