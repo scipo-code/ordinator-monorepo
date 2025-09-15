@@ -15,7 +15,6 @@ use ordinator_scheduling_environment::worker_environment::ActorSpecificationBuil
 /// * 3 Rigg     (DONE)
 /// * 3 Rous     (DONE)
 /// * 3 Prodtech (DONE)
-/// *
 ///
 /// Total: 30
 pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificationBuilder
