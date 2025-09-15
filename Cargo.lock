@@ -1413,6 +1413,7 @@ dependencies = [
  "rand 0.9.1",
  "serde",
  "tracing",
+ "valuable",
 ]
 
 [[package]]
@@ -1484,6 +1485,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "ordinator-monorepo"
+version = "0.0.1"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "ordinator-api-server",
+ "ordinator-contracts",
+ "ordinator-orchestrator",
+ "ordinator-scheduling-environment",
+ "ordinator-test-support",
+ "tokio",
+ "toml",
+ "tracing",
+]
+
+[[package]]
 name = "ordinator-operational-actor"
 version = "0.1.0"
 dependencies = [
@@ -1504,6 +1521,7 @@ dependencies = [
  "rand 0.9.1",
  "serde",
  "tracing",
+ "valuable",
 ]
 
 [[package]]
@@ -1525,6 +1543,7 @@ dependencies = [
  "ordinator-strategic-actor",
  "ordinator-supervisor-actor",
  "ordinator-tactical-actor",
+ "ordinator-test-support",
  "ordinator-total-data-processing",
  "serde",
  "serde_json",
@@ -1550,6 +1569,7 @@ dependencies = [
  "ordinator-scheduling-environment",
  "serde",
  "thiserror 2.0.12",
+ "valuable",
 ]
 
 [[package]]
@@ -1598,6 +1618,7 @@ dependencies = [
  "serde",
  "strum",
  "tracing",
+ "valuable",
 ]
 
 [[package]]
@@ -1619,6 +1640,7 @@ dependencies = [
  "rand 0.9.1",
  "serde",
  "tracing",
+ "valuable",
 ]
 
 [[package]]
@@ -1642,11 +1664,17 @@ dependencies = [
  "serde",
  "strum",
  "tracing",
+ "valuable",
 ]
 
 [[package]]
 name = "ordinator-test-support"
 version = "0.1.0"
+dependencies = [
+ "chrono",
+ "ordinator-scheduling-environment",
+ "toml",
+]
 
 [[package]]
 name = "ordinator-total-data-processing"
@@ -2845,6 +2873,8 @@ checksum = "704b1aeb7be0d0a84fc9828cae51dab5970fee5088f83d1dd7ee6f6246fc6ff1"
 dependencies = [
  "serde",
  "tracing-core",
+ "valuable",
+ "valuable-serde",
 ]
 
 [[package]]
@@ -2862,10 +2892,13 @@ dependencies = [
  "sharded-slab",
  "smallvec",
  "thread_local",
+ "time",
  "tracing",
  "tracing-core",
  "tracing-log",
  "tracing-serde",
+ "valuable",
+ "valuable-serde",
 ]
 
 [[package]]
@@ -3016,6 +3049,30 @@ name = "valuable"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ba73ea9cf16a25df0c8caa16c51acb937d5712a8429db78a3ee29d5dcacd3a65"
+dependencies = [
+ "valuable-derive",
+]
+
+[[package]]
+name = "valuable-derive"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4e3a32a9bcc0f6c6ccfd5b27bcf298c58e753bcc9eeff268157a303393183a6d"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.104",
+]
+
+[[package]]
+name = "valuable-serde"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2ee0548edecd1b907be7e67789923b7d02275b9ba4a33ebc33300e2c947a8cb1"
+dependencies = [
+ "serde",
+ "valuable",
+]
 
 [[package]]
 name = "version_check"

@@ -39,7 +39,11 @@ describe("workorders API", () => {
     it("should assign work order to period successfully", async () => {
       const period: PeriodDto = "2025-W3-4";
 
-      const result = await assignWorkOrderToPeriod("Test", "1001", period);
+      const result = await assignWorkOrderToPeriod(
+        "Test",
+        "1111990000",
+        period,
+      );
 
       expect(result).toBeDefined();
       expect(typeof result).toBe("string");
@@ -48,7 +52,11 @@ describe("workorders API", () => {
     it("should assign work order to period successfully", async () => {
       const period: PeriodDto = "2025-W3-4";
 
-      const result = await assignWorkOrderToPeriod("Test", "1001", period);
+      const result = await assignWorkOrderToPeriod(
+        "Test",
+        "1111990000",
+        period,
+      );
 
       expect(result).toBeDefined();
       expect(typeof result).toBe("string");
@@ -57,7 +65,7 @@ describe("workorders API", () => {
     it("should error due to wrong workorder", async () => {
       const period: PeriodDto = "2025-W3-4";
 
-      const result = assignWorkOrderToPeriod("Test", "10010", period);
+      const result = assignWorkOrderToPeriod("Test", "11119900009", period);
 
       await expect(result).rejects.toThrow(/Could not assign/);
     });
@@ -65,7 +73,7 @@ describe("workorders API", () => {
 
   describe("fetchWorkorderInfo", () => {
     it("should fetch work order info successfully", async () => {
-      const result = await fetchWorkorderInfo("Test", "1001");
+      const result = await fetchWorkorderInfo("Test", "1111990000");
 
       expect(result.asset).toBe("TEST");
     });

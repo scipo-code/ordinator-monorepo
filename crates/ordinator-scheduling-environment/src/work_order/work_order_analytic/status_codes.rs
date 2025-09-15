@@ -137,8 +137,6 @@ pub struct UserStatusCodes
     #[arg(long)]
     pub sece: bool,
     #[arg(long)]
-    pub rel: bool,
-    #[arg(long)]
     pub rees: bool,
     #[arg(long)]
     pub reap: bool,
@@ -238,7 +236,6 @@ impl UserStatusCodesBuilder
             wta: self.0.wta,
             sch: self.0.sch,
             sece: self.0.sece,
-            rel: self.0.rel,
             rees: self.0.rees,
             reap: self.0.reap,
             wrel: self.0.wrel,
@@ -266,15 +263,28 @@ impl UserStatusCodesBuilder
     }
 
     // These functions will be crucial for testing! I do not
+
     pub fn smat(mut self, smat: bool) -> Self
     {
         self.0.smat = smat;
         self
     }
 
-    pub fn rel(mut self, rel: bool) -> Self
+    pub fn cmat(mut self, cmat: bool) -> Self
     {
-        self.0.rel = rel;
+        self.0.cmat = cmat;
+        self
+    }
+
+    pub fn pmat(mut self, pmat: bool) -> Self
+    {
+        self.0.pmat = pmat;
+        self
+    }
+
+    pub fn wmat(mut self, wmat: bool) -> Self
+    {
+        self.0.wmat = wmat;
         self
     }
 
@@ -299,7 +309,6 @@ impl UserStatusCodesBuilder
         let wta_pattern = regex::Regex::new(r"WTA").unwrap();
         let sch_pattern = regex::Regex::new(r"SCH").unwrap();
         let sece_pattern = regex::Regex::new(r"SECE").unwrap();
-        let rel_pattern = regex::Regex::new(r"REL").unwrap();
         let rees_pattern = regex::Regex::new(r"REES").unwrap();
         let reap_pattern = regex::Regex::new(r"REAP").unwrap();
         let wrel_pattern = regex::Regex::new(r"WREL").unwrap();
@@ -344,7 +353,7 @@ impl UserStatusCodesBuilder
             wta: wta_pattern.is_match(user_status_string),
             sch: sch_pattern.is_match(user_status_string),
             sece: sece_pattern.is_match(user_status_string),
-            rel: rel_pattern.is_match(user_status_string),
+
             rees: rees_pattern.is_match(user_status_string),
             reap: reap_pattern.is_match(user_status_string),
             wrel: wrel_pattern.is_match(user_status_string),
@@ -415,6 +424,12 @@ impl SystemStatusCodesBuilder
     pub fn rel(mut self, rel: bool) -> Self
     {
         self.0.rel = rel;
+        self
+    }
+
+    pub fn nmat(mut self, nmat: bool) -> Self
+    {
+        self.0.nmat = nmat;
         self
     }
 
@@ -718,7 +733,6 @@ impl IntoExcelData for UserStatusCodes
         let wta = if self.wta { "WTA " } else { "" };
         let sch = if self.sch { "SCH " } else { "" };
         let sece = if self.sece { "SECE " } else { "" };
-        let rel = if self.rel { "REL " } else { "" };
         let rees = if self.rees { "REES " } else { "" };
         let reap = if self.reap { "REAP " } else { "" };
         let wrel = if self.wrel { "WREL " } else { "" };
@@ -765,7 +779,6 @@ impl IntoExcelData for UserStatusCodes
             + wta
             + sch
             + sece
-            + rel
             + rees
             + reap
             + wrel
@@ -820,7 +833,6 @@ impl IntoExcelData for UserStatusCodes
         let wta = if self.wta { "WTA " } else { "" };
         let sch = if self.sch { "SCH " } else { "" };
         let sece = if self.sece { "SECE " } else { "" };
-        let rel = if self.rel { "REL " } else { "" };
         let rees = if self.rees { "REES " } else { "" };
         let reap = if self.reap { "REAP " } else { "" };
         let wrel = if self.wrel { "WREL " } else { "" };
@@ -867,7 +879,6 @@ impl IntoExcelData for UserStatusCodes
             + wta
             + sch
             + sece
-            + rel
             + rees
             + reap
             + wrel
@@ -977,7 +988,6 @@ impl std::fmt::Display for UserStatusCodes
             let wta = if self.wta { "WTA " } else { "" };
             let sch = if self.sch { "SCH " } else { "" };
             let sece = if self.sece { "SECE " } else { "" };
-            let rel = if self.rel { "REL " } else { "" };
             let rees = if self.rees { "REES " } else { "" };
             let reap = if self.reap { "REAP " } else { "" };
             let wrel = if self.wrel { "WREL " } else { "" };
@@ -1024,7 +1034,6 @@ impl std::fmt::Display for UserStatusCodes
                 + wta
                 + sch
                 + sece
-                + rel
                 + rees
                 + reap
                 + wrel

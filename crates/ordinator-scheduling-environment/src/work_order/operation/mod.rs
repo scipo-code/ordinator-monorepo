@@ -5,6 +5,7 @@ use std::collections::BTreeMap;
 use std::fmt::Display;
 use std::iter::Sum;
 use std::num::ParseFloatError;
+use std::ops::Neg;
 use std::str::FromStr;
 
 use anyhow::Context;
@@ -313,6 +314,11 @@ impl FromStr for Work
 
 impl Work
 {
+    pub fn negate(self) -> Self
+    {
+        Work::from(self.to_f64().neg())
+    }
+
     pub fn round(self) -> Self
     {
         Self(
@@ -554,10 +560,10 @@ impl<'de> Deserialize<'de> for Work
                             assert_eq!(value_str, "Decimal".to_string());
                         }
                         _ => {
-                            return Err(de::Error::unknown_field(&key, &[
-                                "work_type",
-                                "work_value",
-                            ]));
+                            return Err(de::Error::unknown_field(
+                                &key,
+                                &["work_type", "work_value"],
+                            ));
                         }
                     }
                 }
@@ -626,6 +632,20 @@ impl OperationDatesBuilder
     pub fn earliest_finish_datetime(mut self, earliest_finish_datetime: DateTime<Utc>) -> Self
     {
         self.earliest_finish_datetime = Some(earliest_finish_datetime);
+        self
+    }
+
+    pub fn earliest_start_from_ymd_hms(mut self, year: i32, month: u32, day: u32, hour: u32, min: u32, sec: u32) -> Self
+    {
+        use chrono::TimeZone;
+        self.earliest_start_datetime = Some(Utc.with_ymd_and_hms(year, month, day, hour, min, sec).unwrap());
+        self
+    }
+
+    pub fn earliest_finish_from_ymd_hms(mut self, year: i32, month: u32, day: u32, hour: u32, min: u32, sec: u32) -> Self
+    {
+        use chrono::TimeZone;
+        self.earliest_finish_datetime = Some(Utc.with_ymd_and_hms(year, month, day, hour, min, sec).unwrap());
         self
     }
 }

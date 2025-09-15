@@ -111,6 +111,16 @@ impl TimeInterval
         Ok(Self { start, end })
     }
 
+    pub fn from_hms(start_hour: u32, start_min: u32, start_sec: u32, end_hour: u32, end_min: u32, end_sec: u32) -> Result<Self>
+    {
+        let start = NaiveTime::from_hms_opt(start_hour, start_min, start_sec)
+            .ok_or_else(|| anyhow::anyhow!("Invalid start time: {}:{}:{}", start_hour, start_min, start_sec))?;
+        let end = NaiveTime::from_hms_opt(end_hour, end_min, end_sec)
+            .ok_or_else(|| anyhow::anyhow!("Invalid end time: {}:{}:{}", end_hour, end_min, end_sec))?;
+        
+        Self::new(start, end)
+    }
+
     pub fn from_date_times(start_date_time: DateTime<Utc>, finish_date_time: DateTime<Utc>)
     -> Self
     {
@@ -195,7 +205,7 @@ fn create_periods(current_time: DateTime<Utc>, number_of_periods: u64, days: &[D
     // Get the ISO week number
     let week_number = chrono::Datelike::iso_week(&start_time).week();
     // Determine target week number: If current is even, target is the previous odd
-    let target_week = if week_number % 2 == 0 {
+    let target_week = if week_number.is_multiple_of(2) {
         week_number - 1
     } else {
         week_number

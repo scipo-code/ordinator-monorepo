@@ -146,12 +146,8 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
 
                 let operation_solution = operational_solutions.get(id).expect("Should");
 
-                let operational_assignments_by_day = operation_solution
-                    .scheduled_work_order_activities
-                    // This value should be gotten from the
-                    .iter()
-                    .filter(|f| f.1.active_datetimes().contains(&day.date))
-                    .find(|e| e.0 == *work_order_activity);
+                let operational_assignments_by_day =
+                    operation_solution.operational_assignments_by_day(work_order_activity, &day);
 
                 if let Some(_operational_assignment) = operational_assignments_by_day {
                     let work_order_supervisor_row = WorkOrderSupervisorRow::from((

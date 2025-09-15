@@ -3,12 +3,12 @@ use std::sync::MutexGuard;
 
 use anyhow::Context;
 use anyhow::Result;
+use ordinator_configuration::throttling::Throttling;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use serde::Serialize;
-use tracing::Level;
-use tracing::event;
 use tracing::info;
+use valuable::Valuable;
 
 pub type ActorLinkToSchedulingEnvironment<'a> = MutexGuard<'a, SchedulingEnvironment>;
 
@@ -33,6 +33,8 @@ pub trait ActorBasedLargeNeighborhoodSearch
     // but we do not want that
     // ISSUE #129
     fn run_lns_iteration(&mut self) -> Result<()>
+        where
+            <<<Self as ActorBasedLargeNeighborhoodSearch>::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective: Valuable
     {
         // The options should be a part of the `Algorithm`... No part of the... It
         // should either be a part of the Algorithm or a Part of the Actor. If
@@ -66,22 +68,17 @@ pub trait ActorBasedLargeNeighborhoodSearch
             )
         })?;
 
-        event!(
-            Level::INFO,
-            better_objective = ?objective_value_type
-        );
-
         match objective_value_type {
             ObjectiveValueType::Better(objective_value) => {
-                info!(target: "research", objective_value = ?objective_value);
+                info!(target: "research", objective_value = objective_value.as_value(), reason = "optimization loop found a better solution");
                 self.algorithm_util_methods()
                     .update_objective(objective_value);
                 self.make_atomic_pointer_swap();
             }
-            ObjectiveValueType::Worse => self
+            ObjectiveValueType::Worse(_) => self
                 .algorithm_util_methods()
                 .swap_to_old_solution(current_solution),
-            ObjectiveValueType::Force => todo!(),
+            ObjectiveValueType::Force(_) => todo!(),
         }
         Ok(())
     }
@@ -120,7 +117,6 @@ pub trait ActorBasedLargeNeighborhoodSearch
     {
         self.algorithm_util_methods().load_shared_solution();
 
-        // Crucial, the issue is with the `incorporate_system_solution`.
         let state_change = self.incorporate_system_solution()?;
 
         if state_change {
@@ -131,7 +127,24 @@ pub trait ActorBasedLargeNeighborhoodSearch
             // self.schedule().unwrap();
             // We have to determine where the error is located. If this fails we have to go
             // into the crate and start unit testing.
-            self.calculate_objective_value().with_context(|| format!("Could not calculate the objective value after a incorporating state from the system solution\nLocation: {}:{}", file!(), line!()))?;
+            // It does not make sense that the `calculate_objective_value` itself does this.
+            // The `calculate_objective` has no state to allow it to make that.
+            // decision.
+            let objective = self.calculate_objective_value().with_context(|| format!("Could not calculate the objective value after a incorporating state from the system solution\nLocation: {}:{}", file!(), line!()))?;
+            match objective {
+                ObjectiveValueType::Better(objective) => {
+                    info!(target: "research", objective_value = objective.as_value(), reason = "state incorporation from system solution");
+                    self.algorithm_util_methods().update_objective(objective);
+                }
+                ObjectiveValueType::Worse(objective) => {
+                    info!(target: "research", objective_value = objective.as_value(), reason = "state incorporation from system solution");
+                    self.algorithm_util_methods().update_objective(objective);
+                }
+                ObjectiveValueType::Force(objective) => {
+                    info!(target: "research", objective_value = objective.as_value(), reason = "state incorporation from system solution");
+                    self.algorithm_util_methods().update_objective(objective);
+                }
+            }
             self.make_atomic_pointer_swap();
         }
 
@@ -139,6 +152,7 @@ pub trait ActorBasedLargeNeighborhoodSearch
     }
 
     fn incorporate_system_solution(&mut self) -> Result<bool>;
+    fn throttling(&self, throttling: &Throttling) -> u64;
 }
 
 pub trait AbLNSUtils
@@ -160,8 +174,8 @@ pub trait AbLNSUtils
 pub enum ObjectiveValueType<O>
 {
     Better(O),
-    Worse,
-    Force,
+    Worse(O),
+    Force(O),
 }
 
 pub trait ObjectiveValue: Serialize {}

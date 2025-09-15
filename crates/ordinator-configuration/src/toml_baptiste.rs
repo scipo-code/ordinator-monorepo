@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use serde::Deserialize;
 
 #[allow(dead_code)]
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone, Default)]
 pub struct BaptisteToml
 {
     pub mid_functional_locations: PathBuf,

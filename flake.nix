@@ -41,6 +41,7 @@
             pkgs.clang
             pkgs.flamegraph
             pkgs.git
+
             pkgs.just
             pkgs.jq
             pkgs.git-bug
@@ -74,9 +75,6 @@
               	    '')
 
           ];
-          shellHook = ''
-            	    export RUST_LLDB_PRINTERS="$(rustc --print sysroot)/lib/rustlib/etc/lldb_lookup.py"
-            	 '';
         };
 
         packages.default = pkgs.buildRustPackage {

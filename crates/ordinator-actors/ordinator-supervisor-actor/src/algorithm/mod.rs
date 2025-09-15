@@ -16,14 +16,12 @@ use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::AbLNSUtils;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
-use ordinator_orchestrator_actor_traits::OperationalInterface;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
-use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
@@ -156,7 +154,7 @@ where
             intermediate = 0.0;
         };
 
-        let objective_value = (intermediate * 1000.0) as u64;
+        let new_objective_value = (intermediate * 1000.0) as u64;
 
         // Why is there not assigned more WOs from the supervisor? There are
         // a couple of reasons, either the OperationalActors are not
@@ -171,52 +169,13 @@ where
         // TODO [ ] 2025-07-03 Determine how much is actually scheduled by the
         // operational actors.
         //
-        if self.solution.objective_value < objective_value {
+        if self.solution.objective_value < new_objective_value {
             // NOTE [ ] 2025-07-03 We should work on getting this to work correctly
             // with
             //
-            let mut every_operational_assigned_or_assess_work_order_activity: HashSet<(
-                WorkOrderNumber,
-                ActivityNumber,
-            )> = HashSet::new();
-            for operational_id in self.loaded_system_solution.all_operational() {
-                let total_number_of_assess_or_assign = self
-                    .loaded_system_solution
-                    .operational_actor_solutions(&operational_id)
-                    .with_context(|| {
-                        format!("The operational_actor: {operational_id} does not exist")
-                    })?;
-
-                let operational_scheduled_work_order_activities =
-                    total_number_of_assess_or_assign.scheduled_activities_for_operational_actor();
-                every_operational_assigned_or_assess_work_order_activity =
-                    every_operational_assigned_or_assess_work_order_activity
-                        .union(&operational_scheduled_work_order_activities)
-                        .cloned()
-                        .collect::<HashSet<_>>();
-            }
-            let all_work_order_activities = self
-                .solution
-                .operational_state_machine
-                .keys()
-                .map(|e| e.1)
-                .collect::<HashSet<_>>();
-
-            let share_of_schedule_work_order_activities =
-                every_operational_assigned_or_assess_work_order_activity.len() as f64
-                    / all_work_order_activities.len() as f64;
-            event!(
-                Level::INFO,
-                supervisor_objective_value_better = objective_value,
-                share_of_schedule_work_order_activities = share_of_schedule_work_order_activities,
-            );
-            Ok(ObjectiveValueType::Better(objective_value))
+            Ok(ObjectiveValueType::Better(new_objective_value))
         } else {
-            event!(
-                Level::INFO,
-                supervisor_objective_value_worse = objective_value
-            );
-            Ok(ObjectiveValueType::Worse)
+            Ok(ObjectiveValueType::Worse(new_objective_value))
         }
     }
 
@@ -232,33 +191,6 @@ where
     // FIX the supervisor initialization.
     fn schedule(&mut self) -> Result<()>
     {
-        // What is the criteria for handling this in practice?
-
-        // FIX [ ]
-        // We should first make sure that the `Supervisor` is actually working with the
-        // correct state.
-        //
-        // TODO [ ]
-        // We want to know how the `StrategicSolution` looks like when an error occurs
-        //
-        // in the
-        // This will always fail as you do not have the correct... You want the
-        // supervisor to see these, but you do not want to have them in the
-        // solution. I am not sure what the best approach is here.
-        //
-        // Where should the discrepancy be handled? I think that the best place is in
-        // the I think that the Supervisor should be able to see what is
-        // suggested to him and The issue is where to put the information. I am
-        // not really sure what the best place is to do this! The question is if
-        // we want to incorporate this into the state of the supervisor... I
-        // actually do not think that is something that we want. A key insight
-        // of the architecture is that the state of the other algorithms are
-        // always available. And that we should use this as much as possible.
-        //
-        // How to tackle this problem then? Okay now we need to make sure that
-        // the code runs correctly with
-        // TODO [ ]
-        // Debug the SupervisorActor.
         ensure!(
             self.loaded_system_solution
                 .strategic()
@@ -301,64 +233,129 @@ where
         );
 
         for work_order_activity in &self.solution.get_work_order_activities() {
-            let number = self
+            let number_of_people = self
                 .parameters
                 .supervisor_work_orders
                 .get(&work_order_activity.0)
                 .and_then(|activities| activities.get(&work_order_activity.1))
                 .expect("The SupervisorParameter should always be available")
-                .number;
+                .number_of_people;
 
-            let mut operational_status_by_work_order_activity =
+            let operational_status_by_work_order_activity =
                 self.solution.operational_status_by_work_order_activity(
                     work_order_activity,
                     &self.loaded_system_solution,
                 )?;
 
-            operational_status_by_work_order_activity
-                .retain(|(_, _, mar_fit)| matches!(mar_fit, MarginalFitness::Scheduled(_)));
+            // Ahh you filter them out here! So that there will be none left
+            ensure!(
+                operational_status_by_work_order_activity
+                    .iter()
+                    .all(|e| matches!(e.1, Delegate::Assess))
+            );
 
-            operational_status_by_work_order_activity.sort_by_key(|(_agent_id, _, mar_fit)| {
-                match mar_fit {
-                    MarginalFitness::Scheduled(auxillary_operational_objective) => {
-                        *auxillary_operational_objective
-                    }
-                    MarginalFitness::None => panic!(),
-                }
-            });
-
-            if !operational_status_by_work_order_activity.is_empty() {};
-
-            let number_of_assigned = operational_status_by_work_order_activity
+            // This should be based on the current solution instead of the derived data!
+            // Crucial insight!
+            let number_of_assigned = self
+                .solution
+                .operational_state_machine
                 .iter()
-                .filter(|(_, delegate, _)| *delegate == Delegate::Assign)
+                .filter(|(b, delegate)| {
+                    work_order_activity == &b.1 && delegate == &&Delegate::Assign
+                })
                 .count() as u64;
 
-            let mut remaining_to_assign = number - number_of_assigned;
+            let mut remaining_to_assign = number_of_people
+                .checked_sub(number_of_assigned)
+                .with_context(|| format!("Failed to subtract `number_of_people`: {number_of_people}\nfrom the `number_of_assigned`: {number_of_assigned}\nto be assigned to `work_order_activity`: {work_order_activity:?}"))?;
 
-            event!(Level::DEBUG, remaining_to_assign = ?remaining_to_assign);
-            for (agent_id, delegate_status, _marginal_fitness) in
+            ensure!(
+                remaining_to_assign <= 1,
+                "Failed to subtract `number_of_people`: {number_of_people}\nfrom the `number_of_assigned`: {number_of_assigned}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
+                Location::caller()
+            );
+
+            for (actor_id, mut temporary_technician_delegate, _marginal_fitness) in
                 operational_status_by_work_order_activity.clone()
             {
-                if delegate_status != Delegate::Assess {
-                    continue;
-                }
+                ensure!(matches!(temporary_technician_delegate, Delegate::Assess));
 
-                let solution =
+                let value = self
+                    .solution
+                    .operational_state_machine
+                    .iter()
+                    .filter(|e| e.0.1 == *work_order_activity && e.1.is_assign())
+                    .count();
+                ensure!(
+                    value as u64 <= number_of_people,
+                    "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people}\n{}\nto be assigned to `work_order_activity`: {work_order_activity:?}",
+                    Location::caller()
+                );
+                let technician_delegate =
                     self.solution
                         .operational_state_machine
-                        .get_mut(&(agent_id.clone(), *work_order_activity)).expect("This value should always be present. Check the generation of keys and values if this fails");
+                        .get_mut(&(actor_id.clone(), *work_order_activity)).expect("This value should always be present. Check the generation of keys and values if this fails");
 
+                event!(target: "debug",Level::DEBUG, delegate_status = ?temporary_technician_delegate, solution_delegate = ?technician_delegate, work_order_activity = ?work_order_activity);
                 if remaining_to_assign >= 1 {
                     remaining_to_assign -= 1;
-                    solution.state_change_to_assign();
+                    event!(target: "debug", Level::DEBUG, work_order_activity = ?work_order_activity, technician = ?actor_id, "assigning `work_order_activity` to technician");
+                    event!(target: "developer", Level::DEBUG, delegate_status = ?temporary_technician_delegate, solution_delegate = ?technician_delegate, work_order_activity = ?work_order_activity);
+
+                    // Solution comes from the `Supervisor`.
+
+                    ensure!(matches!(temporary_technician_delegate, Delegate::Assess));
+                    technician_delegate
+                        .state_change_to_assign()
+                        .with_context(|| format!("{}", Location::caller()))?;
+                    let value = self
+                        .solution
+                        .operational_state_machine
+                        .iter()
+                        .filter(|e| e.0.1 == *work_order_activity && e.1.is_assign())
+                        .count();
+                    ensure!(
+                        value as u64 <= number_of_people,
+                        "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
+                        Location::caller()
+                    )
                 } else {
-                    if delegate_status == Delegate::Assign {
-                        continue;
-                    }
-                    solution.state_change_to_unassign();
+                    // if delegate_status == Delegate::Assign {
+                    //     continue;
+                    // }
+                    event!(target: "debug", Level::DEBUG, work_order_activity = ?work_order_activity, technician = ?actor_id, "unassigning `work_order_activity` to technician");
+                    event!(target: "developer", Level::DEBUG, delegate_status = ?temporary_technician_delegate, solution_delegate = ?technician_delegate, work_order_activity = ?work_order_activity);
+                    technician_delegate
+                        .state_change_to_unassign()
+                        .with_context(|| format!("{}", Location::caller()))?;
+                    temporary_technician_delegate
+                        .state_change_to_unassign()
+                        .with_context(|| format!("{}", Location::caller()))?;
                 }
+                let value = self
+                    .solution
+                    .operational_state_machine
+                    .iter()
+                    .filter(|e| e.0.1 == *work_order_activity && e.1.is_assign())
+                    .count();
+                ensure!(
+                    value as u64 <= number_of_people,
+                    "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
+                    Location::caller()
+                )
             }
+
+            let value = self
+                .solution
+                .operational_state_machine
+                .iter()
+                .filter(|e| e.0.1 == *work_order_activity && e.1.is_assign())
+                .count();
+            ensure!(
+                value as u64 <= number_of_people,
+                "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
+                Location::caller()
+            )
         }
         Ok(())
     }
@@ -377,15 +374,14 @@ where
             .clone();
 
         for work_order_number in sampled_work_order_numbers {
-            self.unschedule_specific_work_order(*work_order_number)
-                .with_context(|| {
-                    format!("Could not unschedule work_order_number: {work_order_number:?}")
-                })?;
+            self.solution
+                .operational_state_machine
+                .iter_mut()
+                .filter(|(key, _)| key.1.0 == *work_order_number)
+                .for_each(|(_, delegate)| *delegate = Delegate::Assess);
         }
+
         Ok(())
-        // self.algorithm.operational_state.
-        // assert_that_operational_state_machine_is_different_from_saved_operational_state_machine(&
-        // old_state).unwrap();
     }
 
     fn incorporate_system_solution(&mut self) -> Result<bool>
@@ -484,46 +480,6 @@ where
             .iter()
             .map(|e| e.0.1.0)
             .collect::<HashSet<_>>();
-        // Okay now we want to run this based on the state of the `Supervisor`
-        //
-        // If we get an `Error` here we should expand the code to incorporate the
-        // missing link here. That means that you should focus on understanding
-        // the root cause if this new change errors.
-        //
-        // What does it mean that this is not in the correct place?
-        // There are more
-        // So the sets should be part of the of the sets that is the smallest.
-        //
-        // That means that we should take the `union` between the two
-        // difference.
-        // You should find a more trivial way of storing all.
-        // Good. You logic works. But what should be done about the
-        // difference?
-
-        // So there are two different issues here.
-        // * Either the work is zero in which case the activities will be excluded
-        // * There is no underlying resource available to fix the issue.
-        // I think that we should clearly understand what should be done here.
-        //
-        // I think that there is a fundamental issue here where
-        // the [`SchedulingEnvironment`] does not have any way
-        // of incorporating the state of the supervisor in the
-        // [`WorkOrder`]s.
-        //
-        // ESSAY [ ]
-        // You should think about how you incorporate the state
-        // here. It is unreliable to rely on the solution as the
-        // solutions can change easily. I am not sure where to
-        // put this.
-        // What should happen to the work orders that does
-        // not fit well into the model.
-        //
-        // The fundamental issue is how to give the work orders to. I think that
-        // they should stay in the [`SupervisorActor`] so that he can work on the
-        // with them and send them where they need to be, and maybe even manually
-        // assign the activity to a technician.
-        //
-        // I believe that including it into the Supervisor is the best approach for now.
         ensure!(
             strategic_activities
                 == supervisor_work_orders
@@ -563,6 +519,11 @@ where
     fn force_schedule(&mut self) -> Result<()>
     {
         todo!()
+    }
+
+    fn throttling(&self, throttling: &ordinator_configuration::throttling::Throttling) -> u64
+    {
+        throttling.supervisor_throttling
     }
 }
 

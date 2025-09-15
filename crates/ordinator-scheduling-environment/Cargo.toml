@@ -23,3 +23,6 @@ toml = "*"
 ts-rs = "*"
 tracing.workspace=true
 uuid = {version = "1.18.0", features = ["serde", "v4"]}
+
+[lints.clippy]
+new_without_default = "allow"

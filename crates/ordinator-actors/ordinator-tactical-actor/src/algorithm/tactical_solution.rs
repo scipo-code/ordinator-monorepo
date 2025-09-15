@@ -23,11 +23,12 @@ use ordinator_scheduling_environment::worker_environment::resources::ActorCompos
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Deserialize;
 use serde::Serialize;
+use valuable::Valuable;
 
 use super::tactical_parameters::TacticalParameters;
 use super::tactical_resources::TacticalResources;
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize, Clone)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize, Clone, Valuable)]
 pub struct TacticalObjectiveValue
 {
     pub objective_value: u64,

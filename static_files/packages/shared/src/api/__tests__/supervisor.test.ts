@@ -36,7 +36,8 @@ describe("supervisor API", () => {
       const result = await fetchTechnicianAvailability("Test", "main");
 
       expect(
-        result.all_technicians.filter((tech) => tech.id === "OP-01-001").length,
+        result.all_technicians.filter((tech) => tech.id === "TEST_OP-001-01")
+          .length,
       ).toBe(1);
     });
 

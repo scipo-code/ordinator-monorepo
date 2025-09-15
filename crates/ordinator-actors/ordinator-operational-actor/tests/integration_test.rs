@@ -291,12 +291,8 @@ fn start_operational_actor()
                             })
                             .operation_dates(|dates| {
                                 dates
-                                    .earliest_start_datetime(
-                                        Utc.with_ymd_and_hms(2025, 1, 1, 7, 0, 0).unwrap(),
-                                    )
-                                    .earliest_finish_datetime(
-                                        Utc.with_ymd_and_hms(2025, 1, 2, 7, 0, 0).unwrap(),
-                                    )
+                                    .earliest_start_from_ymd_hms(2025, 1, 1, 7, 0, 0)
+                                    .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                             })
                             .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                         })
@@ -327,10 +323,10 @@ fn start_operational_actor()
                         })
                         .work_order_dates_builder(|wodb| {
                             wodb.duration(TimeDelta::days(1))
-                                .basic_start_date(NaiveDate::from_ymd_opt(2025, 1, 1).expect("This date is required for constructing a WorkOrderDates object"))
-                                .basic_finish_date(NaiveDate::from_ymd_opt(2025, 1, 1).expect("This date is required for constructing a WorkOrderDates object"))
-                                .earliest_allowed_start_date(NaiveDate::from_ymd_opt(2025, 1, 1).expect("This date is required for constructing a WorkOrderDates object"))
-                                .latest_allowed_finish_date(NaiveDate::from_ymd_opt(2025, 5, 1).expect("This date is required for constructing a WorkOrderDates object"))
+                                .basic_start_from_ymd(2025, 1, 1)
+                                .basic_finish_from_ymd(2025, 1, 1)
+                                .earliest_allowed_start_from_ymd(2025, 1, 1)
+                                .latest_allowed_finish_from_ymd(2025, 5, 1)
                         })
                         .work_order_analytic_builder(|woab| {
                             woab.user_status_codes(|user| user.smat(true))
@@ -344,12 +340,8 @@ fn start_operational_actor()
                             })
                             .operation_dates(|dates| {
                                 dates
-                                    .earliest_start_datetime(
-                                        Utc.with_ymd_and_hms(2025, 1, 1, 7, 0, 0).unwrap(),
-                                    )
-                                    .earliest_finish_datetime(
-                                        Utc.with_ymd_and_hms(2025, 1, 2, 7, 0, 0).unwrap(),
-                                    )
+                                    .earliest_start_from_ymd_hms(2025, 1, 1, 7, 0, 0)
+                                    .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                             })
                             .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                         })
@@ -380,10 +372,10 @@ fn start_operational_actor()
                         })
                         .work_order_dates_builder(|wodb| {
                             wodb.duration(TimeDelta::days(1))
-                                .basic_start_date(NaiveDate::from_ymd_opt(2025, 1, 1).expect("This date is required for constructing a WorkOrderDates object"))
-                                .basic_finish_date(NaiveDate::from_ymd_opt(2025, 1, 1).expect("This date is required for constructing a WorkOrderDates object"))
-                                .earliest_allowed_start_date(NaiveDate::from_ymd_opt(2025, 1, 1).expect("This date is required for constructing a WorkOrderDates object"))
-                                .latest_allowed_finish_date(NaiveDate::from_ymd_opt(2025, 5, 1).expect("This date is required for constructing a WorkOrderDates object"))
+                                .basic_start_from_ymd(2025, 1, 1)
+                                .basic_finish_from_ymd(2025, 1, 1)
+                                .earliest_allowed_start_from_ymd(2025, 1, 1)
+                                .latest_allowed_finish_from_ymd(2025, 5, 1)
                         })
                         .work_order_analytic_builder(|woab| {
                             woab.user_status_codes(|user| user.smat(true))

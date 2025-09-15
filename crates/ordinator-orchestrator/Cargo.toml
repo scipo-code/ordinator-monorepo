@@ -34,4 +34,9 @@ tracing-subscriber.workspace = true
 
 # Crate specific
 file-rotate = "*"
-bus = "2.4.1"
+bus.workspace = true
+
+[dev-dependencies]
+ordinator-test-support.path = "../ordinator-test-support"
+
+

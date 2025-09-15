@@ -22,17 +22,8 @@ use crate::routes::api::v1::api_scope;
 pub async fn start_application(
     orchestrator: Arc<Orchestrator<TotalSystemSolution>>,
     environment: &Environment,
-) -> anyhow::Result<impl Future<Output = std::result::Result<(), std::io::Error>>>
+) -> anyhow::Result<()>
 {
-    // let index_service =
-    // get_service(ServeDir::new("./static_files/index")).handle_error(     |err:
-    // std::io::Error| async move {         (
-    //             StatusCode::INTERNAL_SERVER_ERROR,
-    //             format!("Unhandled internal server error: {err}"),
-    //         )
-    //     },
-    // );
-
     let scheduler_files = ServeDir::new("./dist/static_files/scheduler/");
     let supervisor_files = ServeDir::new("./dist/static_files/supervisor//");
 
@@ -70,9 +61,13 @@ pub async fn start_application(
     let address = Ipv4Addr::from_str(dotenvy::var("SERVER_ADDRESS")?.as_str())?;
 
     let addr = SocketAddr::from((address, port));
-    let server = axum_server::bind(addr).serve(merged_app.into_make_service());
-
     info!(target: "stdout", "System initialized (4 of 4): ordinator-api-server");
     info!(target: "stdout", "Access the API documentation at: http://{}:{}/swagger", &addr.ip(), &addr.port());
-    Ok(server)
+
+    info!(target: "research", "READY");
+
+    axum_server::bind(addr)
+        .serve(merged_app.into_make_service())
+        .await
+        .map_err(|e| anyhow::anyhow!(e))
 }

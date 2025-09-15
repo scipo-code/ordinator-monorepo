@@ -2,8 +2,10 @@ use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::BufWriter;
+use std::path::Path;
 use std::path::PathBuf;
 
+use anyhow::Context;
 use file_rotate::ContentLimit;
 use file_rotate::FileRotate;
 use file_rotate::compression::Compression;
@@ -62,19 +64,21 @@ pub struct LogHandles
 //     }
 // }
 
-pub fn setup_logging() -> LogHandles
+pub fn setup_logging() -> anyhow::Result<LogHandles>
 {
-    delete_old_log_files();
-
     // Set the log directory
     let log_dir = env::var("ORDINATOR_LOG_DIR")
         .expect("A logging/tracing directory should be set in the .env file");
 
+    let log_dir_path = Path::new(&log_dir).join("ordinator");
+    setup_logging_directory_structure(&log_dir_path)
+        .context("Could not setup logging directories")?;
+
     // Set the log file paths.
-    let research_path: PathBuf = (log_dir.clone() + "ordinator.research.log").into();
-    let developer_path: PathBuf = (log_dir.clone() + "ordinator.developer.log").into();
-    let debug_path: PathBuf = (log_dir.clone() + "ordinator.debug.log").into();
-    let business_events_path: PathBuf = (log_dir.clone() + "ordinator.business_events.log").into();
+    let research_path: PathBuf = log_dir_path.clone().join("ordinator.research.log");
+    let developer_path: PathBuf = log_dir_path.clone().join("ordinator.developer.log");
+    let debug_path: PathBuf = log_dir_path.clone().join("ordinator.debug.log");
+    let business_events_path: PathBuf = log_dir_path.clone().join("ordinator.business_events.log");
 
     // Create the files that will contain the logs with specific options for each of
     // these.
@@ -129,7 +133,6 @@ pub fn setup_logging() -> LogHandles
     let developer_targets = Targets::new().with_target("developer", Level::TRACE);
     let business_event_targets = Targets::new().with_target("business_events", Level::INFO);
     let stdout_targets = Targets::new().with_target("stdout", Level::TRACE);
-
     // Make the logging layers
     let research_layer = fmt::layer()
         .with_writer(research_writer)
@@ -143,7 +146,6 @@ pub fn setup_logging() -> LogHandles
 
     let developer_layer = fmt::layer()
         .with_writer(developer_writer)
-        .json()
         .with_ansi(true)
         .with_file(true) // Include file name in logs
         .with_thread_ids(true)
@@ -168,12 +170,12 @@ pub fn setup_logging() -> LogHandles
 
     let stdout_layer = tracing_subscriber::fmt::layer().with_filter(stdout_targets);
 
-    let flame_layer = FlameLayer::with_file(
-        env::var("PROFILING_FILE").expect("A file name for the profiling data has to be set"),
-    )
-    .unwrap()
-    .0
-    .with_filter(EnvFilter::from_env("PROFILING_LEVEL"));
+    // let flame_layer = FlameLayer::with_file(
+    //     env::var("PROFILING_FILE").expect("A file name for the profiling data has
+    // to be set"), )
+    // .unwrap()
+    // .0
+    // .with_filter(EnvFilter::from_env("PROFILING_LEVEL"));
 
     // let layers = vec![
     //     research_layer.boxed(),
@@ -196,36 +198,28 @@ pub fn setup_logging() -> LogHandles
         .with(debug_layer)
         .with(business_events_layer)
         .with(stdout_layer)
-        .with(flame_layer)
+        // .with(flame_layer)
         .init();
 
     event!(target: "stdout", Level::INFO, "System initialized (1 of 4): logging");
-    LogHandles {
+    Ok(LogHandles {
         file_handle: None,
         _flame_handle: None,
-    }
+    })
 }
 
-fn delete_old_log_files()
+fn setup_logging_directory_structure(log_directory_path: &PathBuf) -> anyhow::Result<()>
 {
-    let previous_log_files = fs::read_dir(
-        dotenvy::var("ORDINATOR_LOG_DIR")
-            .expect("The ORDINATOR_LOG_DIR environment variables should always be set."),
-    )
-    .unwrap();
-
-    for log_file in previous_log_files {
-        let path = log_file.unwrap().path();
-        if path.file_name().unwrap() == ".gitkeep" {
-            continue;
-        };
-        if path.is_file()
-            && path
-                .extension()
-                .expect("All files in the logs directory should have the .log file extension")
-                == "log"
-        {
-            fs::remove_file(path).expect("If you encounter this error ");
-        }
+    if !log_directory_path.exists() {
+        std::fs::create_dir(log_directory_path).context("Could not create the log directory")?
     }
+
+    let entries = fs::read_dir(log_directory_path).context("Could not read the log directory")?;
+
+    for entry in entries {
+        let path = entry?.path();
+        fs::remove_file(path).context("Could not remove the previous logging files")?;
+    }
+
+    Ok(())
 }
