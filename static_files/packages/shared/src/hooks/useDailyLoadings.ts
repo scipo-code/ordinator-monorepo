@@ -10,5 +10,6 @@ export const useDailyLoadings = (
     queryFn: () => fetchDailyLoadings(asset),
     retry: 2,
     staleTime: 0,
+    refetchInterval: 10_000,
   });
 };

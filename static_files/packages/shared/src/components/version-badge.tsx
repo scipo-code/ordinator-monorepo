@@ -1,3 +1,4 @@
+import { useCurrentVersion } from "../hooks";
 
 const StagnationStatus: Record<string, {background: string}> = {
    unstable: { background: 'bg-red-800' },
@@ -7,9 +8,12 @@ const StagnationStatus: Record<string, {background: string}> = {
 }
 
 
-export function StagnationDot(
-  {stagnations}: {stagnations?: bigint}
-) {
+export function StagnationDot({asset}: {asset: string}) {
+
+  const {data: version } = useCurrentVersion(
+    asset ? `api/v1/solution_status/${encodeURIComponent(asset)}/tactical`: "",
+    1000
+  );
 
   const getStatus = (stagnations?: bigint): string => {
     if (!stagnations) return 'none';
@@ -19,7 +23,7 @@ export function StagnationDot(
   }
   
 
-  const statusKey = getStatus(stagnations);
+  const statusKey = getStatus(version?.stagnation_iterations);
   const status = StagnationStatus[statusKey]
 
 
