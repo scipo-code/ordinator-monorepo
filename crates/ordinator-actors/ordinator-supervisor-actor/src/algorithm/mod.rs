@@ -233,7 +233,7 @@ where
         );
 
         for work_order_activity in &self.solution.get_work_order_activities() {
-            let number_of_people = self
+            let number_of_people_for_operation = self
                 .parameters
                 .supervisor_work_orders
                 .get(&work_order_activity.0)
@@ -265,15 +265,9 @@ where
                 })
                 .count() as u64;
 
-            let mut remaining_to_assign = number_of_people
+            let mut remaining_to_assign = number_of_people_for_operation
                 .checked_sub(number_of_assigned)
-                .with_context(|| format!("Failed to subtract `number_of_people`: {number_of_people}\nfrom the `number_of_assigned`: {number_of_assigned}\nto be assigned to `work_order_activity`: {work_order_activity:?}"))?;
-
-            ensure!(
-                remaining_to_assign <= 1,
-                "Failed to subtract `number_of_people`: {number_of_people}\nfrom the `number_of_assigned`: {number_of_assigned}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
-                Location::caller()
-            );
+                .with_context(|| format!("Failed to subtract `number_of_people_for_operation`: {number_of_people_for_operation}\nfrom the `number_of_assigned`: {number_of_assigned}\nto be assigned to `work_order_activity`: {work_order_activity:?}"))?;
 
             for (actor_id, mut temporary_technician_delegate, _marginal_fitness) in
                 operational_status_by_work_order_activity.clone()
@@ -287,8 +281,8 @@ where
                     .filter(|e| e.0.1 == *work_order_activity && e.1.is_assign())
                     .count();
                 ensure!(
-                    value as u64 <= number_of_people,
-                    "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people}\n{}\nto be assigned to `work_order_activity`: {work_order_activity:?}",
+                    value as u64 <= number_of_people_for_operation,
+                    "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people_for_operation}\n{}\nto be assigned to `work_order_activity`: {work_order_activity:?}",
                     Location::caller()
                 );
                 let technician_delegate =
@@ -315,8 +309,8 @@ where
                         .filter(|e| e.0.1 == *work_order_activity && e.1.is_assign())
                         .count();
                     ensure!(
-                        value as u64 <= number_of_people,
-                        "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
+                        value as u64 <= number_of_people_for_operation,
+                        "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people_for_operation}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
                         Location::caller()
                     )
                 } else {
@@ -339,8 +333,8 @@ where
                     .filter(|e| e.0.1 == *work_order_activity && e.1.is_assign())
                     .count();
                 ensure!(
-                    value as u64 <= number_of_people,
-                    "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
+                    value as u64 <= number_of_people_for_operation,
+                    "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people_for_operation}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
                     Location::caller()
                 )
             }
@@ -352,8 +346,8 @@ where
                 .filter(|e| e.0.1 == *work_order_activity && e.1.is_assign())
                 .count();
             ensure!(
-                value as u64 <= number_of_people,
-                "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
+                value as u64 <= number_of_people_for_operation,
+                "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people_for_operation}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
                 Location::caller()
             )
         }
