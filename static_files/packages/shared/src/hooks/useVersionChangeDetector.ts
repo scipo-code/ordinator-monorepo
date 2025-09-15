@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { fetchSolution } from "../api/solution_status.ts";
+
 export type queryKeys = string;
 
 export function useVersionChangeDetector(
@@ -9,7 +10,7 @@ export function useVersionChangeDetector(
   intervalMs = 5000,
 ) {
   const queryClient = useQueryClient();
-  const [lastVersion, setLastVersion] = useState<null | bigint>(null);
+  const lastVersionRef = useRef<bigint | null>(null);
 
   const query = useQuery({
     queryKey: ["change-detector", url],
@@ -17,20 +18,43 @@ export function useVersionChangeDetector(
     enabled: !!url && url !== "",
     refetchInterval: intervalMs,
     refetchIntervalInBackground: true,
+    notifyOnChangeProps: ["data", "error"],
   });
 
   useEffect(() => {
     if (query.data?.version) {
       const currentVersion = query.data.version;
 
-      if (lastVersion !== null && currentVersion !== lastVersion) {
+      if (
+        lastVersionRef.current !== null &&
+        currentVersion !== lastVersionRef.current
+      ) {
+        console.log(
+          `Version changed from ${lastVersionRef.current} to ${currentVersion}`,
+        );
         keysToInvalidate.forEach((key) => {
           queryClient.invalidateQueries({ queryKey: [key] });
         });
       }
-      setLastVersion(currentVersion);
+
+      lastVersionRef.current = currentVersion;
     }
-  }, [query.data?.version, lastVersion, keysToInvalidate, queryClient]);
+  }, [query.data?.version, keysToInvalidate, queryClient]);
+
+  return query;
+}
+
+export function useCurrentVersion(
+  url: string,
+  intervalMs = 1000,
+) {
+  const query = useQuery({
+    queryKey: ["version", url],
+    queryFn: () => fetchSolution(url),
+    enabled: !!url && url !== "",
+    refetchInterval: intervalMs,
+    refetchIntervalInBackground: true,
+  });
 
   return query;
 }

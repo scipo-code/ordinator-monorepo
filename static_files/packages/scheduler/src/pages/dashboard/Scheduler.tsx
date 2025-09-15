@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useTableColDefs } from './scheduler/ColDef';
 import { parseISO, format } from 'date-fns';
 import { fetchWorkOrders, useSystemClock } from "@scipo-code/shared";
-import { useVersionChangeDetector } from '@scipo-code/shared';
 import { StagnationDot } from '@scipo-code/shared';
 
 
@@ -29,16 +28,10 @@ const Scheduler: React.FC = () => {
     enabled: !!asset,
     queryFn: () => fetchWorkOrders(asset!),
     retry: 2,                       // exponential-backoff retries
-    staleTime: 60_000,              // cache 1 min
+    refetchInterval: 2000,
+    staleTime: 0,
   });
 
-
-  const query = useVersionChangeDetector(
-    asset ? `api/v1/solution_status/${encodeURIComponent(asset)}/tactical`: "",
-    ["workOrders"],
-    1000
-  );
-  
 
   const { data: systemclock } = useSystemClock();
 
@@ -79,8 +72,8 @@ const Scheduler: React.FC = () => {
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4 shrink-0">Work Orders - {asset}: {format(parseISO(systemclock), "PPP p")}</h2>
         <div className='flex items-center gap-2 px-2 py-1 text-gray-700 text-xs rounded-md font-medium'>
-          Version: {query.data?.version}
-          <StagnationDot stagnations={query.data?.stagnation_iterations} />
+          Solution Stability
+          <StagnationDot asset={asset}/>
         </div>
       </div>
         <AgGridReact
@@ -96,6 +89,11 @@ const Scheduler: React.FC = () => {
             sortable: true,
             filter: true,
           }}
+          maintainColumnOrder={true}
+          suppressColumnMoveAnimation={true}
+          // This helps maintain focus
+          suppressCellFocus={false}
+          suppressScrollOnNewData={true}
         />
     </div>
   );

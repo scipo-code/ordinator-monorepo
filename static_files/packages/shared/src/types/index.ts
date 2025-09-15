@@ -6,6 +6,8 @@ export * from "./AssetNames.ts";
 export * from "./AvailableAssets.ts";
 export * from "./CreateTechnicianDto.ts";
 export * from "./DateTimeDto.ts";
+export * from "./DailyLoad.ts";
+export * from "./DailyLoadingDto.ts";
 export * from "./DaySubtable.ts";
 export * from "./IdDto.ts";
 export * from "./IdStringDto.ts";

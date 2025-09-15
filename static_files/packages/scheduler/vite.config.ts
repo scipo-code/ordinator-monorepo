@@ -21,9 +21,9 @@ export default defineConfig({
       targets: [
         {
           src: "../shared/public/*",
-          dest: ""
-        }
-      ]
+          dest: "",
+        },
+      ],
     }),
   ],
   resolve: {
