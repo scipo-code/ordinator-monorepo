@@ -42,9 +42,7 @@ use strategic_resources::StrategicResources;
 use strategic_solution::StrategicObjectiveValue;
 use strategic_solution::StrategicSolution;
 use strum::IntoEnumIterator;
-use tracing::event;
 use tracing::instrument;
-use tracing::Level;
 
 use crate::messages::requests::StrategicRequestResource;
 use crate::messages::requests::StrategicRequestScheduling;
@@ -196,35 +194,34 @@ where
         >,
     >
     {
-        let mut strategic_objective_value =
+        let mut new_objective_value =
             StrategicObjectiveValue::new(&self.parameters.strategic_options);
 
-        self.determine_urgency(&mut strategic_objective_value)
+        self.determine_urgency(&mut new_objective_value)
             .context("could not determine strategic urgency")?;
 
-        self.determine_resource_penalty(&mut strategic_objective_value);
+        self.determine_resource_penalty(&mut new_objective_value);
 
-        self.determine_clustering(&mut strategic_objective_value)
+        self.determine_clustering(&mut new_objective_value)
             .context("Could not determine StrategicObjective value")?;
 
-        strategic_objective_value.aggregate_objectives();
+        new_objective_value.aggregate_objectives();
 
         // This should not happen. We should always work on self and then
         // substitute out the remaining parts.
         // panic!();
-        if strategic_objective_value.objective_value
+        if new_objective_value.objective_value
             < self.solution.objective_value().objective_value
         {
-            event!(Level::INFO, strategic_objective_value_better = ?strategic_objective_value);
-            Ok(ObjectiveValueType::Better(strategic_objective_value))
+            Ok(ObjectiveValueType::Better(new_objective_value))
         } else {
-            event!(Level::INFO, strategic_objective_value_worse = ?strategic_objective_value);
-            Ok(ObjectiveValueType::Worse)
+            Ok(ObjectiveValueType::Worse(new_objective_value))
         }
     }
 
     fn schedule(&mut self) -> Result<()>
     {
+
         // WARNING
         // I am not sure that this is the correct place of putting this.
         // What should we change here? I think that the best thing would be to make this
@@ -323,6 +320,10 @@ where
 
     fn force_schedule(&mut self) -> Result<()> {
 
+
+        // ISSUE #999
+        return Ok(());
+
         // [`StrategicParameter::locked_in_period`] should be derived from the
         // [`SchedulingEnvironment`]. 
         let forced_work_orders: Vec<_> = self
@@ -344,6 +345,10 @@ where
         }
 
         Ok(())
+    }
+
+    fn throttling(&self, throttling: &ordinator_configuration::throttling::Throttling) -> u64 {
+        throttling.strategic_throttling
     }
 }
 
@@ -808,9 +813,6 @@ where
         force_schedule_work_order: &ForcedWorkOrder,
     ) -> Result<()>
     {
-        // The [`StrategicActor`] can only schedule the WorkOrder if
-        // it has control over it. That means that we should not unschedule
-        // if the WorkOrder is at the TacticalActor. Is this simply silly?
         if self.is_scheduled(force_schedule_work_order.work_order_number()) {
             self.unschedule_specific_work_order(*force_schedule_work_order.work_order_number())
                 .with_context(|| {
@@ -886,6 +888,9 @@ where
 
     /// This function updates the StrategicResources based on the a provided
     /// loading.
+    ///
+    // WARN This function should never have anyside effects. This is impossible to understand.
+    // 
     fn update_loadings(
         &mut self,
         strategic_resources: StrategicResources,
@@ -900,46 +905,56 @@ where
         // it would not make sense for this kind of function. I believe that the best
         // decision here is to make a function that lets us manually update and change a
         // value.
+        // 
+        // WARN
+        // This function is doing two things. 
         for (period, operational_resources) in strategic_resources.0 {
-            for (operational_id, loading) in operational_resources {
+            for (operational_id, operational_resource_loading) in operational_resources {
+                assert!(operational_resource_loading.skill_hours.iter().all(|e| e.1 == &operational_resource_loading.total_hours),
+                "Each skill_hours should always be equal to the value of the total_hours\noperational_resource: {:#?}\n{}", operational_resource_loading, std::panic::Location::caller());
                 match load_operation {
                     LoadOperation::Add => {
-                        let strategic_loading = self
+                        self
                             .solution
                             .strategic_loadings
                             .0
-                            .entry(period.clone())
-                            .or_default()
+                            .get_mut(&period)
+                            .expect("All Periods should be initialized at this point")
+                            // What happens if the value is not present? Should we simply insert it?
                             .entry(operational_id.clone())
-                            .or_default();
+                            .and_modify(|e| {
+                                e.total_hours += operational_resource_loading.total_hours;
+                                for (skill, hours) in &operational_resource_loading.skill_hours {
+                                    e
+                                        .skill_hours
+                                        .entry(*skill) .and_modify(|wor| *wor += hours)
+                                        .or_insert(*hours);
+                                }
+                                
+                            })
+                            .or_insert(operational_resource_loading);
 
-                        strategic_loading.total_hours += loading.total_hours;
-                        for (skill, hours) in loading.skill_hours {
-                            strategic_loading
-                                .skill_hours
-                                .entry(skill)
-                                .and_modify(|wor| *wor += hours)
-                                .or_insert(hours);
-                        }
                     }
                     LoadOperation::Sub => {
                         let strategic_loading = self
                             .solution
                             .strategic_loadings
                             .0
-                            .entry(period.clone())
-                            .or_default()
-                            .entry(operational_id.clone())
-                            .or_default();
+                            .get_mut(&period)
+                            .expect("All Periods should be initialized at this point")
+                            // What happens if the value is not present? Should we simply insert it?
+                            .get_mut(&operational_id)
+                            .unwrap();
 
-                        strategic_loading.total_hours -= loading.total_hours;
-                        for (skill, hours) in loading.skill_hours {
-                            strategic_loading
-                                .skill_hours
-                                .entry(skill)
-                                .and_modify(|wor| *wor -= hours)
-                                .or_insert(hours);
-                        }
+                            strategic_loading.total_hours -= operational_resource_loading.total_hours;
+                            for (skill, hours) in &operational_resource_loading.skill_hours {
+                                strategic_loading
+                                    .skill_hours
+                                    .entry(*skill)
+                                    .and_modify(|wor| *wor -= hours)
+                                    .or_insert((*hours).negate());
+                            }
+                                
                     }
                 }
             }
@@ -998,6 +1013,18 @@ where
             &strategic_loading_resources,
         );
 
+        for operational_resource in difference_resources.values() {
+                ensure!(operational_resource.skill_hours.iter().all(|e| e.1 == &operational_resource.total_hours),
+                "Each skill_hours should always be equal to the value of the total_hours\noperational_resource: {:#?}\n{}", operational_resource, std::panic::Location::caller());
+        }
+        for operational_resource in strategic_capacity_resources.values() {
+                ensure!(operational_resource.skill_hours.iter().all(|e| e.1 == &operational_resource.total_hours),
+                "Each skill_hours should always be equal to the value of the total_hours\noperational_resource: {:#?}\n{}", operational_resource, std::panic::Location::caller());
+        }
+        for operational_resource in strategic_loading_resources.values() {
+                ensure!(operational_resource.skill_hours.iter().all(|e| e.1 == &operational_resource.total_hours),
+                "Each skill_hours should always be equal to the value of the total_hours\noperational_resource: {:#?}\nScheduleWorkOrder: {:?}\n{}", operational_resource, schedule, std::panic::Location::caller());
+        }
         // Perform 10 different technician permutations
         let mut error_for_unschedule = HashSet::new();
         let mut store_strategic_resources_options = vec![];
@@ -1072,13 +1099,15 @@ where
                         //
                         // `work_load`
 
+
                         combined_loadings(&work_load, &strategic_loading_resources)
                             .iter()
                             .try_for_each(|(res, work)| {
                                 let allowed = 
-                                    work_load.get(res)
-                                        .with_context(||format!("Resource: {res} is missing from the work_load: {work_load:#?}"))?;                                
-                                ensure!( work >= allowed, "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
+                                    work_load.get(res).cloned()
+                                        .unwrap_or(Work::from(0.0));
+                                        // .with_context(||format!("Resource: {res} is missing from the work_load: {work_load:#?}"))?;                                
+                                ensure!( work >= &allowed, "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
                                     possible errors:\n\
                                     * Rounding error\n\
                                     * Calculation error\n\
@@ -1297,6 +1326,7 @@ where
     }
 }
 
+/// This function is 
 fn combined_loadings(
     work_load: &HashMap<Resources, Work>,
     strategic_loading_resources: &HashMap<String, OperationalResource>,
@@ -1389,7 +1419,8 @@ fn determine_unschedule_work_resource_loadings(
                     .skill_hours
                     .iter()
                     .all(|e| e.1 == &operational_resource.total_hours),
-                "Each skill_hours should always be equal to the value of the total_hours\n{}",
+                "Each skill_hours should always be equal to the value of the total_hours.\noperational_resource: {:#?}\n{}",
+                operational_resource,
                 std::panic::Location::caller()
             );
 
@@ -1470,6 +1501,18 @@ fn determine_forced_work_order_resource_loadings(
             .filter(|or| or.skill_hours.keys().contains(resources))
             .collect::<Vec<_>>();
 
+        for operational_resource in &qualified_technicians {
+            ensure!(
+                operational_resource
+                    .skill_hours
+                    .iter()
+                    .all(|e| e.1 == &operational_resource.total_hours),
+                "Each skill_hours should always be equal to the value of the total_hours.\noperational_resource: {:#?}\n{}",
+                operational_resource,
+                std::panic::Location::caller()
+            );
+            
+        }
         // If there are no qualified technicians. All technicians should be assumed to
         // be responsible? Yes let us just do that!
         //
@@ -1605,6 +1648,15 @@ fn determine_normal_work_order_resource_loadings(
 
     for operation_load in &mut *work_load_permutation {
         for operational_resource in technician_permutation.iter_mut() {
+            ensure!(
+                operational_resource
+                    .skill_hours
+                    .iter()
+                    .all(|e| e.1 == &operational_resource.total_hours),
+                "Each skill_hours should always be equal to the value of the total_hours.\noperational_resource: {:#?}\n{}",
+                operational_resource,
+                std::panic::Location::caller()
+            );
             if !operational_resource
                 .skill_hours
                 .keys()
@@ -3010,4 +3062,10 @@ mod tests
         assert_eq!(period_1, period_2);
         assert_eq!(period_1, period_1.clone());
     }
+
+    // #[test]
+    // fn test_update_loadings()
+    // {
+    //     let 
+    // }
 }

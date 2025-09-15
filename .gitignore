@@ -12,6 +12,7 @@
 **/logging/logs/*.log
 
 **.log*
+**.dat
 
 *.folded
 

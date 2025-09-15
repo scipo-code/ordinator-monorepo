@@ -1,19 +1,19 @@
-use std::collections::hash_map::Entry;
 use std::collections::HashMap;
+use std::collections::hash_map::Entry;
 
+use anyhow::Result;
 use anyhow::bail;
 use anyhow::ensure;
-use anyhow::Result;
 use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
-use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use priority_queue::PriorityQueue;
 use strum::IntoEnumIterator;
-use tracing::event;
 use tracing::Level;
+use tracing::event;
 
 use super::strategic_parameters::StrategicParameters;
 use super::strategic_resources::StrategicResources;
@@ -84,24 +84,23 @@ where
                 // `StrategicSolution` this is crucial to remember, if you accepted
                 // the TacticalSolutions here as well that will be a nightmare.
                 if let WhereIsWorkOrder::Strategic(strategic_scheduled_period) = strategic_solution
+                    && strategic_scheduled_period == period
                 {
-                    if strategic_scheduled_period == period {
-                        let work_load = &strategic_parameter.work_load;
-                        for resource in Resources::iter() {
-                            let load: Work =
-                                work_load.get(&resource).cloned().unwrap_or(Work::from(0.0));
-                            // We just need to test that the total hours are correct. We do not have
-                            // to focus on the individual resources. We
-                            // can handle that in another assert
-                            // function.
+                    let work_load = &strategic_parameter.work_load;
+                    for resource in Resources::iter() {
+                        let load: Work =
+                            work_load.get(&resource).cloned().unwrap_or(Work::from(0.0));
+                        // We just need to test that the total hours are correct. We do not have
+                        // to focus on the individual resources. We
+                        // can handle that in another assert
+                        // function.
 
-                            match aggregated_strategic_load.entry((period, resource)) {
-                                Entry::Occupied(mut occupied_entry) => {
-                                    *occupied_entry.get_mut() += load;
-                                }
-                                Entry::Vacant(vacant_entry) => {
-                                    vacant_entry.insert(load);
-                                }
+                        match aggregated_strategic_load.entry((period, resource)) {
+                            Entry::Occupied(mut occupied_entry) => {
+                                *occupied_entry.get_mut() += load;
+                            }
+                            Entry::Vacant(vacant_entry) => {
+                                vacant_entry.insert(load);
                             }
                         }
                     }

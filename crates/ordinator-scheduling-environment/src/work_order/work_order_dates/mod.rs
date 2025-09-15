@@ -124,6 +124,38 @@ impl WorkOrderDatesBuilder
         self.material_expected_date = Some(material_expected_date);
         self
     }
+
+    pub fn earliest_allowed_start_from_ymd(mut self, year: i32, month: u32, day: u32) -> Self
+    {
+        self.earliest_allowed_start_date = Some(NaiveDate::from_ymd_opt(year, month, day).expect(
+            "This date is required for constructing a WorkOrderDates object",
+        ));
+        self
+    }
+
+    pub fn latest_allowed_finish_from_ymd(mut self, year: i32, month: u32, day: u32) -> Self
+    {
+        self.latest_allowed_finish_date = Some(NaiveDate::from_ymd_opt(year, month, day).expect(
+            "This date is required for constructing a WorkOrderDates object",
+        ));
+        self
+    }
+
+    pub fn basic_start_from_ymd(mut self, year: i32, month: u32, day: u32) -> Self
+    {
+        self.basic_start_date = Some(NaiveDate::from_ymd_opt(year, month, day).expect(
+            "This date is required for constructing a WorkOrderDates object",
+        ));
+        self
+    }
+
+    pub fn basic_finish_from_ymd(mut self, year: i32, month: u32, day: u32) -> Self
+    {
+        self.basic_finish_date = Some(NaiveDate::from_ymd_opt(year, month, day).expect(
+            "This date is required for constructing a WorkOrderDates object",
+        ));
+        self
+    }
 }
 
 fn serialize_duration<S>(duration: &Duration, serializer: S) -> Result<S::Ok, S::Error>

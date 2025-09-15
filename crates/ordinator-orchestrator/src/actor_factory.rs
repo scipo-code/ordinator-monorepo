@@ -6,19 +6,19 @@ use anyhow::Context;
 use anyhow::Result;
 use arc_swap::ArcSwap;
 use ordinator_configuration::SystemConfigurations;
-use ordinator_operational_actor::algorithm::operational_solution::OperationalSolution;
 use ordinator_operational_actor::OperationalApi;
+use ordinator_operational_actor::algorithm::operational_solution::OperationalSolution;
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
-use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_strategic_actor::StrategicApi;
-use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
+use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
 use ordinator_supervisor_actor::SupervisorApi;
-use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
+use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
 use ordinator_tactical_actor::TacticalApi;
+use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
 
 use crate::Orchestrator;
 use crate::StartError;
@@ -90,7 +90,7 @@ where
             build_dependencies.1,
             build_dependencies.2,
             self.state_link_bus.lock().unwrap().add_rx(),
-            self.error_channels.0.clone(),
+            self.error_sender.clone(),
         )
         .with_context(|| format!("Could not create StrategicActor for Asset {}", id.asset()))?;
 
@@ -117,7 +117,7 @@ where
             build_dependencies.1,
             build_dependencies.2,
             self.state_link_bus.lock().unwrap().add_rx(),
-            self.error_channels.0.clone(),
+            self.error_sender.clone(),
         )
         .with_context(|| format!("Could not create TacticalActor for Asset {}", id.asset()))?;
 
@@ -142,7 +142,7 @@ where
             build_dependencies.1,
             build_dependencies.2,
             self.state_link_bus.lock().unwrap().add_rx(),
-            self.error_channels.0.clone(),
+            self.error_sender.clone(),
         )
         .with_context(|| format!("Could not create supervisorActor for Asset {}", id.asset()))?;
 
@@ -175,7 +175,7 @@ where
             build_dependencies.1,
             build_dependencies.2,
             self.state_link_bus.lock().unwrap().add_rx(),
-            self.error_channels.0.clone(),
+            self.error_sender.clone(),
         )
         .with_context(|| format!("Could not create OperationalActor for Asset {}", id.asset()))
         .map_err(|_e| StartError::CouldNotConstruct)?;

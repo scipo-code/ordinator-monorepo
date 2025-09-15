@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  ORDINATOR_LOG_DIR: '/tmp/'
+
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
@@ -17,7 +20,8 @@ jobs:
           toolchain: nightly
           override: true
       - name: Run tests
-        run: cargo test --verbose 
+        run: |
+          cp .env.example .env && cargo test --workspace --verbose 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -27,7 +31,7 @@ jobs:
       - name: Install frontend dependencies
         run: cd static_files/packages/shared/ && pnpm install
       - name: Start backend server
-        run: cp .env.example .env && cargo test test_complete_system -- --ignored --nocapture &
+        run: cp .env.example .env && cargo test master_system_test_1 -- --ignored --nocapture &
         env:
           BACKGROUND: true
       - name: Wait for server to be ready

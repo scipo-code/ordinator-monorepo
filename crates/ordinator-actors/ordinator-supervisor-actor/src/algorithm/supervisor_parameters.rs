@@ -163,7 +163,7 @@ impl SupervisorParameters
 pub struct SupervisorParameter
 {
     pub resource: Resources,
-    pub number: NumberOfPeople,
+    pub number_of_people: NumberOfPeople,
     pub work_remaining: Work,
 }
 
@@ -173,7 +173,7 @@ impl SupervisorParameter
     {
         Self {
             resource,
-            number,
+            number_of_people: number,
             work_remaining,
         }
     }

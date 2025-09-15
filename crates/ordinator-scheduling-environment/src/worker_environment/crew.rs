@@ -68,6 +68,83 @@ pub struct OperationalConfiguration
     pub resources: HashSet<Resources>,
 }
 
+#[derive(Default)]
+pub struct OperationalConfigurationBuilder
+{
+    availability: BTreeSet<Availability>,
+    break_interval: Option<TimeInterval>,
+    off_shift_interval: Option<TimeInterval>,
+    toolbox_interval: Option<TimeInterval>,
+    resources: HashSet<Resources>,
+}
+
+impl OperationalConfigurationBuilder
+{
+    pub fn new() -> Self
+    {
+        Self::default()
+    }
+
+    pub fn add_availability(mut self, availability: Availability) -> Self
+    {
+        self.availability.insert(availability);
+        self
+    }
+
+    pub fn availability(mut self, availability: BTreeSet<Availability>) -> Self
+    {
+        self.availability = availability;
+        self
+    }
+
+    pub fn add_resource(mut self, resource: Resources) -> Self
+    {
+        self.resources.insert(resource);
+        self
+    }
+
+    pub fn resources(mut self, resources: HashSet<Resources>) -> Self
+    {
+        self.resources = resources;
+        self
+    }
+
+    pub fn break_interval(mut self, interval: TimeInterval) -> Self
+    {
+        self.break_interval = Some(interval);
+        self
+    }
+
+    pub fn off_shift_interval(mut self, interval: TimeInterval) -> Self
+    {
+        self.off_shift_interval = Some(interval);
+        self
+    }
+
+    pub fn toolbox_interval(mut self, interval: TimeInterval) -> Self
+    {
+        self.toolbox_interval = Some(interval);
+        self
+    }
+
+    pub fn build(self) -> OperationalConfiguration
+    {
+        OperationalConfiguration {
+            availability: self.availability,
+            break_interval: self
+                .break_interval
+                .expect("break_interval should always be set when constructing an Actor"),
+            off_shift_interval: self
+                .off_shift_interval
+                .expect("off_shift_interval should always be set when constructing an Actor"),
+            toolbox_interval: self
+                .toolbox_interval
+                .expect("toolbox_interval should always be set when constructing an Actor"),
+            resources: self.resources,
+        }
+    }
+}
+
 impl OperationalConfiguration
 {
     pub fn new(

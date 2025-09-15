@@ -1,3 +1,4 @@
+use anyhow::bail;
 use ordinator_scheduling_environment::work_order::operation::Operation;
 
 #[derive(Clone, Default, Hash, Eq, PartialEq, PartialOrd, Ord, Debug)]
@@ -42,27 +43,54 @@ impl Delegate
         matches!(self, Self::Drop)
     }
 
-    pub fn state_change_to_unassign(&mut self)
+    pub fn state_change_to_unassign(&mut self) -> anyhow::Result<()>
     {
         match self {
-            Delegate::Assess => *self = Delegate::Unassign,
-            Delegate::Assign => todo!(),
-            Delegate::Unassign => todo!(),
-            Delegate::Drop => todo!(),
-            Delegate::Done => todo!(),
-            Delegate::Fixed => todo!(),
+            Delegate::Assess => {
+                *self = Delegate::Unassign;
+                Ok(())
+            }
+            Delegate::Assign => {
+                bail!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Unassign => {
+                bail!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Drop => {
+                bail!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Done => {
+                bail!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Fixed => {
+                bail!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
         }
     }
 
-    pub fn state_change_to_assign(&mut self)
+    // Break now! You need to grap some fresh air now.
+    pub fn state_change_to_assign(&mut self) -> anyhow::Result<()>
     {
         match self {
-            Delegate::Assess => *self = Delegate::Assign,
-            Delegate::Assign => todo!(),
-            Delegate::Unassign => todo!(),
-            Delegate::Drop => todo!(),
-            Delegate::Done => todo!(),
-            Delegate::Fixed => todo!(),
+            Delegate::Assess => {
+                *self = Delegate::Assign;
+                Ok(())
+            }
+            Delegate::Assign => {
+                bail!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Unassign => {
+                bail!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Drop => {
+                bail!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Done => {
+                bail!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
+            Delegate::Fixed => {
+                bail!("Only Delegate::Assess work_order_activities can have their state changed")
+            }
         }
     }
 }

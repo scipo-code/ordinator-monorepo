@@ -424,9 +424,9 @@ pub async fn add_technician(
     } = payload;
 
     let start_date = DateTime::try_from(start)
-        .map_err(|e| AppError::Anyhow(format!("Error at start date: {}.", e.to_string())))?;
+        .map_err(|e| AppError::Anyhow(format!("Error at start date: {}.", e)))?;
     let finish_date = DateTime::try_from(finish)
-        .map_err(|e| AppError::Anyhow(format!("Error at finish date: {}.", e.to_string())))?;
+        .map_err(|e| AppError::Anyhow(format!("Error at finish date: {}.", e)))?;
 
     let mut resources = vec![];
     for resource_string in resources_string {

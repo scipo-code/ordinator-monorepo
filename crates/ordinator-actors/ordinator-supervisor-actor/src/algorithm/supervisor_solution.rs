@@ -28,6 +28,34 @@ pub struct SupervisorSolution
     pub(crate) operational_state_machine: HashMap<(ActorCompositeId, WorkOrderActivity), Delegate>,
 }
 
+impl std::fmt::Debug for SupervisorSolution
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        f.debug_struct("SupervisorSolution")
+            .field("objective_value", &self.objective_value)
+            .field(
+                "operational_state_machine_technicians",
+                &self
+                    .operational_state_machine
+                    .iter()
+                    .map(|e| e.0.0.clone())
+                    .collect::<HashSet<_>>()
+                    .len(),
+            )
+            .field(
+                "operational_state_machine_work_order_activities",
+                &self
+                    .operational_state_machine
+                    .iter()
+                    .map(|e| e.0.1)
+                    .collect::<HashSet<_>>()
+                    .len(),
+            )
+            .finish()
+    }
+}
+
 impl SupervisorSolution
 {
     pub fn new_from_parts(
@@ -41,26 +69,25 @@ impl SupervisorSolution
     }
 }
 
-impl std::fmt::Debug for SupervisorSolution
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
-    {
-        if f.alternate() {
-            write!(
-                f,
-                "SupervisorSolution \
-                {{\n\
-                \tobjective_value: {:#?}\n\
-                \toperational_state_machine: {}\n\
-                }}",
-                self.objective_value,
-                self.operational_state_machine.len(),
-            )
-        } else {
-            panic!()
-        }
-    }
-}
+// impl std::fmt::Debug for SupervisorSolution
+// {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+//     {
+//         if f.alternate() {
+//             write!(
+//                 f,
+//                 "SupervisorSolution \
+//                 {{\n\
+//                 \tobjective_value: {:#?}\n\
+//                 \toperational_state_machine: {}\n\
+//                 }}",
+//                 self.objective_value,
+//                 self.operational_state_machine.len(),
+//             )
+//         } else {
+//         }
+//     }
+// }
 
 impl Solution for SupervisorSolution
 {
@@ -157,7 +184,7 @@ impl SupervisorSolution
     {
         self.operational_state_machine
             .iter()
-            .filter(|e| (e.1.is_assign() || e.1.is_assess()))
+            .filter(|e| e.1.is_assign() || e.1.is_assess())
             .map(|(e, _)| (e.0.clone(), e.1))
             .collect()
     }
@@ -187,57 +214,53 @@ impl SupervisorSolution
             .collect()
     }
 
-    // You have to be afraid of these kind of things here. I believe that the
-    // best approach here is to make something that will allow us to work on the
-    // We want to make this so that the code works on. The code should send the
-    // error to the orchestrator
     pub fn operational_status_by_work_order_activity<Ss>(
         &self,
         work_order_activity: &WorkOrderActivity,
-        // It can only ever reference the `loaded_shared_solution`
         loaded_shared_solution: &Guard<Arc<Ss>>,
     ) -> Result<Vec<(ActorCompositeId, Delegate, MarginalFitness)>>
     where
         Ss: SystemSolutions,
     {
         let mut out = Vec::new();
-
-        for (id_woa, delegate) in &self.operational_state_machine {
-            if id_woa.1 != *work_order_activity {
-                continue;
-            }
-
-            // How should we handle this edge case? I think that the most important
-            // thing here is to make the system. Able to function... The real issue
-            // is that there is state present in `self.operational_state_machine` that
-            // is not available in the operational_actor_solutions.
-            //
-            // The issue here is whether we should accept the delay here and give the
-            // responsibility for eventual consistency to the higher levels.
-            //
-            // Okay, this can introduce really annoying bugs into the system. But that said
-            // this is still a non.
-            let op = match loaded_shared_solution
-                .operational_actor_solutions(&id_woa.0)
-                .ok()
+        for (id_woa, delegate) in self
+            .operational_state_machine
+            .iter()
+            // We only take the work_orders_that are actually there.
+            .filter(|id_and_woa| id_and_woa.0.1 == *work_order_activity)
+            .filter(|id_and_woa| id_and_woa.1 == &Delegate::Assess)
+        {
+            // We only consider the delagates if the operational actor is actually running.
+            if let Ok(operational_solution) =
+                loaded_shared_solution.operational_actor_solutions(&id_woa.0)
             {
-                Some(solution) => {
-                    solution.marginal_fitness_for_operational_actor(work_order_activity)
-                }
-                None => continue,
-            };
+                // OperationalActor might not have had enough time to incorporate the
+                // state, in that case `None` is returned
+                let op = operational_solution
+                    .marginal_fitness_for_operational_actor(work_order_activity);
 
-            if let Some(fitness) = op {
-                out.push((id_woa.0.clone(), delegate.clone(), fitness.clone()));
-            }
+                if let Some(fitness) = op
+                    && matches!(fitness, MarginalFitness::Scheduled(_))
+                {
+                    out.push((id_woa.0.clone(), delegate.clone(), fitness.clone()));
+                }
+            };
         }
 
+        // There can be no duplicates
+        out.sort_by_key(|(_agent_id, _, mar_fit)| match mar_fit {
+            MarginalFitness::Scheduled(auxillary_operational_objective) => {
+                *auxillary_operational_objective
+            }
+            MarginalFitness::None => unreachable!(),
+        });
         Ok(out)
     }
 
+    #[allow(dead_code)]
     pub(crate) fn get_iter(
-        &self,
-    ) -> std::collections::hash_map::Iter<(ActorCompositeId, WorkOrderActivity), Delegate>
+        &'_ self,
+    ) -> std::collections::hash_map::Iter<'_, (ActorCompositeId, WorkOrderActivity), Delegate>
     {
         self.operational_state_machine.iter()
     }

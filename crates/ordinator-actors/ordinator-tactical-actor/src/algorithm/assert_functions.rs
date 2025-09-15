@@ -14,7 +14,6 @@ use priority_queue::PriorityQueue;
 use strum::IntoEnumIterator;
 use tracing::Level;
 use tracing::event;
-use tracing::info;
 
 use super::Algorithm;
 use super::tactical_parameters::TacticalParameters;
@@ -78,7 +77,7 @@ where
                     // about the initialization of the
                     .unwrap_or(&zero_work);
 
-                info!(target: "debug", day = ?day.0, ?agg_load, ?sch_load);
+                // info!(target: "debug", day = ?day.0, ?agg_load, ?sch_load);
                 if (agg_load - sch_load).0.round_dp(9) != Work::from(0.0).0 {
                     event!(Level::ERROR, agg_load = ?agg_load, sch_load = ?sch_load, resource = ?resource, day = ?day);
                     bail!(

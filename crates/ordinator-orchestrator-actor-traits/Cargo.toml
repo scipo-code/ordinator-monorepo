@@ -7,12 +7,13 @@ edition = "2024"
 ordinator-scheduling-environment ={ path = "../ordinator-scheduling-environment"}
 ordinator-configuration = {path = "../ordinator-configuration"}
 
-anyhow = {workspace = true}
-arc-swap = {workspace = true}
+anyhow.workspace = true
+arc-swap.workspace = true
+bus.workspace = true
 chrono.workspace = true
 colored.workspace = true
-flume = {workspace = true}
-thiserror.workspace = true
+flume.workspace = true
 serde.workspace =true
-bus = "2.4.1"
+thiserror.workspace = true
+valuable.workspace = true
 

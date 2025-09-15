@@ -378,7 +378,7 @@ impl Display for ActorCompositeId
     {
         write!(
             f,
-            "Id: {} | resources: {:?} | asset: {:?}",
+            "Id: {}\nresources: {:?}\navailability: {:?}",
             self.0, self.1, self.2
         )
     }

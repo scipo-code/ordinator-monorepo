@@ -1,17 +1,18 @@
 use std::collections::HashMap;
 
+use anyhow::Result;
 use anyhow::bail;
 use anyhow::ensure;
-use anyhow::Result;
-use shared_types::scheduling_environment::work_order::operation::Work;
-use shared_types::scheduling_environment::worker_environment::resources::Resources;
-use shared_types::strategic::StrategicResources;
-use shared_types::LoadOperation;
+use ordinator_orchestrator_actor_traits::SystemSolutions;
+use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use strum::IntoEnumIterator;
-use tracing::event;
 use tracing::Level;
+use tracing::event;
 
-use super::StrategicAgent;
+use crate::StrategicActor;
+use crate::algorithm::strategic_resources::StrategicResources;
+use crate::algorithm::strategic_solution::StrategicSolution;
 
 #[allow(dead_code)]
 pub trait StrategicAssertions
@@ -20,32 +21,38 @@ pub trait StrategicAssertions
     fn assert_excluded_periods(&self) -> Result<()>;
 }
 
-impl StrategicAssertions for StrategicAgent
+impl<Ss> StrategicAssertions for StrategicActor<Ss>
+where
+    Ss: SystemSolutions<Strategic = StrategicSolution> + std::fmt::Debug,
 {
     fn assert_aggregated_load(&self) -> Result<()>
     {
         let mut aggregated_strategic_load = StrategicResources::new(HashMap::new());
-        for period in self.strategic_algorithm.periods() {
+        for period in &self.0.algorithm.parameters.strategic_periods {
             for (work_order_number, strategic_solution) in self
-                .strategic_algorithm
-                .strategic_solution
-                .strategic_periods
+                .0
+                .algorithm
+                .solution
+                .strategic_scheduled_work_orders
                 .iter()
             {
                 let strategic_parameter = self
-                    .strategic_algorithm
-                    .strategic_parameters
+                    .0
+                    .algorithm
+                    .parameters
                     .strategic_work_order_parameters
                     .get(work_order_number)
                     .unwrap();
-                if strategic_solution.as_ref().unwrap() == &period.clone() {
+                // This is not now! You have to remove all of this. It cannot be done in
+                // this way with the remaining time.
+                if strategic_solution == &period.clone() {
                     let work_load = &strategic_parameter.work_load;
                     for resource in Resources::iter() {
                         let load: Work =
                             work_load.get(&resource).cloned().unwrap_or(Work::from(0.0));
                         aggregated_strategic_load.update_load(
-                            &resource,
                             period,
+                            &resource,
                             load,
                             LoadOperation::Add,
                         );
@@ -83,22 +90,21 @@ impl StrategicAssertions for StrategicAgent
 
     fn assert_excluded_periods(&self) -> Result<()>
     {
-        for (work_order_number, strategic_parameter) in &self
-            .strategic_algorithm
-            .strategic_parameters
-            .strategic_work_order_parameters
+        for (work_order_number, strategic_parameter) in
+            &self.0.algorithm.parameters.strategic_work_order_parameters
         {
             let excluded_periods = &strategic_parameter.excluded_periods;
             let locked_in_period = &strategic_parameter.locked_in_period;
 
             let scheduled_period = self
-                .strategic_algorithm
-                .strategic_solution
-                .strategic_periods
+                .0
+                .algorithm
+                .solution
+                .strategic_scheduled_work_orders
                 .get(work_order_number)
                 .unwrap();
 
-            if let Some(period) = scheduled_period {
+            if let Some(period) = scheduled_period.strategic_forced() {
                 ensure!(
                     !excluded_periods.contains(period),
                     "\n{:#?}\nscheduled in:{:#?}\nlocked_in_period\n{:#?}\nwhich is part of the excluded periods:\n{:#?}",
@@ -153,18 +159,19 @@ impl StrategicAssertions for StrategicAgent
 //                 Some(scheduled_period) => {
 //                     if awsc
 //                         &&
-// !(scheduled_period.contains_date(basic_start_of_first_activity)                             || work_order.unloading_point_contains_period(scheduled_period.clone()))
+// !(scheduled_period.contains_date(basic_start_of_first_activity)
+// || work_order.unloading_point_contains_period(scheduled_period.clone()))
 //                         && &basic_start_of_first_activity >
 // &first_period.start_date().date_naive()                     {
-//                         
-// strategic_state.infeasible_cases_mut().unwrap().respect_awsc =               
+//
+// strategic_state.infeasible_cases_mut().unwrap().respect_awsc =
 // ConstraintState::Infeasible(format!(                                 "Work
 // order {:?} does not respect AWSC. Period: {}, basic start date: {}, status
-// codes: {:?}, unloading_point: {:?}, vendor: {}",                             
+// codes: {:?}, unloading_point: {:?}, vendor: {}",
 // work_order_number,                                 scheduled_period,
 //                                 basic_start_of_first_activity,
-//                                 
-// work_order.work_order_analytic.user_status_codes,                            
+//
+// work_order.work_order_analytic.user_status_codes,
 // work_order.operations.values().map(|opr| opr.unloading_point.period.clone()),
 //                                 if work_order.is_vendor() { "VEN" } else { "
 // " },                             ));
@@ -172,8 +179,8 @@ impl StrategicAssertions for StrategicAgent
 //                     }
 //                 }
 //                 None => {
-//                     
-// strategic_state.infeasible_cases_mut().unwrap().respect_awsc =               
+//
+// strategic_state.infeasible_cases_mut().unwrap().respect_awsc =
 // ConstraintState::Infeasible(format!(                             "Work order
 // {:?} does not have a period",                             work_order_number,
 //                         ));
@@ -206,11 +213,11 @@ impl StrategicAssertions for StrategicAgent
 //                     work_order_number = ?work_order_number,
 //                     work_order_unloading_point =
 // ?work_order.unloading_point(),                     work_order_status_codes =
-// ?work_order.work_order_analytic.user_status_codes,                     
-// work_order_dates = ?work_order.order_dates().basic_start_date,               
-// periods = ?periods[0..=1],                     
+// ?work_order.work_order_analytic.user_status_codes,
+// work_order_dates = ?work_order.order_dates().basic_start_date,
+// periods = ?periods[0..=1],
 // optimized_work_order_scheduled_period =
-// ?optimized_work_order.scheduled_period,                     
+// ?optimized_work_order.scheduled_period,
 // optimized_work_order_locked_in_period =
 // ?optimized_work_order.locked_in_period,                 );
 //                 strategic_state
@@ -258,22 +265,22 @@ impl StrategicAssertions for StrategicAgent
 //                     work_order_number = ?work_order_number,
 //                     work_order_unloading_point =
 // ?work_order.unloading_point(),                     work_order_status_codes =
-// ?work_order.work_order_analytic.user_status_codes,                     
-// work_order_dates = ?work_order.order_dates().basic_start_date,               
-// periods = ?periods[0..=1],                     
-// optimized_work_order_scheduled_period = ?scheduled_period,                   
-// optimized_work_order_locked_in_period = ?self.locked_in_period,              
+// ?work_order.work_order_analytic.user_status_codes,
+// work_order_dates = ?work_order.order_dates().basic_start_date,
+// periods = ?periods[0..=1],
+// optimized_work_order_scheduled_period = ?scheduled_period,
+// optimized_work_order_locked_in_period = ?self.locked_in_period,
 // );                 strategic_state
 //                     .infeasible_cases_mut()
 //                     .unwrap()
 //                     .respect_sch = ConstraintState::Infeasible(format!(
 //                     "\t\t\nWork order number: {:?}\t\t\nwith scheduled
 // period: {}\t\t\nwith locked period: {:?}\t\t\n work order status codes:
-// {:?}\t\t\n work order unloading point: {:?}",                     
-// work_order_number,                     
-// scheduled_period.scheduled_period.as_ref().unwrap(),                     
-// scheduled_period.locked_in_period.as_ref(),                     
-// work_order.work_order_analytic.user_status_codes,                     
+// {:?}\t\t\n work order unloading point: {:?}",
+// work_order_number,
+// scheduled_period.scheduled_period.as_ref().unwrap(),
+// scheduled_period.locked_in_period.as_ref(),
+// work_order.work_order_analytic.user_status_codes,
 // work_order.unloading_point().as_ref(),                 ));
 //                 break;
 //             }

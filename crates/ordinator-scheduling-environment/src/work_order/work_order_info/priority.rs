@@ -18,12 +18,7 @@ pub enum Priority
 }
 
 // Is this a better way of doing it? Yes it is a much better way
-
-#[derive(Clone, Serialize, Deserialize, Debug)]
-struct IntPriority(u64);
-
-#[derive(Clone, Serialize, Deserialize, Debug)]
-struct CharPriority(char);
+// This is now closely
 
 impl Priority
 {

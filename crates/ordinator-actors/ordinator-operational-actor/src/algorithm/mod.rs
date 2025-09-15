@@ -47,8 +47,8 @@ use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use rand::seq::IndexedRandom;
 use tracing::Level;
-use tracing::debug;
 use tracing::event;
+use tracing::info;
 
 #[derive(Debug)]
 pub struct OperationalAlgorithm<Ss>(Algorithm<OperationalSolution, OperationalParameters, (), Ss>)
@@ -271,7 +271,7 @@ where
     // construct them directly to avoid state duplictions.
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
-        let operational_shared_solution = self
+        let supervisor_work_order_activities_for_technician = self
             .loaded_system_solution
             .supervisor_actor_solutions()
             .with_context(|| {
@@ -280,16 +280,15 @@ where
                     self.id
                 )
             })?
-            // The fact that this error was not propagated with `with_context` caused you a 5 minute
-            // delay and significant redirections.
             .delegates_for_agent(&self.id);
+
+        info!(target: "developer", supervisor_work_order_activities_for_technician = ?supervisor_work_order_activities_for_technician, operational_solution =?self.solution
+            .scheduled_work_order_activities);
 
         self.solution
             .scheduled_work_order_activities
-            // We retain all `OperationalSolution`s which are not `Delegate::Drop` where
-            // the `Delegate` variant is decided by the the `SupervisorActor`.
             .retain(|(woa, _)| {
-                !operational_shared_solution
+                !supervisor_work_order_activities_for_technician
                     .get(woa)
                     .unwrap_or({
                         // NOTE [ ]
@@ -329,6 +328,7 @@ where
         ObjectiveValueType<<<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective>,
     >
     {
+        info!(target: "developer", operational_solution = ?self.solution.scheduled_work_order_activities);
         let operational_events: Vec<Assignment> = self
             .solution
             .scheduled_work_order_activities
@@ -525,11 +525,9 @@ where
         // way.
         self.solution.objective_value = new_objective_value;
         if self.solution.objective_value > old_objective_value {
-            event!(Level::INFO, operational_objective_value_better = ?new_objective_value);
             Ok(ObjectiveValueType::Better(new_objective_value))
         } else {
-            event!(Level::INFO, operational_objective_value_worse = ?new_objective_value);
-            Ok(ObjectiveValueType::Worse)
+            Ok(ObjectiveValueType::Worse(new_objective_value))
         }
     }
 
@@ -592,10 +590,10 @@ where
                 .parameters
                 .work_order_parameters
                 .keys()
-                .filter(|d| d.0 == work_order_activity.0)
-                .map(|e| e.1)
+                .filter(|woa| woa.0 == work_order_activity.0)
+                .map(|woa| woa.1)
                 .sorted()
-                .find_position(|f| *f == work_order_activity.1)
+                .find_position(|activity_index| *activity_index == work_order_activity.1)
                 .ok_or(anyhow::anyhow!(
                     "You should always be able to locate a work_order_activity".to_string()
                 ))?;
@@ -604,7 +602,6 @@ where
                 value if value.0 >= 1 => activity_relations[value.0 - 1].clone(),
                 _ => ActivityRelation::FinishStart,
             };
-            debug!(target: "debug", work_order_activity = format!("{:#?}", work_order_activity), assignmends = format!("{:#?}", assignments) );
             self.solution
                 .try_insert(*work_order_activity, assignments, activity_relation);
         }
@@ -787,6 +784,7 @@ where
         let mut rng = rand::rng();
         let operational_solutions_len = self.solution.scheduled_work_order_activities.len();
 
+        // You should remove a whole work order.
         let operational_solutions_filtered: Vec<WorkOrderActivity> =
             self.solution.scheduled_work_order_activities[1..operational_solutions_len - 1]
                 .choose_multiple(
@@ -795,6 +793,11 @@ where
                 )
                 .map(|operational_solution| operational_solution.0)
                 .collect();
+
+        let removed_work_orders = operational_solutions_filtered
+            .iter()
+            .map(|e| e.0)
+            .collect::<HashSet<_>>();
 
         ensure!(
             (self
@@ -816,17 +819,29 @@ where
                 .0
                 == WorkOrderNumber(0))
         );
-        for operational_solution in &operational_solutions_filtered {
-            self.unschedule_single_work_order_activity((
-                operational_solution.0,
-                operational_solution.1,
-            ))
-            .with_context(|| {
-                format!(
-                    "{:?} from {:?}\ncould not be unscheduled",
-                    operational_solution, &operational_solutions_filtered
-                )
-            })?
+
+        let work_order_activities: Vec<_> = self
+            .solution
+            .scheduled_work_order_activities
+            .iter()
+            .map(|(e, _)| e)
+            .cloned()
+            .collect();
+
+        for work_order_number in &removed_work_orders {
+            for activity in work_order_activities
+                .iter()
+                .filter(|e| e.0 == *work_order_number)
+                .map(|e| e.1)
+            {
+                self.unschedule_single_work_order_activity((*work_order_number, activity))
+                    .with_context(|| {
+                        format!(
+                            "{:?} from {:?}\ncould not be unscheduled",
+                            work_order_number, &operational_solutions_filtered
+                        )
+                    })?
+            }
         }
         Ok(())
     }
@@ -839,6 +854,11 @@ where
     fn force_schedule(&mut self) -> Result<()>
     {
         todo!()
+    }
+
+    fn throttling(&self, throttling: &ordinator_configuration::throttling::Throttling) -> u64
+    {
+        throttling.operational_throttling
     }
 }
 
