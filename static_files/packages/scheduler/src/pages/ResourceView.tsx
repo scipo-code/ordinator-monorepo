@@ -141,7 +141,7 @@ function ResourceLoadings({ resourcesData, selectedResources, dates}: {
 
   return (
     <div className="h-full w-full overflow-auto border rounded">
-      <Table className="overflow-scroll">
+      <Table>
         <TableHeader>
           <TableRow>
             <TableHead key="Date" className="sticky left-0 bg-background z-10">Date</TableHead>
