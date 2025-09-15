@@ -7,6 +7,7 @@ pub mod toml_baptiste;
 use std::path::PathBuf;
 use std::sync::Arc;
 
+use anyhow::Context;
 use anyhow::Result;
 use arc_swap::ArcSwap;
 use ordinator_scheduling_environment::SystemConfigurationTrait;
@@ -45,18 +46,20 @@ impl SystemConfigurations
 {
     pub fn read_all_configs() -> Result<Arc<ArcSwap<SystemConfigurations>>>
     {
-        dbg!(dotenvy::var("CARGO_MANIFEST_DIR").unwrap());
         let baptiste_data_locations_contents =
             std::fs::read_to_string("./configuration/data_locations/baptiste_data_locations.toml")
-                .unwrap();
-        let data_locations = toml::from_str(&baptiste_data_locations_contents).unwrap();
+                .context("Could not find data files for manual SAP work order input\n\t* Are you in a test environment?")?;
+        let data_locations = toml::from_str(&baptiste_data_locations_contents)
+            .context("Could not deserialize the `BaptisteToml`")?;
 
         let throttling_contents =
-            std::fs::read_to_string("./configuration/throttling/throttling.toml").unwrap();
-        let throttling: Throttling = toml::from_str(&throttling_contents).unwrap();
+            std::fs::read_to_string("./configuration/throttling/throttling.toml")
+                .context("Could not find the `Throttling` configuration file")?;
+        let throttling: Throttling = toml::from_str(&throttling_contents)
+            .context("Could not deserialize the `Throttling` configuration")?;
 
         let database_path_string =
-            &dotenvy::var("WORK_ORDERS_PATH").expect("Could not read database path");
+            &dotenvy::var("WORK_ORDERS_PATH").context("Could not read database path")?;
 
         let database_path = std::path::Path::new(database_path_string);
 

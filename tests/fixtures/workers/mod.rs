@@ -1,1 +1,2 @@
-pub mod phd_workers;
+pub mod phd_technicians_3;
+pub mod phd_technicians_30;
