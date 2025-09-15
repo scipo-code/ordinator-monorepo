@@ -269,6 +269,7 @@ where
                 .checked_sub(number_of_assigned)
                 .with_context(|| format!("Failed to subtract `number_of_people_for_operation`: {number_of_people_for_operation}\nfrom the `number_of_assigned`: {number_of_assigned}\nto be assigned to `work_order_activity`: {work_order_activity:?}"))?;
 
+
             for (actor_id, mut temporary_technician_delegate, _marginal_fitness) in
                 operational_status_by_work_order_activity.clone()
             {
@@ -283,6 +284,7 @@ where
                 ensure!(
                     value as u64 <= number_of_people_for_operation,
                     "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people_for_operation}\n{}\nto be assigned to `work_order_activity`: {work_order_activity:?}",
+
                     Location::caller()
                 );
                 let technician_delegate =
@@ -311,6 +313,7 @@ where
                     ensure!(
                         value as u64 <= number_of_people_for_operation,
                         "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people_for_operation}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
+
                         Location::caller()
                     )
                 } else {
@@ -335,6 +338,7 @@ where
                 ensure!(
                     value as u64 <= number_of_people_for_operation,
                     "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people_for_operation}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
+
                     Location::caller()
                 )
             }
@@ -348,6 +352,7 @@ where
             ensure!(
                 value as u64 <= number_of_people_for_operation,
                 "number of Delegate::Assign: {value}\nnumber_of_people: {number_of_people_for_operation}\nto be assigned to `work_order_activity`: {work_order_activity:?}\n{}",
+
                 Location::caller()
             )
         }

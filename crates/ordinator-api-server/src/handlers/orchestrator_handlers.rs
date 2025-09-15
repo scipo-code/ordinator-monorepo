@@ -40,9 +40,11 @@ use crate::routes::api::AppError;
 
 pub async fn scheduler_excel_export(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    Path(asset): Path<Asset>,
+    Path(asset): Path<AssetNames>,
 ) -> Result<Response>
 {
+    let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
+
     let mut headers = HeaderMap::new();
 
     let (buffer, http_header) = orchestrator

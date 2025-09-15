@@ -48,7 +48,7 @@ export default function Layout() {
     <SidebarProvider>
       <div className="flex h-screen w-full">
         <AppSidebar items={items} />
-        <main className="flex flex-col flex-1">
+        <main className="flex flex-col flex-1 min-w-0">
           <Outlet />          {/* ← WorkOrders or Resources appears here */}
         </main>
       </div>
