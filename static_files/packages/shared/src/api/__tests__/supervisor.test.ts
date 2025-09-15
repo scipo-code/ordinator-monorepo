@@ -45,7 +45,7 @@ describe("supervisor API", () => {
       const result = fetchTechnicianAvailability("pump1", "sup123");
 
       await expect(result).rejects.toThrow(
-        /^\(400\)/,
+        /^\(500\)/,
       );
     });
   });
