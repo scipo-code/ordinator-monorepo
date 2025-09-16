@@ -55,6 +55,7 @@ impl SystemConfigurations
         let throttling_contents =
             std::fs::read_to_string("./configuration/throttling/throttling.toml")
                 .context("Could not find the `Throttling` configuration file")?;
+
         let throttling: Throttling = toml::from_str(&throttling_contents)
             .context("Could not deserialize the `Throttling` configuration")?;
 
