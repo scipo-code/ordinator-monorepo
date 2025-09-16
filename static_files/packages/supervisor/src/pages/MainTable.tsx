@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { NaiveDateDto, StagnationDot, SupervisorMainTableDto, useDays, useSystemClock, useVersionChangeDetector } from '@scipo-code/shared';
+import { Actors, NaiveDateDto, StagnationDot, SupervisorMainTableDto, useDays, useSystemClock } from '@scipo-code/shared';
 import { useSupervisorMainTable } from "@scipo-code/shared";
 import { format, parseISO } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -30,12 +30,6 @@ export default function MainTable() {
   // in the future!
   const supervisorId = "main";
   const { data: mainTableData } = useSupervisorMainTable(asset || "", supervisorId, selectedDay ? selectedDay : undefined );
-
-  const query = useVersionChangeDetector(
-    asset ? `api/v1/solution_status/${encodeURIComponent(asset)}/supervisor` : "",
-    ["supervisorMainTable"],
-    1000
-  );
 
 
   useEffect(() => {
@@ -102,8 +96,8 @@ export default function MainTable() {
           </Button>
         </div>
         <div className='flex items-center gap-2 px-2 py-1 text-gray-700 text-xs rounded-md font-medium'>
-          Version: {query.data?.version}
-          <StagnationDot stagnations={query.data?.stagnation_iterations} />
+          Solution Stability
+          <StagnationDot asset={asset} actor={Actors.supervisor}/>
         </div>
       </div>
       <WorkSchedule data={mainTableData} selectedDay={selectedDay} />
