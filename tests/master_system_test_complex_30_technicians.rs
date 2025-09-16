@@ -15,7 +15,7 @@ use crate::fixtures::workers::phd_technicians_30::phd_workers_builder;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 #[ignore]
-async fn master_system_test_complex_3_technicians() -> anyhow::Result<()>
+async fn master_system_test_complex_30_technicians() -> anyhow::Result<()>
 {
     let scheduling_environment = ordinator_test_support::load_scheduling_environment(
         phd_work_order_builder_complex_11_resources,
