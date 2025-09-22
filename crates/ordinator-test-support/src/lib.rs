@@ -1,5 +1,5 @@
-use std::sync::Arc;
 use std::collections::HashMap;
+use std::sync::Arc;
 
 use chrono::TimeZone;
 use chrono::Utc;
@@ -8,9 +8,9 @@ use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::materials::MaterialRepo;
 use ordinator_scheduling_environment::materials::MaterialToPeriod;
 use ordinator_scheduling_environment::time_environment::create_time_environment;
+use ordinator_scheduling_environment::work_order::ClusteringWeights;
 use ordinator_scheduling_environment::work_order::WorkOrderPolicies;
 use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
-use ordinator_scheduling_environment::work_order::ClusteringWeights;
 use ordinator_scheduling_environment::worker_environment::ActorSpecificationBuilder;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
 

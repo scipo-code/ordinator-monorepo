@@ -1645,6 +1645,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "ordinator-system-tests"
+version = "0.0.1"
+
+[[package]]
 name = "ordinator-tactical-actor"
 version = "0.1.0"
 dependencies = [

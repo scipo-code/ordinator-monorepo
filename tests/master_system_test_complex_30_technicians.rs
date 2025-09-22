@@ -10,8 +10,8 @@ use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::logging::setup_logging;
 use tracing::info;
 
-use crate::fixtures::work_orders::phd_work_orders_complex_11_resources::phd_work_order_builder_complex_11_resources;
-use crate::fixtures::workers::phd_technicians_30::phd_workers_builder;
+use ordinator_test_support::fixtures::work_orders::phd_work_orders_complex_11_resources::phd_work_order_builder_complex_11_resources;
+use ordinator_test_support::fixtures::workers::phd_technicians_30::phd_workers_builder;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 #[ignore]
