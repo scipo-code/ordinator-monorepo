@@ -31,6 +31,7 @@ use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use ordinator_scheduling_environment::worker_environment::StrategicOptions;
+use ordinator_scheduling_environment::Percent;
 use priority_queue::PriorityQueue;
 use rand::distr::weighted::Weight;
 use rand::prelude::SliceRandom;
@@ -204,6 +205,8 @@ where
 
         self.determine_clustering(&mut new_objective_value)
             .context("Could not determine StrategicObjective value")?;
+
+        self.determine_percent_scheduled(&mut new_objective_value)?;
 
         new_objective_value.aggregate_objectives();
 
@@ -615,6 +618,21 @@ where
             self.solution_intermediate.len(),
             Location::caller(),
         );
+        Ok(())
+    }
+
+    fn determine_percent_scheduled(&self, new_objective_value: &mut StrategicObjectiveValue) -> Result<()>{
+
+            let total_work_orders = self.parameters.strategic_work_order_parameters.len() as u64;
+            let scheduled_work_orders  = self.solution.strategic_scheduled_work_orders.iter().filter(|(_, v)| {
+                match v {
+                    WhereIsWorkOrder::Strategic(_period) => true,
+                    WhereIsWorkOrder::Tactical(_) => false,
+                    WhereIsWorkOrder::NotScheduled => false,
+                }
+            }).count() as u64;
+
+            new_objective_value.percent_scheduled.1 = Percent::new(scheduled_work_orders, total_work_orders).context("percent scheduled could not be calculated")?;
         Ok(())
     }
 }

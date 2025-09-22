@@ -1595,6 +1595,7 @@ dependencies = [
  "tracing",
  "ts-rs",
  "uuid",
+ "valuable",
 ]
 
 [[package]]

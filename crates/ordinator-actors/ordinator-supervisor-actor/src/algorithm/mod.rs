@@ -22,6 +22,7 @@ use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
+use ordinator_scheduling_environment::Percent;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
@@ -149,12 +150,8 @@ where
 
         assert!(is_assigned_part_of_all(assigned_woas, &all_woas));
 
-        let mut intermediate = assigned_woas.len() as f64 / all_woas.len() as f64;
-        if intermediate.is_nan() {
-            intermediate = 0.0;
-        };
-
-        let new_objective_value = (intermediate * 1000.0) as u64;
+        let new_objective_value = Percent::new(assigned_woas.len() as u64, all_woas.len() as u64)
+            .with_context(|| format!("{}", Location::caller()))?;
 
         // Why is there not assigned more WOs from the supervisor? There are
         // a couple of reasons, either the OperationalActors are not

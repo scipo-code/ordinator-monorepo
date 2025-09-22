@@ -1,11 +1,11 @@
 #!/usr/bin/env fish
 # This is the script associated with the `test_complete_system` integration test.
 
-rm logging/logs/ordinator.research.log
+rm $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log
 
 cargo test master_system_test_2 -- --ignored --nocapture 2>temp_output_from_program.log &
 
-while test ! -f ./logging/logs/ordinator.research.log; or grep -q not READY ./logging/logs/ordinator.research.log
+while test ! -f $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log; or grep -q not READY $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log
     echo "ORDINATOR NOT READY"
     sleep 1
 end
@@ -23,7 +23,7 @@ jq '
   .fields.objective_value.resource_penalty[1], 
   .fields.objective_value.clustering_value[1]
   ] |
-  join(" ")' logging/logs/ordinator.research.log | sed 's/"//g' >./scripts/research/data/strategic.dat
+  join(" ")' $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log | sed 's/"//g' >./scripts/research/data/strategic.dat
 
 jq '
   select(.threadName == "TEST_TACTICAL" and (.fields | has("objective_value"))) |
@@ -33,7 +33,7 @@ jq '
   .fields.objective_value.urgency[1], 
   .fields.objective_value.resource_penalty[1] 
   ] |
-  join(" ")' logging/logs/ordinator.research.log | sed 's/"//g' >./scripts/research/data/tactical.dat
+  join(" ")' $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log | sed 's/"//g' >./scripts/research/data/tactical.dat
 
 jq '
   select(.threadName == "TEST_SUPERVISOR" and (.fields | has("objective_value"))) |
@@ -41,7 +41,7 @@ jq '
   .timestamp, 
   .fields.objective_value 
   ] |
-  join(" ")' logging/logs/ordinator.research.log | sed 's/"//g' >./scripts/research/data/supervisor.dat
+  join(" ")' $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log | sed 's/"//g' >./scripts/research/data/supervisor.dat
 
 jq '
   select(.threadName == "TEST_OP-001-01" and (.fields | has("objective_value"))) |
@@ -52,7 +52,7 @@ jq '
   .fields.objective_value.assign, 
   .fields.objective_value.total_work_order_activities 
   ] |
-  join(" ")' logging/logs/ordinator.research.log | sed 's/"//g' >./scripts/research/data/operational-001-01.dat
+  join(" ")' $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log | sed 's/"//g' >./scripts/research/data/operational-001-01.dat
 
 jq '
   select(.threadName == "TEST_OP-001-02" and (.fields | has("objective_value"))) |
@@ -63,7 +63,7 @@ jq '
   .fields.objective_value.assign, 
   .fields.objective_value.total_work_order_activities 
   ] |
-  join(" ")' logging/logs/ordinator.research.log | sed 's/"//g' >./scripts/research/data/operational-001-02.dat
+  join(" ")' $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log | sed 's/"//g' >./scripts/research/data/operational-001-02.dat
 
 jq '
   select(.threadName == "TEST_OP-002-01" and (.fields | has("objective_value"))) |
@@ -74,7 +74,7 @@ jq '
   .fields.objective_value.assign, 
   .fields.objective_value.total_work_order_activities 
   ] |
-  join(" ")' logging/logs/ordinator.research.log | sed 's/"//g' >./scripts/research/data/operational-002-01.dat
+  join(" ")' $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log | sed 's/"//g' >./scripts/research/data/operational-002-01.dat
 
 gnuplot -e "
   strategic='scripts/research/data/strategic.dat';

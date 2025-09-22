@@ -22,6 +22,7 @@ use ordinator_orchestrator::TacticalRequestMessage;
 use ordinator_orchestrator::TacticalStatusMessage;
 use ordinator_orchestrator::WorkOrderNumber;
 use serde::Serialize;
+use tracing::info;
 use ts_rs::TS;
 use utoipa::ToSchema;
 
@@ -248,6 +249,8 @@ where
         .time_environment
         .days
         .clone();
+
+    info!(target: "developer", tactical_days = ?tactical_days);
 
     if tactical_days
         .values()

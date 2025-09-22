@@ -26,6 +26,7 @@ use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
+use ordinator_scheduling_environment::Percent;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
@@ -78,7 +79,9 @@ impl<Ss> TacticalAlgorithm<Ss>
 where
     TacticalSolution: Solution,
     TacticalParameters: Parameters,
-    Ss: SystemSolutions,
+    Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
+        AbLNSUtils<SolutionType = TacticalSolution>,
+    Ss: SystemSolutions<Tactical = TacticalSolution>,
 {
     pub fn capacity(&self, resource: &Resources, day: DayIndex) -> Result<&Work>
     {
@@ -198,10 +201,6 @@ where
     }
 
     fn determine_loading(&self) -> f64
-    where
-        Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
-            AbLNSUtils<SolutionType = TacticalSolution>,
-        Ss: SystemSolutions<Tactical = TacticalSolution>,
     {
         let length = self.parameters.tactical_days.len();
         let mut total_capacity = Work::from(0.0);
@@ -279,6 +278,31 @@ where
             // resource, number, work_remaining, work_order_number,
             // activity_number)
         }
+
+        Ok(())
+    }
+
+    fn determine_percent_scheduled(
+        &self,
+        tactical_objective_value: &mut TacticalObjectiveValue,
+    ) -> Result<()>
+    {
+        let tactical_scheduled = self
+            .solution
+            .tactical_work_orders
+            .0
+            .iter()
+            .filter(|(_k, v)| match v {
+                WhereIsWorkOrder::Strategic(_period) => false,
+                WhereIsWorkOrder::Tactical(_) => true,
+                WhereIsWorkOrder::NotScheduled => false,
+            })
+            .count();
+
+        let tactical_total = self.parameters.tactical_work_orders.len();
+
+        tactical_objective_value.percent_scheduled.1 =
+            Percent::new(tactical_scheduled as u64, tactical_total as u64)?;
 
         Ok(())
     }
@@ -513,6 +537,8 @@ where
 
         // Calculate penalty for exceeding the capacity
         self.determine_aggregate_excess(&mut tactical_objective_value);
+
+        self.determine_percent_scheduled(&mut tactical_objective_value)?;
 
         tactical_objective_value.aggregate_objectives();
 
