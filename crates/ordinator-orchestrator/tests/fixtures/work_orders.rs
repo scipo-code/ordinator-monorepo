@@ -1,6 +1,6 @@
 use chrono::TimeDelta;
-use ordinator_orchestrator::Resources;
-use ordinator_orchestrator::WorkOrderNumber;
+use ordinator_scheduling_environment::Resources;
+use ordinator_scheduling_environment::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
 use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
 use ordinator_scheduling_environment::work_order::work_order_info::priority::Priority;

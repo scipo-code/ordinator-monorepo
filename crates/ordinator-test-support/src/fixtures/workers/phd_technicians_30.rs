@@ -1,6 +1,6 @@
-use ordinator_orchestrator::Asset;
-use ordinator_orchestrator::Availability;
-use ordinator_orchestrator::Resources;
+use ordinator_scheduling_environment::Asset;
+use ordinator_scheduling_environment::worker_environment::availability::Availability;
+use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
 use ordinator_scheduling_environment::worker_environment::ActorSpecificationBuilder;
 

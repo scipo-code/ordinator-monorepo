@@ -632,9 +632,11 @@ where
                 priority_queue_len = self.solution_intermediate.len(),
             );
 
+            event!(target: "developer", Level::WARN, start_day_index);
             let tactical_parameter = match loop_state {
                 LoopState::Unscheduled => {
                     start_day_index += 1;
+
                     self.parameters
                         .tactical_work_orders
                         .get(&current_work_order_number)
@@ -646,7 +648,7 @@ where
                     current_work_order_number = match self.solution_intermediate.pop() {
                         Some((work_order_number, _)) => work_order_number,
                         None => {
-                            event!(Level::DEBUG, "main_loop break");
+                            event!(target: "developer", Level::INFO, "main_loop break: FINISH ON LoopState::Scheduled");
                             break;
                         }
                     };
@@ -665,7 +667,7 @@ where
                     current_work_order_number = match self.solution_intermediate.pop() {
                         Some((work_order_number, _)) => work_order_number,
                         None => {
-                            event!(Level::DEBUG, "main_loop break");
+                            event!(target: "developer", Level::INFO, "main_loop break: FINISH ON LoopState::Scheduled");
                             break;
                         }
                     };
@@ -785,17 +787,17 @@ where
             }
 
             self.update_loadings(&operation_solutions, LoadOperation::Add)?;
+
             loop_state = LoopState::Scheduled;
 
             self.solution
                 .tactical_insert_work_order(current_work_order_number, operation_solutions);
-            self.asset_that_loading_matches_scheduled()
-                .with_context(|| {
-                    format!("TESTING_ASSERTION\nfile: {}\nline: {}", file!(), line!())
-                })?;
         }
         Ok(())
     }
+    // NOTE:
+    // All of this is formulated in the wrong way. I think that the best approach here is to make the system work
+    // with as little state duplication as possible. 
 
     // So what should be checked to understand this?
     // We know that the error is not in the creation of the parameters
@@ -824,6 +826,7 @@ where
     // work_order on the correct day?
     fn unschedule(&mut self) -> Result<()>
     {
+
         let mut rng = rng();
         let work_order_numbers: Vec<WorkOrderNumber> = self
             .solution

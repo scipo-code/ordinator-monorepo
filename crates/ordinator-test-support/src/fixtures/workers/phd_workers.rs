@@ -1,8 +1,8 @@
-use ordinator_orchestrator::Asset;
-use ordinator_orchestrator::Availability;
-use ordinator_orchestrator::Resources;
+use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
 use ordinator_scheduling_environment::worker_environment::ActorSpecificationBuilder;
+use ordinator_scheduling_environment::worker_environment::Availability;
+use ordinator_scheduling_environment::worker_environment::Resources;
 
 pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificationBuilder
 {

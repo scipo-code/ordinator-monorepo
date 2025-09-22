@@ -2,8 +2,7 @@
 /// matter as much as we are not testing attributes directly. Instead we are
 /// working with stress testing the algorithms and their interplay.
 use chrono::TimeDelta;
-use ordinator_orchestrator::Resources;
-use ordinator_orchestrator::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
 use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
 use ordinator_scheduling_environment::work_order::work_order_info::priority::Priority;
@@ -11,6 +10,7 @@ use ordinator_scheduling_environment::work_order::work_order_info::revision::Rev
 use ordinator_scheduling_environment::work_order::work_order_info::system_condition::SystemCondition;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_text::WorkOrderText;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
+use ordinator_scheduling_environment::worker_environment::resources::Resources;
 
 /// These are the manually created `WorkOrder`s for the phd data set.
 ///
@@ -20,14 +20,12 @@ use ordinator_scheduling_environment::work_order::work_order_info::work_order_ty
 /// 2. 222299xxxx: normal filler work order, no binding status code, no vendor,
 ///    with status code modifiers
 /// 3. 333399xxxx: edgecase work orders, added to determine a particular aspect
-pub fn phd_work_order_builder_complex_11_resources(
-    wo_builder: WorkOrdersBuilder,
-) -> WorkOrdersBuilder
+pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilder
 {
     wo_builder
         .work_order_builder(WorkOrderNumber(1111990000), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -75,7 +73,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990001), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -123,7 +121,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990002), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -171,7 +169,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990003), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -267,7 +265,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990005), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -315,7 +313,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990006), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -363,7 +361,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990007), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -411,7 +409,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990008), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -459,7 +457,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990009), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -507,7 +505,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990010), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -555,7 +553,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990011), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -603,7 +601,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990012), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -699,7 +697,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990014), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -747,7 +745,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990015), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -795,7 +793,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990016), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -843,7 +841,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990017), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -939,7 +937,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990019), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -987,7 +985,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990020), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1035,7 +1033,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990021), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1083,7 +1081,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990022), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1131,7 +1129,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990023), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1179,7 +1177,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990024), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1227,7 +1225,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990025), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1275,7 +1273,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990026), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1323,7 +1321,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990027), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1371,7 +1369,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990028), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1419,7 +1417,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990029), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1467,7 +1465,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990030), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1524,7 +1522,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990031), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1581,7 +1579,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990032), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1638,7 +1636,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990033), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1647,7 +1645,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1695,7 +1693,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990034), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1704,7 +1702,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1752,7 +1750,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990035), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1761,7 +1759,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1809,7 +1807,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990036), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1818,7 +1816,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1866,7 +1864,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990037), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1875,7 +1873,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1923,7 +1921,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990038), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1932,7 +1930,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -1989,7 +1987,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2037,7 +2035,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990040), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2046,7 +2044,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2103,7 +2101,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990041), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2112,7 +2110,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2121,7 +2119,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2169,7 +2167,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990042), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2178,7 +2176,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2187,7 +2185,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2235,7 +2233,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990043), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2244,7 +2242,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2253,7 +2251,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2301,16 +2299,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990044), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
-                    ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
-                        .operation_dates(|dates| {
-                            dates
-                                .earliest_start_from_ymd_hms(2025, 1, 1, 7, 0, 0)
-                                .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
-                        })
-                        .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2320,6 +2309,15 @@ pub fn phd_work_order_builder_complex_11_resources(
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
                 .operations_builder(10, Resources::MtnMech, |ob| {
+                    ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
+                        .operation_dates(|dates| {
+                            dates
+                                .earliest_start_from_ymd_hms(2025, 1, 1, 7, 0, 0)
+                                .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
+                        })
+                        .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
+                })
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2376,7 +2374,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2385,7 +2383,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2433,7 +2431,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990046), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2442,7 +2440,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2451,7 +2449,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2499,7 +2497,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990047), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2517,7 +2515,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2565,7 +2563,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990048), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2583,7 +2581,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2631,7 +2629,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990049), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2640,7 +2638,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2649,7 +2647,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2697,7 +2695,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990050), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2745,7 +2743,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990051), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2793,7 +2791,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990052), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2889,7 +2887,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990054), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2937,7 +2935,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990055), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -2985,7 +2983,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990056), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3033,7 +3031,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990057), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3081,7 +3079,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990058), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3129,7 +3127,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990059), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3177,7 +3175,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990060), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3225,7 +3223,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990061), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3273,7 +3271,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990062), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3321,7 +3319,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990063), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3417,7 +3415,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990065), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3465,7 +3463,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990066), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(7.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3513,7 +3511,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990067), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(8.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3561,7 +3559,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990068), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(9.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3609,7 +3607,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990069), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3657,7 +3655,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990070), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3705,7 +3703,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990071), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3753,7 +3751,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990072), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3801,7 +3799,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990073), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3897,7 +3895,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990075), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3945,7 +3943,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990076), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(7.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -3993,7 +3991,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990077), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(8.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4041,7 +4039,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990078), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(9.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4089,7 +4087,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990079), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4137,7 +4135,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990080), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4185,7 +4183,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990081), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4233,7 +4231,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990082), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4281,7 +4279,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990083), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4329,7 +4327,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990084), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4377,7 +4375,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990085), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4425,7 +4423,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990086), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(7.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4473,7 +4471,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990087), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(8.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4521,7 +4519,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990088), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(9.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4569,7 +4567,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990089), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4617,7 +4615,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990090), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4665,7 +4663,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990091), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4761,7 +4759,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990093), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4809,7 +4807,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990094), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4857,7 +4855,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990095), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4905,7 +4903,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990096), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(7.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -4953,7 +4951,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990097), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(8.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5001,7 +4999,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990098), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(9.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5049,7 +5047,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990099), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5097,7 +5095,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990100), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5145,7 +5143,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990101), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5193,7 +5191,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990102), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5241,7 +5239,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990103), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5289,7 +5287,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990104), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5337,7 +5335,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990105), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5385,7 +5383,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990106), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5433,7 +5431,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990107), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5481,7 +5479,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990108), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5529,7 +5527,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990109), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5577,7 +5575,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990110), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5625,7 +5623,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990111), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5673,7 +5671,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990112), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5721,7 +5719,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990113), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5817,7 +5815,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990115), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5865,7 +5863,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990116), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5913,7 +5911,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990117), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -5961,7 +5959,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990118), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6057,7 +6055,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990120), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6105,7 +6103,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990121), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6153,7 +6151,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990122), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6201,7 +6199,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990123), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6249,7 +6247,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990124), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6297,7 +6295,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990125), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6345,7 +6343,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990126), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6393,7 +6391,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990127), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6441,7 +6439,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990128), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6489,7 +6487,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990129), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6537,7 +6535,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990130), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6585,7 +6583,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990131), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6633,7 +6631,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990132), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6681,7 +6679,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990133), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6729,7 +6727,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990134), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6777,7 +6775,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990135), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6825,7 +6823,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990136), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6873,7 +6871,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990137), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6921,7 +6919,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990138), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -6969,7 +6967,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990139), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7017,7 +7015,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990140), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7065,7 +7063,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990141), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7113,7 +7111,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990142), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7161,7 +7159,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990143), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7209,7 +7207,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990144), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7257,7 +7255,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990145), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7353,7 +7351,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990147), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7401,7 +7399,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990148), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7449,7 +7447,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990149), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7497,7 +7495,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990150), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7545,7 +7543,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990151), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7593,7 +7591,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990152), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7641,7 +7639,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990153), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7689,7 +7687,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990154), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7737,7 +7735,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990155), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7785,7 +7783,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990156), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7833,7 +7831,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990157), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7881,7 +7879,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990158), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7929,7 +7927,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990159), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -7977,7 +7975,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990160), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8025,7 +8023,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990161), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8073,7 +8071,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990162), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8121,7 +8119,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990163), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8169,7 +8167,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990164), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8217,7 +8215,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990165), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8265,7 +8263,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990166), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8313,7 +8311,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990167), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8361,7 +8359,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990168), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8409,7 +8407,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990169), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8457,7 +8455,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990170), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8505,7 +8503,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990171), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8553,7 +8551,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990172), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8649,7 +8647,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990174), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8697,7 +8695,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990175), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8745,7 +8743,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990176), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8793,7 +8791,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990177), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8841,7 +8839,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990178), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8889,7 +8887,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990179), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -8985,7 +8983,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990181), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9033,7 +9031,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990182), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9081,7 +9079,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990183), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9129,7 +9127,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990184), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9177,7 +9175,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990185), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9225,7 +9223,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990186), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9273,7 +9271,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990187), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9321,7 +9319,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990188), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9417,7 +9415,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990190), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9465,7 +9463,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990191), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9561,7 +9559,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990193), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9609,7 +9607,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990194), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9657,7 +9655,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990195), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9705,7 +9703,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990196), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9753,7 +9751,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990197), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9801,7 +9799,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990198), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9849,7 +9847,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990199), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(10.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9897,7 +9895,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990200), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9906,7 +9904,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9963,7 +9961,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990201), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9972,7 +9970,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -9981,7 +9979,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10029,7 +10027,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990202), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10038,7 +10036,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10047,7 +10045,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10095,7 +10093,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990203), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10104,7 +10102,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10113,7 +10111,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10161,7 +10159,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990204), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10170,7 +10168,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10179,7 +10177,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10227,7 +10225,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990205), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10236,7 +10234,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10245,7 +10243,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10293,7 +10291,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990206), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10302,7 +10300,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10311,7 +10309,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10359,7 +10357,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990207), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10425,7 +10423,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990208), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10434,7 +10432,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10443,7 +10441,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10500,7 +10498,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10509,7 +10507,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10557,7 +10555,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990210), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10566,7 +10564,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10575,7 +10573,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10623,7 +10621,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990211), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10632,7 +10630,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10641,7 +10639,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10689,7 +10687,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990212), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10698,7 +10696,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10707,7 +10705,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10764,7 +10762,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10773,7 +10771,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10821,7 +10819,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990214), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10830,7 +10828,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10839,7 +10837,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10887,7 +10885,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990215), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10905,7 +10903,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10953,7 +10951,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990216), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10962,7 +10960,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -10971,7 +10969,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11019,7 +11017,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990217), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11028,7 +11026,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11037,7 +11035,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11085,7 +11083,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990218), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11103,7 +11101,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11151,7 +11149,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990219), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11169,7 +11167,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11217,7 +11215,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990220), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11226,7 +11224,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11235,7 +11233,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11283,7 +11281,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990221), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11292,7 +11290,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11301,7 +11299,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11349,7 +11347,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990222), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11367,7 +11365,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11415,7 +11413,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990223), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11424,7 +11422,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11433,7 +11431,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11481,7 +11479,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990224), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11490,7 +11488,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11547,7 +11545,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990225), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11613,7 +11611,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990226), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11622,7 +11620,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11679,7 +11677,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990227), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11688,7 +11686,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11697,7 +11695,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11754,7 +11752,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11763,7 +11761,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11811,7 +11809,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990229), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11820,7 +11818,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11829,7 +11827,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11877,7 +11875,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990230), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11895,7 +11893,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11943,7 +11941,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990231), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -11952,7 +11950,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12009,7 +12007,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990232), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12018,7 +12016,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12027,7 +12025,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12075,7 +12073,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990233), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12084,7 +12082,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12093,7 +12091,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12141,7 +12139,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990234), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12150,7 +12148,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12159,7 +12157,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12207,7 +12205,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990235), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12216,7 +12214,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12225,7 +12223,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12273,7 +12271,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990236), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12282,7 +12280,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12339,7 +12337,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990237), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12348,7 +12346,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12357,7 +12355,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12405,7 +12403,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990238), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12414,7 +12412,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12423,7 +12421,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12471,7 +12469,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990239), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12480,7 +12478,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12489,7 +12487,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12537,7 +12535,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990240), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12546,7 +12544,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12555,7 +12553,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12603,7 +12601,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990241), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12612,7 +12610,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12621,7 +12619,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12669,7 +12667,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990242), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12678,7 +12676,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12687,7 +12685,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12735,7 +12733,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990243), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12744,7 +12742,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12753,7 +12751,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12801,7 +12799,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990244), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12810,7 +12808,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12819,7 +12817,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12876,7 +12874,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12885,7 +12883,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12933,7 +12931,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990246), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12942,7 +12940,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -12951,7 +12949,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13008,7 +13006,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13017,7 +13015,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13065,7 +13063,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990248), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13074,7 +13072,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13083,7 +13081,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13131,7 +13129,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990249), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13140,7 +13138,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13149,7 +13147,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13197,7 +13195,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990250), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13206,7 +13204,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13215,7 +13213,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13263,7 +13261,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990251), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13272,7 +13270,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13281,7 +13279,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13329,7 +13327,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990252), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13338,7 +13336,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13347,7 +13345,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13395,7 +13393,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990253), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13404,7 +13402,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13413,7 +13411,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13461,7 +13459,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990254), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13470,7 +13468,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13536,7 +13534,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13545,7 +13543,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13593,7 +13591,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990256), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13602,7 +13600,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13611,7 +13609,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13659,7 +13657,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990257), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13668,7 +13666,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13677,7 +13675,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13725,7 +13723,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990258), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13734,7 +13732,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13743,7 +13741,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13791,7 +13789,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990259), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13800,7 +13798,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13809,7 +13807,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13857,7 +13855,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990260), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13866,7 +13864,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13875,7 +13873,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13923,7 +13921,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990261), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13932,7 +13930,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13941,7 +13939,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13989,7 +13987,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990262), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -13998,7 +13996,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14007,7 +14005,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14055,7 +14053,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990263), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14064,7 +14062,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14073,7 +14071,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14121,7 +14119,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990264), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14130,7 +14128,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14139,7 +14137,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14187,7 +14185,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990265), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14196,7 +14194,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14205,7 +14203,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14253,7 +14251,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990266), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14262,7 +14260,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14319,7 +14317,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990267), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14328,7 +14326,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14337,7 +14335,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14385,7 +14383,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990268), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14394,7 +14392,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14403,7 +14401,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14451,7 +14449,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990269), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14460,7 +14458,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14469,7 +14467,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14517,7 +14515,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990270), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14526,7 +14524,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14535,7 +14533,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14583,7 +14581,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990271), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14592,7 +14590,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14658,7 +14656,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14667,7 +14665,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14715,7 +14713,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990273), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14724,7 +14722,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14733,7 +14731,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14781,7 +14779,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990274), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14790,7 +14788,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14799,7 +14797,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14847,7 +14845,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990275), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14856,7 +14854,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14865,7 +14863,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14913,7 +14911,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990276), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14922,7 +14920,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14979,7 +14977,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990277), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14988,7 +14986,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -14997,7 +14995,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15045,7 +15043,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990278), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15054,7 +15052,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15063,7 +15061,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15111,7 +15109,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990279), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15120,7 +15118,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15129,7 +15127,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15177,7 +15175,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990280), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15186,7 +15184,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15195,7 +15193,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15243,7 +15241,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990281), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15252,7 +15250,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15261,7 +15259,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15309,7 +15307,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990282), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15318,7 +15316,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15327,7 +15325,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15384,7 +15382,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15393,7 +15391,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15441,7 +15439,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990284), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15450,7 +15448,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15459,7 +15457,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15507,7 +15505,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990285), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15516,7 +15514,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15573,7 +15571,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990286), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15582,7 +15580,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15591,7 +15589,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15639,7 +15637,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990287), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15648,7 +15646,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15657,7 +15655,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15705,7 +15703,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990288), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15714,7 +15712,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15723,7 +15721,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15771,7 +15769,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990289), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15780,7 +15778,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15789,7 +15787,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15837,7 +15835,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990290), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15855,7 +15853,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15903,7 +15901,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990291), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15912,7 +15910,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15921,7 +15919,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15969,7 +15967,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990292), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15978,7 +15976,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -15987,7 +15985,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16035,7 +16033,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990293), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16044,7 +16042,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16101,7 +16099,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990294), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16110,7 +16108,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16119,7 +16117,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16176,7 +16174,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16185,7 +16183,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16233,7 +16231,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990296), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16242,7 +16240,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16251,7 +16249,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16308,7 +16306,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16317,7 +16315,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16365,7 +16363,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990298), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16374,7 +16372,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16383,7 +16381,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16431,7 +16429,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990299), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16449,7 +16447,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16497,7 +16495,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990300), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16506,7 +16504,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16515,7 +16513,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16563,7 +16561,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990301), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16572,7 +16570,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16581,7 +16579,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16629,7 +16627,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990302), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16638,7 +16636,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16647,7 +16645,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16695,7 +16693,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990303), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16704,7 +16702,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16713,7 +16711,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16761,7 +16759,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990304), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16770,7 +16768,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16827,7 +16825,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990305), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16836,7 +16834,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16845,7 +16843,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16893,7 +16891,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990306), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16902,7 +16900,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16911,7 +16909,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16959,7 +16957,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990307), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16968,7 +16966,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -16977,7 +16975,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17025,7 +17023,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990308), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17034,7 +17032,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17043,7 +17041,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17091,7 +17089,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990309), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17100,7 +17098,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17109,7 +17107,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17166,7 +17164,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17175,7 +17173,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17223,7 +17221,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990311), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17232,7 +17230,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17241,7 +17239,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17289,7 +17287,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990312), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17298,7 +17296,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17307,7 +17305,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17355,7 +17353,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990313), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17364,7 +17362,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17421,7 +17419,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990314), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17430,7 +17428,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17439,7 +17437,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17487,7 +17485,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990315), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17496,7 +17494,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17505,7 +17503,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17553,7 +17551,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990316), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17562,7 +17560,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17571,7 +17569,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17619,7 +17617,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990317), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17628,7 +17626,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17637,7 +17635,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17685,7 +17683,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990318), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17694,7 +17692,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17703,7 +17701,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17751,7 +17749,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990319), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17760,7 +17758,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17769,7 +17767,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17817,7 +17815,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990320), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17826,7 +17824,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17835,7 +17833,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17883,7 +17881,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990321), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17892,7 +17890,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17901,7 +17899,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17949,7 +17947,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990322), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17958,7 +17956,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -17967,7 +17965,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18015,7 +18013,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990323), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18024,7 +18022,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18033,7 +18031,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18081,7 +18079,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990324), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18090,7 +18088,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18099,7 +18097,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18147,7 +18145,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990325), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18156,7 +18154,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18165,7 +18163,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18213,7 +18211,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990326), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18222,7 +18220,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18231,7 +18229,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18279,7 +18277,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990327), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18288,7 +18286,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18297,7 +18295,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18345,7 +18343,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990328), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18354,7 +18352,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18363,7 +18361,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18411,7 +18409,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990329), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18420,7 +18418,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18429,7 +18427,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18477,7 +18475,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990330), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18486,7 +18484,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18543,7 +18541,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990331), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18552,7 +18550,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18561,7 +18559,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18609,7 +18607,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990332), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18618,7 +18616,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18627,7 +18625,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18675,7 +18673,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990333), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18684,7 +18682,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18693,7 +18691,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18741,7 +18739,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990334), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18759,7 +18757,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18807,7 +18805,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990335), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18816,7 +18814,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18873,7 +18871,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990336), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18882,7 +18880,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18891,7 +18889,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18939,7 +18937,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990337), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18948,7 +18946,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -18957,7 +18955,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19005,7 +19003,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990338), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19014,7 +19012,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19023,7 +19021,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19071,7 +19069,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990339), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19080,7 +19078,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19089,7 +19087,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19137,7 +19135,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990340), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19146,7 +19144,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19155,7 +19153,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19203,7 +19201,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990341), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19212,7 +19210,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19221,7 +19219,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19269,7 +19267,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990342), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19278,7 +19276,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19287,7 +19285,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19335,7 +19333,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990343), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19353,7 +19351,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19401,7 +19399,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990344), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19410,7 +19408,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19419,7 +19417,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19467,7 +19465,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990345), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19476,7 +19474,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19485,7 +19483,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19533,7 +19531,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990346), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19542,7 +19540,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19551,7 +19549,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19599,7 +19597,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990347), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19608,7 +19606,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19617,7 +19615,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19665,7 +19663,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990348), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19674,7 +19672,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19683,7 +19681,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19731,7 +19729,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990349), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19740,7 +19738,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19749,7 +19747,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19797,7 +19795,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990350), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19806,7 +19804,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19815,7 +19813,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19863,7 +19861,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990351), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19872,7 +19870,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19881,7 +19879,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19929,7 +19927,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990352), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19938,7 +19936,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -19995,7 +19993,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990353), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20004,7 +20002,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20013,7 +20011,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20061,7 +20059,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990354), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20070,7 +20068,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20079,7 +20077,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20127,7 +20125,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990355), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20136,7 +20134,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20145,7 +20143,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20193,7 +20191,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990356), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20202,7 +20200,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20211,7 +20209,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20259,7 +20257,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990357), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20268,7 +20266,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20325,7 +20323,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990358), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20334,7 +20332,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20343,7 +20341,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20391,7 +20389,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990359), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20400,7 +20398,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20409,7 +20407,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20457,7 +20455,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990360), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20466,7 +20464,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20475,7 +20473,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20532,7 +20530,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20541,7 +20539,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20589,7 +20587,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990362), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20598,7 +20596,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20607,7 +20605,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20655,7 +20653,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990363), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20664,7 +20662,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20673,7 +20671,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20721,7 +20719,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990364), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20730,7 +20728,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20739,7 +20737,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20787,7 +20785,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990365), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20796,7 +20794,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20805,7 +20803,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20853,7 +20851,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990366), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20871,7 +20869,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20919,7 +20917,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990367), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20928,7 +20926,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20937,7 +20935,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20985,7 +20983,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990368), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -20994,7 +20992,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21003,7 +21001,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21051,7 +21049,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990369), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21060,7 +21058,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21069,7 +21067,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21117,7 +21115,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990370), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21126,7 +21124,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21135,7 +21133,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21183,6 +21181,15 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990371), |wob| {
             wob.main_work_center(Resources::MtnMech)
+                .operations_builder(10, Resources::MtnElec, |ob| {
+                    ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
+                        .operation_dates(|dates| {
+                            dates
+                                .earliest_start_from_ymd_hms(2025, 1, 1, 7, 0, 0)
+                                .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
+                        })
+                        .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
+                })
                 .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21192,16 +21199,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
-                    ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
-                        .operation_dates(|dates| {
-                            dates
-                                .earliest_start_from_ymd_hms(2025, 1, 1, 7, 0, 0)
-                                .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
-                        })
-                        .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21249,7 +21247,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990372), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21258,7 +21256,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21267,7 +21265,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21315,7 +21313,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990373), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21324,7 +21322,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21333,7 +21331,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21381,7 +21379,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990374), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21390,7 +21388,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21399,7 +21397,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21447,7 +21445,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990375), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21465,7 +21463,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21513,7 +21511,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990376), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21522,7 +21520,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21531,7 +21529,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21579,7 +21577,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990377), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21588,7 +21586,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21597,7 +21595,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21645,7 +21643,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990378), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21654,7 +21652,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21663,7 +21661,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21711,7 +21709,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990379), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21720,7 +21718,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21729,7 +21727,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21777,7 +21775,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990380), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21786,7 +21784,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21795,7 +21793,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21843,7 +21841,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990381), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21852,7 +21850,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21861,7 +21859,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21909,7 +21907,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990382), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21918,7 +21916,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21927,7 +21925,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21975,7 +21973,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990383), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21984,7 +21982,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -21993,7 +21991,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22041,7 +22039,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990384), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22050,7 +22048,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22107,7 +22105,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990385), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22116,7 +22114,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22125,7 +22123,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnInst, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22173,7 +22171,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990386), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnCran, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22182,7 +22180,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22191,7 +22189,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22239,7 +22237,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990387), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22305,7 +22303,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990388), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22314,7 +22312,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22371,7 +22369,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990389), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22389,7 +22387,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22446,7 +22444,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22455,7 +22453,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22512,7 +22510,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22521,7 +22519,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22578,7 +22576,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22587,7 +22585,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22635,7 +22633,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990393), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22644,7 +22642,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22653,7 +22651,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::Prodtech, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22701,7 +22699,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990394), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22719,7 +22717,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRous, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22776,7 +22774,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRigg, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22785,7 +22783,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22833,7 +22831,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990396), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22842,7 +22840,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnElec, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22851,7 +22849,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22899,7 +22897,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990397), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnLagg, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22908,7 +22906,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22965,7 +22963,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990398), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22974,7 +22972,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnMech, |ob| {
+                .operations_builder(10, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -22983,7 +22981,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnScaf, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -23031,7 +23029,7 @@ pub fn phd_work_order_builder_complex_11_resources(
         })
         .work_order_builder(WorkOrderNumber(1111990399), |wob| {
             wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnRope, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -23049,7 +23047,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
-                .operations_builder(10, Resources::MtnTele, |ob| {
+                .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
