@@ -592,8 +592,20 @@ where
         // that the fundamental issue here is that we should be able to make
         // something that can change the way that we work with the.
         self.asset_that_loading_matches_scheduled()
-            .with_context(|| format!("TESTING_ASSERTION\nLocation: {}", Location::caller()))?;
+            .with_context(|| {
+                format!(
+                    "TESTING_TACTICAL_ASSERTION\nLocation: {}",
+                    Location::caller()
+                )
+            })?;
 
+        self.assert_that_total_loading_is_equal_to_total_scheduled()
+            .with_context(|| {
+                format!(
+                    "TESTING_TACTICAL_ASSERTION\nLocation: {}",
+                    Location::caller()
+                )
+            })?;
         for (work_order_number, solution) in &self.solution.tactical_work_orders.0.clone() {
             let tactical_parameter = self
                 .parameters
@@ -795,9 +807,11 @@ where
         }
         Ok(())
     }
+
     // NOTE:
-    // All of this is formulated in the wrong way. I think that the best approach here is to make the system work
-    // with as little state duplication as possible. 
+    // All of this is formulated in the wrong way. I think that the best approach
+    // here is to make the system work with as little state duplication as
+    // possible.
 
     // So what should be checked to understand this?
     // We know that the error is not in the creation of the parameters
@@ -826,7 +840,6 @@ where
     // work_order on the correct day?
     fn unschedule(&mut self) -> Result<()>
     {
-
         let mut rng = rng();
         let work_order_numbers: Vec<WorkOrderNumber> = self
             .solution

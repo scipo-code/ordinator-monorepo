@@ -2,15 +2,15 @@
 /// matter as much as we are not testing attributes directly. Instead we are
 /// working with stress testing the algorithms and their interplay.
 use chrono::TimeDelta;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
-use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
 use ordinator_scheduling_environment::work_order::work_order_info::priority::Priority;
 use ordinator_scheduling_environment::work_order::work_order_info::revision::Revision;
 use ordinator_scheduling_environment::work_order::work_order_info::system_condition::SystemCondition;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_text::WorkOrderText;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
+use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
+use ordinator_scheduling_environment::worker_environment::resources::Resources;
 
 /// These are the manually created `WorkOrder`s for the phd data set.
 ///
@@ -65,7 +65,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -113,7 +113,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -161,7 +161,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -209,7 +209,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -257,7 +257,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -305,7 +305,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -353,7 +353,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -401,7 +401,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -449,7 +449,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -497,7 +497,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -545,7 +545,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -593,7 +593,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -641,7 +641,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -689,7 +689,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -737,7 +737,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -785,7 +785,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -833,7 +833,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -881,7 +881,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -929,7 +929,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -977,7 +977,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1025,7 +1025,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1073,7 +1073,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1121,7 +1121,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1169,7 +1169,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1217,7 +1217,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1265,7 +1265,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1313,7 +1313,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1361,7 +1361,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1409,7 +1409,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1457,7 +1457,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1514,7 +1514,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1571,7 +1571,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1628,7 +1628,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1685,7 +1685,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1742,7 +1742,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1799,7 +1799,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1856,7 +1856,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1913,7 +1913,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -1970,7 +1970,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2027,7 +2027,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2093,7 +2093,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2159,7 +2159,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2225,7 +2225,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2291,7 +2291,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2357,7 +2357,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2423,7 +2423,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2489,7 +2489,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2555,7 +2555,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2621,7 +2621,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2687,7 +2687,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2735,7 +2735,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2783,7 +2783,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2831,7 +2831,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2879,7 +2879,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2927,7 +2927,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -2975,7 +2975,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3023,7 +3023,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3071,7 +3071,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3119,7 +3119,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3167,7 +3167,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3215,7 +3215,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3263,7 +3263,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3311,7 +3311,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3359,7 +3359,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3407,7 +3407,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3455,7 +3455,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3503,7 +3503,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3551,7 +3551,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3599,7 +3599,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3647,7 +3647,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3695,7 +3695,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3743,7 +3743,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3791,7 +3791,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3839,7 +3839,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3887,7 +3887,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3935,7 +3935,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -3983,7 +3983,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4031,7 +4031,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4079,7 +4079,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4127,7 +4127,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4175,7 +4175,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4223,7 +4223,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4271,7 +4271,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4319,7 +4319,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4367,7 +4367,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4415,7 +4415,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4463,7 +4463,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4511,7 +4511,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4559,7 +4559,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4607,7 +4607,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4655,7 +4655,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4703,7 +4703,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4751,7 +4751,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4799,7 +4799,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4847,7 +4847,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4895,7 +4895,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4943,7 +4943,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -4991,7 +4991,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5039,7 +5039,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5087,7 +5087,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2025, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5135,7 +5135,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5183,7 +5183,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 6, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5231,7 +5231,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5279,7 +5279,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 7, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5327,7 +5327,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5375,7 +5375,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 2, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5423,7 +5423,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5471,7 +5471,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 3, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5519,7 +5519,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 12, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5567,7 +5567,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5615,7 +5615,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5663,7 +5663,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 6, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5711,7 +5711,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5759,7 +5759,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 11, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5807,7 +5807,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 11, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5855,7 +5855,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 6, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5903,7 +5903,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 11, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5951,7 +5951,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -5999,7 +5999,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 9, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6047,7 +6047,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6095,7 +6095,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 3, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6143,7 +6143,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 12, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6191,7 +6191,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 7, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6239,7 +6239,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6287,7 +6287,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6335,7 +6335,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 2, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6383,7 +6383,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 7, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6431,7 +6431,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 8, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6479,7 +6479,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 12, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6527,7 +6527,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 9, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6575,7 +6575,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 2, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6623,7 +6623,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 12, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6671,7 +6671,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 3, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6719,7 +6719,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 9, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6767,7 +6767,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6815,7 +6815,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 9, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6863,7 +6863,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 1, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6911,7 +6911,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 6, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -6959,7 +6959,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 6, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7007,7 +7007,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 12, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7055,7 +7055,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 8, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7103,7 +7103,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7151,7 +7151,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 2, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7199,7 +7199,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 1, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7247,7 +7247,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 8, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7295,7 +7295,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 3, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7343,7 +7343,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 6, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7391,7 +7391,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 7, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7439,7 +7439,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 7, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7487,7 +7487,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 3, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7535,7 +7535,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 9, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7583,7 +7583,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 7, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7631,7 +7631,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 9, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7679,7 +7679,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 7, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7727,7 +7727,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 12, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7775,7 +7775,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7823,7 +7823,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7871,7 +7871,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 11, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7919,7 +7919,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -7967,7 +7967,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8015,7 +8015,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 1, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8063,7 +8063,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 3, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8111,7 +8111,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 8, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8159,7 +8159,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 1, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8207,7 +8207,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8255,7 +8255,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 8, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8303,7 +8303,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 12, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8351,7 +8351,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8399,7 +8399,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 12, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8447,7 +8447,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8495,7 +8495,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8543,7 +8543,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 11, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8591,7 +8591,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 11, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8639,7 +8639,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 7, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8687,7 +8687,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 3, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8735,7 +8735,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8783,7 +8783,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 3, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8831,7 +8831,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 3, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8879,7 +8879,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 12, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8927,7 +8927,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 6, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -8975,7 +8975,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 1, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9023,7 +9023,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 9, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9071,7 +9071,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 2, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9119,7 +9119,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9167,7 +9167,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9215,7 +9215,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 5, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9263,7 +9263,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 6, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9311,7 +9311,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 6, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9359,7 +9359,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9407,7 +9407,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 3, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9455,7 +9455,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9503,7 +9503,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 7, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9551,7 +9551,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 3, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9599,7 +9599,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 11, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9647,7 +9647,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9695,7 +9695,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9743,7 +9743,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 4, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9791,7 +9791,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 2, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9839,7 +9839,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 8, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9887,7 +9887,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -9953,7 +9953,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -10019,7 +10019,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -10085,7 +10085,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -10151,7 +10151,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -10217,7 +10217,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -10349,7 +10349,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -10415,7 +10415,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -10481,7 +10481,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -10547,7 +10547,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -10679,7 +10679,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -10811,7 +10811,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -10877,7 +10877,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -10943,7 +10943,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -11075,7 +11075,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -11141,7 +11141,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -11207,7 +11207,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -11471,7 +11471,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -11537,7 +11537,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -11603,7 +11603,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -11669,7 +11669,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -11867,7 +11867,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -11933,7 +11933,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -11999,7 +11999,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -12065,7 +12065,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -12131,7 +12131,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -12197,7 +12197,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -12263,7 +12263,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -12395,7 +12395,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -12527,7 +12527,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -12593,7 +12593,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -12659,7 +12659,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -12725,7 +12725,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -12791,7 +12791,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -12857,7 +12857,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -12923,7 +12923,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -12989,7 +12989,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -13055,7 +13055,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -13187,7 +13187,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -13253,7 +13253,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -13319,7 +13319,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -13385,7 +13385,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -13517,7 +13517,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -13781,7 +13781,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -13847,7 +13847,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -14045,7 +14045,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -14111,7 +14111,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -14177,7 +14177,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -14309,7 +14309,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -14375,7 +14375,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -14639,7 +14639,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -14705,7 +14705,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -14771,7 +14771,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -14837,7 +14837,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -14903,7 +14903,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -14969,7 +14969,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -15035,7 +15035,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -15101,7 +15101,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -15167,7 +15167,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -15233,7 +15233,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -15299,7 +15299,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -15365,7 +15365,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -15497,7 +15497,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -15563,7 +15563,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -15629,7 +15629,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -15761,7 +15761,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -15827,7 +15827,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -15893,7 +15893,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -15959,7 +15959,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -16025,7 +16025,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -16157,7 +16157,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -16223,7 +16223,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -16289,7 +16289,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -16355,7 +16355,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -16421,7 +16421,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -16487,7 +16487,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -16553,7 +16553,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -16619,7 +16619,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -16685,7 +16685,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -16751,7 +16751,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -16883,7 +16883,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -16949,7 +16949,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -17015,7 +17015,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -17081,7 +17081,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -17147,7 +17147,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -17213,7 +17213,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -17279,7 +17279,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -17345,7 +17345,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -17543,7 +17543,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -17675,7 +17675,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -17741,7 +17741,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -17807,7 +17807,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18071,7 +18071,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18203,7 +18203,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18269,7 +18269,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18335,7 +18335,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18401,7 +18401,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18467,7 +18467,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18533,7 +18533,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18599,7 +18599,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18665,7 +18665,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18731,7 +18731,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18797,7 +18797,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18863,7 +18863,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18929,7 +18929,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -18995,7 +18995,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -19325,7 +19325,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -19391,7 +19391,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -19523,7 +19523,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -19589,7 +19589,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -19655,7 +19655,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -19721,7 +19721,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -19787,7 +19787,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -19853,7 +19853,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -19985,7 +19985,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -20051,7 +20051,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -20117,7 +20117,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -20249,7 +20249,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -20315,7 +20315,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -20381,7 +20381,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -20447,7 +20447,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -20579,7 +20579,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -20711,7 +20711,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -20777,7 +20777,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -20843,7 +20843,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -20909,7 +20909,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -20975,7 +20975,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -21041,7 +21041,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -21107,7 +21107,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -21239,7 +21239,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -21305,7 +21305,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -21371,7 +21371,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -21437,7 +21437,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -21503,7 +21503,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -21569,7 +21569,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -21701,7 +21701,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -21767,7 +21767,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -21899,7 +21899,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -21965,7 +21965,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -22031,7 +22031,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -22097,7 +22097,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -22163,7 +22163,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -22295,7 +22295,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -22427,7 +22427,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -22493,7 +22493,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -22559,7 +22559,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -22625,7 +22625,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -22691,7 +22691,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -22757,7 +22757,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -22823,7 +22823,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -22955,7 +22955,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -23021,7 +23021,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -23087,7 +23087,7 @@ pub fn phd_work_order_builder_complex_11_resources(
                     wodb.duration(TimeDelta::days(1))
                         .basic_start_from_ymd(2025, 1, 1)
                         .basic_finish_from_ymd(2025, 1, 1)
-                        .earliest_allowed_start_from_ymd(2025,1, 1)
+                        .earliest_allowed_start_from_ymd(2025, 1, 1)
                         .latest_allowed_finish_from_ymd(2024, 10, 1)
                 })
                 .work_order_analytic_builder(|woab| {
@@ -23107,3 +23107,11559 @@ pub fn phd_work_order_builder_complex_11_resources(
 // TODO [ ] add special cases
 // 3. test that EASD is respected, test that material is respected
 // 4. you could add constraint satisfaction to the problem and UI
+//
+fn data() -> Vec<WorkOrderData>
+{
+    vec![
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990000),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990001),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990002),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990003),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990004),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnMech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990005),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnScaf,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990006),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990007),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990008),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990009),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990010),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990011),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnScaf,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990012),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990013),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990014),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnMech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990015),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990016),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990017),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990018),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990019),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990020),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnMech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990021),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990022),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnScaf,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990023),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990024),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990025),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990026),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990027),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990028),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990029),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990030),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990031),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990032),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990033),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990034),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990035),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990036),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990037),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990038),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990039),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990040),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990041),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990042),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990043),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990044),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990045),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990046),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990047),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990048),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990049),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990050),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990051),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990052),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990053),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnMech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990054),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990055),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990056),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnTele,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990057),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990058),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990059),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnTele,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990060),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 1.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990061),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 2.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990062),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 3.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990063),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 4.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990064),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnMech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990065),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 6.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990066),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 7.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990067),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 8.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990068),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 9.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990069),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990070),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 1.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990071),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 2.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990072),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 3.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990073),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 4.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990074),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990075),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 6.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990076),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 7.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnMech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990077),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 8.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnScaf,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990078),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 9.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990079),
+            priority: WorkOrderType::Wpm(Priority::Char('B')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990080),
+            priority: WorkOrderType::Wpm(Priority::Char('D')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 1.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990081),
+            priority: WorkOrderType::Wpm(Priority::Char('D')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 2.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990082),
+            priority: WorkOrderType::Wpm(Priority::Char('D')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 3.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990083),
+            priority: WorkOrderType::Wpm(Priority::Char('D')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 4.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990084),
+            priority: WorkOrderType::Wpm(Priority::Char('D')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990085),
+            priority: WorkOrderType::Wpm(Priority::Char('D')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 6.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990086),
+            priority: WorkOrderType::Wpm(Priority::Char('D')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 7.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990087),
+            priority: WorkOrderType::Wpm(Priority::Char('D')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 8.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990088),
+            priority: WorkOrderType::Wpm(Priority::Char('D')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 9.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990089),
+            priority: WorkOrderType::Wpm(Priority::Char('D')),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990090),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 1.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnMech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990091),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 2.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990092),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 3.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990093),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 4.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnTele,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990094),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 5.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990095),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 6.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnScaf,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990096),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 7.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990097),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 8.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990098),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 9.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990099),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnScaf,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2025, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990100),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990101),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 6, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990102),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnMech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990103),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 7, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990104),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990105),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 2, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990106),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnTele,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990107),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 3, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990108),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 12, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990109),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990110),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990111),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 6, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990112),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990113),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 11, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990114),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 11, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990115),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 6, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990116),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 11, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990117),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990118),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnMech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 9, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990119),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990120),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 3, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990121),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnTele,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 12, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990122),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 7, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990123),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990124),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnTele,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990125),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnTele,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 2, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990126),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 7, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990127),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 8, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990128),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 12, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990129),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnScaf,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 9, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990130),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 2, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990131),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnMech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 12, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990132),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnTele,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 3, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990133),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 9, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990134),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990135),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 9, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990136),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 1, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990137),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnScaf,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 6, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990138),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 6, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990139),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 12, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990140),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 8, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990141),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990142),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnScaf,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 2, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990143),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnTele,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 1, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990144),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 8, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990145),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 3, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990146),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 6, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990147),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 7, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990148),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 7, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990149),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 3, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990150),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnScaf,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 9, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990151),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 7, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990152),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 9, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990153),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnMech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 7, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990154),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 12, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990155),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990156),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990157),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnMech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 11, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990158),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990159),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990160),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 1, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990161),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 3, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990162),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 8, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990163),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 1, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990164),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990165),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 8, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990166),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 12, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990167),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990168),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 12, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990169),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990170),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990171),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnScaf,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 11, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990172),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 11, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990173),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 7, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990174),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 3, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990175),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990176),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRope,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 3, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990177),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 3, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990178),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnTele,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 12, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990179),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 6, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990180),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 1, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990181),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRous,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 9, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990182),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnTele,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 2, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990183),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990184),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990185),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 5, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990186),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 6, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990187),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnLagg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 6, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990188),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnScaf,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990189),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 3, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990190),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990191),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnTele,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 7, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990192),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnElec,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 3, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990193),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnMech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 11, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990194),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnInst,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990195),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990196),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnRigg,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 4, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990197),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnCran,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 2, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990198),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::Prodtech,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 8, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990199),
+            priority: WorkOrderType::Wdf(Priority::new_int(1)),
+            operations: vec![OperationInput {
+                activity: 10,
+                work_remaining: 10.0,
+                early_start: (2025, 1, 1, 7, 0, 0),
+                early_finish: (2025, 1, 2, 7, 0, 0),
+                preparation: 1.0,
+                resource: Resources::MtnScaf,
+            }],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990200),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990201),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990202),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990203),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990204),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990205),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990206),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990207),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990208),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990209),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990210),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990211),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990212),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990213),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990214),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990215),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990216),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990217),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990218),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990219),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990220),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990221),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990222),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990223),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990224),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990225),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990226),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990227),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990228),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990229),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990230),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990231),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990232),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990233),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990234),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990235),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990236),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990237),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990238),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990239),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990240),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990241),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990242),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990243),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990244),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990245),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990246),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990247),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990248),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990249),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990250),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990251),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990252),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990253),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990254),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990255),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990256),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990257),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990258),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990259),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990260),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990261),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990262),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990263),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990264),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990265),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990266),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990267),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990268),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990269),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990270),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990271),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990272),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990273),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990274),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990275),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990276),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990277),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990278),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990279),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990280),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990281),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990282),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990283),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990284),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990285),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990286),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990287),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990288),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990289),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990290),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990291),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990292),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990293),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990294),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990295),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990296),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990297),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990298),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990299),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990300),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990301),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990302),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990303),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990304),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990305),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990306),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990307),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990308),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990309),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990310),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990311),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990312),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990313),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990314),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990315),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990316),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990317),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990318),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990319),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990320),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990321),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990322),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990323),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990324),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990325),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990326),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990327),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990328),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990329),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990330),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990331),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990332),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990333),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990334),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990335),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990336),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990337),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990338),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990339),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990340),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990341),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990342),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990343),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990344),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990345),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990346),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990347),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990348),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990349),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990350),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990351),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990352),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990353),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990354),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990355),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990356),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990357),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990358),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990359),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990360),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990361),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990362),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990363),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990364),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990365),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990366),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990367),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990368),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990369),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990370),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990371),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990372),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990373),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990374),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990375),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990376),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990377),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990378),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990379),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990380),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990381),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990382),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990383),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990384),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990385),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990386),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnCran,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990387),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990388),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990389),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990390),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990391),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990392),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990393),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 4.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::Prodtech,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990394),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRous,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990395),
+            priority: WorkOrderType::Wdf(Priority::new_int(3)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRigg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990396),
+            priority: WorkOrderType::Wdf(Priority::new_int(4)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990397),
+            priority: WorkOrderType::Wdf(Priority::new_int(5)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 2.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnLagg,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnElec,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990398),
+            priority: WorkOrderType::Wdf(Priority::new_int(7)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 3.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 6.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnMech,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnScaf,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+        WorkOrderData {
+            work_order_number: WorkOrderNumber(1111990399),
+            priority: WorkOrderType::Wdf(Priority::new_int(6)),
+            operations: vec![
+
+                    OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnRope,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 5.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnInst,
+            }
+                        OperationInput {
+
+            activity: 10,
+            work_remaining: 1.0,
+            early_start: (2025, 1, 1, 7, 0, 0),
+            early_finish: (2025, 1, 2, 7, 0, 0),
+            preparation: 1.0,
+            resource: Resources::MtnTele,
+            }
+                    ],
+            basic_start: (2025, 1, 1),
+            basic_finish: (2025, 1, 1),
+            easd: (2025, 1, 1),
+            lafd: (2024, 10, 1),
+            codes: (true, true),
+        },
+    ]
+}

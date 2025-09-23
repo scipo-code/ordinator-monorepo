@@ -1,3 +1,4 @@
+use anyhow::Context;
 use chrono::TimeDelta;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
@@ -30,15 +31,19 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
         wo_builder = wo_builder.work_order_builder(work_order_data.work_order_number, |wob| {
             let mut wob = wob.main_work_center(Resources::MtnMech);
             for opr in work_order_data.work_remaining {
-                wob = wob.operations_builder(opr.0, Resources::MtnMech, |ob| {
-                    ob.operation_info(|oib| oib.work_remaining(opr.1).work(5.0).work_actual(5.0))
+                wob = wob
+                    .operations_builder(opr.0, Resources::MtnMech, |ob| {
+                        ob.operation_info(|oib| {
+                            oib.work_remaining(opr.1).work(5.0).work_actual(5.0)
+                        })
                         .operation_dates(|dates| {
                             dates
                                 .earliest_start_from_ymd_hms(2025, 1, 1, 7, 0, 0)
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                });
+                    })
+                    .unwrap();
             }
             wob.work_order_info_builder(|woib| {
                 woib.priority(Priority::new_int(3))
@@ -92,6 +97,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -140,6 +147,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -188,6 +197,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -236,6 +247,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -284,6 +297,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -332,6 +347,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -380,6 +397,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -428,6 +447,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -476,6 +497,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -524,6 +547,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -572,6 +597,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -620,6 +647,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -668,6 +697,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -716,6 +747,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -764,6 +797,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -812,6 +847,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -860,6 +897,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -908,6 +947,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -956,6 +997,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1004,6 +1047,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1052,6 +1097,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1100,6 +1147,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1148,6 +1197,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1196,6 +1247,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1244,6 +1297,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1292,6 +1347,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1340,6 +1397,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1388,6 +1447,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1436,6 +1497,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1484,6 +1547,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1532,6 +1597,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .operations_builder(10, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -1541,6 +1608,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1598,6 +1667,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1655,6 +1726,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1712,6 +1785,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1769,6 +1844,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1826,6 +1903,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1883,6 +1962,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1940,6 +2021,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1997,6 +2080,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2054,6 +2139,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2120,6 +2207,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2186,6 +2275,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2252,6 +2343,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2318,6 +2411,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2384,6 +2479,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2450,6 +2547,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2516,6 +2615,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2582,6 +2683,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2648,6 +2751,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2714,6 +2819,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2762,6 +2869,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -2810,6 +2919,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -2858,6 +2969,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -2906,6 +3019,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -2954,6 +3069,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -3002,6 +3119,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -3050,6 +3169,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -3098,6 +3219,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -3146,6 +3269,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -3194,6 +3319,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -3242,6 +3369,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3290,6 +3419,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3338,6 +3469,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3386,6 +3519,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3434,6 +3569,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3482,6 +3619,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3530,6 +3669,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3578,6 +3719,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3626,6 +3769,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3674,6 +3819,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3722,6 +3869,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3770,6 +3919,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3818,6 +3969,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3866,6 +4019,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3914,6 +4069,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3962,6 +4119,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -4010,6 +4169,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -4058,6 +4219,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -4106,6 +4269,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -4154,6 +4319,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -4202,6 +4369,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4250,6 +4419,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4298,6 +4469,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4346,6 +4519,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4394,6 +4569,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4442,6 +4619,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4490,6 +4669,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4538,6 +4719,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4586,6 +4769,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4634,6 +4819,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4682,6 +4869,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -4730,6 +4919,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -4778,6 +4969,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -4826,6 +5019,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -4874,6 +5069,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -4922,6 +5119,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -4970,6 +5169,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5018,6 +5219,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5066,6 +5269,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5114,6 +5319,8 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .with_context(|| format!("Operation could not be added to WorkOrder"))
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))

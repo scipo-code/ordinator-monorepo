@@ -1,6 +1,5 @@
 use chrono::TimeDelta;
-use ordinator_scheduling_environment::Resources;
-use ordinator_scheduling_environment::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
 use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
 use ordinator_scheduling_environment::work_order::work_order_info::priority::Priority;
@@ -8,6 +7,7 @@ use ordinator_scheduling_environment::work_order::work_order_info::revision::Rev
 use ordinator_scheduling_environment::work_order::work_order_info::system_condition::SystemCondition;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_text::WorkOrderText;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
+use ordinator_scheduling_environment::worker_environment::resources::Resources;
 
 pub fn material_test_work_orders(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilder
 {

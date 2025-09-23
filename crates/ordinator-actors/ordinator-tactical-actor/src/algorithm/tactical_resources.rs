@@ -130,6 +130,16 @@ impl TacticalResources
             .map(|(_, work)| work)
             .fold(Work::from(0.0), |acc, work| &acc + work))
     }
+
+    pub(crate) fn total_hours(&self) -> Work
+    {
+        self.resources
+            .values()
+            .fold(Work::from(0.0), |mut acc, days| {
+                acc += days.days.iter().cloned().sum::<Work>();
+                acc
+            })
+    }
 }
 
 // Is this the correct way to think about the different things? Yes
