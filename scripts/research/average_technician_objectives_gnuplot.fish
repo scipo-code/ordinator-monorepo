@@ -3,14 +3,15 @@
 
 rm $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log
 
-cargo test master_system_test_complex_30_technicians -- --ignored --nocapture 2>temp_output_from_program.log &
+# cargo test master_system_test_complex_30_technicians -- --ignored --nocapture 2>temp_output_from_program.log &
+cargo test master_system_test_complex_10_technicians -- --ignored --nocapture 2>temp_output_from_program.log &
 
 while test ! -f $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log; or grep -q not READY $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log
     echo "ORDINATOR NOT READY"
     sleep 1
 end
 
-sleep 1m
+sleep 5m
 
 pkill master_system_t
 
@@ -39,7 +40,7 @@ jq '
   select(.threadName == "TEST_SUPERVISOR" and (.fields | has("objective_value")))
   | [ 
     .timestamp, 
-    .fields.objective_value 
+    .fields.objective_value.percent
   ]
   | join(" ")
   ' $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log | sed 's/"//g' >./scripts/research/data/supervisor.dat

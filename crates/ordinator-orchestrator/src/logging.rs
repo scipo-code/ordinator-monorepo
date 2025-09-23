@@ -127,7 +127,7 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
     // Set targets so that logs are routes to the correct file at the call site.
     // Specified with `event!(target: "<NAME OF FILE>")`.
 
-    let research_targets = Targets::new().with_target("research", Level::DEBUG);
+    let research_targets = Targets::new().with_target("research", Level::INFO);
     let debug_targets = Targets::new().with_target("debug", Level::TRACE);
 
     let developer_targets = Targets::new().with_target("developer", Level::TRACE);
