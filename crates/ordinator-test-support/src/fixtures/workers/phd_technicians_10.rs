@@ -25,10 +25,10 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                 .id("TEST_STRATEGIC")
                 .number_of_strategic_periods(52)
                 .strategic_options(|f| {
-                    f.number_of_removed_work_orders(5)
-                        .urgency_weight(1000)
+                    f.number_of_removed_work_orders(20)
+                        .urgency_weight(1_000)
                         .resource_penalty_weight(1_000_000)
-                        .clustering_weight(1000)
+                        .clustering_weight(1_000)
                 })
         })
         .tactical(|tactical| {
@@ -36,9 +36,9 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                 .id("TEST_TACTICAL")
                 .number_of_tactical_days(120)
                 .tactical_options(|f| {
-                    f.number_of_removed_work_orders(20)
-                        .urgency(1000)
-                        .resource_penalty(100000)
+                    f.number_of_removed_work_orders(35)
+                        .urgency(10)
+                        .resource_penalty(10_000_000)
                 })
         })
         .supervisors(|supervisor| {

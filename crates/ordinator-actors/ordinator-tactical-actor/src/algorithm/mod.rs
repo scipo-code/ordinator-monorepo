@@ -858,6 +858,7 @@ where
 
         // How can you make something that will allow us to catch the
         // error instantneously?
+        event!(target: "developer", Level::INFO, number_of_work_orders_in_tactical_solution = self.solution.tactical_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Tactical(_))).count());
         for work_order_number in random_work_order_numbers {
             self.unschedule_specific_work_order(*work_order_number)
                 .with_context(|| {
@@ -868,7 +869,8 @@ where
                         Location::caller(),
                     )
                 })?;
-        }
+        };
+        event!(target: "developer", Level::INFO, number_of_work_orders_in_tactical_solution = self.solution.tactical_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Tactical(_))).count());
         Ok(())
     }
 
