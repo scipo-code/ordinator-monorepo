@@ -51,9 +51,8 @@ impl std::fmt::Debug for TacticalResources
             write!(
                 f,
                 "{}",
-                format!(
-                    "TacticalResources: \nDays: {number_of_days}\nResources: {resources}\nAverage hours per day: {average_hours_per_day:#?}"
-                ).bright_blue()
+                format!("TacticalResources: \nDays: {number_of_days}\nTechnicians: {resources}")
+                    .bright_blue()
             )
         } else {
             f.debug_struct("TacticalResources")

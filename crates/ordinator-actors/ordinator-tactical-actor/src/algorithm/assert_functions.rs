@@ -28,7 +28,7 @@ type TotalExcessHours = Work;
 #[allow(dead_code)]
 pub trait TacticalAssertions
 {
-    fn asset_that_loading_matches_scheduled(&self) -> Result<()>;
+    fn assert_that_loading_matches_scheduled(&self) -> Result<()>;
 
     fn asset_that_capacity_is_not_exceeded(&self) -> Result<TotalExcessHours>;
 
@@ -40,7 +40,7 @@ impl<Ss> TacticalAssertions
 where
     Ss: SystemSolutions,
 {
-    fn asset_that_loading_matches_scheduled(&self) -> Result<()>
+    fn assert_that_loading_matches_scheduled(&self) -> Result<()>
     {
         let mut aggregated_load: HashMap<Resources, HashMap<Day, Work>> = HashMap::new();
 
@@ -162,7 +162,10 @@ where
 
                     ensure!(
                         work_remaining == operation_solution_work,
-                        "work {operation_solution_work} in operation solution should always match Work {work_remaining} in operation parameter"
+                        "work scheduled for: {:?} - {:?} for {:?}\nhours: {operation_solution_work:>4} in operation solution should always match\nhours: {work_remaining:>4} in operation parameter",
+                        work_order_solution.0,
+                        activity_number,
+                        operation_parameter.resource
                     );
                     scheduled_work += operation_solution_work;
                 }

@@ -14,8 +14,10 @@ use std::sync::Arc;
 
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::ensure;
 use chrono::NaiveDate;
 use chrono::TimeDelta;
+use colored::Colorize;
 use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::algorithm::LoadOperation;
 use ordinator_actor_core::traits::AbLNSUtils;
@@ -591,20 +593,22 @@ where
         // What part of the program should be responsible for all of this? I believe
         // that the fundamental issue here is that we should be able to make
         // something that can change the way that we work with the.
-        self.asset_that_loading_matches_scheduled()
+        self.assert_that_loading_matches_scheduled()
             .with_context(|| {
                 format!(
-                    "TESTING_TACTICAL_ASSERTION\nLocation: {}",
+                    "assert_that_loading_matches_scheduled\nLocation: {}",
                     Location::caller()
                 )
+                .bright_red()
             })?;
 
         self.assert_that_total_loading_is_equal_to_total_scheduled()
             .with_context(|| {
                 format!(
-                    "TESTING_TACTICAL_ASSERTION\nLocation: {}",
-                    Location::caller()
+                    "assert_that_total_loading_is_equal_to_total_scheduled\nLocation: {}",
+                    Location::caller(),
                 )
+                .bright_red()
             })?;
         for (work_order_number, solution) in &self.solution.tactical_work_orders.0.clone() {
             let tactical_parameter = self
@@ -670,9 +674,11 @@ where
                         .get(&current_work_order_number)
                         .unwrap()
                 }
-                LoopState::ReleasedFromTactical => {
+                LoopState::ReleaseFromTactical => {
                     self.solution
-                        .release_from_tactical_solution(&current_work_order_number);
+                        .tactical_work_orders
+                        .0
+                        .insert(current_work_order_number, WhereIsWorkOrder::NotScheduled);
 
                     start_day_index = 0;
 
@@ -693,62 +699,48 @@ where
 
             let mut operation_solutions = TacticalScheduledOperations::default();
 
-            let mut all_days = self.parameters.tactical_days.clone();
-
-            let allowed_starting_days: Vec<&Day> = self
+            let allowed_starting_days = self
                 .parameters
                 .tactical_days
                 .iter()
                 .filter(|day| tactical_parameter.earliest_allowed_start_date <= day.date)
-                .collect();
+                .nth(start_day_index);
 
-            let start_day: Day = match allowed_starting_days.get(start_day_index) {
-                Some(start_day) => (*start_day).clone(),
-                None => {
-                    loop_state = LoopState::ReleasedFromTactical;
-                    continue 'back_to_loop_state_handle;
-                }
+            let Some(start_day) = allowed_starting_days else {
+                loop_state = LoopState::ReleaseFromTactical;
+                continue 'back_to_loop_state_handle;
             };
 
-            let allowed_days: Vec<_> = all_days
-                .iter_mut()
+            let mut current_day = self
+                .parameters
+                .tactical_days
+                .iter()
                 .filter(|date| start_day.date <= date.date)
-                .collect();
+                .peekable();
 
-            let mut current_day = allowed_days.into_iter().peekable();
-
-            let mut sorted_activities = tactical_parameter
-                .tactical_operation_parameters
-                .keys()
-                .clone()
-                .collect::<Vec<&ActivityNumber>>();
-
-            sorted_activities.sort();
-
-            for activity in sorted_activities {
+            for activity_number in tactical_parameter.tactical_operation_parameters.keys() {
                 let operation_parameters = tactical_parameter
                     .tactical_operation_parameters
-                    .get(activity)
+                    .get(activity_number)
                     .expect("The work order should always have its corresponding parameters");
-
-                let resource = operation_parameters.resource;
 
                 let current_day_peek = match current_day.peek() {
                     Some(day) => day,
                     None => {
-                        loop_state = LoopState::ReleasedFromTactical;
+                        loop_state = LoopState::ReleaseFromTactical;
                         continue 'back_to_loop_state_handle;
                     }
                 };
 
-                let first_day_remaining_capacity =
-                    match self.remaining_capacity(&resource, current_day_peek) {
-                        Some(remaining_capacity) => remaining_capacity,
-                        None => {
-                            loop_state = LoopState::Unscheduled;
-                            continue 'back_to_loop_state_handle;
-                        }
-                    };
+                let first_day_remaining_capacity = match self
+                    .remaining_capacity(&operation_parameters.resource, current_day_peek)
+                {
+                    Some(remaining_capacity) => remaining_capacity,
+                    None => {
+                        loop_state = LoopState::Unscheduled;
+                        continue 'back_to_loop_state_handle;
+                    }
+                };
 
                 let loadings = determine_load(
                     first_day_remaining_capacity,
@@ -780,22 +772,45 @@ where
                         }
                     };
 
-                    if self.remaining_capacity(&resource, current_day).is_none() {
+                    if self
+                        .remaining_capacity(&operation_parameters.resource, current_day)
+                        .is_none()
+                    {
                         loop_state = LoopState::Unscheduled;
                         continue 'back_to_loop_state_handle;
                     };
                 }
 
+                let calculated_tactical_work =
+                    activity_load.iter().fold(Work::from(0.0), |mut acc, e| {
+                        acc += e.1;
+                        acc
+                    });
+
+                if operation_parameters.work_remaining != calculated_tactical_work {
+                    loop_state = LoopState::ReleaseFromTactical;
+                    continue 'back_to_loop_state_handle;
+                }
+
+                ensure!(
+                    operation_parameters.work_remaining == calculated_tactical_work,
+                    "required_work: {}\noptimized_work: {}\nwork_order: {}\nactivity: {}\nnext day: {:?}",
+                    operation_parameters.work_remaining,
+                    calculated_tactical_work,
+                    current_work_order_number,
+                    activity_number,
+                    (current_day.peek()).clone(),
+                );
                 let operation_solution = OperationSolution::new(
                     activity_load,
-                    resource,
+                    operation_parameters.resource,
                     operation_parameters.number,
                     operation_parameters.work_remaining,
                     current_work_order_number,
-                    *activity,
+                    *activity_number,
                 );
 
-                operation_solutions.insert_operation_solution(*activity, operation_solution);
+                operation_solutions.insert_operation_solution(*activity_number, operation_solution);
             }
 
             self.update_loadings(&operation_solutions, LoadOperation::Add)?;
@@ -869,7 +884,7 @@ where
                         Location::caller(),
                     )
                 })?;
-        };
+        }
         event!(target: "developer", Level::INFO, number_of_work_orders_in_tactical_solution = self.solution.tactical_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Tactical(_))).count());
         Ok(())
     }
@@ -907,7 +922,7 @@ enum LoopState
 {
     Unscheduled,
     Scheduled,
-    ReleasedFromTactical,
+    ReleaseFromTactical,
 }
 impl<Ss> Deref for TacticalAlgorithm<Ss>
 where

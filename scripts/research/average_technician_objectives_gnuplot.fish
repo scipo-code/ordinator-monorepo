@@ -4,7 +4,7 @@
 rm $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log
 
 # cargo test master_system_test_complex_30_technicians -- --ignored --nocapture 2>temp_output_from_program.log &
-cargo test master_system_test_complex_10_technicians -- --ignored --nocapture 2>temp_output_from_program.log &
+cargo test --test master_system_test_complex_10_technicians -- --ignored --nocapture 2>temp_output_from_program.log &
 
 while test ! -f $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log; or grep -q not READY $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log
     echo "ORDINATOR NOT READY"

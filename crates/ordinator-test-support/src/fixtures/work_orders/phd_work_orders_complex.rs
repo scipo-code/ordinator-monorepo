@@ -33,7 +33,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -81,7 +82,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -129,7 +131,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -177,7 +180,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -225,7 +229,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -273,7 +278,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -321,7 +327,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -369,7 +376,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -417,7 +425,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -465,7 +474,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -513,7 +523,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -561,7 +572,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -609,7 +621,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -657,7 +670,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -705,7 +719,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -753,7 +768,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -801,7 +817,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -849,7 +866,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -897,7 +915,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -945,7 +964,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -993,7 +1013,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1041,7 +1062,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1089,7 +1111,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1137,7 +1160,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1185,7 +1209,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1233,7 +1258,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1281,7 +1307,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1329,7 +1356,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1377,7 +1405,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1425,7 +1454,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1473,7 +1503,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -1482,7 +1513,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1530,7 +1562,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -1539,7 +1572,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1587,7 +1621,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -1596,7 +1631,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1644,7 +1680,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -1653,7 +1690,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1701,7 +1739,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -1710,7 +1749,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1758,7 +1798,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -1767,7 +1808,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1815,7 +1857,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -1824,7 +1867,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1872,7 +1916,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -1881,7 +1926,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1929,7 +1975,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -1938,7 +1985,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -1986,7 +2034,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -1995,7 +2044,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2043,7 +2093,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2052,7 +2103,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2061,7 +2113,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2109,7 +2162,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2118,7 +2172,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2127,7 +2182,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2175,7 +2231,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2184,7 +2241,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2193,7 +2251,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2241,7 +2300,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2250,7 +2310,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2259,7 +2320,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2307,7 +2369,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2316,7 +2379,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2325,7 +2389,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2373,7 +2438,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2382,7 +2448,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2391,7 +2458,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2439,7 +2507,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2448,7 +2517,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2457,7 +2527,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2505,7 +2576,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2514,7 +2586,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2523,7 +2596,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2571,7 +2645,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2580,7 +2655,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2589,7 +2665,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2637,7 +2714,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2646,7 +2724,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnScaf, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -2655,7 +2734,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -2703,7 +2783,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -2751,7 +2832,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -2799,7 +2881,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -2847,7 +2930,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -2895,7 +2979,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -2943,7 +3028,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -2991,7 +3077,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -3039,7 +3126,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -3087,7 +3175,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -3135,7 +3224,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -3183,7 +3273,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3231,7 +3322,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3279,7 +3371,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3327,7 +3420,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3375,7 +3469,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3423,7 +3518,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3471,7 +3567,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3519,7 +3616,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3567,7 +3665,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3615,7 +3714,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3663,7 +3763,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3711,7 +3812,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3759,7 +3861,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3807,7 +3910,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3855,7 +3959,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3903,7 +4008,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3951,7 +4057,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -3999,7 +4106,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -4047,7 +4155,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -4095,7 +4204,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('B'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('B')))
@@ -4143,7 +4253,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4191,7 +4302,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4239,7 +4351,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4287,7 +4400,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4335,7 +4449,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4383,7 +4498,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4431,7 +4547,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4479,7 +4596,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4527,7 +4645,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4575,7 +4694,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::Char('D'))
                         .work_order_type(WorkOrderType::Wpm(Priority::Char('D')))
@@ -4623,7 +4743,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -4671,7 +4792,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -4719,7 +4841,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -4767,7 +4890,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -4815,7 +4939,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -4863,7 +4988,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -4911,7 +5037,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -4959,7 +5086,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5007,7 +5135,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5055,7 +5184,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5103,7 +5233,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5151,7 +5282,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5199,7 +5331,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5247,7 +5380,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5295,7 +5429,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5343,7 +5478,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5391,7 +5527,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5439,7 +5576,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5487,7 +5625,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5535,7 +5674,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5583,7 +5723,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5631,7 +5772,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5679,7 +5821,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5727,7 +5870,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5775,7 +5919,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5823,7 +5968,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5871,7 +6017,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5919,7 +6066,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -5967,7 +6115,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6015,7 +6164,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6063,7 +6213,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6111,7 +6262,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6159,7 +6311,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6207,7 +6360,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6255,7 +6409,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6303,7 +6458,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6351,7 +6507,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6399,7 +6556,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6447,7 +6605,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6495,7 +6654,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6543,7 +6703,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6591,7 +6752,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6639,7 +6801,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6687,7 +6850,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6735,7 +6899,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6783,7 +6948,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6831,7 +6997,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6879,7 +7046,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6927,7 +7095,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -6975,7 +7144,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7023,7 +7193,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7071,7 +7242,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7119,7 +7291,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7167,7 +7340,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7215,7 +7389,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7263,7 +7438,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7311,7 +7487,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7359,7 +7536,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7407,7 +7585,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7455,7 +7634,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7503,7 +7683,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7551,7 +7732,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7599,7 +7781,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7647,7 +7830,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7695,7 +7879,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7743,7 +7928,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7791,7 +7977,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7839,7 +8026,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7887,7 +8075,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7935,7 +8124,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -7983,7 +8173,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8031,7 +8222,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8079,7 +8271,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8127,7 +8320,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8175,7 +8369,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8223,7 +8418,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8271,7 +8467,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8319,7 +8516,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8367,7 +8565,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8415,7 +8614,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8463,7 +8663,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8511,7 +8712,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8559,7 +8761,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8607,7 +8810,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8655,7 +8859,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8703,7 +8908,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8751,7 +8957,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8799,7 +9006,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8847,7 +9055,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8895,7 +9104,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8943,7 +9153,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -8991,7 +9202,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9039,7 +9251,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9087,7 +9300,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9135,7 +9349,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9183,7 +9398,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9231,7 +9447,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9279,7 +9496,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9327,7 +9545,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9375,7 +9594,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9423,7 +9643,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9471,7 +9692,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9519,7 +9741,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9567,7 +9790,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9615,7 +9839,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9663,7 +9888,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9711,7 +9937,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9759,7 +9986,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9807,7 +10035,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9855,7 +10084,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(1))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -9903,7 +10133,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -9912,7 +10143,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -9921,7 +10153,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -9969,7 +10202,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -9978,7 +10212,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -9987,7 +10222,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -10035,7 +10271,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10044,7 +10281,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10053,7 +10291,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -10101,7 +10340,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10110,7 +10350,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10119,7 +10360,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -10167,7 +10409,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10176,7 +10419,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10185,7 +10429,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -10233,7 +10478,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10242,7 +10488,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10251,7 +10498,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -10299,7 +10547,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10308,7 +10557,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10317,7 +10567,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -10365,7 +10616,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10374,7 +10626,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10383,7 +10636,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -10431,7 +10685,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10440,7 +10695,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10449,7 +10705,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -10497,7 +10754,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10506,7 +10764,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10515,7 +10774,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -10563,7 +10823,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10572,7 +10833,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10581,7 +10843,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -10629,7 +10892,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10638,7 +10902,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10647,7 +10912,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -10695,7 +10961,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10704,7 +10971,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10713,7 +10981,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -10761,7 +11030,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10770,7 +11040,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10779,7 +11050,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -10827,7 +11099,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10836,7 +11109,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10845,7 +11119,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -10893,7 +11168,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10902,7 +11178,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10911,7 +11188,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -10959,7 +11237,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10968,7 +11247,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -10977,7 +11257,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -11025,7 +11306,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11034,7 +11316,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11043,7 +11326,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -11091,7 +11375,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11100,7 +11385,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11109,7 +11395,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -11157,7 +11444,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11166,7 +11454,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11175,7 +11464,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -11223,7 +11513,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11232,7 +11523,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11241,7 +11533,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -11289,7 +11582,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11298,7 +11592,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11307,7 +11602,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -11355,7 +11651,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11364,7 +11661,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11373,7 +11671,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -11421,7 +11720,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11430,7 +11730,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11439,7 +11740,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -11487,7 +11789,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11496,7 +11799,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11505,7 +11809,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -11553,7 +11858,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11562,7 +11868,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11571,7 +11878,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -11619,7 +11927,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11628,7 +11937,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11637,7 +11947,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -11685,7 +11996,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11694,7 +12006,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11703,7 +12016,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -11751,7 +12065,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11760,7 +12075,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11769,7 +12085,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -11817,7 +12134,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11826,7 +12144,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11835,7 +12154,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -11883,7 +12203,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11892,7 +12213,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11901,7 +12223,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -11949,7 +12272,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11958,7 +12282,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -11967,7 +12292,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -12015,7 +12341,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12024,7 +12351,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12033,7 +12361,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -12081,7 +12410,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12090,7 +12420,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12099,7 +12430,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -12147,7 +12479,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12156,7 +12489,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12165,7 +12499,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -12213,7 +12548,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12222,7 +12558,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12231,7 +12568,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -12279,7 +12617,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12288,7 +12627,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12297,7 +12637,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -12345,7 +12686,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12354,7 +12696,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12363,7 +12706,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -12411,7 +12755,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12420,7 +12765,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12429,7 +12775,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -12477,7 +12824,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12486,7 +12834,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12495,7 +12844,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -12543,7 +12893,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12552,7 +12903,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12561,7 +12913,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -12609,7 +12962,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12618,7 +12972,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12627,7 +12982,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -12675,7 +13031,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12684,7 +13041,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12693,7 +13051,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -12741,7 +13100,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12750,7 +13110,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12759,7 +13120,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -12807,7 +13169,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12816,7 +13179,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12825,7 +13189,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -12873,7 +13238,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12882,7 +13248,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12891,7 +13258,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -12939,7 +13307,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12948,7 +13317,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -12957,7 +13327,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -13005,7 +13376,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13014,7 +13386,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13023,7 +13396,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -13071,7 +13445,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13080,7 +13455,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13089,7 +13465,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -13137,7 +13514,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13146,7 +13524,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13155,7 +13534,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -13203,7 +13583,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13212,7 +13593,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13221,7 +13603,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -13269,7 +13652,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13278,7 +13662,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13287,7 +13672,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -13335,7 +13721,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13344,7 +13731,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13353,7 +13741,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -13401,7 +13790,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13410,7 +13800,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13419,7 +13810,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -13467,7 +13859,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13476,7 +13869,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13485,7 +13879,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -13533,7 +13928,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13542,7 +13938,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13551,7 +13948,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -13599,7 +13997,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13608,7 +14007,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13617,7 +14017,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -13665,7 +14066,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13674,7 +14076,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13683,7 +14086,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -13731,7 +14135,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13740,7 +14145,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13749,7 +14155,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -13797,7 +14204,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13806,7 +14214,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13815,7 +14224,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -13863,7 +14273,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13872,7 +14283,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13881,7 +14293,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -13929,7 +14342,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13938,7 +14352,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -13947,7 +14362,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -13995,7 +14411,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14004,7 +14421,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14013,7 +14431,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -14061,7 +14480,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14070,7 +14490,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14079,7 +14500,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -14127,7 +14549,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14136,7 +14559,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14145,7 +14569,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -14193,7 +14618,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14202,7 +14628,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14211,7 +14638,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -14259,7 +14687,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14268,7 +14697,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14277,7 +14707,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -14325,7 +14756,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14334,7 +14766,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14343,7 +14776,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -14391,7 +14825,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14400,7 +14835,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14409,7 +14845,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -14457,7 +14894,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14466,7 +14904,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14475,7 +14914,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -14523,7 +14963,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14532,7 +14973,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14541,7 +14983,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -14589,7 +15032,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14598,7 +15042,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14607,7 +15052,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -14655,7 +15101,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14664,7 +15111,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14673,7 +15121,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -14721,7 +15170,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14730,7 +15180,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14739,7 +15190,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -14787,7 +15239,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14796,7 +15249,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14805,7 +15259,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -14853,7 +15308,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14862,7 +15318,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14871,7 +15328,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -14919,7 +15377,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14928,7 +15387,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14937,7 +15397,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -14985,7 +15446,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -14994,7 +15456,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15003,7 +15466,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -15051,7 +15515,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15060,7 +15525,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15069,7 +15535,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -15117,7 +15584,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15126,7 +15594,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15135,7 +15604,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -15183,7 +15653,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15192,7 +15663,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15201,7 +15673,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -15249,7 +15722,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15258,7 +15732,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15267,7 +15742,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -15315,7 +15791,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15324,7 +15801,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15333,7 +15811,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -15381,7 +15860,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15390,7 +15870,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15399,7 +15880,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -15447,7 +15929,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15456,7 +15939,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15465,7 +15949,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -15513,7 +15998,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15522,7 +16008,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15531,7 +16018,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -15579,7 +16067,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15588,7 +16077,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15597,7 +16087,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -15645,7 +16136,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15654,7 +16146,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15663,7 +16156,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -15711,7 +16205,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15720,7 +16215,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15729,7 +16225,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -15777,7 +16274,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15786,7 +16284,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15795,7 +16294,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -15843,7 +16343,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15852,7 +16353,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15861,7 +16363,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -15909,7 +16412,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15918,7 +16422,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15927,7 +16432,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -15975,7 +16481,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15984,7 +16491,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -15993,7 +16501,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -16041,7 +16550,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16050,7 +16560,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16059,7 +16570,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -16107,7 +16619,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16116,7 +16629,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16125,7 +16639,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -16173,7 +16688,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16182,7 +16698,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16191,7 +16708,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -16239,7 +16757,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16248,7 +16767,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16257,7 +16777,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -16305,7 +16826,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16314,7 +16836,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16323,7 +16846,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -16371,7 +16895,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16380,7 +16905,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16389,7 +16915,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -16437,7 +16964,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16446,7 +16974,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16455,7 +16984,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -16503,7 +17033,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16512,7 +17043,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16521,7 +17053,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -16569,7 +17102,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16578,7 +17112,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16587,7 +17122,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -16635,7 +17171,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16644,7 +17181,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16653,7 +17191,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -16701,7 +17240,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16710,7 +17250,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16719,7 +17260,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -16767,7 +17309,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16776,7 +17319,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16785,7 +17329,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -16833,7 +17378,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16842,7 +17388,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16851,7 +17398,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -16899,7 +17447,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16908,7 +17457,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16917,7 +17467,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -16965,7 +17516,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16974,7 +17526,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -16983,7 +17536,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -17031,7 +17585,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17040,7 +17595,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17049,7 +17605,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -17097,7 +17654,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17106,7 +17664,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17115,7 +17674,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -17163,7 +17723,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17172,7 +17733,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17181,7 +17743,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -17229,7 +17792,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17238,7 +17802,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17247,7 +17812,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -17295,7 +17861,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17304,7 +17871,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17313,7 +17881,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -17361,7 +17930,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17370,7 +17940,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17379,7 +17950,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -17427,7 +17999,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17436,7 +18009,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17445,7 +18019,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -17493,7 +18068,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17502,7 +18078,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17511,7 +18088,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -17559,7 +18137,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17568,7 +18147,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17577,7 +18157,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -17625,7 +18206,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17634,7 +18216,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17643,7 +18226,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -17691,7 +18275,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17700,7 +18285,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17709,7 +18295,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -17757,7 +18344,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17766,7 +18354,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17775,7 +18364,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -17823,7 +18413,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17832,7 +18423,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17841,7 +18433,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -17889,7 +18482,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17898,7 +18492,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17907,7 +18502,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -17955,7 +18551,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17964,7 +18561,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -17973,7 +18571,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -18021,7 +18620,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18030,7 +18630,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18039,7 +18640,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -18087,7 +18689,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18096,7 +18699,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18105,7 +18709,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -18153,7 +18758,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18162,7 +18768,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18171,7 +18778,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -18219,7 +18827,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18228,7 +18837,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18237,7 +18847,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -18285,7 +18896,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18294,7 +18906,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18303,7 +18916,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -18351,7 +18965,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18360,7 +18975,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18369,7 +18985,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -18417,7 +19034,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18426,7 +19044,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18435,7 +19054,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -18483,7 +19103,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18492,7 +19113,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18501,7 +19123,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -18549,7 +19172,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18558,7 +19182,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18567,7 +19192,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -18615,7 +19241,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18624,7 +19251,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18633,7 +19261,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -18681,7 +19310,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18690,7 +19320,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18699,7 +19330,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -18747,7 +19379,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18756,7 +19389,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18765,7 +19399,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -18813,7 +19448,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18822,7 +19458,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18831,7 +19468,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -18879,7 +19517,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18888,7 +19527,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18897,7 +19537,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -18945,7 +19586,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18954,7 +19596,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -18963,7 +19606,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -19011,7 +19655,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19020,7 +19665,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19029,7 +19675,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -19077,7 +19724,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19086,7 +19734,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19095,7 +19744,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -19143,7 +19793,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19152,7 +19803,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19161,7 +19813,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -19209,7 +19862,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19218,7 +19872,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19227,7 +19882,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -19275,7 +19931,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19284,7 +19941,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19293,7 +19951,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -19341,7 +20000,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19350,7 +20010,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19359,7 +20020,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -19407,7 +20069,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19416,7 +20079,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19425,7 +20089,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -19473,7 +20138,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19482,7 +20148,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19491,7 +20158,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -19539,7 +20207,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19548,7 +20217,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19557,7 +20227,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -19605,7 +20276,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19614,7 +20286,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19623,7 +20296,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -19671,7 +20345,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19680,7 +20355,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19689,7 +20365,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -19737,7 +20414,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19746,7 +20424,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19755,7 +20434,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -19803,7 +20483,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19812,7 +20493,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19821,7 +20503,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -19869,7 +20552,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19878,7 +20562,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19887,7 +20572,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -19935,7 +20621,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19944,7 +20631,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -19953,7 +20641,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -20001,7 +20690,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20010,7 +20700,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20019,7 +20710,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -20067,7 +20759,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20076,7 +20769,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20085,7 +20779,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -20133,7 +20828,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20142,7 +20838,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20151,7 +20848,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -20199,7 +20897,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20208,7 +20907,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20217,7 +20917,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -20265,7 +20966,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20274,7 +20976,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20283,7 +20986,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -20331,7 +21035,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20340,7 +21045,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20349,7 +21055,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -20397,7 +21104,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20406,7 +21114,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20415,7 +21124,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -20463,7 +21173,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20472,7 +21183,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20481,7 +21193,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -20529,7 +21242,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20538,7 +21252,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20547,7 +21262,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -20595,7 +21311,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20604,7 +21321,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20613,7 +21331,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -20661,7 +21380,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20670,7 +21390,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20679,7 +21400,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -20727,7 +21449,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20736,7 +21459,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20745,7 +21469,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -20793,7 +21518,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20802,7 +21528,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20811,7 +21538,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -20859,7 +21587,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20868,7 +21597,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20877,7 +21607,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -20925,7 +21656,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20934,7 +21666,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -20943,7 +21676,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -20991,7 +21725,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21000,7 +21735,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21009,7 +21745,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -21057,7 +21794,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21066,7 +21804,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21075,7 +21814,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -21123,7 +21863,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21132,7 +21873,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21141,7 +21883,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -21189,7 +21932,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21198,7 +21942,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21207,7 +21952,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -21255,7 +22001,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21264,7 +22011,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21273,7 +22021,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -21321,7 +22070,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21330,7 +22080,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21339,7 +22090,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -21387,7 +22139,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21396,7 +22149,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21405,7 +22159,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -21453,7 +22208,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21462,7 +22218,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21471,7 +22228,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -21519,7 +22277,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21528,7 +22287,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21537,7 +22297,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -21585,7 +22346,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21594,7 +22356,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21603,7 +22366,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -21651,7 +22415,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21660,7 +22425,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21669,7 +22435,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -21717,7 +22484,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21726,7 +22494,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21735,7 +22504,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -21783,7 +22553,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21792,7 +22563,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21801,7 +22573,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -21849,7 +22622,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21858,7 +22632,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21867,7 +22642,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -21915,7 +22691,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21924,7 +22701,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21933,7 +22711,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -21981,7 +22760,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21990,7 +22770,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -21999,7 +22780,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -22047,7 +22829,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22056,7 +22839,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22065,7 +22849,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(6))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -22113,7 +22898,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22122,7 +22908,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22131,7 +22918,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -22179,7 +22967,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22188,7 +22977,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22197,7 +22987,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -22245,7 +23036,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22254,7 +23046,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22263,7 +23056,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -22311,7 +23105,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22320,7 +23115,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22329,7 +23125,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -22377,7 +23174,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22386,7 +23184,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22395,7 +23194,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -22443,7 +23243,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22452,7 +23253,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22461,7 +23263,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -22509,7 +23312,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22518,7 +23322,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22527,7 +23332,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -22575,7 +23381,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(4.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22584,7 +23391,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22593,7 +23401,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(5))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -22641,7 +23450,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22650,7 +23460,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22659,7 +23470,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -22707,7 +23519,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22716,7 +23529,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(2.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22725,7 +23539,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -22773,7 +23588,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(3.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22782,7 +23598,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22791,7 +23608,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -22839,7 +23657,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22848,7 +23667,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22857,7 +23677,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(4)))
@@ -22905,7 +23726,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22914,7 +23736,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22923,7 +23746,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(5)))
@@ -22971,7 +23795,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(6.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22980,7 +23805,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -22989,7 +23815,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(4))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(7)))
@@ -23037,7 +23864,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(20, Resources::MtnInst, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -23046,7 +23874,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .operations_builder(30, Resources::MtnElec, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(1.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
@@ -23055,7 +23884,8 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
                                 .earliest_finish_from_ymd_hms(2025, 1, 2, 7, 0, 0)
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
-                }).unwrap()
+                })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(7))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(6)))
@@ -23095,13 +23925,11 @@ pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrde
         })
 }
 
-// //
-
-// // TODO START HERE!
-// // 1. add a lot of `WorkOrder`s to the code
-// //
-// // 2. plot the results
-// //
-// // TODO [ ] add special cases
-// // 3. test that EASD is respected, test that material is respected
-// // 4. you could add constraint satisfaction to the problem and UI
+// TODO START HERE!
+// 1. add a lot of `WorkOrder`s to the code
+//
+// 2. plot the results
+//
+// TODO [ ] add special cases
+// 3. test that EASD is respected, test that material is respected
+// 4. you could add constraint satisfaction to the problem and UI

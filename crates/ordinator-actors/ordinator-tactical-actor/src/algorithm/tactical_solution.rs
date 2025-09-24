@@ -145,13 +145,6 @@ where
 
 impl TacticalSolution
 {
-    pub fn release_from_tactical_solution(&mut self, work_order_number: &WorkOrderNumber)
-    {
-        self.tactical_work_orders
-            .0
-            .insert(*work_order_number, WhereIsWorkOrder::NotScheduled);
-    }
-
     pub fn tactical_scheduled_days(
         &self,
         work_order_number: &WorkOrderNumber,
