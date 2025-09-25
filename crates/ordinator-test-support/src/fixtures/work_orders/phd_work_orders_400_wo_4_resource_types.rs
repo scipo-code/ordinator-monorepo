@@ -20,7 +20,7 @@ use ordinator_scheduling_environment::worker_environment::resources::Resources;
 /// 2. 222299xxxx: normal filler work order, no binding status code, no vendor,
 ///    with status code modifiers
 /// 3. 333399xxxx: edgecase work orders, added to determine a particular aspect
-pub fn phd_work_order_builder_complex(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilder
+pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilder
 {
     wo_builder
         .work_order_builder(WorkOrderNumber(1111990000), |wob| {

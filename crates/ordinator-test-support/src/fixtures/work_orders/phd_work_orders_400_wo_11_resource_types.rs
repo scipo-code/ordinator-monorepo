@@ -12,8 +12,8 @@ use ordinator_scheduling_environment::work_order::work_order_info::work_order_te
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 
-use crate::fixtures::work_orders::WorkOrderData;
 use crate::fixtures::work_orders::OperationInput;
+use crate::fixtures::work_orders::WorkOrderData;
 
 /// These are the manually created `WorkOrder`s for the phd data set.
 ///
@@ -23,9 +23,7 @@ use crate::fixtures::work_orders::OperationInput;
 /// 2. 222299xxxx: normal filler work order, no binding status code, no vendor,
 ///    with status code modifiers
 /// 3. 333399xxxx: edgecase work orders, added to determine a particular aspect
-pub fn phd_work_order_builder_complex_11_resources(
-    mut wo_builder: WorkOrdersBuilder,
-) -> WorkOrdersBuilder
+pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilder
 {
     for work_order in data().iter() {
         wo_builder = wo_builder.work_order_builder(work_order.work_order_number, |wob| {
@@ -34,14 +32,32 @@ pub fn phd_work_order_builder_complex_11_resources(
                 wob = wob
                     .operations_builder(opr.activity, opr.resource, |ob| {
                         ob.operation_info(|oib| {
-                            oib.work_remaining(opr.work_remaining).work(5.0).work_actual(5.0)
+                            oib.work_remaining(opr.work_remaining)
+                                .work(5.0)
+                                .work_actual(5.0)
                         })
                         .operation_dates(|dates| {
                             dates
-                                .earliest_start_from_ymd_hms(opr.early_start.0,opr.early_start.1,opr.early_start.2,opr.early_start.3,opr.early_start.4,opr.early_start.5)
-                                .earliest_finish_from_ymd_hms(opr.early_finish.0,opr.early_finish.1,opr.early_finish.2,opr.early_finish.3,opr.early_finish.4,opr.early_finish.5)
+                                .earliest_start_from_ymd_hms(
+                                    opr.early_start.0,
+                                    opr.early_start.1,
+                                    opr.early_start.2,
+                                    opr.early_start.3,
+                                    opr.early_start.4,
+                                    opr.early_start.5,
+                                )
+                                .earliest_finish_from_ymd_hms(
+                                    opr.early_finish.0,
+                                    opr.early_finish.1,
+                                    opr.early_finish.2,
+                                    opr.early_finish.3,
+                                    opr.early_finish.4,
+                                    opr.early_finish.5,
+                                )
                         })
-                        .operation_analytic(|oab| oab.duration(1.0).preparation_time(opr.preparation))
+                        .operation_analytic(|oab| {
+                            oab.duration(1.0).preparation_time(opr.preparation)
+                        })
                     })
                     .unwrap();
             }
@@ -73,10 +89,26 @@ pub fn phd_work_order_builder_complex_11_resources(
             })
             .work_order_dates_builder(|wodb| {
                 wodb.duration(TimeDelta::days(1))
-                    .basic_start_from_ymd(work_order.basic_start.0, work_order.basic_start.1, work_order.basic_start.2)
-                    .basic_finish_from_ymd(work_order.basic_finish.0, work_order.basic_finish.1, work_order.basic_finish.2)
-                    .earliest_allowed_start_from_ymd(work_order.easd.0, work_order.easd.1, work_order.easd.2)
-                    .latest_allowed_finish_from_ymd(work_order.lafd.0,work_order.lafd.1,work_order.lafd.2)
+                    .basic_start_from_ymd(
+                        work_order.basic_start.0,
+                        work_order.basic_start.1,
+                        work_order.basic_start.2,
+                    )
+                    .basic_finish_from_ymd(
+                        work_order.basic_finish.0,
+                        work_order.basic_finish.1,
+                        work_order.basic_finish.2,
+                    )
+                    .earliest_allowed_start_from_ymd(
+                        work_order.easd.0,
+                        work_order.easd.1,
+                        work_order.easd.2,
+                    )
+                    .latest_allowed_finish_from_ymd(
+                        work_order.lafd.0,
+                        work_order.lafd.1,
+                        work_order.lafd.2,
+                    )
             })
             .work_order_analytic_builder(|woab| {
                 woab.user_status_codes(|user| user.smat(work_order.codes.0))
