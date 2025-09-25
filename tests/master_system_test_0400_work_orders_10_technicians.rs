@@ -6,7 +6,7 @@ use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::logging::setup_logging;
-use ordinator_test_support::fixtures::work_orders::phd_work_orders_400_wo_11_resource_types::phd_work_order_builder;
+use ordinator_test_support::fixtures::work_orders::work_orders_0400_work_orders_11_resource_types::phd_work_order_builder;
 use ordinator_test_support::fixtures::workers::phd_technicians_10::phd_workers_builder;
 use tracing::info;
 

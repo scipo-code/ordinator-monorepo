@@ -2,9 +2,10 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 
-pub mod phd_work_orders_100_wo_4_resource_types;
-pub mod phd_work_orders_400_wo_11_resource_types;
-pub mod phd_work_orders_400_wo_4_resource_types;
+pub mod work_orders_0100_work_orders_04_resource_types;
+pub mod work_orders_0400_work_orders_04_resource_types;
+pub mod work_orders_0400_work_orders_11_resource_types;
+pub mod work_orders_1600_work_orders_11_resource_types;
 
 pub struct WorkOrderData
 {

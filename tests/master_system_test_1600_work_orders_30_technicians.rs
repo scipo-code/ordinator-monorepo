@@ -6,13 +6,13 @@ use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::logging::setup_logging;
-use ordinator_test_support::fixtures::work_orders::work_orders_0400_work_orders_11_resource_types::phd_work_order_builder;
+use ordinator_test_support::fixtures::work_orders::work_orders_1600_work_orders_11_resource_types::phd_work_order_builder;
 use ordinator_test_support::fixtures::workers::phd_technicians_30::phd_workers_builder;
 use tracing::info;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 #[ignore]
-async fn master_system_test_0400_work_orders_30_technicians() -> anyhow::Result<()>
+async fn master_system_test_1600_work_orders_30_technicians() -> anyhow::Result<()>
 {
     let scheduling_environment = ordinator_test_support::load_scheduling_environment(
         phd_work_order_builder,
