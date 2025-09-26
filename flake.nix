@@ -41,7 +41,7 @@
             pkgs.clang
             pkgs.flamegraph
             pkgs.git
-
+            pkgs.gdb
             pkgs.just
             pkgs.jq
             pkgs.git-bug

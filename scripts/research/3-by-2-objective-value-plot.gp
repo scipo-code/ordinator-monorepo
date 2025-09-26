@@ -1,6 +1,6 @@
 set terminal pngcairo enhanced font "Liberation Mono,14" size 1300,1350
 timestamp = strftime("%Y-%m-%d", time(0))
-set output timestamp . '1-1-1-3-objectives.png'
+set output timestamp . output_file
 set multiplot layout 3,2
 set fit errorvariables
 
