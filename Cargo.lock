@@ -1679,7 +1679,10 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
+ "once_cell",
  "ordinator-scheduling-environment",
+ "serde",
+ "serde_json",
  "toml",
 ]
 

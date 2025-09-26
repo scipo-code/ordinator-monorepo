@@ -128,7 +128,7 @@ impl WorkOrderDatesBuilder
     pub fn earliest_allowed_start_from_ymd(mut self, year: i32, month: u32, day: u32) -> Self
     {
         self.earliest_allowed_start_date = Some(NaiveDate::from_ymd_opt(year, month, day).expect(
-            "This date is required for constructing a WorkOrderDates object",
+            &format!("Could not create `NaiveDate` from: year: {year}, month: {month}, day: {day}"),
         ));
         self
     }
@@ -136,7 +136,7 @@ impl WorkOrderDatesBuilder
     pub fn latest_allowed_finish_from_ymd(mut self, year: i32, month: u32, day: u32) -> Self
     {
         self.latest_allowed_finish_date = Some(NaiveDate::from_ymd_opt(year, month, day).expect(
-            "This date is required for constructing a WorkOrderDates object",
+            &format!("Could not create `NaiveDate` from: year: {year}, month: {month}, day: {day}"),
         ));
         self
     }

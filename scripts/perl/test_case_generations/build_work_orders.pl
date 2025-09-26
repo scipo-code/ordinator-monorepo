@@ -5,7 +5,7 @@ use warnings;
 use Getopt::Long;
 use Math::Random;
 
-my $count = 1200;
+my $count = 6400;
 my $output_file;
 GetOptions(
     'count=i'    => \$count,
@@ -15,17 +15,17 @@ GetOptions(
 print "vec![\n";
 
 for (my $i = 0; $i < $count; $i++) {
-  my $work_order_number = 1111990400 + $i;
+  my $work_order_number = 1111990000 + $i;
   my $priority = (poisson_priority(1,2));
   my @operations = generate_operations();
-
+  # TODO [ ] - make different combinations here.
+  my $easd = sprintf("(%04d, %d, %d)", 2025, 1 + int(rand(2)), int(rand(30)));
+  my $lafd = sprintf("(%04d, %d, %d)", 2025, 1 + int(rand(2)), int(rand(30)));
 
     print "    WorkOrderData {\n";
     print "        work_order_number: WorkOrderNumber($work_order_number),\n";
     print "        priority: WorkOrderType::Wdf(Priority::new_int($priority)),\n";
     print "        operations: vec![\n";
-
-
     for my $op (@operations) {
       print "            OperationInput {\n";
       print "                activity: $op->{activity},\n";
@@ -39,13 +39,12 @@ for (my $i = 0; $i < $count; $i++) {
     print "        ],\n";
     print "        basic_start: (2025, 1, 1),\n";
     print "        basic_finish: (2025, 1, 1),\n";
-    print "        easd: (2025, 1, 1),\n";
-    print "        lafd: (2024, 10, 1),\n";
+    print "        easd: $easd,\n";
+    print "        lafd: $lafd,\n";
     print "        codes: (true, true),\n";
     print "    },\n";
 
 }
- 
 print "]\n";
   
 sub poisson_priority {
@@ -61,20 +60,14 @@ sub poisson_priority {
 }
 
 sub generate_operations {
-
   my @list_of_resources = qw(MtnCran MtnElec MtnInst MtnLagg MtnMech MtnRigg MtnRope MtnRous MtnScaf MtnTele Prodtech);
+  my @operations;
 
-    my @operations;
   for (my $j = 1; $j < 4; $j++) {
-
     my $resource_index = int(rand @list_of_resources);
     my $resource = $list_of_resources[$resource_index];
-
-    my $base = -log(rand()) * 15;
-
+    my $base = -log(rand()) * 3;
     my $work = sprintf("%.1f", $base < 0.5 ? 0.5 : $base > 40 ? 40 : $base);
-  
-
     my $prep = $work > 10 ? "2.0" : "1.0";
 
     push @operations, {
