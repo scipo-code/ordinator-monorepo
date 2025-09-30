@@ -23,6 +23,7 @@ pub fn material_test_work_orders(wo_builder: WorkOrdersBuilder) -> WorkOrdersBui
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -71,6 +72,7 @@ pub fn material_test_work_orders(wo_builder: WorkOrdersBuilder) -> WorkOrdersBui
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -119,6 +121,7 @@ pub fn material_test_work_orders(wo_builder: WorkOrdersBuilder) -> WorkOrdersBui
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -167,6 +170,7 @@ pub fn material_test_work_orders(wo_builder: WorkOrdersBuilder) -> WorkOrdersBui
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
@@ -215,6 +219,7 @@ pub fn material_test_work_orders(wo_builder: WorkOrdersBuilder) -> WorkOrdersBui
                         })
                         .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                 })
+                .unwrap()
                 .work_order_info_builder(|woib| {
                     woib.priority(Priority::new_int(3))
                         .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
