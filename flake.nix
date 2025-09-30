@@ -32,11 +32,13 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = [
+            pkgs.act
             (pkgs.gnuplot.override {
               lua = pkgs.lua;
               withLua = true;
             })
             pkgs.cargo-cross
+
             pkgs.cargo-release
             pkgs.clang
             pkgs.flamegraph

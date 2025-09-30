@@ -5,10 +5,10 @@ on:
     branches: [main]
 
 env:
-  ORDINATOR_LOG_DIR: '/tmp/'
+  ORDINATOR_LOG_DIR: '/tmp'
 
 jobs:
-  build_and_test:
+  backend_tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +21,19 @@ jobs:
           override: true
       - name: Run tests
         run: |
-          cp .env.example .env && cargo test --workspace --verbose 
+          cp .env.example .env
+          cargo test --workspace --verbose 
+
+  frontend_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: complete
+          toolchain: nightly
+          override: true
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -30,14 +42,10 @@ jobs:
         run: npm install -g pnpm
       - name: Install frontend dependencies
         run: cd static_files/packages/shared/ && pnpm install
-      - name: Start backend server
-        run: cp .env.example .env && cargo test master_system_test_1 -- --ignored --nocapture &
-        env:
-          BACKGROUND: true
       - name: Wait for server to be ready
         run: |
-          # Check the port used in the .env file.
-          timeout 60 bash -c 'until curl -f http://localhost:3000/hello || curl -f http://127.0.0.1:3000/health; do sleep 2; done' || echo "Server not ready after 60s"
+          cp .env.example .env && cargo test --test master_system_test_0400_work_orders_03_technicians -- --ignored --nocapture &
+          while [ ! -f $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log ] || ! grep "READY" $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log; do sleep 2;  done
       - name: Run frontend tests
         run: cd static_files/packages/shared/ && pnpm test:run
       - name: Stop backend server
