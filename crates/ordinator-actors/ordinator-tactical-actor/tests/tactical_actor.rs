@@ -24,6 +24,15 @@ use ordinator_scheduling_environment::worker_environment::resources::ActorCompos
 // use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
 // use strum::IntoEnumIterator;
 
+// TODO [ ] - you should make a test here, with the stubs.
+//
+//
+// #[test]
+// fn test_tactical_actor()
+// {
+//     let actor = TacticalApi::construct_actor();
+// }
+
 #[test]
 #[ignore]
 fn test_calculate_objective_value()

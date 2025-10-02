@@ -25,4 +25,4 @@ tracing.workspace = true
 valuable.workspace = true
 
 [dev-dependencies]
-
+ordinator-test-support.path = "../../ordinator-test-support"

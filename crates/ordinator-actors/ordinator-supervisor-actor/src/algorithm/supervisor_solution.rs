@@ -13,15 +13,16 @@ use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
 use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
+use ordinator_scheduling_environment::Percent;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
 use super::supervisor_parameters::SupervisorParameters;
 
-pub type SupervisorObjectiveValue = u64;
+pub type SupervisorObjectiveValue = Percent;
 
-#[derive(PartialEq, Eq, Default, Clone)]
+#[derive(PartialEq, Eq, Clone)]
 pub struct SupervisorSolution
 {
     pub(crate) objective_value: SupervisorObjectiveValue,
@@ -63,7 +64,7 @@ impl SupervisorSolution
     ) -> Self
     {
         Self {
-            objective_value: SupervisorObjectiveValue::default(),
+            objective_value: Percent::new(0, 100).unwrap(),
             operational_state_machine,
         }
     }
@@ -131,7 +132,7 @@ impl Solution for SupervisorSolution
         //     })
         //     .collect();
 
-        let objective_value = Self::Objective::default();
+        let objective_value = Percent::new(0, 100).unwrap();
 
         Ok(Self {
             objective_value,

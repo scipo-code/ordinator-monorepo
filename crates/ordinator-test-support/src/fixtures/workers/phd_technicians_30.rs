@@ -1,6 +1,6 @@
-use ordinator_orchestrator::Asset;
-use ordinator_orchestrator::Availability;
-use ordinator_orchestrator::Resources;
+use ordinator_scheduling_environment::Asset;
+use ordinator_scheduling_environment::worker_environment::availability::Availability;
+use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
 use ordinator_scheduling_environment::worker_environment::ActorSpecificationBuilder;
 
@@ -37,8 +37,8 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                 .number_of_tactical_days(120)
                 .tactical_options(|f| {
                     f.number_of_removed_work_orders(20)
-                        .urgency(1000)
-                        .resource_penalty(100000)
+                        .urgency(10)
+                        .resource_penalty(100000000)
                 })
         })
         .supervisors(|supervisor| {

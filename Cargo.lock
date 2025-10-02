@@ -1595,6 +1595,7 @@ dependencies = [
  "tracing",
  "ts-rs",
  "uuid",
+ "valuable",
 ]
 
 [[package]]
@@ -1644,6 +1645,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "ordinator-system-tests"
+version = "0.0.1"
+
+[[package]]
 name = "ordinator-tactical-actor"
 version = "0.1.0"
 dependencies = [
@@ -1658,6 +1663,7 @@ dependencies = [
  "ordinator-configuration",
  "ordinator-orchestrator-actor-traits",
  "ordinator-scheduling-environment",
+ "ordinator-test-support",
  "priority-queue",
  "proptest",
  "rand 0.9.1",
@@ -1671,8 +1677,12 @@ dependencies = [
 name = "ordinator-test-support"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "chrono",
+ "once_cell",
  "ordinator-scheduling-environment",
+ "serde",
+ "serde_json",
  "toml",
 ]
 

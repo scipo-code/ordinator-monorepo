@@ -10,6 +10,7 @@ use std::str::FromStr;
 
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::bail;
 use anyhow::ensure;
 use chrono::DateTime;
 use chrono::Utc;
@@ -188,7 +189,7 @@ impl OperationsBuilder
         operation_number: u64,
         resource: Resources,
         f: F,
-    ) -> &mut Self
+    ) -> Result<&mut Self>
     where
         F: FnOnce(&mut OperationBuilder) -> &mut OperationBuilder,
     {
@@ -196,12 +197,14 @@ impl OperationsBuilder
 
         f(&mut operations_builder);
 
-        self.0.0.insert(
+        if let Some(e) = self.0.0.insert(
             operations_builder.operations_number,
             operations_builder.build(),
-        );
+        ) {
+            bail!("Activity: {} is already built", e.activity,)
+        }
 
-        self
+        Ok(self)
     }
 }
 
@@ -635,17 +638,39 @@ impl OperationDatesBuilder
         self
     }
 
-    pub fn earliest_start_from_ymd_hms(mut self, year: i32, month: u32, day: u32, hour: u32, min: u32, sec: u32) -> Self
+    pub fn earliest_start_from_ymd_hms(
+        mut self,
+        year: i32,
+        month: u32,
+        day: u32,
+        hour: u32,
+        min: u32,
+        sec: u32,
+    ) -> Self
     {
         use chrono::TimeZone;
-        self.earliest_start_datetime = Some(Utc.with_ymd_and_hms(year, month, day, hour, min, sec).unwrap());
+        self.earliest_start_datetime = Some(
+            Utc.with_ymd_and_hms(year, month, day, hour, min, sec)
+                .unwrap(),
+        );
         self
     }
 
-    pub fn earliest_finish_from_ymd_hms(mut self, year: i32, month: u32, day: u32, hour: u32, min: u32, sec: u32) -> Self
+    pub fn earliest_finish_from_ymd_hms(
+        mut self,
+        year: i32,
+        month: u32,
+        day: u32,
+        hour: u32,
+        min: u32,
+        sec: u32,
+    ) -> Self
     {
         use chrono::TimeZone;
-        self.earliest_finish_datetime = Some(Utc.with_ymd_and_hms(year, month, day, hour, min, sec).unwrap());
+        self.earliest_finish_datetime = Some(
+            Utc.with_ymd_and_hms(year, month, day, hour, min, sec)
+                .unwrap(),
+        );
         self
     }
 }

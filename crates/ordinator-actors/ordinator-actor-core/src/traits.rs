@@ -7,7 +7,8 @@ use ordinator_configuration::throttling::Throttling;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use serde::Serialize;
-use tracing::info;
+use tracing::event;
+use tracing::Level;
 use valuable::Valuable;
 
 pub type ActorLinkToSchedulingEnvironment<'a> = MutexGuard<'a, SchedulingEnvironment>;
@@ -70,14 +71,17 @@ pub trait ActorBasedLargeNeighborhoodSearch
 
         match objective_value_type {
             ObjectiveValueType::Better(objective_value) => {
-                info!(target: "research", objective_value = objective_value.as_value(), reason = "optimization loop found a better solution");
+                event!(target: "research", Level::INFO, objective_value = objective_value.as_value(), reason = "optimization loop found a better solution");
                 self.algorithm_util_methods()
                     .update_objective(objective_value);
                 self.make_atomic_pointer_swap();
             }
-            ObjectiveValueType::Worse(_) => self
-                .algorithm_util_methods()
-                .swap_to_old_solution(current_solution),
+            ObjectiveValueType::Worse(objective_value) => {
+                event!(target: "research", Level::DEBUG, objective_value = objective_value.as_value(), reason = "optimization loop found a worse solution");
+                self
+                    .algorithm_util_methods()
+                    .swap_to_old_solution(current_solution);
+            }
             ObjectiveValueType::Force(_) => todo!(),
         }
         Ok(())
@@ -133,15 +137,15 @@ pub trait ActorBasedLargeNeighborhoodSearch
             let objective = self.calculate_objective_value().with_context(|| format!("Could not calculate the objective value after a incorporating state from the system solution\nLocation: {}:{}", file!(), line!()))?;
             match objective {
                 ObjectiveValueType::Better(objective) => {
-                    info!(target: "research", objective_value = objective.as_value(), reason = "state incorporation from system solution");
+                    event!(target: "research", Level::INFO, objective_value = objective.as_value(), reason = "state incorporation from system solution");
                     self.algorithm_util_methods().update_objective(objective);
                 }
                 ObjectiveValueType::Worse(objective) => {
-                    info!(target: "research", objective_value = objective.as_value(), reason = "state incorporation from system solution");
+                    event!(target: "research", Level::INFO, objective_value = objective.as_value(), reason = "state incorporation from system solution");
                     self.algorithm_util_methods().update_objective(objective);
                 }
                 ObjectiveValueType::Force(objective) => {
-                    info!(target: "research", objective_value = objective.as_value(), reason = "state incorporation from system solution");
+                    event!(target: "research", Level::INFO, objective_value = objective.as_value(), reason = "state incorporation from system solution");
                     self.algorithm_util_methods().update_objective(objective);
                 }
             }

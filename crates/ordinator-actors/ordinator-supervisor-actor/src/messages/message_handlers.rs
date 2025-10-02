@@ -94,7 +94,7 @@ where
                 );
                 let supervisor_status = SupervisorResponseStatus {
                     delegated_work_order_activities: self.algorithm.solution.count_unique_woa(),
-                    objective: self.algorithm.solution.objective_value,
+                    objective: self.algorithm.solution.objective_value.percent(),
                 };
                 event!(Level::WARN, "after creation of the supervisor_status");
 
