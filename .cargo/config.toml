@@ -1,2 +1,5 @@
 [build]
 rustflags = ["--cfg", "tracing_unstable"]
+
+[env]
+RUST_ANALYZER_IGNORE_INTEGRATION_TESTS = "1"

@@ -9,6 +9,7 @@ use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
+use ordinator_scheduling_environment::Percent;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
@@ -154,6 +155,7 @@ pub struct StrategicObjectiveValue
     pub urgency: (usize, i64),
     pub resource_penalty: (usize, i64),
     pub clustering_value: (usize, i64),
+    pub percent_scheduled: (usize, Percent),
 }
 
 impl StrategicObjectiveValue
@@ -165,6 +167,7 @@ impl StrategicObjectiveValue
             urgency: (strategic_options.urgency_weight, 0),
             resource_penalty: (strategic_options.resource_penalty_weight, 0),
             clustering_value: (strategic_options.clustering_weight, 0),
+            percent_scheduled: (0, Percent::new(0, 100).unwrap()),
         }
     }
 

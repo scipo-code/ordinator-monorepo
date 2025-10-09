@@ -296,6 +296,7 @@ fn start_operational_actor()
                             })
                             .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                         })
+                        .unwrap()
                         .work_order_info_builder(|woib| {
                             woib.priority(Priority::new_int(1))
                                 .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -345,6 +346,7 @@ fn start_operational_actor()
                             })
                             .operation_analytic(|oab| oab.duration(1.0).preparation_time(1.0))
                         })
+                        .unwrap()
                         .work_order_info_builder(|woib| {
                             woib.priority(Priority::new_int(1))
                                 .work_order_type(WorkOrderType::Wdf(Priority::new_int(1)))
@@ -382,8 +384,9 @@ fn start_operational_actor()
                         })
                 })
         })
-    .time_environment(time_environment)
-        .build().expect("Could not build SchedulingEnvironment");
+        .time_environment(time_environment)
+        .build()
+        .expect("Could not build SchedulingEnvironment");
 
     // Get it to work first, then change the API
     // TODO [ ] 2025-07-09 make a module that contains SchedulingEnvironment

@@ -7,12 +7,22 @@ const StagnationStatus: Record<string, {background: string}> = {
    none: { background: 'bg-gray-100'},
 }
 
+export enum Actors {
+  strategic,
+  tactical,
+  supervisor,
+}
 
-export function StagnationDot({asset}: {asset: string}) {
+interface SolutionStability {
+  asset: string,
+  actor: Actors,
+}
+
+export function StagnationDot({asset, actor}: SolutionStability) {
 
   const {data: version } = useCurrentVersion(
-    asset ? `api/v1/solution_status/${encodeURIComponent(asset)}/tactical`: "",
-    1000
+    asset ? `api/v1/solution_status/${encodeURIComponent(asset)}/${Actors[actor]}`: "",
+    2000
   );
 
   const getStatus = (stagnations?: bigint): string => {

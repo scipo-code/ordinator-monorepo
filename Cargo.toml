@@ -18,7 +18,7 @@ members = [
     # Make `imperium` rely on `ordinator-api-server` and `ordinator-contracts`
     # "crates/ordinator-scheduling-environment-common",
     "crates/ordinator-total-data-processing",
-    "crates/ordinator-test-support",
+    "crates/ordinator-test-support", "crates/ordinator-system-tests",
 ]
 
 
@@ -43,7 +43,7 @@ ordinator-test-support.path = "crates/ordinator-test-support"
 anyhow.workspace = true
 chrono.workspace = true
 tokio.workspace = true
-toml.workspace=true
+toml.workspace = true
 tracing.workspace = true
 
 

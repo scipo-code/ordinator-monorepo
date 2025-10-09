@@ -1,0 +1,5 @@
+[files]
+excludeDirs = ["tests"]
+
+[cargo]
+buildScripts = false

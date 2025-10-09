@@ -133,6 +133,7 @@ impl WorkOrders
     }
 }
 
+// What should you do now?
 // WARN
 // Configurations should only be used during initialization not the
 // remaining parts of the code.
@@ -415,7 +416,12 @@ impl WorkOrderBuilder
     // How do we do this?
     // This is crucial! There is something that you do not understand here
     // How do we extract this so that it works?
-    pub fn operations_builder<F>(mut self, operation_number: u64, resource: Resources, f: F) -> Self
+    pub fn operations_builder<F>(
+        mut self,
+        operation_number: u64,
+        resource: Resources,
+        f: F,
+    ) -> Result<Self>
     where
         F: FnOnce(OperationBuilder) -> OperationBuilder,
     {
@@ -423,11 +429,15 @@ impl WorkOrderBuilder
 
         let operations_builder = f(operations_builder);
 
-        self.operations
+        if let Some(operation) = self
+            .operations
             .0
-            .insert(operation_number, operations_builder.build());
+            .insert(operation_number, operations_builder.build())
+        {
+            bail!("Activity: {} is already built", operation.activity)
+        }
 
-        self
+        Ok(self)
     }
 
     pub fn operations(mut self, operations: Operations) -> Self
@@ -1288,9 +1298,9 @@ impl<'de> Deserialize<'de> for WorkOrderNumber
 // This is a horrible practice! You should refactor it.
 impl WorkOrder
 {
-    pub fn work_order_test() -> Self
+    pub fn work_order_test() -> Result<Self>
     {
-        WorkOrder::builder(WorkOrderNumber(2100000001))
+        Ok(WorkOrder::builder(WorkOrderNumber(2100000001))
             .main_work_center(Resources::MtnMech)
             .operations_builder(10, Resources::Prodtech, |e| {
                 e.operation_info(|oi| oi.number(1).work_remaining(10.0))
@@ -1307,7 +1317,7 @@ impl WorkOrder
                                 .to_utc(),
                         )
                     })
-            })
+            })?
             .operations_builder(20, Resources::MtnMech, |ob| {
                 ob.operation_info(|oi| oi.number(1).work_remaining(20.0))
                     .operation_analytic(|e| e.preparation_time(0.0).duration(1.0))
@@ -1323,7 +1333,7 @@ impl WorkOrder
                                 .to_utc(),
                         )
                     })
-            })
+            })?
             .operations_builder(20, Resources::MtnMech, |ob| {
                 ob.operation_info(|oi| oi.number(1).work_remaining(30.0))
                     .operation_analytic(|e| e.preparation_time(0.0).duration(1.0))
@@ -1339,7 +1349,7 @@ impl WorkOrder
                                 .to_utc(),
                         )
                     })
-            })
+            })?
             .operations_builder(40, Resources::Prodtech, |ob| {
                 ob.operation_info(|oi| oi.number(1).work_remaining(40.0))
                     .operation_analytic(|e| e.preparation_time(0.0).duration(1.0))
@@ -1355,7 +1365,7 @@ impl WorkOrder
                                 .to_utc(),
                         )
                     })
-            })
+            })?
             .work_order_analytic_builder(|woab| {
                 woab.system_status_codes(|sta| sta.rel(true))
                     .user_status_codes(|sta| sta.smat(true))
@@ -1370,7 +1380,7 @@ impl WorkOrder
             .work_order_dates_builder(|wodb| {
                 wodb.earliest_allowed_start_date(NaiveDate::from_ymd_opt(2026, 1, 1).unwrap())
             })
-            .build()
+            .build())
     }
 }
 

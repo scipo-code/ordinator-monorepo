@@ -51,9 +51,8 @@ impl std::fmt::Debug for TacticalResources
             write!(
                 f,
                 "{}",
-                format!(
-                    "TacticalResources: \nDays: {number_of_days}\nResources: {resources}\nAverage hours per day: {average_hours_per_day:#?}"
-                ).bright_blue()
+                format!("TacticalResources: \nDays: {number_of_days}\nTechnicians: {resources}")
+                    .bright_blue()
             )
         } else {
             f.debug_struct("TacticalResources")
@@ -129,6 +128,16 @@ impl TacticalResources
             // This is where you have to think about the architecture of the code.
             .map(|(_, work)| work)
             .fold(Work::from(0.0), |acc, work| &acc + work))
+    }
+
+    pub(crate) fn total_hours(&self) -> Work
+    {
+        self.resources
+            .values()
+            .fold(Work::from(0.0), |mut acc, days| {
+                acc += days.days.iter().cloned().sum::<Work>();
+                acc
+            })
     }
 }
 

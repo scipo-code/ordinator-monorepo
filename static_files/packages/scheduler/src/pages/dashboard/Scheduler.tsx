@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 import { useTableColDefs } from './scheduler/ColDef';
 import { parseISO, format } from 'date-fns';
-import { fetchWorkOrders, useSystemClock } from "@scipo-code/shared";
+import { Actors, fetchWorkOrders, useSystemClock } from "@scipo-code/shared";
 import { StagnationDot } from '@scipo-code/shared';
 
 
@@ -73,7 +73,7 @@ const Scheduler: React.FC = () => {
         <h2 className="text-2xl font-bold mb-4 shrink-0">Work Orders - {asset}: {format(parseISO(systemclock), "PPP p")}</h2>
         <div className='flex items-center gap-2 px-2 py-1 text-gray-700 text-xs rounded-md font-medium'>
           Solution Stability
-          <StagnationDot asset={asset}/>
+          <StagnationDot asset={asset} actor={Actors.tactical}/>
         </div>
       </div>
         <AgGridReact

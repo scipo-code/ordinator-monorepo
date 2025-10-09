@@ -32,6 +32,7 @@ use time_environment::TimeEnvironmentBuilder;
 use time_environment::create_time_environment;
 use time_environment::period::Period;
 use uuid::Uuid;
+use valuable::Valuable;
 use work_order::WorkOrderPolicies;
 use work_order::WorkOrders;
 use work_order::WorkOrdersBuilder;
@@ -489,5 +490,37 @@ impl Asset
             "TEST" => Some(Asset::Test),
             _ => None,
         }
+    }
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone, Valuable, PartialOrd, Ord)]
+pub struct Percent
+{
+    percent: u64,
+    numerator: u64,
+    denominator: u64,
+}
+
+impl Percent
+{
+    pub fn new(numerator: u64, denominator: u64) -> anyhow::Result<Self>
+    {
+        match (100 * numerator).checked_div(denominator) {
+            Some(percent) => Ok(Self {
+                percent,
+                numerator,
+                denominator,
+            }),
+            None => Ok(Self {
+                percent: 0,
+                numerator: 0,
+                denominator: 0,
+            }),
+        }
+    }
+
+    pub fn percent(&self) -> u64
+    {
+        self.percent
     }
 }

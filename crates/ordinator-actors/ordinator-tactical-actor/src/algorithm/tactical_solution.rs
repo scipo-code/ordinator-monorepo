@@ -11,6 +11,7 @@ use ordinator_orchestrator_actor_traits::SolutionState;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
+use ordinator_scheduling_environment::Percent;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
@@ -23,6 +24,8 @@ use ordinator_scheduling_environment::worker_environment::resources::ActorCompos
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Deserialize;
 use serde::Serialize;
+use tracing::Level;
+use tracing::event;
 use valuable::Valuable;
 
 use super::tactical_parameters::TacticalParameters;
@@ -34,6 +37,7 @@ pub struct TacticalObjectiveValue
     pub objective_value: u64,
     pub urgency: (usize, u64),
     pub resource_penalty: (usize, u64),
+    pub percent_scheduled: (usize, Percent),
 }
 
 /// TacticalObjectiveValue, assumes Minimization
@@ -45,6 +49,7 @@ impl TacticalObjectiveValue
             objective_value: u64::MAX,
             urgency: (tactical_options.urgency, u64::MAX),
             resource_penalty: (tactical_options.resource_penalty, u64::MAX),
+            percent_scheduled: (usize::MIN, Percent::new(0, 100).unwrap()),
         }
     }
 
@@ -106,6 +111,8 @@ impl Solution for TacticalSolution
             })
             .collect();
 
+        event!(target: "developer", Level::INFO, tactical_capacity = ?parameters.tactical_capacity);
+
         let tactical_scheduled_work_orders_inner: HashMap<_, _> = parameters
             .tactical_work_orders
             .keys()
@@ -138,13 +145,6 @@ where
 
 impl TacticalSolution
 {
-    pub fn release_from_tactical_solution(&mut self, work_order_number: &WorkOrderNumber)
-    {
-        self.tactical_work_orders
-            .0
-            .insert(*work_order_number, WhereIsWorkOrder::NotScheduled);
-    }
-
     pub fn tactical_scheduled_days(
         &self,
         work_order_number: &WorkOrderNumber,
