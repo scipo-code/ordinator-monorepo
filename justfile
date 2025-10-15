@@ -8,7 +8,12 @@ bs-test:
     bs target/debug/deps/ordinator_tactical_actor-cd5c23df1ab83245 
 
 test-front-ends:
-    cargo test master_system_test_1 -- --ignored --nocapture & cd frontend-clients/packages/shared/ && pnpm test:run && pkill -f master_system_test_1 
+    #!/usr/bin/env bash
+    # rm -f logging/logs/ordinator/ordinator.research.log
+    cargo test master_system_test_1 -- --ignored --nocapture &
+    while [ ! -f logging/logs/ordinator/ordinator.research.log ] || ! grep "READY" logging/logs/ordinator/ordinator.research.log; do sleep 1; done
+    cd frontend-clients/packages/shared/ && pnpm test:run
+    pkill -f master_system_test_1 
 
 export-ts-bindings:
     cargo +nightly test export_bindings
