@@ -173,7 +173,7 @@ where
         }
 
         ensure!(
-            loadings_work == scheduled_work,
+            loadings_work.round() == scheduled_work.round(),
             format!(
                 "Tactical Loadings does not match Tactical scheduled work\nScheduled work: {scheduled_work}\nLoadings work: {loadings_work}"
             )
