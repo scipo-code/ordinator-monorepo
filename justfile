@@ -8,7 +8,12 @@ bs-test:
     bs target/debug/deps/ordinator_tactical_actor-cd5c23df1ab83245 
 
 test-front-ends:
-    cargo test test_complete_system -- --ignored --nocapture & cd static_files/packages/shared/ && pnpm test:run && pkill -f test_complete_system 
+    #!/usr/bin/env bash
+    # rm -f logging/logs/ordinator/ordinator.research.log
+    cargo test master_system_test_1 -- --ignored --nocapture &
+    while [ ! -f logging/logs/ordinator/ordinator.research.log ] || ! grep "READY" logging/logs/ordinator/ordinator.research.log; do sleep 1; done
+    cd frontend-clients/packages/shared/ && pnpm test:run
+    pkill -f master_system_test_1 
 
 export-ts-bindings:
     cargo +nightly test export_bindings
@@ -17,9 +22,9 @@ export-ts-bindings:
 build-ordinator-frontends:
     mkdir -p ./dist/static_files/scheduler
     mkdir -p ./dist/static_files/supervisor
-    cd static_files/ && pnpm install && pnpm -r build
-    cp -r static_files/packages/scheduler/dist/* ./dist/static_files/scheduler/
-    cp -r static_files/packages/supervisor/dist/* ./dist/static_files/supervisor/
+    cd frontend-clients/ && pnpm install && pnpm -r build
+    cp -r frontend-clients/packages/scheduler/dist/* ./dist/static_files/scheduler/
+    cp -r frontend-clients/packages/supervisor/dist/* ./dist/static_files/supervisor/
 
 build-ordinator-api-windows:
     cross build --target x86_64-pc-windows-gnu --release && cp target/x86_64-pc-windows-gnu/release/ordinator-api-server.exe ././dist/

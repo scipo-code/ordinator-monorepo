@@ -41,13 +41,13 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
       - name: Install frontend dependencies
-        run: cd static_files/packages/shared/ && pnpm install
+        run: cd frontend-clients/packages/shared/ && pnpm install
       - name: Wait for server to be ready
         run: |
           cp .env.example .env && cargo test --test master_system_test_0400_work_orders_03_technicians -- --ignored --nocapture &
           while [ ! -f $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log ] || ! grep "READY" $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log; do sleep 2;  done
       - name: Run frontend tests
-        run: cd static_files/packages/shared/ && pnpm test:run
+        run: cd frontend-clients/packages/shared/ && pnpm test:run
       - name: Stop backend server
         run: pkill -f test_complete_system || true 
       # - name: Run clippy
