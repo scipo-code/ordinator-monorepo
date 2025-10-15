@@ -30,6 +30,7 @@
 **.perf
 **node_modules**
 
+static_files/**
 
 # Output of the scheduling_system
 /output/*.xlsx
