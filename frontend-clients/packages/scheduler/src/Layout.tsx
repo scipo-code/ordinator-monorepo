@@ -3,7 +3,7 @@ import { SidebarProvider } from "./components/ui/sidebar";
 import { SidebarItem } from "@scipo-code/shared";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Toaster } from "@/components/ui/sonner";
-import { Calendar, Home, Search, Settings, Users } from "lucide-react";
+import { Home, Users } from "lucide-react";
 import { useMemo } from "react";
 
 export default function Layout() {
@@ -17,29 +17,9 @@ export default function Layout() {
           icon: Home,
         },
         {
-          title: "Workorders",
-          url: "#",
-          icon: Search,
-        },
-        {
           title: "Resources",
           url: `${asset}/resources`,
           icon: Users,
-        },
-        {
-          title: "Calendar",
-          url: "#",
-          icon: Calendar,
-        },
-        {
-          title: "Search",
-          url: "#",
-          icon: Search,
-        },
-        {
-          title: "Settings",
-          url: "#",
-          icon: Settings,
         },
       ] as SidebarItem[];
   }, [asset])
