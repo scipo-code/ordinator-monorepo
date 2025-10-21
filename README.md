@@ -6,9 +6,6 @@ ISSUE #000 TODO [ ] 2025-07-23 Implement the applicative rules and rule engine.
 # Ordinator
 Ordinator is a mathematical scheduling system using Ab-RCU-LNS to model the relavant stakeholders.
 
-## Whitepapers
-* 
-
 # System Architecture
 Found in [ARCHITECTURE](ARCHITECTURE.md)
 
