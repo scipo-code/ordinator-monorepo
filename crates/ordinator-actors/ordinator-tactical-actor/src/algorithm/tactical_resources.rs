@@ -9,7 +9,7 @@ use ordinator_scheduling_environment::time_environment::day::Days;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -18,7 +18,7 @@ use super::DayIndex;
 #[derive(Eq, PartialEq, Default, Serialize, Deserialize, Clone)]
 pub struct TacticalResources
 {
-    pub resources: HashMap<Resources, Days>,
+    pub resources: HashMap<Skill, Days>,
 }
 
 impl std::fmt::Debug for TacticalResources
@@ -63,13 +63,13 @@ impl std::fmt::Debug for TacticalResources
 }
 impl TacticalResources
 {
-    pub fn new(resources: HashMap<Resources, Days>) -> Self
+    pub fn new(resources: HashMap<Skill, Days>) -> Self
     {
         TacticalResources { resources }
     }
 
     // This is a horrible data structure,
-    pub fn get_resource(&self, resource: &Resources, day: DayIndex) -> Result<&Work>
+    pub fn get_resource(&self, resource: &Skill, day: DayIndex) -> Result<&Work>
     {
         self.resources
             .get(resource)
@@ -80,7 +80,7 @@ impl TacticalResources
     }
 
     // This is a horrible data structure,
-    pub fn get_resource_mut(&mut self, resource: &Resources, day: DayIndex) -> Result<&mut Work>
+    pub fn get_resource_mut(&mut self, resource: &Skill, day: DayIndex) -> Result<&mut Work>
     {
         self.resources
             .get_mut(resource)
@@ -90,7 +90,7 @@ impl TacticalResources
             .with_context(|| format!("Day not present {day}"))
     }
 
-    pub fn new_from_data(resources: Vec<Resources>, tactical_days: Vec<Day>, load: Work) -> Self
+    pub fn new_from_data(resources: Vec<Skill>, tactical_days: Vec<Day>, load: Work) -> Self
     {
         let days_template = vec![load; tactical_days.len()];
         let resource_capacity = resources
@@ -111,7 +111,7 @@ impl TacticalResources
         }
     }
 
-    pub fn determine_period_load(&self, resource: &Resources, period: &Period) -> Result<Work>
+    pub fn determine_period_load(&self, resource: &Skill, period: &Period) -> Result<Work>
     {
         let days = &self
             .resources
@@ -164,7 +164,7 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for Ta
         // This was always wrong. You should never have to make the system function
         // in that way.
         // Should you simply move the Everything? Yes
-        let mut tactical_resources_inner = HashMap::<Resources, Days>::new();
+        let mut tactical_resources_inner = HashMap::<Skill, Days>::new();
         for operational_configuration_all in value
             .0
             .worker_environment

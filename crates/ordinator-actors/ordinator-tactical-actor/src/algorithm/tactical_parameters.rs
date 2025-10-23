@@ -24,7 +24,7 @@ use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
 use ordinator_scheduling_environment::worker_environment::TacticalOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Serialize;
 
 use super::tactical_resources::TacticalResources;
@@ -209,7 +209,7 @@ pub struct OperationParameter
     pub duration: Work,
     pub operating_time: Work,
     pub work_remaining: Work,
-    pub resource: Resources,
+    pub resource: Skill,
     pub forced_start_date: Option<Day>,
     // You did something right here. What was that? I am not really sure here.
     pub earliest_start_date: DateTime<Utc>,

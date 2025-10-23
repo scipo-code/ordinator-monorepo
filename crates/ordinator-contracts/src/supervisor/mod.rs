@@ -11,7 +11,7 @@ use ordinator_scheduling_environment::work_order::WorkOrders;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::worker_environment::IdString;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
 use ordinator_supervisor_actor::messages::SupervisorResponseMessage;
 use ordinator_supervisor_actor::messages::responses::SupervisorResponseStatus;
@@ -266,11 +266,11 @@ pub struct SupervisorAllAvailableTechnicians
 {
     all_technicians: Vec<TechnicianAvailability>,
 }
-impl From<BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Resources>)>>
+impl From<BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Skill>)>>
     for SupervisorAllAvailableTechnicians
 {
     fn from(
-        value: BTreeMap<String, (std::collections::BTreeSet<Availability>, HashSet<Resources>)>,
+        value: BTreeMap<String, (std::collections::BTreeSet<Availability>, HashSet<Skill>)>,
     ) -> Self
     {
         let all_technicians = value

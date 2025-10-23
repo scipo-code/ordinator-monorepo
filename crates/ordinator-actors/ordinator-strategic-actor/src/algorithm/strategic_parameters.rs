@@ -22,7 +22,7 @@ use ordinator_scheduling_environment::work_order::WorkOrders;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::StrategicOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Serialize;
 use tracing::info;
 
@@ -175,7 +175,7 @@ pub struct WorkOrderParameter
     pub weight: i64,
     // This weight is derived from the ['StrategicOptions`]. This means that the code should
     // work better
-    pub work_load: HashMap<Resources, Work>,
+    pub work_load: HashMap<Skill, Work>,
 }
 
 // This should be reformulated in a different way I think. You
@@ -196,7 +196,7 @@ pub struct WorkOrderParameterBuilder
     pub weight: Option<u64>,
     // This weight is derived from the ['StrategicOptions`]. This means that the code should
     // work better
-    pub work_load: HashMap<Resources, Work>,
+    pub work_load: HashMap<Skill, Work>,
 }
 
 // TODO: Use this for testing the scheduling program

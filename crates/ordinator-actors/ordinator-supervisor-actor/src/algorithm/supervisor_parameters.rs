@@ -13,7 +13,7 @@ use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
 use ordinator_scheduling_environment::worker_environment::SupervisorOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 
 pub struct SupervisorParameters
 {
@@ -162,14 +162,14 @@ impl SupervisorParameters
 #[derive(Debug, Clone)]
 pub struct SupervisorParameter
 {
-    pub resource: Resources,
+    pub resource: Skill,
     pub number_of_people: NumberOfPeople,
     pub work_remaining: Work,
 }
 
 impl SupervisorParameter
 {
-    pub fn new(resource: Resources, number: NumberOfPeople, work_remaining: Work) -> Self
+    pub fn new(resource: Skill, number: NumberOfPeople, work_remaining: Work) -> Self
     {
         Self {
             resource,

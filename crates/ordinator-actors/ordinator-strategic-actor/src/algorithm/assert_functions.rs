@@ -9,7 +9,7 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use priority_queue::PriorityQueue;
 use strum::IntoEnumIterator;
 use tracing::Level;
@@ -87,7 +87,7 @@ where
                     && strategic_scheduled_period == period
                 {
                     let work_load = &strategic_parameter.work_load;
-                    for resource in Resources::iter() {
+                    for resource in Skill::iter() {
                         let load: Work =
                             work_load.get(&resource).cloned().unwrap_or(Work::from(0.0));
                         // We just need to test that the total hours are correct. We do not have

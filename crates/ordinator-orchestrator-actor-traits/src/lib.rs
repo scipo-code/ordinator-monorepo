@@ -29,7 +29,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Serialize;
 use thiserror::Error;
 use valuable::Valuable;
@@ -468,7 +468,7 @@ where
 
     fn all_scheduled_tasks(&self) -> HashMap<WorkOrderNumber, BTreeMap<ActivityNumber, Day>>;
 
-    fn tactical_loadings(&self) -> BTreeMap<Resources, Vec<Work>>;
+    fn tactical_loadings(&self) -> BTreeMap<Skill, Vec<Work>>;
 }
 
 // This is a core type that each `Actor` should implement, I think

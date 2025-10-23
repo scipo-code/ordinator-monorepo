@@ -8,7 +8,7 @@ use ordinator_scheduling_environment::work_order::work_order_analytic::status_co
 use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::UserStatusCodes;
 use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfo;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Serialize;
 use ts_rs::TS;
 
@@ -53,7 +53,7 @@ pub struct WorkOrderResponse
     work_order_info: WorkOrderInfo,
     vendor: bool,
     weight: u64,
-    work_order_work_load: HashMap<Resources, Work>,
+    work_order_work_load: HashMap<Skill, Work>,
     system_status_codes: SystemStatusCodes,
     user_status_codes: UserStatusCodes,
     api_solution: ApiSolution,

@@ -35,7 +35,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::TacticalOptions;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use priority_queue::PriorityQueue;
 use rand::rng;
 use rand::seq::IndexedRandom;
@@ -85,7 +85,7 @@ where
         AbLNSUtils<SolutionType = TacticalSolution>,
     Ss: SystemSolutions<Tactical = TacticalSolution>,
 {
-    pub fn capacity(&self, resource: &Resources, day: DayIndex) -> Result<&Work>
+    pub fn capacity(&self, resource: &Skill, day: DayIndex) -> Result<&Work>
     {
         Ok(&self
             .parameters
@@ -1004,7 +1004,7 @@ where
         }
     }
 
-    fn remaining_capacity(&self, resource: &Resources, day: &Day) -> Option<Work>
+    fn remaining_capacity(&self, resource: &Skill, day: &Day) -> Option<Work>
     {
         let remaining_capacity = self
             .parameters

@@ -1,6 +1,6 @@
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Availability;
-use ordinator_orchestrator::Resources;
+use ordinator_orchestrator::Skill;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
 use ordinator_scheduling_environment::worker_environment::ActorSpecificationBuilder;
 
@@ -51,7 +51,7 @@ pub fn three_workers_builder(actor_builder: ActorSpecificationBuilder)
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnMech)
+                                .add_resource(Skill::MtnMech)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
@@ -73,7 +73,7 @@ pub fn three_workers_builder(actor_builder: ActorSpecificationBuilder)
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnElec)
+                                .add_resource(Skill::MtnElec)
                                 // THIS IS WHAT YOU SHOULD NOT DO! Each you are spilling out 3 types
                                 // that should be encapsulated.
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
@@ -98,7 +98,7 @@ pub fn three_workers_builder(actor_builder: ActorSpecificationBuilder)
                                     .unwrap(),
                                 )
                                 // .add_resource(Resources::MtnInst)
-                                .add_resource(Resources::MtnInst)
+                                .add_resource(Skill::MtnInst)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),

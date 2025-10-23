@@ -2,7 +2,7 @@ use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
 use ordinator_scheduling_environment::worker_environment::ActorSpecificationBuilder;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 
 /// * 2 Mech     (DONE)
 /// * 1 Elec     (DONE)
@@ -63,7 +63,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnMech)
+                                .add_resource(Skill::MtnMech)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
@@ -85,7 +85,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnMech)
+                                .add_resource(Skill::MtnMech)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
@@ -107,7 +107,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnElec)
+                                .add_resource(Skill::MtnElec)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
@@ -129,7 +129,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnInst)
+                                .add_resource(Skill::MtnInst)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
@@ -151,7 +151,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnLagg)
+                                .add_resource(Skill::MtnLagg)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
@@ -173,7 +173,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnTele)
+                                .add_resource(Skill::MtnTele)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
@@ -195,7 +195,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnRope)
+                                .add_resource(Skill::MtnRope)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
@@ -217,7 +217,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnCran)
+                                .add_resource(Skill::MtnCran)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
@@ -239,7 +239,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnScaf)
+                                .add_resource(Skill::MtnScaf)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
@@ -261,7 +261,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnRigg)
+                                .add_resource(Skill::MtnRigg)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
@@ -283,7 +283,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnRous)
+                                .add_resource(Skill::MtnRous)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
@@ -305,7 +305,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::Prodtech)
+                                .add_resource(Skill::Prodtech)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),

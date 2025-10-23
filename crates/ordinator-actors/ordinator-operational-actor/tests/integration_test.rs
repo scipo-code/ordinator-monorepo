@@ -41,7 +41,7 @@ use ordinator_scheduling_environment::worker_environment::ActorSpecification;
 use ordinator_scheduling_environment::worker_environment::ActorSpecifications;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
 
 #[derive(Clone, Debug)]
@@ -124,7 +124,7 @@ impl TacticalInterface for TestTactical
     fn tactical_loadings(
         &self,
     ) -> std::collections::BTreeMap<
-        Resources,
+        Skill,
         Vec<ordinator_scheduling_environment::work_order::operation::Work>,
     >
     {
@@ -284,8 +284,8 @@ fn start_operational_actor()
         .work_orders_builder(|wo_builder| {
             wo_builder
                 .work_order_builder(WorkOrderNumber(1001), |wob| {
-                    wob.main_work_center(Resources::MtnMech)
-                        .operations_builder(10, Resources::MtnMech, |ob| {
+                    wob.main_work_center(Skill::MtnMech)
+                        .operations_builder(10, Skill::MtnMech, |ob| {
                             ob.operation_info(|oib| {
                                 oib.work_remaining(10.0).work(5.0).work_actual(5.0)
                             })
@@ -334,8 +334,8 @@ fn start_operational_actor()
                         })
                 })
                 .work_order_builder(WorkOrderNumber(1002), |wob| {
-                    wob.main_work_center(Resources::MtnMech)
-                        .operations_builder(10, Resources::MtnMech, |ob| {
+                    wob.main_work_center(Skill::MtnMech)
+                        .operations_builder(10, Skill::MtnMech, |ob| {
                             ob.operation_info(|oib| {
                                 oib.work_remaining(5.0).work(5.0).work_actual(5.0)
                             })

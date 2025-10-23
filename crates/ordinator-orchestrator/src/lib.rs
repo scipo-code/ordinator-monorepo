@@ -42,7 +42,7 @@ use ordinator_scheduling_environment::work_order::WorkOrders;
 pub use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 pub use ordinator_scheduling_environment::worker_environment::availability::Availability;
 pub use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-pub use ordinator_scheduling_environment::worker_environment::resources::Resources;
+pub use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_strategic_actor::StrategicApi;
 use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
 pub use ordinator_strategic_actor::messages::StrategicRequestMessage;

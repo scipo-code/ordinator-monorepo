@@ -33,7 +33,7 @@ use super::OperationView;
 use super::work_order_dates::unloading_point::UnloadingPoint;
 use crate::time_environment::day::Day;
 use crate::time_environment::period::Period;
-use crate::worker_environment::resources::Resources;
+use crate::worker_environment::resources::Skill;
 
 pub type ActivityNumber = u64;
 
@@ -90,7 +90,7 @@ pub struct OperationsBuilder(Operations);
 
 impl Operation
 {
-    pub fn builder(operations_number: ActivityNumber, resource: Resources) -> OperationBuilder
+    pub fn builder(operations_number: ActivityNumber, resource: Skill) -> OperationBuilder
     {
         OperationBuilder {
             operations_number,
@@ -187,7 +187,7 @@ impl OperationsBuilder
     pub fn operations_builder<F>(
         &mut self,
         operation_number: u64,
-        resource: Resources,
+        resource: Skill,
         f: F,
     ) -> Result<&mut Self>
     where
@@ -212,7 +212,7 @@ impl OperationsBuilder
 pub struct Operation
 {
     pub(crate) activity: ActivityNumber,
-    pub(crate) resource: Resources,
+    pub(crate) resource: Skill,
     pub(crate) unloading_point: UnloadingPoint,
     pub(crate) operation_info: OperationInfo,
     pub(crate) operation_description: String,
@@ -223,7 +223,7 @@ pub struct Operation
 pub struct OperationBuilder
 {
     operations_number: ActivityNumber,
-    resource: Resources,
+    resource: Skill,
     unloading_point: Option<UnloadingPoint>,
     operation_info: Option<OperationInfo>,
     operation_description: Option<String>,

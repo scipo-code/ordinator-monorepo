@@ -12,7 +12,7 @@ use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use priority_queue::PriorityQueue;
 use strum::IntoEnumIterator;
 use tracing::Level;
@@ -42,7 +42,7 @@ where
 {
     fn assert_that_loading_matches_scheduled(&self) -> Result<()>
     {
-        let mut aggregated_load: HashMap<Resources, HashMap<Day, Work>> = HashMap::new();
+        let mut aggregated_load: HashMap<Skill, HashMap<Day, Work>> = HashMap::new();
 
         for (_work_order_number, solution) in &self
             .solution
@@ -65,7 +65,7 @@ where
             }
         }
 
-        for resource in Resources::iter() {
+        for resource in Skill::iter() {
             for day in self.parameters.tactical_days.iter().enumerate() {
                 let resource_map = match aggregated_load.get(&resource) {
                     Some(map) => Cow::Borrowed(map),
