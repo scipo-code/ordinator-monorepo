@@ -24,14 +24,12 @@ pub async fn start_application(
     environment: &Environment,
 ) -> anyhow::Result<()>
 {
-    let scheduler_files = ServeDir::new("./dist/static_files/scheduler/");
-    let supervisor_files = ServeDir::new("./dist/static_files/supervisor//");
+    let frontend_files = ServeDir::new("./dist/static_files/");
 
     let app = OpenApiRouter::new()
         // .route_service("/", index_service)
         .nest("/api/v1", api_scope(orchestrator.clone()).await)
-        .nest_service("/scheduler", scheduler_files)
-        .nest_service("/supervisor", supervisor_files)
+        .nest_service("/app", frontend_files)
         .route("/hello", get(|| async { "Hello, world!" }))
         .with_state(orchestrator)
         .split_for_parts();
