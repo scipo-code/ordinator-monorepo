@@ -1,0 +1,23 @@
+import { HashRouter, Route, Routes } from "react-router-dom";
+import "./App.css";
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'; 
+import { SchedulerRoutes } from "./routes/scheduler-routes";
+import { SupervisorRoutes } from "./routes/supervisor-routes";
+
+// Register all Community features
+ModuleRegistry.registerModules([AllCommunityModule]);
+
+function App() {
+  return (
+      <HashRouter>
+          <Routes>
+            <Route path="/scheduler/*" element={<SchedulerRoutes />} />
+            <Route path="/supervisor/*" element={<SupervisorRoutes />} />
+          </Routes>
+      </HashRouter>
+  );
+}
+            // <Route path="/login" element={<LoginPage />} />
+            // <Route path="/technician" element={<TechnicianRoutes />} />
+            // <Route path="/" element={<RoleBasedRedirect />} />
+export default App;
