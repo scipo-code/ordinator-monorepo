@@ -13,9 +13,8 @@ import { Link, useParams } from "react-router-dom"
 import { type SidebarItem } from "@/types/sidebar";
 
 
-export function AppSidebar({ variant }: { variant: "scheduler" | "supervisor" | "technician" }) {
+export function AppSidebar({ operator, ...props }: { operator: "scheduler" | "supervisor" | "technician" } & React.ComponentProps<typeof Sidebar>) {
   const { asset } = useParams<{ asset: string }>();
-  console.log("useparams: ", asset);
   const sidebarItems = {
 
     scheduler: [
@@ -49,20 +48,20 @@ export function AppSidebar({ variant }: { variant: "scheduler" | "supervisor" | 
       ],
       technician: [
         {
-          title: "Schedule",
-          url: `/technician/${asset}/schedule`,
+          title: "Dashboard",
+          url: `/technician/${asset}/dashboard`,
           icon: CalendarDays,
         },
       ]
   };
 
-  const items = sidebarItems[variant] as SidebarItem[] || [];
+  const items = sidebarItems[operator] as SidebarItem[] || [];
 
 
 
   
   return (
-    <Sidebar collapsible="none" className="min-h-screen">
+    <Sidebar collapsible="none" {...props}>
       <SidebarHeader className="flex items-center gap-3 p-4">
         <div className="flex items-center gap-2">
           <img src="./ordinator-logo.svg" alt="Ordinator" className="h-8 w-8" />

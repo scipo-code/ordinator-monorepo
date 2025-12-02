@@ -19,7 +19,7 @@ export function ResourceSidebar({ resources, selectedResources, onToggle, toggle
         <CardTitle>Select Resources</CardTitle>
         <div className="flex gap-2">
           <Button variant="outline" className="flex-1" size="sm" disabled={selectedResources.length === 0 ? true : false} onClick={onClear}>Clear</Button>
-          <Button variant="outline" className="flex-1" size="sm" disabled={selectedResources.length !== 0} onClick={toggleAll}>All</Button>
+          <Button variant="outline" className="flex-1" size="sm" disabled={selectedResources.length === resources.length} onClick={toggleAll}>All</Button>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-2 h-[420px]">

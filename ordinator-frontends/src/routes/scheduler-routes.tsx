@@ -10,7 +10,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 export function SchedulerRoutes() {
   return (
       <Routes>
-        <Route path=":asset" element={<RoutingLayout variant="scheduler" />}>
+        <Route path=":asset" element={<RoutingLayout operator="scheduler" />}>
           <Route index element={<Navigate to="dashboard" relative="path" />} />
           <Route path="dashboard" element={<SchedulerDashboard />} />
           <Route path="dashboard/:workorder" element={<WorkOrderOverview/>} />

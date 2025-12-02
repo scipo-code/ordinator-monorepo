@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDailyLoadings } from "@/hooks";
 import type { DailyLoadingDto } from "@/types/dto/DailyLoadingDto";
 import type { DailyLoad } from "@/types/dto/DailyLoad";
+import { SiteHeader } from "@/components/layout/site-header";
 
 
 
@@ -66,9 +67,10 @@ export default function ResourceView() {
   }
   
   return (
-    <div className="h-full w-full">
+    <>
+    <SiteHeader header="Available Resources" />
       <Card className="h-full flex flex-col">
-        <CardContent className="flex flex-1 min-h-0 p-4">
+        <CardContent className="flex flex-1 min-h-0">
           <div className="flex-1 min-w-0 min-h-0">
             <ResourceLoadings resourcesData={resourcesData} selectedResources={selectedResources} dates={dates}/>
           </div>
@@ -84,8 +86,7 @@ export default function ResourceView() {
           </div>
         </CardContent>
       </Card>
-    </div>
-
+    </>
   )
 }
 

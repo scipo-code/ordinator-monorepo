@@ -1,23 +1,28 @@
 
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { AppSidebar } from "./app-sidebar";
 import { Outlet } from "react-router-dom";
 
 interface LayoutProps {
   children: React.ReactNode;
-  variant: 'scheduler' | 'supervisor' | 'technician';
+  operator: 'scheduler' | 'supervisor' | 'technician';
 }
 
-export function Layout({children, variant }: LayoutProps) {
+      // style={
+      //   {
+      //     "--sidebar-width": "calc(var(--spacing) * 72)",
+      //     "--header-height": "calc(var(--spacing) * 12)",
+      //   } as React.CSSProperties
+      // }
+export function Layout({children, operator }: LayoutProps) {
   return (
-    <SidebarProvider>
-      <div className="flex h-screen w-full">
-        <AppSidebar variant={variant} />
-        <main className="flex flex-col flex-1 min-w-0">
-          {children}
-        </main>
-      </div>
+    <SidebarProvider
+      >
+      <AppSidebar className="bg-inherit" operator={operator} variant="inset"/>
+      <SidebarInset className="overflow-auto max-h-screen">
+        {children}
+      </SidebarInset>
       <Toaster />
     </SidebarProvider>
   );
@@ -25,9 +30,9 @@ export function Layout({children, variant }: LayoutProps) {
           // <Header variant={variant} />
         // <SidebarTrigger className="px-6" />
 
-export function RoutingLayout({ variant }: { variant: 'scheduler' | 'supervisor' | 'technician'}) {
+export function RoutingLayout({ operator }: { operator: 'scheduler' | 'supervisor' | 'technician'}) {
   return (
-    <Layout variant={variant} >
+    <Layout operator={operator} >
       <Outlet />
     </Layout>
   )
