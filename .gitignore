@@ -1,5 +1,6 @@
 # Editor settings
 .helix
+ordinator.db
 
 # Rust executables.
 /target/
