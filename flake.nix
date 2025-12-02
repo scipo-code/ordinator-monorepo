@@ -65,6 +65,7 @@
                 "rustfmt"
               ];
             })
+
             pkgs.zellij
             pythonEnv
             (pkgs.writeShellScriptBin "lldb-dap" ''
