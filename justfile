@@ -4,6 +4,9 @@ run:
 run-test:
     cargo test master_system_test_1 -- --ignored --nocapture 2> temp_output_from_program.log
 
+run-test-no-auth:
+    DEV_BYPASS_AUTH=1 cargo test master_system_test_1 -- --ignored --nocapture 2> temp_output_from_program.log
+
 bs-test:
     bs target/debug/deps/ordinator_tactical_actor-cd5c23df1ab83245 
 
