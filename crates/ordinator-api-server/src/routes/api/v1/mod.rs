@@ -6,13 +6,9 @@ mod supervisor;
 mod tactical;
 mod technician;
 
-use std::sync::Arc;
-
 use material_clerk::material_clerk_routes;
 use orchestrator::export_xlsx;
 use orchestrator::orchestrator_api_scope;
-use ordinator_contracts::TotalSystemSolution;
-use ordinator_orchestrator::Orchestrator;
 use solution_status::solution_status_routes;
 use strategic::scheduler_nest;
 use supervisor::supervisor_routes;
@@ -21,11 +17,13 @@ use technician::technician_routes;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
-pub async fn api_scope(
-    state: Arc<Orchestrator<TotalSystemSolution>>,
-) -> OpenApiRouter<Arc<Orchestrator<TotalSystemSolution>>>
+use crate::AppState;
+use crate::auth::routes::authentication_nest;
+
+pub async fn api_scope(state: AppState) -> OpenApiRouter<AppState>
 {
     OpenApiRouter::new()
+        .nest("/auth/", authentication_nest(state.clone()).await)
         .nest("/scheduler/", scheduler_nest(state.clone()).await)
         .nest("/export", export_xlsx(state.clone()).await)
         .nest("/orchestrator", orchestrator_api_scope(state.clone()).await)

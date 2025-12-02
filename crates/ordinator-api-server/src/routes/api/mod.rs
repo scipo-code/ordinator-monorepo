@@ -35,3 +35,4 @@ impl IntoResponse for AppError
         }
     }
 }
+

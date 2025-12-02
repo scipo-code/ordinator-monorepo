@@ -1,15 +1,11 @@
-use std::sync::Arc;
-
-use ordinator_contracts::TotalSystemSolution;
-use ordinator_orchestrator::Orchestrator;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
+use crate::AppState;
+
 // TODO [x]
 // The main idea is to replace all the.
-pub async fn scheduler_nest(
-    state: Arc<Orchestrator<TotalSystemSolution>>,
-) -> OpenApiRouter<Arc<Orchestrator<TotalSystemSolution>>>
+pub async fn scheduler_nest(state: AppState) -> OpenApiRouter<AppState>
 {
     OpenApiRouter::new()
         .routes(routes!(

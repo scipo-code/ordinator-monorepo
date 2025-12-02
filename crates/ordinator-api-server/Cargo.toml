@@ -13,8 +13,10 @@ ordinator-contracts = { path = "../ordinator-contracts" }
 # actix-web.workspace = true 
 anyhow.workspace = true 
 axum = {version = "*", features = ["macros", "tokio"]}
-axum-extra = {version = "*", features = ["query"]}
+axum-extra = {version = "*", features = ["query", "typed-header"]}
 axum-server = "*"
+argon2 = {version = "0.5.3", features = ["std"]}
+jsonwebtoken = {version = "10.2.0", features = ["aws_lc_rs"]}
 chrono-tz.workspace = true
 chrono.workspace = true
 dotenvy.workspace = true 
@@ -30,6 +32,9 @@ ts-rs = "*"
 utoipa = {version = "*", features = ["yaml", "axum_extras"]}
 utoipa-axum = "*" 
 utoipa-swagger-ui = {version = "*", features = ["axum"]}
+uuid = { version = "1.18.1", features = ["v4"] }
+async-trait = "0.1.89"
+sqlx = { version = "*", features = ["runtime-tokio", "sqlite"] }
 
 [dev-dependencies]
 ordinator-scheduling-environment.path = "../ordinator-scheduling-environment"

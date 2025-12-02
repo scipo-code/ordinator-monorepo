@@ -10,11 +10,15 @@
 // #[global_allocator]
 // static GLOBAL: Jemalloc = Jemalloc;
 
+use std::sync::Arc;
+
 use anyhow::Context;
 use anyhow::Result;
 use anyhow::bail;
 use chrono::TimeZone;
 use chrono_tz::Europe::Copenhagen;
+use ordinator_api_server::auth::db::SqliteUserDb;
+use ordinator_api_server::config::init_config;
 use ordinator_api_server::start_application;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Asset;
@@ -32,6 +36,8 @@ async fn main() -> Result<()>
     info!(target: "stdout", "System initialized (0 of 4): loading environment");
     dotenvy::dotenv()
         .context("You need to provide an .env file. Look at the .env.example for guidance")?;
+
+    let config = init_config()?;
 
     // TODO [ ] 2025-06-29 turn this into `match
     // dotenvy::var("DEPLOY_ENVIRONMENT");`
@@ -59,8 +65,13 @@ async fn main() -> Result<()>
 
     orchestrator.asset_factory(&asset)?;
 
+    let db = SqliteUserDb::new(&config.database_url).await?;
+    db.migrate().await?;
+
+    let db_arc = Arc::new(db);
+
     tokio::select! {
-        result = start_application(orchestrator.clone(), &environment) => {
+        result = start_application(orchestrator.clone(), db_arc.clone(), config, &environment) => {
             info!(target: "stdout", server_shutdown_message = ?result, "Main server shutting down");
             Ok(())
         }

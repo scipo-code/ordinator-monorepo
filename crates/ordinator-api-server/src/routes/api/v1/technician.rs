@@ -1,13 +1,9 @@
-use std::sync::Arc;
-
-use ordinator_contracts::TotalSystemSolution;
-use ordinator_orchestrator::Orchestrator;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
-pub async fn technician_routes(
-    state: Arc<Orchestrator<TotalSystemSolution>>,
-) -> OpenApiRouter<Arc<Orchestrator<TotalSystemSolution>>>
+use crate::AppState;
+
+pub async fn technician_routes(state: AppState) -> OpenApiRouter<AppState>
 {
     OpenApiRouter::new()
         .routes(routes!(

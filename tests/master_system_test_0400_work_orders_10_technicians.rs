@@ -1,6 +1,10 @@
+use std::sync::Arc;
+
 use anyhow::bail;
 use chrono::TimeZone;
 use chrono::Utc;
+use ordinator_api_server::auth::db::SqliteUserDb;
+use ordinator_api_server::config::init_config;
 use ordinator_api_server::start_application;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Asset;
@@ -32,9 +36,12 @@ async fn master_system_test_0400_work_orders_10_technicians() -> anyhow::Result<
             .build::<TotalSystemSolution>()?;
 
     orchestrator.asset_factory(&Asset::Test)?;
+    let db = Arc::new(SqliteUserDb::new("sqlite::memory:").await.unwrap());
+
+    let config = init_config()?;
 
     tokio::select! {
-        result = start_application(orchestrator.clone(), &environment) => {
+        result = start_application(orchestrator.clone(), db, config, &environment) => {
             info!(target: "stdout", server_shutdown_message = ?result, "Main server shutting down");
             Ok(())
         }

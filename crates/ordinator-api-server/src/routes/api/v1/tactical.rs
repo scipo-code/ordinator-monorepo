@@ -6,15 +6,14 @@ use ordinator_orchestrator::Orchestrator;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
+use crate::AppState;
 use crate::handlers::tactical_handlers::status;
 
 // Making a `status` for each actor is probably a really good idea.
-pub async fn tactical_route(
-    state: Arc<Orchestrator<TotalSystemSolution>>,
-) -> OpenApiRouter<Arc<Orchestrator<TotalSystemSolution>>>
+pub async fn tactical_route(state: AppState) -> OpenApiRouter<AppState>
 {
     OpenApiRouter::new()
-        .route("/", get(status::<TotalSystemSolution>))
+        .route("/", get(status))
         .routes(routes!(
             crate::handlers::tactical_handlers::start_days_for_activities,
         ))
