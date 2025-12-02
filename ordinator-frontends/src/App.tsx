@@ -3,6 +3,7 @@ import "./App.css";
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'; 
 import { SchedulerRoutes } from "./routes/scheduler-routes";
 import { SupervisorRoutes } from "./routes/supervisor-routes";
+import { TechnicianRoutes } from "./routes/technician-routes";
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -13,6 +14,7 @@ function App() {
           <Routes>
             <Route path="/scheduler/*" element={<SchedulerRoutes />} />
             <Route path="/supervisor/*" element={<SupervisorRoutes />} />
+            <Route path="/technician/*" element={<TechnicianRoutes />} />
           </Routes>
       </HashRouter>
   );
