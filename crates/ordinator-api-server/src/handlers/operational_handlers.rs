@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use anyhow::Context;
 use anyhow::Result;
 use axum::Json;
@@ -8,14 +6,13 @@ use axum::extract::Path;
 use axum::extract::State;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::IdDto;
-use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::technician::OperationalAssignmentsDto;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::OperationalRequestMessage;
 use ordinator_orchestrator::OperationalResponseMessage;
 use ordinator_orchestrator::OperationalStatusRequest;
-use ordinator_orchestrator::Orchestrator;
 
+use crate::AppState;
 use crate::routes::api::AppError;
 
 // CRUCIAL INSIGHT: Making enums for handlers and routes is a horrible idea. It
@@ -41,7 +38,7 @@ use crate::routes::api::AppError;
 )]
 #[allow(unused)]
 pub async fn operational_ids(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     // This is actually not the best way of coding it?
     Path(asset): Path<AssetNames>,
 ) -> Result<Json<Vec<IdDto>>, AppError>
@@ -49,7 +46,8 @@ pub async fn operational_ids(
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
     Ok(Json(
-        orchestrator
+        state
+            .orchestrator
             .actor_registries
             .lock()
             .unwrap()
@@ -78,12 +76,12 @@ pub async fn operational_ids(
     )
 )]
 pub async fn activities_for_technician(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     Path((asset, technician_id)): Path<(Asset, String)>,
 ) -> Result<Json<Vec<OperationalAssignmentsDto>>, AppError>
 {
     Ok(Json(
-        orchestrator
+        state.orchestrator
             .system_solutions
             .lock()
             .expect("Mutex for SystemSolution for a specific Asset should never Error")
@@ -103,7 +101,7 @@ pub async fn activities_for_technician(
 
 #[allow(unused)]
 pub async fn operational_handler_for_operational_agent(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     Path(asset): Path<AssetNames>,
     Path(technician_id): Path<String>,
 ) -> Result<Json<OperationalResponseMessage>>
@@ -118,7 +116,7 @@ pub async fn operational_handler_for_operational_agent(
     let operational_request_message =
         OperationalRequestMessage::Status(OperationalStatusRequest::General);
     // OperationalStatusMessage
-    let hash_map = orchestrator.actor_registries.lock().unwrap();
+    let hash_map = state.orchestrator.actor_registries.lock().unwrap();
     let communication = hash_map
         .get(&asset)
         .expect("This error should be handled higher up")

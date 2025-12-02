@@ -23,11 +23,11 @@ use crate::TotalSystemSolution;
 use crate::WorkOrderNumberDto;
 
 #[derive(Serialize, ToSchema, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct SchedulerWorkOrderDto(pub Vec<SingleRowDto>);
 
 #[derive(Serialize, ToSchema, TS, Clone)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 enum PeriodStatus
 {
     Frozen,
@@ -52,7 +52,7 @@ impl PeriodStatus
 // This should all be strings. You should reuse the logic from the other
 // component. I do not see what other aspect that we have.
 #[derive(Serialize, ToSchema, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct SingleRowDto
 {
     suggested_scheduled_period: String,
@@ -256,7 +256,7 @@ impl
 type ResourcesDto = String;
 
 #[derive(Serialize, ToSchema, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct WorkOrderSingleRowSimpleDto
 {
     work_order_number: u64,
@@ -269,7 +269,7 @@ pub struct WorkOrderSingleRowSimpleDto
 }
 
 #[derive(Serialize, ToSchema, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct WorkOrderInfoWithSchedulingDto
 {
     asset: String,
@@ -418,7 +418,7 @@ impl
 }
 
 #[derive(Serialize, ToSchema, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 struct OperationDto
 {
     activity: u64,

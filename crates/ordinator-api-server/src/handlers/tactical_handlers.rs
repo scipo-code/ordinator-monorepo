@@ -26,6 +26,7 @@ use tracing::info;
 use ts_rs::TS;
 use utoipa::ToSchema;
 
+use crate::AppState;
 use crate::routes::api::AppError;
 
 // So each handler should construct a specific message. That is the key point
@@ -43,18 +44,16 @@ use crate::routes::api::AppError;
     path = "/tactical_algorithm_status",
     responses((status = 200, body = [Vec<String>]))
 )]
-pub async fn status<Ss>(
-    State(orchestrator): State<Arc<Orchestrator<Ss>>>,
+pub async fn status(
+    State(state): State<AppState>,
     Path(asset): Path<AssetNames>,
 ) -> Result<Response, AppError>
-where
-    Ss: SystemSolutions,
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
     let message = TacticalRequestMessage::Status(TacticalStatusMessage::General);
 
-    let hash_map = orchestrator.actor_registries.lock().unwrap();
+    let hash_map = state.orchestrator.actor_registries.lock().unwrap();
     let actor_registry_for_asset = &hash_map
         .get(&asset)
         .unwrap()
@@ -96,16 +95,15 @@ where
     ),
     responses((status = 200, body = [Vec<String>]))
 )]
-pub async fn start_days_for_activities<Ss>(
-    State(orchestrator): State<Arc<Orchestrator<Ss>>>,
+pub async fn start_days_for_activities(
+    State(state): State<AppState>,
     Path(asset): Path<AssetNames>,
 ) -> Result<Response, AppError>
-where
-    Ss: SystemSolutions,
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let tactical_days = orchestrator
+    let tactical_days = state
+        .orchestrator
         .system_solutions
         .lock()
         .unwrap_or_else(|_| panic!("Could not lock the SystemSolution for Asset: {}", &asset))
@@ -131,21 +129,19 @@ where
     request_body(content = NaiveDateDto, description = "json with a basic start date", content_type = "application/json", example = json!("2025-02-25")),
     responses((status = 200, body = [Vec<String>]))
 )]
-pub async fn assign_start_day_for_work_order<Ss>(
-    State(orchestrator): State<Arc<Orchestrator<Ss>>>,
+pub async fn assign_start_day_for_work_order(
+    State(state): State<AppState>,
     // TODO [ ] `asset` should be used for authentication.
     Path((asset, work_order_number)): Path<(AssetNames, WorkOrderNumber)>,
     Json(basic_start_date_dto): Json<NaiveDateDto>,
 ) -> Result<Response, AppError>
-where
-    Ss: SystemSolutions,
 {
     let _asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
     let basic_start_date: NaiveDate = basic_start_date_dto
         .try_into()
         .map_err(|e: ParseError| AppError::Anyhow(e.to_string()))?;
-    let mut scheduling_environment_lock = orchestrator.scheduling_environment.lock().unwrap();
+    let mut scheduling_environment_lock = state.orchestrator.scheduling_environment.lock().unwrap();
 
     let materials_to_periods = &scheduling_environment_lock
         .material_repo
@@ -171,7 +167,7 @@ where
         .set_basic_start_date(basic_start_date);
 
     drop(scheduling_environment_lock);
-    let mut scheduling_environment_lock = orchestrator.scheduling_environment.lock().unwrap();
+    let mut scheduling_environment_lock = state.orchestrator.scheduling_environment.lock().unwrap();
     let work_order = scheduling_environment_lock
         .work_orders
         .inner
@@ -187,7 +183,8 @@ where
         .with_context(|| "Could not make a tactical assignment".to_string())
         .map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    orchestrator
+    state
+        .orchestrator
         .state_link_bus
         .lock()
         .unwrap()
@@ -198,7 +195,7 @@ where
 }
 
 #[derive(Serialize, TS, ToSchema)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct DailyLoad
 {
     work: f64,
@@ -206,7 +203,7 @@ pub struct DailyLoad
 }
 
 #[derive(Serialize, TS, ToSchema)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct DailyLoadingDto
 {
     resources: BTreeMap<String, Vec<DailyLoad>>,
@@ -221,16 +218,15 @@ pub struct DailyLoadingDto
     ),
     responses((status = 200, body = [Vec<String>]))
 )]
-pub async fn daily_loadings<Ss>(
-    State(orchestrator): State<Arc<Orchestrator<Ss>>>,
+pub async fn daily_loadings(
+    State(state): State<AppState>,
     Path(asset): Path<AssetNames>,
 ) -> Result<Response, AppError>
-where
-    Ss: SystemSolutions,
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let tactical_days = orchestrator
+    let tactical_days = state
+        .orchestrator
         .system_solutions
         .lock()
         .unwrap_or_else(|_| panic!("Could not lock the SystemSolution for Asset: {}", &asset))
@@ -242,7 +238,8 @@ where
         .map_err(|_| AppError::Anyhow(format!("No TacticalSolution exists for Asset: {}", &asset)))?
         .tactical_loadings();
 
-    let days = orchestrator
+    let days = state
+        .orchestrator
         .scheduling_environment
         .lock()
         .unwrap_or_else(|_| panic!("Could not lock the SystemSolution for Asset: {}", &asset))

@@ -1,5 +1,4 @@
 use std::str::FromStr;
-use std::sync::Arc;
 
 use anyhow::Context;
 use anyhow::anyhow;
@@ -13,14 +12,12 @@ use chrono::DateTime;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::DateTimeDto;
 use ordinator_contracts::NaiveDateDto;
-use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::WorkOrderNumberDto;
 use ordinator_contracts::supervisor::SupervisorAllAvailableTechnicians;
 use ordinator_contracts::supervisor::SupervisorMainTableDto;
 use ordinator_contracts::supervisor::SupervisorResourcesDto;
 use ordinator_contracts::supervisor::SupervisorResponseMessageDto;
 use ordinator_orchestrator::Asset;
-use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::Resources;
 use ordinator_orchestrator::StartError;
 use ordinator_orchestrator::StateLink;
@@ -36,6 +33,7 @@ use ts_rs::TS;
 use utoipa::IntoParams;
 use utoipa::ToSchema;
 
+use crate::AppState;
 use crate::routes::api::AppError;
 
 #[debug_handler]
@@ -54,14 +52,14 @@ use crate::routes::api::AppError;
     )
 )]
 pub async fn status(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     Path((asset, supervisor_id)): Path<(AssetNames, String)>,
 ) -> Result<Json<SupervisorResponseMessageDto>, AppError>
 {
     let asset = Asset::try_from(asset)
         .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
 
-    let lock = orchestrator.actor_registries.lock().unwrap();
+    let lock = state.orchestrator.actor_registries.lock().unwrap();
     let supervisor_agent_senders = &lock
         .get(&asset)
         .with_context(|| format!("Asset {asset} is not present in the ActorRegistry"))
@@ -104,7 +102,7 @@ pub async fn status(
     )
 )]
 pub async fn technician_availability(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     // TODO [ ]
     // The `_supervisor_id` should be used in the future when we have additional
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
@@ -112,7 +110,8 @@ pub async fn technician_availability(
 {
     let asset = Asset::try_from(asset)
         .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
-    let supervisor_all_available_technicians: SupervisorAllAvailableTechnicians = orchestrator
+    let supervisor_all_available_technicians: SupervisorAllAvailableTechnicians = state
+        .orchestrator
         .scheduling_environment
         .lock()
         .expect("Cannot lock SchedulingEnvironment")
@@ -143,7 +142,7 @@ pub async fn technician_availability(
     )
 )]
 pub async fn all_technicians(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     // TODO [ ]
     // The `_supervisor_id` should be used in the future when we have additional
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
@@ -155,7 +154,8 @@ pub async fn all_technicians(
     let asset = Asset::try_from(asset)
         .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
 
-    let supervisor_resources: SupervisorResourcesDto = orchestrator
+    let supervisor_resources: SupervisorResourcesDto = state
+        .orchestrator
         .system_solutions
         .lock()
         .expect("SystemSolution locks unavailable")
@@ -228,7 +228,7 @@ pub struct MainTableQueryParams
     )
 )]
 pub async fn supervisor_main_table(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     // TODO [ ]
     // The `_supervisor_id` should be used in the future when we have additional
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
@@ -237,11 +237,12 @@ pub async fn supervisor_main_table(
 {
     let asset = Asset::try_from(asset)
         .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
-    let schedulingenvironment_lock = &orchestrator.scheduling_environment.lock().unwrap();
+    let schedulingenvironment_lock = &state.orchestrator.scheduling_environment.lock().unwrap();
     let work_orders = &schedulingenvironment_lock.work_orders;
     let time_environment = &schedulingenvironment_lock.time_environment;
 
-    let system_solution = &(**orchestrator
+    let system_solution = &(**state
+        .orchestrator
         .system_solutions
         .lock()
         .unwrap()
@@ -303,7 +304,7 @@ pub struct WorkOrderActivityToTechnicianDto
     )
 )]
 pub async fn assign_to_technicians(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     // TODO [ ]
     // The `_supervisor_id` should be used in the future when we have additional
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
@@ -318,7 +319,8 @@ pub async fn assign_to_technicians(
 
     let work_order_number = WorkOrderNumber::from(work_order_number);
 
-    let mut scheduling_environment_lock = orchestrator
+    let mut scheduling_environment_lock = state
+        .orchestrator
         .scheduling_environment
         .lock()
         .map_err(|e| AppError::Anyhow(e.to_string()))?;
@@ -366,7 +368,8 @@ pub async fn assign_to_technicians(
         )
         .map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    orchestrator
+    state
+        .orchestrator
         .state_link_bus
         .lock()
         .unwrap()
@@ -376,7 +379,7 @@ pub async fn assign_to_technicians(
 }
 
 #[derive(Serialize, Deserialize, ToSchema, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct CreateTechnicianDto
 {
     #[schema(example = "l1112233")]
@@ -409,7 +412,7 @@ pub struct CreateTechnicianDto
     )
 )]
 pub async fn add_technician(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     // TODO [ ]
     // The `_supervisor_id` should be used in the future when we have additional
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
@@ -441,7 +444,8 @@ pub async fn add_technician(
     let asset = Asset::try_from(asset)
         .map_err(|_e| AppError::Anyhow("Incorrect asset name".to_string()))?;
 
-    let actor_composite_id = orchestrator
+    let actor_composite_id = state
+        .orchestrator
         .scheduling_environment
         .lock()
         .unwrap()
@@ -459,7 +463,10 @@ pub async fn add_technician(
         )
         .map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    if let Err(started) = orchestrator.start_operational_actor(&actor_composite_id) {
+    if let Err(started) = state
+        .orchestrator
+        .start_operational_actor(&actor_composite_id)
+    {
         match started {
             StartError::AlreadyRunning => {
                 return Ok(Json(format!(

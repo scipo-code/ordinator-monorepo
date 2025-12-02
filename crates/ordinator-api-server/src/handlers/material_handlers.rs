@@ -1,24 +1,22 @@
 use std::fmt::Display;
-use std::sync::Arc;
 
 use axum::Json;
 use axum::debug_handler;
 use axum::extract::Path;
 use axum::extract::State;
 use ordinator_contracts::AssetNames;
-use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::WorkOrderNumberDto;
-use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::StateLink;
 use ordinator_orchestrator::WorkOrderNumber;
 use serde::Deserialize;
 use ts_rs::TS;
 use utoipa::ToSchema;
 
+use crate::AppState;
 use crate::routes::api::AppError;
 
 #[derive(Deserialize, ToSchema, TS, Debug)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct MaterialCheck(bool);
 
 impl Display for MaterialCheck
@@ -47,7 +45,7 @@ impl Display for MaterialCheck
     )
 )]
 pub async fn check_material(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     // TODO [ ]
     // The `_supervisor_id` should be used in the future when we have additional
     Path((_asset, work_order_number)): Path<(AssetNames, WorkOrderNumberDto)>,
@@ -55,7 +53,8 @@ pub async fn check_material(
 ) -> Result<String, AppError>
 {
     let work_order_number = WorkOrderNumber(work_order_number.0);
-    orchestrator
+    state
+        .orchestrator
         .scheduling_environment
         .lock()
         .unwrap()
@@ -63,7 +62,8 @@ pub async fn check_material(
         .update_material_checked(&work_order_number, checked.0)
         .map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    orchestrator
+    state
+        .orchestrator
         .state_link_bus
         .lock()
         .unwrap()

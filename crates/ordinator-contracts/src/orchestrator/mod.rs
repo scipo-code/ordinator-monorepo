@@ -3,11 +3,11 @@ use std::collections::HashSet;
 
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::period::Period;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::SystemStatusCodes;
 use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::UserStatusCodes;
 use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfo;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::Resources;
 use serde::Serialize;
 use ts_rs::TS;
@@ -154,7 +154,7 @@ impl<T> OrchestratorMessage<T>
 }
 
 #[derive(TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct AvailableAssets
 {
     pub assets: Vec<AssetNames>,

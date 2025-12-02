@@ -22,6 +22,7 @@ use ordinator_orchestrator::Resources;
 use ordinator_orchestrator::WorkOrderNumber;
 use strum::IntoEnumIterator;
 
+use crate::AppState;
 use crate::routes::api::AppError;
 
 // This should be deleted and replaced with the other handler. I do not
@@ -39,7 +40,7 @@ use crate::routes::api::AppError;
 // }
 
 pub async fn scheduler_excel_export(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     Path(asset): Path<AssetNames>,
 ) -> Result<Response>
 {
@@ -47,7 +48,8 @@ pub async fn scheduler_excel_export(
 
     let mut headers = HeaderMap::new();
 
-    let (buffer, http_header) = orchestrator
+    let (buffer, http_header) = state
+        .orchestrator
         .export_xlsx_solution(asset)
         .expect("Could not export xlsx");
 
@@ -87,10 +89,10 @@ pub async fn scheduler_asset_names() -> Response
     path = "/periods",
     responses((status = 200, body = [Vec<String>]))
 )]
-pub async fn periods(State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>)
--> Response
+pub async fn periods(State(state): State<AppState>) -> Response
 {
-    let periods: Vec<_> = orchestrator
+    let periods: Vec<_> = state
+        .orchestrator
         .scheduling_environment
         .lock()
         .expect("Should never happen")
@@ -109,9 +111,10 @@ pub async fn periods(State(orchestrator): State<Arc<Orchestrator<TotalSystemSolu
     path = "/days",
     responses((status = 200, body = [Vec<String>]))
 )]
-pub async fn days(State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>) -> Response
+pub async fn days(State(state): State<AppState>) -> Response
 {
-    let days: Vec<_> = orchestrator
+    let days: Vec<_> = state
+        .orchestrator
         .scheduling_environment
         .lock()
         .expect("Should ever happen")
@@ -135,11 +138,12 @@ pub async fn days(State(orchestrator): State<Arc<Orchestrator<TotalSystemSolutio
     responses((status = 200, body = [WorkOrderSingleRowSimpleDto]))
 )]
 pub async fn work_order_info(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     Path(work_order_number): Path<u64>,
 ) -> Result<Json<WorkOrderSingleRowSimpleDto>, AppError>
 {
-    let lock = orchestrator
+    let lock = state
+        .orchestrator
         .scheduling_environment
         .lock()
         .expect("Should ever happen");
@@ -159,11 +163,10 @@ pub async fn work_order_info(
     path = "/system_clock",
     responses((status = 200, body = String))
 )]
-pub async fn system_clock(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-) -> Result<Response, AppError>
+pub async fn system_clock(State(state): State<AppState>) -> Result<Response, AppError>
 {
-    let system_datetime = orchestrator
+    let system_datetime = state
+        .orchestrator
         .system_clock_tick_receiver
         .recv()
         .map_err(|e| AppError::Anyhow(e.to_string()))?
@@ -177,9 +180,7 @@ pub async fn system_clock(
     path = "/resources",
     responses((status = 200,body = String))
 )]
-pub async fn resources(
-    State(_orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-) -> Response
+pub async fn resources() -> Response
 {
     let resources: Vec<_> = Resources::iter().map(|r| r.to_string()).collect();
 
@@ -218,19 +219,15 @@ pub async fn resources(
 //
 //
 //
-pub async fn orchestrator_status(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-) -> Result<Response>
+pub async fn orchestrator_status(State(state): State<AppState>) -> Result<Response>
 {
-    Ok(Json(orchestrator.actor_registries.lock().unwrap().len()).into_response())
+    Ok(Json(state.orchestrator.actor_registries.lock().unwrap().len()).into_response())
 }
 
-pub async fn get_days(
-    orchestrator: State<Arc<Orchestrator<TotalSystemSolution>>>,
-) -> Result<Response>
+pub async fn get_days(state: State<AppState>) -> Result<Response>
 {
     let json = Json(OrchestratorRequest::GetPeriods);
-    orchestrator_helper(orchestrator, json).await
+    orchestrator_helper(state, json).await
 }
 
 /// This is a helper function for routing message for the orchestrator. Each
@@ -238,11 +235,12 @@ pub async fn get_days(
 /// to the orchestrator.
 #[debug_handler]
 pub async fn orchestrator_helper(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     Json(orchestrator_request): Json<OrchestratorRequest>,
 ) -> Result<Response>
 {
-    let response = orchestrator
+    let response = state
+        .orchestrator
         // So all the handling logic should reside in the Orchestrator itself.
         .handle(orchestrator_request)
         .await

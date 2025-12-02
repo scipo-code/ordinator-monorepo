@@ -35,14 +35,14 @@ pub struct SupervisorResourcesDto
 }
 
 #[derive(ToSchema, Serialize, Debug, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct SupervisorMainTableDto
 {
     pub days: BTreeMap<NaiveDateDto, DaySubtable>,
 }
 
 #[derive(ToSchema, Debug, Serialize, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct DaySubtable
 {
     // Each person should be mentioned once.
@@ -54,7 +54,7 @@ type Permit = Option<String>;
 type Description = String;
 type Icc = Option<String>;
 #[derive(Debug, ToSchema, Serialize, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct WorkOrderSupervisorRow
 {
     id: IdStringDto,
@@ -112,7 +112,7 @@ impl From<(&WorkOrder, ActivityNumber, IdStringDto)> for WorkOrderSupervisorRow
 }
 
 #[derive(Debug, ToSchema, Serialize, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct Percentage(f64);
 
 // This should be a trait as well. You should not do it like this I believe
@@ -197,7 +197,7 @@ pub enum SupervisorResponseMessageDto
 // CRUCIAL INSIGHT
 // You are getting more mature here! You should simply keep it up.
 #[derive(Serialize, ToSchema, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct SupervisorResponseStatusDto
 {
     pub delegated_work_order_activities: usize,
@@ -251,7 +251,7 @@ impl From<SupervisorSolution> for SupervisorResourcesDto
 }
 
 #[derive(Debug, Serialize, ToSchema, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct TechnicianAvailability
 {
     pub id: IdStringDto,
@@ -261,7 +261,7 @@ pub struct TechnicianAvailability
 }
 
 #[derive(ToSchema, Serialize, Debug, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct SupervisorAllAvailableTechnicians
 {
     all_technicians: Vec<TechnicianAvailability>,

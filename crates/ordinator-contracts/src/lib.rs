@@ -27,33 +27,33 @@ pub mod technician;
 #[derive(
     Hash, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS,
 )]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct AssetNames(String);
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct PeriodDto(pub String);
 
 #[derive(
     Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS, Default,
 )]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 /// Example 2025-02-20
 pub struct NaiveDateDto(pub String);
 
 #[derive(
     Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS, Default,
 )]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 /// Example 2025-02-20T07:00:00
 pub struct DateTimeDto(pub String);
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct WorkOrderNumberDto(pub u64);
 
 #[derive(Debug, ToSchema, Serialize, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub enum MaterialStatusDto
 {
     Smat,
@@ -154,7 +154,7 @@ pub type TotalSystemSolution =
     SystemSolution<StrategicSolution, TacticalSolution, SupervisorSolution, OperationalSolution>;
 
 #[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, ToSchema, Serialize, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct IdStringDto(String);
 
 impl IdStringDto
@@ -174,7 +174,7 @@ impl From<ActorCompositeId> for IdStringDto
 }
 
 #[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, ToSchema, Serialize, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct IdDto
 {
     id: String,

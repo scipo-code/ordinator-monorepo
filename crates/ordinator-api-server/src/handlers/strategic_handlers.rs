@@ -28,6 +28,8 @@ use tracing::instrument;
 use utoipa::IntoParams;
 use utoipa::ToSchema;
 
+use crate::AppState;
+use crate::auth::extractors::AsScheduler;
 use crate::routes::api::AppError;
 
 // This is a handler. Not a `Route` you should change that. Keep working.
@@ -54,16 +56,18 @@ pub struct WorkOrdersWithSchedulingQueryParams
         (status = 500, body = AppError),
     )
 )]
-#[instrument(target = "business_events", fields(elapsed_time), skip(orchestrator))]
+#[instrument(target = "business_events", fields(elapsed_time), skip(state))]
 pub async fn get_scheduler_work_orders(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    AsScheduler(claims): AsScheduler,
+    State(state): State<AppState>,
     Path(asset): Path<AssetNames>,
     Query(query): Query<WorkOrdersWithSchedulingQueryParams>,
 ) -> Result<Json<SchedulerWorkOrderDto>, AppError>
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let system_solution = orchestrator
+    let system_solution = state
+        .orchestrator
         .system_solutions
         .lock()
         .unwrap()
@@ -72,7 +76,7 @@ pub async fn get_scheduler_work_orders(
         .map_err(|e| AppError::Anyhow(e.to_string()))?
         .load();
 
-    let scheduling_environment = orchestrator.scheduling_environment.lock().unwrap();
+    let scheduling_environment = state.orchestrator.scheduling_environment.lock().unwrap();
 
     let work_order_schedule =
         SchedulerWorkOrderDto::try_from((asset.clone(), scheduling_environment, system_solution))
@@ -110,13 +114,14 @@ pub async fn get_scheduler_work_orders(
     )
 )]
 pub async fn get_single_work_order_with_schedule(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     Path((asset, work_order)): Path<(AssetNames, WorkOrderNumberDto)>,
 ) -> Result<Json<WorkOrderInfoWithSchedulingDto>, AppError>
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let system_solution = orchestrator
+    let system_solution = state
+        .orchestrator
         .system_solutions
         .lock()
         .unwrap()
@@ -125,7 +130,7 @@ pub async fn get_single_work_order_with_schedule(
         .map_err(|e| AppError::Anyhow(e.to_string()))?
         .load();
 
-    let scheduling_environment = orchestrator.scheduling_environment.lock().unwrap();
+    let scheduling_environment = state.orchestrator.scheduling_environment.lock().unwrap();
 
     let work_order_payload = WorkOrderInfoWithSchedulingDto::try_from((
         asset.clone(),
@@ -147,16 +152,15 @@ pub async fn get_single_work_order_with_schedule(
     ),
     responses((status = 200, body = [HashMap<WorkOrderNumberDto, PeriodDto>]))
 )]
-pub async fn work_orders_with_suggested_period<Ss>(
-    State(orchestrator): State<Arc<Orchestrator<Ss>>>,
+pub async fn work_orders_with_suggested_period(
+    State(state): State<AppState>,
     Path(asset): Path<AssetNames>,
 ) -> Result<Response, AppError>
-where
-    Ss: SystemSolutions,
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let strategic_periods = orchestrator
+    let strategic_periods = state
+        .orchestrator
         .system_solutions
         .lock()
         .unwrap_or_else(|_| panic!("Could not lock the SystemSolution for Asset: {}", &asset));
@@ -208,7 +212,7 @@ where
     )
 )]
 pub async fn assign_work_order_to_period(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     Path((asset_dto, work_order_number_dto)): Path<(AssetNames, WorkOrderNumberDto)>,
     Json(period_dto): Json<PeriodDto>,
 ) -> Result<Response, AppError>
@@ -221,7 +225,7 @@ pub async fn assign_work_order_to_period(
     // TODO [ ] add a `bus` for each `Asset`
     let _asset = Asset::try_from(asset_dto).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let mut scheduling_environment = orchestrator.scheduling_environment.lock().unwrap();
+    let mut scheduling_environment = state.orchestrator.scheduling_environment.lock().unwrap();
 
     let work_order_number = WorkOrderNumber::from(work_order_number_dto);
     let periods = &scheduling_environment.time_environment.periods.clone();
@@ -260,7 +264,8 @@ pub async fn assign_work_order_to_period(
     let state_link = StateLink::WorkOrders(vec![work_order_number]);
 
     // You are doing what you should have done a long time ago.
-    orchestrator
+    state
+        .orchestrator
         .state_link_bus
         .lock()
         .unwrap()

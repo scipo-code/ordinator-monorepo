@@ -1,22 +1,19 @@
-use std::sync::Arc;
-
 use anyhow::Context;
 use axum::Json;
 use axum::debug_handler;
 use axum::extract::Path;
 use axum::extract::State;
 use ordinator_contracts::AssetNames;
-use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Asset;
-use ordinator_orchestrator::Orchestrator;
 use serde::Serialize;
 use ts_rs::TS;
 use utoipa::ToSchema;
 
+use crate::AppState;
 use crate::routes::api::AppError;
 
 #[derive(ToSchema, Serialize, TS)]
-#[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
+#[ts(export, export_to = "../../../ordinator-frontends/src/types/dto/")]
 pub struct SolutionVersionDto
 {
     pub stagnation_iterations: u64,
@@ -37,13 +34,14 @@ pub struct SolutionVersionDto
     )
 )]
 pub async fn tactical_solution_status(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     Path(asset): Path<AssetNames>,
 ) -> Result<Json<SolutionVersionDto>, AppError>
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let stagnation_and_version = orchestrator
+    let stagnation_and_version = state
+        .orchestrator
         .system_solutions
         .lock()
         .map_err(|e| AppError::Anyhow(e.to_string()))?
@@ -78,13 +76,14 @@ pub async fn tactical_solution_status(
     )
 )]
 pub async fn strategic_solution_status(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     Path(asset): Path<AssetNames>,
 ) -> Result<Json<SolutionVersionDto>, AppError>
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let stagnation_and_version = orchestrator
+    let stagnation_and_version = state
+        .orchestrator
         .system_solutions
         .lock()
         .map_err(|e| AppError::Anyhow(e.to_string()))?
@@ -119,13 +118,14 @@ pub async fn strategic_solution_status(
     )
 )]
 pub async fn supervisor_solution_status(
-    State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
+    State(state): State<AppState>,
     Path(asset): Path<AssetNames>,
 ) -> Result<Json<SolutionVersionDto>, AppError>
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let stagnation_and_version = orchestrator
+    let stagnation_and_version = state
+        .orchestrator
         .system_solutions
         .lock()
         .map_err(|e| AppError::Anyhow(e.to_string()))?
