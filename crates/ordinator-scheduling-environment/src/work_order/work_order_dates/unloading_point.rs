@@ -1,4 +1,5 @@
 use chrono::Datelike;
+use chrono::Utc;
 use clap::Args;
 use rust_xlsxwriter::IntoExcelData;
 use serde::Deserialize;
@@ -38,21 +39,21 @@ impl UnloadingPoint
 
         let period_string = match regex.captures(&unloading_point_string) {
             Some(caps) => {
-                let year = caps
+                let year: i32 = caps
                     .name("year")
                     .map(|m| m.as_str())
                     .map(|y| match y.len() {
                         2 => {
                             2000 + y
-                                .parse::<u32>()
+                                .parse::<i32>()
                                 .expect("RegEx is hard coded this should not be able to fail.")
                         }
                         4 => y
-                            .parse::<u32>()
+                            .parse::<i32>()
                             .expect("RegEx is hard coded this should not be able to fail."),
                         _ => 2025,
                     })
-                    .unwrap_or(chrono::Utc::now().year() as u32);
+                    .unwrap_or(chrono::Utc::now().year());
 
                 let mut from = caps
                     .name("from")
@@ -61,8 +62,7 @@ impl UnloadingPoint
                     .parse::<u32>()
                     .expect("This value is hardcoded");
 
-                let date =
-                    chrono::NaiveDate::from_isoywd_opt(year as i32, from, chrono::Weekday::Mon);
+                let date = chrono::NaiveDate::from_isoywd_opt(year, from, chrono::Weekday::Mon);
 
                 if date.is_none() {
                     from = 1
@@ -75,7 +75,7 @@ impl UnloadingPoint
                             .parse::<u32>()
                             .expect("This value is hardcoded");
 
-                        if chrono::NaiveDate::from_isoywd_opt(year as i32, to, chrono::Weekday::Mon)
+                        if chrono::NaiveDate::from_isoywd_opt(year, to, chrono::Weekday::Mon)
                             .is_none()
                         {
                             to = 1
@@ -83,12 +83,8 @@ impl UnloadingPoint
                         to
                     }
                     None => {
-                        if chrono::NaiveDate::from_isoywd_opt(
-                            year as i32,
-                            from + 1,
-                            chrono::Weekday::Mon,
-                        )
-                        .is_none()
+                        if chrono::NaiveDate::from_isoywd_opt(year, from + 1, chrono::Weekday::Mon)
+                            .is_none()
                         {
                             1
                         } else {
@@ -196,16 +192,16 @@ mod tests
         assert_eq!(capture_3.period_string, Some("2086-W3-W4".to_string()));
 
         assert_eq!(capture_4.period_string, Some("2025-W5-W6".to_string()));
-        assert_eq!(capture_5.period_string, Some("2025-W1-W2".to_string()));
-        assert_eq!(capture_6.period_string, Some("2025-W9-W10".to_string()));
+        assert_eq!(capture_5.period_string, Some("2026-W1-W2".to_string()));
+        assert_eq!(capture_6.period_string, Some("2026-W9-W10".to_string()));
 
         assert_eq!(capture_7.period_string, Some("2025-W1-W2".to_string()));
         assert_eq!(capture_8.period_string, Some("1994-W1-W2".to_string()));
         assert_eq!(capture_9.period_string, Some("2086-W3-W4".to_string()));
 
         assert_eq!(capture_10.period_string, Some("2025-W5-W6".to_string()));
-        assert_eq!(capture_11.period_string, Some("2025-W1-W2".to_string()));
-        assert_eq!(capture_12.period_string, Some("2025-W9-W10".to_string()));
+        assert_eq!(capture_11.period_string, Some("2026-W1-W2".to_string()));
+        assert_eq!(capture_12.period_string, Some("2026-W9-W10".to_string()));
 
         assert_eq!(capture_13.period_string, None);
         assert_eq!(capture_14.period_string, Some("2025-W10-W11".to_string()));
