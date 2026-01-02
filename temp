@@ -1,0 +1,88 @@
+Error: Ordinator Scheduling Systems experienced a catastraphoic
+            error:
+Ok([95mScheduleIteration: 2[0m
+Actor    : [34mId: Id(TEST_TACTICAL, resources: [], assets: Availability { start_datetime: 2025-01-13T00:00:00Z, finish_datetime: 2025-05-12T00:00:00Z, assets: [Test] })[0m
+Algorithm: TacticalAlgorithm(
+    Algorithm {
+        id: [34mId: Id(TEST_TACTICAL, resources: [], assets: Availability { start_datetime: 2025-01-13T00:00:00Z, finish_datetime: 2025-05-12T00:00:00Z, assets: [Test] })[0m,
+        solution_intermediate: PriorityQueue {
+            store: {},
+        },
+        solution: SolutionState {
+            stagnation_iterations: 0,
+            version: 2,
+            inner: [94mTacticalObjectiveValue {
+                objective_value: 27175180500,
+                urgency: (
+                    10,
+                    197518050,
+                ),
+                resource_penalty: (
+                    100000000,
+                    252,
+                ),
+                percent_scheduled: (
+                    0,
+                    Percent {
+                        percent: 17,
+                        numerator: 1147,
+                        denominator: 6400,
+                    },
+                ),
+            }
+            number of tactical work orders: 6400
+            [94mTacticalResources: 
+            Days: 120
+            Technicians: 11[0m[94m[0m,
+        },
+        parameters: TacticalParameters {
+            work_orders: 2341
+            tactical_days: 120
+            tactical_capacity: [94mTacticalResources: 
+            Technicians: 11[0m,
+            tactical_options: TacticalOptions {
+                number_of_removed_work_orders: 20,
+                urgency: 10,
+                resource_penalty: 100000000,
+            },
+        },
+        arc_swap_shared_solution: ArcSwapAny(
+            StrategicSolution:   [32mpresent[0m
+            TacticalSolution:     [32mpresent[0m
+            SupervisorSolution:   [32mpresent[0m
+            OperationalSolutions: [32m30[0m,
+        ),
+        loaded_system_solution: StrategicSolution:   [32mpresent[0m
+        TacticalSolution:     [32mpresent[0m
+        SupervisorSolution:   [32mpresent[0m
+        OperationalSolutions: [32m30[0m,
+    },
+)
+Location : /home/cbrje/projects/ordinator/ordinator-monorepo/crates/ordinator-actors/ordinator-actor-core/src/lib.rs:164:21
+
+Caused by:
+    0: [94mTacticalObjectiveValue {
+           objective_value: 27175180500,
+           urgency: (
+               10,
+               197518050,
+           ),
+           resource_penalty: (
+               100000000,
+               252,
+           ),
+           percent_scheduled: (
+               0,
+               Percent {
+                   percent: 17,
+                   numerator: 1147,
+                   denominator: 6400,
+               },
+           ),
+       }
+       number of tactical work orders: 6400
+       [94mTacticalResources: 
+       Days: 120
+       Technicians: 11[0m[94m[0m
+    1: Condition failed: `Local::now().minute() != 55` (55 vs 55))
+error: test failed, to rerun pass `--test master_system_test_6400_work_orders_30_technicians`

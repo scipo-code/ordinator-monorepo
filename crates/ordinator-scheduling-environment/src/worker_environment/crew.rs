@@ -7,7 +7,7 @@ use serde::Serialize;
 
 use super::availability::Availability;
 use super::resources::ActorCompositeId;
-use super::resources::Resources;
+use super::resources::Skill;
 use crate::time_environment::TimeInterval;
 use crate::worker_environment::worker::Worker;
 
@@ -65,7 +65,7 @@ pub struct OperationalConfiguration
     pub break_interval: TimeInterval,
     pub off_shift_interval: TimeInterval,
     pub toolbox_interval: TimeInterval,
-    pub resources: HashSet<Resources>,
+    pub resources: HashSet<Skill>,
 }
 
 #[derive(Default)]
@@ -75,7 +75,7 @@ pub struct OperationalConfigurationBuilder
     break_interval: Option<TimeInterval>,
     off_shift_interval: Option<TimeInterval>,
     toolbox_interval: Option<TimeInterval>,
-    resources: HashSet<Resources>,
+    resources: HashSet<Skill>,
 }
 
 impl OperationalConfigurationBuilder
@@ -97,13 +97,13 @@ impl OperationalConfigurationBuilder
         self
     }
 
-    pub fn add_resource(mut self, resource: Resources) -> Self
+    pub fn add_resource(mut self, resource: Skill) -> Self
     {
         self.resources.insert(resource);
         self
     }
 
-    pub fn resources(mut self, resources: HashSet<Resources>) -> Self
+    pub fn resources(mut self, resources: HashSet<Skill>) -> Self
     {
         self.resources = resources;
         self
@@ -152,7 +152,7 @@ impl OperationalConfiguration
         break_interval: TimeInterval,
         off_shift_interval: TimeInterval,
         toolbox_interval: TimeInterval,
-        resources: HashSet<Resources>,
+        resources: HashSet<Skill>,
     ) -> Self
     {
         Self {

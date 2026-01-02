@@ -12,11 +12,13 @@ use std::ops::DerefMut;
 use std::panic::Location;
 use std::sync::Arc;
 
+use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
-use anyhow::ensure;
+use chrono::Local;
 use chrono::NaiveDate;
 use chrono::TimeDelta;
+use chrono::Timelike;
 use colored::Colorize;
 use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::algorithm::LoadOperation;
@@ -28,23 +30,23 @@ use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::StrategicInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
-use ordinator_scheduling_environment::Percent;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_scheduling_environment::worker_environment::TacticalOptions;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::Percent;
 use priority_queue::PriorityQueue;
 use rand::rng;
 use rand::seq::IndexedRandom;
 use tactical_solution::TacticalObjectiveValue;
 use tactical_solution::TacticalScheduledOperations;
 use tactical_solution::TacticalSolution;
-use tracing::Level;
 use tracing::event;
 use tracing::warn;
+use tracing::Level;
 
 use self::assert_functions::TacticalAssertions;
 use self::tactical_parameters::TacticalParameters;
@@ -85,7 +87,7 @@ where
         AbLNSUtils<SolutionType = TacticalSolution>,
     Ss: SystemSolutions<Tactical = TacticalSolution>,
 {
-    pub fn capacity(&self, resource: &Resources, day: DayIndex) -> Result<&Work>
+    pub fn capacity(&self, resource: &Skill, day: DayIndex) -> Result<&Work>
     {
         Ok(&self
             .parameters
@@ -1004,7 +1006,7 @@ where
         }
     }
 
-    fn remaining_capacity(&self, resource: &Resources, day: &Day) -> Option<Work>
+    fn remaining_capacity(&self, resource: &Skill, day: &Day) -> Option<Work>
     {
         let remaining_capacity = self
             .parameters

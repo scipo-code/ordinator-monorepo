@@ -27,7 +27,7 @@ use crate::Asset;
     clap::ValueEnum,
     Copy,
 )]
-pub enum Resources
+pub enum Skill
 {
     #[serde(rename = "MTN-MECH")]
     MtnMech,
@@ -141,156 +141,156 @@ pub enum Resources
     ConWeld,
 }
 
-impl FromStr for Resources
+impl FromStr for Skill
 {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err>
     {
         let resource = match s {
-            "MTN-PIPF" => Resources::MtnPipf,
-            "VEN-TURB" => Resources::VenTurb,
-            "CON-VEN" => Resources::ConVen,
-            "MTN-LAGG" => Resources::MtnLagg,
-            "VEN-SCAF" => Resources::VenScaf,
-            "MTN-ROPE" => Resources::MtnRope,
-            "VEN-INSP" => Resources::VenInsp,
-            "INP-SITE" => Resources::InpSite,
-            "VEN-INST" => Resources::VenInst,
-            "MAINONSH" => Resources::Mainonsh,
-            "DRILLING" => Resources::Drilling,
-            "WELLMAIN" => Resources::Wellmain,
-            "WELLSUPV" => Resources::Wellsupv,
-            "WELLTECH" => Resources::Welltech,
-            "CON-ELEC" => Resources::ConElec,
-            "CON-INPF" => Resources::ConInpf,
-            "CON-INST" => Resources::ConInst,
-            "CON-LAGG" => Resources::ConLagg,
-            "CON-NDTI" => Resources::ConNdti,
-            "CON-SCAF" => Resources::ConScaf,
-            "CON-PAIN" => Resources::ConPain,
-            "CON-RIGG" => Resources::ConRigg,
-            "CON-ROPE" => Resources::ConRope,
-            "CON-WELD" => Resources::ConWeld,
-            "MTN-ROUS" => Resources::MtnRous,
-            "MTN-CRAN" => Resources::MtnCran,
-            "MTN-ELEC" => Resources::MtnElec,
-            "MTN-INST" => Resources::MtnInst,
-            "MTN-MECH" => Resources::MtnMech,
-            "MTN-RIGG" => Resources::MtnRigg,
-            "MTN-SCAF" => Resources::MtnScaf,
-            "MTN-PAIN" => Resources::MtnPain,
-            "MTN-TELE" => Resources::MtnTele,
-            "MTN-TURB" => Resources::MtnTurb,
-            "MEDIC" => Resources::Medic,
-            "PRODLABO" => Resources::Prodlabo,
-            "PRODTECH" => Resources::Prodtech,
-            "MTN-SAT" => Resources::MtnSat,
-            "VEN-ACCO" => Resources::VenAcco,
-            "VEN-COMM" => Resources::VenComm,
-            "VEN-CRAN" => Resources::VenCran,
-            "VEN-ELEC" => Resources::VenElec,
-            "VEN-HVAC" => Resources::VenHvac,
-            "VEN-MECH" => Resources::VenMech,
-            "VEN-METE" => Resources::VenMete,
-            "VEN-SUBS" => Resources::VenSubs,
-            "VEN-ROPE" => Resources::VenRope,
-            "QAQCELEC" => Resources::Qaqcelec,
-            "QAQCMECH" => Resources::Qaqcmech,
-            "QAQCPAIN" => Resources::Qaqcpain,
-            "PRODCCR" => Resources::Prodccr,
-            "VEN-FFEQ" => Resources::VenFfeq,
-            "CMP-RIGG" => Resources::CmpRigg,
-            "CMP-SCAF" => Resources::CmpScaf,
-            "CON-NPT" => Resources::ConNpt,
+            "MTN-PIPF" => Skill::MtnPipf,
+            "VEN-TURB" => Skill::VenTurb,
+            "CON-VEN" => Skill::ConVen,
+            "MTN-LAGG" => Skill::MtnLagg,
+            "VEN-SCAF" => Skill::VenScaf,
+            "MTN-ROPE" => Skill::MtnRope,
+            "VEN-INSP" => Skill::VenInsp,
+            "INP-SITE" => Skill::InpSite,
+            "VEN-INST" => Skill::VenInst,
+            "MAINONSH" => Skill::Mainonsh,
+            "DRILLING" => Skill::Drilling,
+            "WELLMAIN" => Skill::Wellmain,
+            "WELLSUPV" => Skill::Wellsupv,
+            "WELLTECH" => Skill::Welltech,
+            "CON-ELEC" => Skill::ConElec,
+            "CON-INPF" => Skill::ConInpf,
+            "CON-INST" => Skill::ConInst,
+            "CON-LAGG" => Skill::ConLagg,
+            "CON-NDTI" => Skill::ConNdti,
+            "CON-SCAF" => Skill::ConScaf,
+            "CON-PAIN" => Skill::ConPain,
+            "CON-RIGG" => Skill::ConRigg,
+            "CON-ROPE" => Skill::ConRope,
+            "CON-WELD" => Skill::ConWeld,
+            "MTN-ROUS" => Skill::MtnRous,
+            "MTN-CRAN" => Skill::MtnCran,
+            "MTN-ELEC" => Skill::MtnElec,
+            "MTN-INST" => Skill::MtnInst,
+            "MTN-MECH" => Skill::MtnMech,
+            "MTN-RIGG" => Skill::MtnRigg,
+            "MTN-SCAF" => Skill::MtnScaf,
+            "MTN-PAIN" => Skill::MtnPain,
+            "MTN-TELE" => Skill::MtnTele,
+            "MTN-TURB" => Skill::MtnTurb,
+            "MEDIC" => Skill::Medic,
+            "PRODLABO" => Skill::Prodlabo,
+            "PRODTECH" => Skill::Prodtech,
+            "MTN-SAT" => Skill::MtnSat,
+            "VEN-ACCO" => Skill::VenAcco,
+            "VEN-COMM" => Skill::VenComm,
+            "VEN-CRAN" => Skill::VenCran,
+            "VEN-ELEC" => Skill::VenElec,
+            "VEN-HVAC" => Skill::VenHvac,
+            "VEN-MECH" => Skill::VenMech,
+            "VEN-METE" => Skill::VenMete,
+            "VEN-SUBS" => Skill::VenSubs,
+            "VEN-ROPE" => Skill::VenRope,
+            "QAQCELEC" => Skill::Qaqcelec,
+            "QAQCMECH" => Skill::Qaqcmech,
+            "QAQCPAIN" => Skill::Qaqcpain,
+            "PRODCCR" => Skill::Prodccr,
+            "VEN-FFEQ" => Skill::VenFfeq,
+            "CMP-RIGG" => Skill::CmpRigg,
+            "CMP-SCAF" => Skill::CmpScaf,
+            "CON-NPT" => Skill::ConNpt,
             unknown => return Err(format!("Could not parse Resource: {unknown}")),
         };
         Ok(resource)
     }
 }
 
-impl Display for Resources
+impl Display for Skill
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
         let value = match self {
-            Resources::Medic => "MEDIC",
-            Resources::MtnCran => "MTN-CRAN",
-            Resources::MtnElec => "MTN-ELEC",
-            Resources::MtnInst => "MTN-INST",
-            Resources::MtnLagg => "MTN-LAGG",
-            Resources::MtnMech => "MTN-MECH",
-            Resources::MtnPain => "MTN-PAIN",
-            Resources::MtnPipf => "MTN-PIPF",
-            Resources::MtnRigg => "MTN-RIGG",
-            Resources::MtnRope => "MTN-ROPE",
-            Resources::MtnRous => "MTN-ROUS",
-            Resources::MtnSat => "MTN-SAT",
-            Resources::MtnScaf => "MTN-SCAF",
-            Resources::MtnTele => "MTN-TELE",
-            Resources::MtnTurb => "MTN-TURB",
-            Resources::InpSite => "INP-SITE",
-            Resources::Prodlabo => "PRODLABO",
-            Resources::Prodtech => "PRODTECH",
-            Resources::VenAcco => "VEN-ACCO",
-            Resources::VenComm => "VEN-COMM",
-            Resources::VenCran => "VEN-CRAN",
-            Resources::VenElec => "VEN-ELEC",
-            Resources::VenHvac => "VEN-HVAC",
-            Resources::VenInsp => "VEN-INSP",
-            Resources::VenInst => "VEN-INST",
-            Resources::VenMech => "VEN-MECH",
-            Resources::VenMete => "VEN-METE",
-            Resources::VenRope => "VEN-ROPE",
-            Resources::VenScaf => "VEN-SCAF",
-            Resources::VenSubs => "VEN-SUBS",
-            Resources::Qaqcelec => "QAQCELEC",
-            Resources::Qaqcmech => "QAQCMECH",
-            Resources::Qaqcpain => "QAQCPAIN",
-            Resources::Wellsupv => "WELLSUPV",
-            Resources::VenTurb => "VEN-TURB",
-            Resources::ConVen => "CON-VEN",
-            Resources::Mainonsh => "MAINONSH",
-            Resources::Drilling => "DRILLING",
-            Resources::Wellmain => "WELLMAIN",
-            Resources::Welltech => "WELLTECH",
-            Resources::ConElec => "CON-ELEC",
-            Resources::ConInpf => "CON-INPF",
-            Resources::ConInst => "CON-INST",
-            Resources::ConLagg => "CON-LAGG",
-            Resources::ConNdti => "CON-NDTI",
-            Resources::ConScaf => "CON-SCAF",
-            Resources::ConPain => "CON-PAIN",
-            Resources::ConRigg => "CON-RIGG",
-            Resources::ConRope => "CON-ROPE",
-            Resources::ConWeld => "CON-WELD",
-            Resources::Prodccr => "PRODCCR",
-            Resources::VenFfeq => "VEN-FFEQ",
-            Resources::CmpRigg => "CMP-RIGG",
-            Resources::CmpScaf => "CMP-SCAF",
-            Resources::ConNpt => "CON-NPT",
+            Skill::Medic => "MEDIC",
+            Skill::MtnCran => "MTN-CRAN",
+            Skill::MtnElec => "MTN-ELEC",
+            Skill::MtnInst => "MTN-INST",
+            Skill::MtnLagg => "MTN-LAGG",
+            Skill::MtnMech => "MTN-MECH",
+            Skill::MtnPain => "MTN-PAIN",
+            Skill::MtnPipf => "MTN-PIPF",
+            Skill::MtnRigg => "MTN-RIGG",
+            Skill::MtnRope => "MTN-ROPE",
+            Skill::MtnRous => "MTN-ROUS",
+            Skill::MtnSat => "MTN-SAT",
+            Skill::MtnScaf => "MTN-SCAF",
+            Skill::MtnTele => "MTN-TELE",
+            Skill::MtnTurb => "MTN-TURB",
+            Skill::InpSite => "INP-SITE",
+            Skill::Prodlabo => "PRODLABO",
+            Skill::Prodtech => "PRODTECH",
+            Skill::VenAcco => "VEN-ACCO",
+            Skill::VenComm => "VEN-COMM",
+            Skill::VenCran => "VEN-CRAN",
+            Skill::VenElec => "VEN-ELEC",
+            Skill::VenHvac => "VEN-HVAC",
+            Skill::VenInsp => "VEN-INSP",
+            Skill::VenInst => "VEN-INST",
+            Skill::VenMech => "VEN-MECH",
+            Skill::VenMete => "VEN-METE",
+            Skill::VenRope => "VEN-ROPE",
+            Skill::VenScaf => "VEN-SCAF",
+            Skill::VenSubs => "VEN-SUBS",
+            Skill::Qaqcelec => "QAQCELEC",
+            Skill::Qaqcmech => "QAQCMECH",
+            Skill::Qaqcpain => "QAQCPAIN",
+            Skill::Wellsupv => "WELLSUPV",
+            Skill::VenTurb => "VEN-TURB",
+            Skill::ConVen => "CON-VEN",
+            Skill::Mainonsh => "MAINONSH",
+            Skill::Drilling => "DRILLING",
+            Skill::Wellmain => "WELLMAIN",
+            Skill::Welltech => "WELLTECH",
+            Skill::ConElec => "CON-ELEC",
+            Skill::ConInpf => "CON-INPF",
+            Skill::ConInst => "CON-INST",
+            Skill::ConLagg => "CON-LAGG",
+            Skill::ConNdti => "CON-NDTI",
+            Skill::ConScaf => "CON-SCAF",
+            Skill::ConPain => "CON-PAIN",
+            Skill::ConRigg => "CON-RIGG",
+            Skill::ConRope => "CON-ROPE",
+            Skill::ConWeld => "CON-WELD",
+            Skill::Prodccr => "PRODCCR",
+            Skill::VenFfeq => "VEN-FFEQ",
+            Skill::CmpRigg => "CMP-RIGG",
+            Skill::CmpScaf => "CMP-SCAF",
+            Skill::ConNpt => "CON-NPT",
         };
         write!(f, "{}", value)
     }
 }
-impl Resources
+impl Skill
 {
     pub fn is_ven_variant(&self) -> bool
     {
         matches!(
             self,
-            Resources::VenAcco
-                | Resources::VenComm
-                | Resources::VenCran
-                | Resources::VenElec
-                | Resources::VenHvac
-                | Resources::VenInsp
-                | Resources::VenInst
-                | Resources::VenMech
-                | Resources::VenMete
-                | Resources::VenRope
-                | Resources::VenScaf
-                | Resources::VenSubs
+            Skill::VenAcco
+                | Skill::VenComm
+                | Skill::VenCran
+                | Skill::VenElec
+                | Skill::VenHvac
+                | Skill::VenInsp
+                | Skill::VenInst
+                | Skill::VenMech
+                | Skill::VenMete
+                | Skill::VenRope
+                | Skill::VenScaf
+                | Skill::VenSubs
         )
     }
 
@@ -313,7 +313,7 @@ impl Resources
 // TODO [x] Start here. Put availability into the [`Id`].
 // TODO [ ]
 #[derive(Eq, Hash, Ord, PartialOrd, PartialEq, Serialize, Deserialize, Clone, Default)]
-pub struct ActorCompositeId(pub String, pub Vec<Resources>, pub Availability);
+pub struct ActorCompositeId(pub String, pub Vec<Skill>, pub Availability);
 
 // You have to learn to use the debugger in the code there is simply no other
 // way and you have to make the code work with
@@ -335,7 +335,7 @@ impl std::fmt::Debug for ActorCompositeId
 
 impl ActorCompositeId
 {
-    pub fn new(id_employee: &str, resources: Vec<Resources>, availability: Availability) -> Self
+    pub fn new(id_employee: &str, resources: Vec<Skill>, availability: Availability) -> Self
     {
         ActorCompositeId(id_employee.to_string(), resources, availability)
     }
@@ -384,7 +384,7 @@ impl Display for ActorCompositeId
     }
 }
 
-impl IntoExcelData for Resources
+impl IntoExcelData for Skill
 {
     fn write(
         self,

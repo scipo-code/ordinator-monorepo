@@ -18,7 +18,7 @@ use ordinator_contracts::scheduler::WorkOrderSingleRowSimpleDto;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::OrchestratorRequest;
-use ordinator_orchestrator::Resources;
+use ordinator_orchestrator::Skill;
 use ordinator_orchestrator::WorkOrderNumber;
 use strum::IntoEnumIterator;
 
@@ -181,7 +181,7 @@ pub async fn resources(
     State(_orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
 ) -> Response
 {
-    let resources: Vec<_> = Resources::iter().map(|r| r.to_string()).collect();
+    let resources: Vec<_> = Skill::iter().map(|r| r.to_string()).collect();
 
     Json(resources).into_response()
 }

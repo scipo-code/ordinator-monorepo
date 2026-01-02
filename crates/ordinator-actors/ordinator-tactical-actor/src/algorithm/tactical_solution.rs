@@ -21,7 +21,7 @@ use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
 use ordinator_scheduling_environment::worker_environment::TacticalOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Deserialize;
 use serde::Serialize;
 use tracing::Level;
@@ -101,7 +101,7 @@ impl Solution for TacticalSolution
 
     fn from_parameters(parameters: &Self::Parameters) -> Result<Self>
     {
-        let tactical_loadings_inner: HashMap<Resources, Days> = parameters
+        let tactical_loadings_inner: HashMap<Skill, Days> = parameters
             .tactical_capacity
             .resources
             .iter()
@@ -301,7 +301,7 @@ impl TacticalSolutionBuilder
 pub struct OperationSolution
 {
     pub scheduled: Vec<(Day, Work)>,
-    pub resource: Resources,
+    pub resource: Skill,
     pub number: NumberOfPeople,
     pub work_remaining: Work,
     pub work_order_activity: WorkOrderActivity,
@@ -311,7 +311,7 @@ impl OperationSolution
 {
     pub fn new(
         scheduled: Vec<(Day, Work)>,
-        resource: Resources,
+        resource: Skill,
         number: NumberOfPeople,
         work_remaining: Work,
         work_order_number: WorkOrderNumber,

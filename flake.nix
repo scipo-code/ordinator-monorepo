@@ -44,6 +44,7 @@
             pkgs.flamegraph
             pkgs.git
             pkgs.gdb
+            pkgs.terraform
             pkgs.just
             pkgs.jq
             pkgs.git-bug

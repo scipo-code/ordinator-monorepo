@@ -2,7 +2,7 @@ use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
 use ordinator_scheduling_environment::worker_environment::ActorSpecificationBuilder;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 
 pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificationBuilder
 {
@@ -50,7 +50,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnMech)
+                                .add_resource(Skill::MtnMech)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
@@ -72,7 +72,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     )
                                     .unwrap(),
                                 )
-                                .add_resource(Resources::MtnElec)
+                                .add_resource(Skill::MtnElec)
                                 // THIS IS WHAT YOU SHOULD NOT DO! Each you are spilling out 3 types
                                 // that should be encapsulated.
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
@@ -97,7 +97,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     .unwrap(),
                                 )
                                 // .add_resource(Resources::MtnInst)
-                                .add_resource(Resources::MtnInst)
+                                .add_resource(Skill::MtnInst)
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),

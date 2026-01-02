@@ -12,7 +12,7 @@ use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::OperationalId;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -59,7 +59,7 @@ impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for S
                 // What is it that you are trying to do here? You want to instantiate an agent
                 // TODO: Could you reuse the OperationalResource. No could you inplement a
                 // into formulation here? I think that is a that ... THis is actually fun!
-                let mut skill_hours: HashMap<Resources, Work> = HashMap::new();
+                let mut skill_hours: HashMap<Skill, Work> = HashMap::new();
 
                 // let availability = &operational_agent.operational_configuration.availability;
 
@@ -104,14 +104,14 @@ pub struct OperationalResource
 {
     pub id: OperationalId,
     pub total_hours: Work,
-    pub skill_hours: HashMap<Resources, Work>,
+    pub skill_hours: HashMap<Skill, Work>,
 }
 
 impl OperationalResource
 {
-    pub fn new(id: &str, total_hours: Work, skills: HashSet<Resources>) -> Self
+    pub fn new(id: &str, total_hours: Work, skills: HashSet<Skill>) -> Self
     {
-        let skill_hours: HashMap<Resources, Work> =
+        let skill_hours: HashMap<Skill, Work> =
             skills.iter().map(|ski| (*ski, total_hours)).collect();
 
         Self {
@@ -176,7 +176,7 @@ impl StrategicResources
     pub fn update_load(
         &mut self,
         period: &Period,
-        resource: Resources,
+        resource: Skill,
         load: Work,
         operational_resource: &OperationalResource,
         load_operation: LoadOperation,
@@ -298,7 +298,7 @@ impl StrategicResources
     pub fn aggregated_capacity_by_period_and_resource(
         &self,
         period: &Period,
-        resource: &Resources,
+        resource: &Skill,
     ) -> Result<Work>
     {
         Ok(self

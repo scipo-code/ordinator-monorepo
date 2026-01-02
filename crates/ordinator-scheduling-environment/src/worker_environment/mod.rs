@@ -19,7 +19,7 @@ use chrono::Utc;
 use crew::OperationalConfiguration;
 use crew::OperationalConfigurationBuilder;
 use resources::ActorCompositeId;
-use resources::Resources;
+use resources::Skill;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -104,13 +104,13 @@ pub trait ActorSpecification: Send + Sync + Debug
 
     fn technician_availability(
         &self,
-    ) -> BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Resources>)>;
+    ) -> BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Skill>)>;
 
     fn add_operational(
         &mut self,
         id: &IdString,
         assets: Vec<Asset>,
-        resources: Vec<Resources>,
+        resources: Vec<Skill>,
         start_date: DateTime<Utc>,
         finish_date: DateTime<Utc>,
         // This should return a
@@ -161,7 +161,7 @@ impl ActorSpecification for ActorSpecifications
 
     fn technician_availability(
         &self,
-    ) -> BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Resources>)>
+    ) -> BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Skill>)>
     {
         self.operational
             .iter()
@@ -181,7 +181,7 @@ impl ActorSpecification for ActorSpecifications
         &mut self,
         id: &IdString,
         assets: Vec<Asset>,
-        resources: Vec<Resources>,
+        resources: Vec<Skill>,
         start_date: DateTime<Utc>,
         finish_date: DateTime<Utc>,
         // This should return a
@@ -363,7 +363,7 @@ impl InputOperational
 {
     pub fn new(
         id: IdString,
-        resources: Vec<Resources>,
+        resources: Vec<Skill>,
         hours_per_day: f64,
 
         availability: Availability,
@@ -990,7 +990,7 @@ mod tests
     use crate::worker_environment::InputOperational;
     use crate::worker_environment::availability::Availability;
     use crate::worker_environment::resources::ActorCompositeId;
-    use crate::worker_environment::resources::Resources;
+    use crate::worker_environment::resources::Skill;
 
     //
     #[test]
@@ -1082,7 +1082,7 @@ mod tests
                 IdString,
                 (
                     std::collections::BTreeSet<Availability>,
-                    std::collections::HashSet<Resources>,
+                    std::collections::HashSet<Skill>,
                 ),
             >
             {
@@ -1093,7 +1093,7 @@ mod tests
                 &mut self,
                 id: &IdString,
                 assets: Vec<Asset>,
-                resources: Vec<Resources>,
+                resources: Vec<Skill>,
                 start_date: chrono::DateTime<chrono::Utc>,
                 finish_date: chrono::DateTime<chrono::Utc>,
                 // This should return a
@@ -1131,7 +1131,7 @@ mod tests
             .and_utc();
         let assets = vec![Asset::Test];
         let id_string: IdString = "OP-01-test".to_string();
-        let resources = vec![Resources::MtnLagg];
+        let resources = vec![Skill::MtnLagg];
 
         actor_specification
             .add_operational(

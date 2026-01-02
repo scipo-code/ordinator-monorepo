@@ -155,13 +155,17 @@ where
             std::thread::sleep(std::time::Duration::from_millis(sleep_duration));
             if let Err(actor_error) = self.algorithm.run_lns_iteration().with_context(|| {
                 format!(
-                    "{schedule_iteration:#?}\nActor: {:?}\nLocation: {}",
+                    "{schedule_iteration:#?}\n\
+                    Actor    : {:#?}\n\
+                    Algorithm: {:#?}\n\
+                    Location : {}",
                     self.actor_id,
+                    self.algorithm,
                     Location::caller(),
                 )
             }) {
                 self.error_channel
-                    .send(actor_error)
+                    .send(anyhow!(actor_error))
                     .expect("If this happens no amount of error handling will save the program")
             }
 

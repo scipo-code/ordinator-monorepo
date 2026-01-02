@@ -29,7 +29,7 @@ use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_scheduling_environment::worker_environment::StrategicOptions;
 use ordinator_scheduling_environment::Percent;
 use priority_queue::PriorityQueue;
@@ -386,7 +386,7 @@ where
     //         }
     // }
 
-    fn strategic_capacity_by_resource(&self, resource: &Resources, period: &Period)
+    fn strategic_capacity_by_resource(&self, resource: &Skill, period: &Period)
         -> Result<Work>
     {
         self.parameters
@@ -394,7 +394,7 @@ where
             .aggregated_capacity_by_period_and_resource(period, resource)
     }
 
-    fn strategic_loading_by_resource(&self, resource: &Resources, period: &Period) -> Result<Work>
+    fn strategic_loading_by_resource(&self, resource: &Skill, period: &Period) -> Result<Work>
     {
         self.solution
             .strategic_loadings
@@ -409,7 +409,7 @@ where
         for (index, period) in self.parameters.strategic_periods.iter().enumerate() {
             let mut intermediate_loading: f64 = 0.0;
             let mut intermediate_capacity: f64 = 0.0;
-            for resource in Resources::iter() {
+            for resource in Skill::iter() {
                 let loading = self.strategic_loading_by_resource(&resource, period)?;
                 let capacity = self.strategic_capacity_by_resource(&resource, period)?;
 
@@ -697,7 +697,7 @@ pub trait StrategicUtils
 
     fn determine_best_permutation(
         &self,
-        work_load: HashMap<Resources, Work>,
+        work_load: HashMap<Skill, Work>,
         period: &Period,
         schedule: ScheduleWorkOrder,
     ) -> Result<Option<StrategicResources>>;
@@ -988,7 +988,7 @@ where
     ///   StrategicSolution::strategic_loadings.
     fn determine_best_permutation(
         &self,
-        work_load: HashMap<Resources, Work>,
+        work_load: HashMap<Skill, Work>,
         period: &Period,
         schedule: ScheduleWorkOrder,
     ) -> Result<Option<StrategicResources>>
@@ -1005,11 +1005,11 @@ where
             .context("There should always be a dummy resource that can soak excess")?;
 
         if matches!(schedule, ScheduleWorkOrder::Normal)
-            && !work_load.keys().collect::<HashSet<&Resources>>().is_subset(
+            && !work_load.keys().collect::<HashSet<&Skill>>().is_subset(
                 &strategic_capacity_resources
                     .values()
                     .flat_map(|ele| ele.skill_hours.keys())
-                    .collect::<HashSet<&Resources>>(),
+                    .collect::<HashSet<&Skill>>(),
             )
         {
             return Ok(None);
@@ -1226,7 +1226,7 @@ where
                             // * a.is_subset(&b): true
                             work_load
                                 .keys()
-                                .collect::<HashSet<&Resources>>() 
+                                .collect::<HashSet<&Skill>>() 
                                 .is_subset(
                                     &best_work_order_resource_loadings
                                         .0
@@ -1234,7 +1234,7 @@ where
                                         .with_context(|| format!("{:#?}\nnot found in\n{}\n{}\n{}", period, std::any::type_name::<StrategicResources>(), file!(), line!()))?
                                         .values()
                                         .flat_map(|ele| ele.skill_hours.keys())
-                                        .collect::<HashSet<&Resources>>()
+                                        .collect::<HashSet<&Skill>>()
                                     );
 
                         ensure!(
@@ -1346,12 +1346,12 @@ where
 
 /// This function is 
 fn combined_loadings(
-    work_load: &HashMap<Resources, Work>,
+    work_load: &HashMap<Skill, Work>,
     strategic_loading_resources: &HashMap<String, OperationalResource>,
-) -> HashMap<Resources, Work>
+) -> HashMap<Skill, Work>
 {
     // We want this as a HashMap, with one for each resource.
-    let mut strategic_loading: HashMap<Resources, Work, _> = HashMap::default();
+    let mut strategic_loading: HashMap<Skill, Work, _> = HashMap::default();
     for resource in strategic_loading_resources.iter().filter(|(_, res)| {
         work_load
             .keys()
@@ -1370,7 +1370,7 @@ fn combined_loadings(
 fn assert_work_load_equal_to_strategic_resource(
     period: &Period,
     strategic_resource_loadings: &StrategicResources,
-    work_load: &HashMap<Resources, Work>,
+    work_load: &HashMap<Skill, Work>,
     load_operation: LoadOperation,
 ) -> Result<()>
 {
@@ -1409,7 +1409,7 @@ fn assert_work_load_equal_to_strategic_resource(
 fn determine_unschedule_work_resource_loadings(
     period: &Period,
     loading_resources: &[OperationalResource],
-    work_load_permutation: &mut [(Resources, Work)],
+    work_load_permutation: &mut [(Skill, Work)],
 ) -> Result<Option<StrategicResources>>
 {
     let mut strategic_resources = StrategicResources::default();
@@ -1507,7 +1507,7 @@ fn determine_forced_work_order_resource_loadings(
     best_total_excess: &mut Work,
     best_work_order_resource_loadings: &mut StrategicResources,
     technician_permutation: &mut [OperationalResource],
-    work_load_permutation: &mut [(Resources, Work)],
+    work_load_permutation: &mut [(Skill, Work)],
 ) -> Result<Option<StrategicResources>>
 {
     let mut work_order_resource_loadings = StrategicResources::default();
@@ -1627,7 +1627,7 @@ fn determine_forced_work_order_resource_loadings(
 fn determine_normal_work_order_resource_loadings(
     period: &Period,
     technician_permutation: &mut [OperationalResource],
-    work_load_permutation: &mut Vec<(Resources, Work)>,
+    work_load_permutation: &mut Vec<(Skill, Work)>,
 ) -> Result<Option<StrategicResources>>
 {
     let mut work_order_resource_loadings = StrategicResources::default();
@@ -2053,7 +2053,7 @@ mod tests
             excluded_periods: HashSet<Period>,
             latest_period: Period,
             weight: i64,
-            work_load: HashMap<Resources, Work>,
+            work_load: HashMap<Skill, Work>,
         ) -> Self
         {
             Self {
@@ -2071,29 +2071,29 @@ mod tests
         let capacity_resource = HashMap::from([
             (
                 "Test one".to_string(),
-                OperationalResource::new("Test one", Work::from(5.0), HashSet::from([Resources::MtnMech])),
+                OperationalResource::new("Test one", Work::from(5.0), HashSet::from([Skill::MtnMech])),
             ),
             (
                 "Test two".to_string(),
-                OperationalResource::new("Test two", Work::from(4.0), HashSet::from([Resources::MtnElec])),
+                OperationalResource::new("Test two", Work::from(4.0), HashSet::from([Skill::MtnElec])),
             ),
             (
                 "Test three".to_string(),
-                OperationalResource::new("Test three", Work::from(3.0), HashSet::from([Resources::MtnScaf])),
+                OperationalResource::new("Test three", Work::from(3.0), HashSet::from([Skill::MtnScaf])),
             ),
         ]);
         let loading_resource = HashMap::from([
             (
                 "Test one".to_string(),
-                OperationalResource::new("Test one", Work::from(2.0), HashSet::from([Resources::MtnMech])),
+                OperationalResource::new("Test one", Work::from(2.0), HashSet::from([Skill::MtnMech])),
             ),
             (
                 "Test two".to_string(),
-                OperationalResource::new("Test two", Work::from(2.0), HashSet::from([Resources::MtnElec])),
+                OperationalResource::new("Test two", Work::from(2.0), HashSet::from([Skill::MtnElec])),
             ),
             (
                 "Test three".to_string(),
-                OperationalResource::new("Test three", Work::from(2.0), HashSet::from([Resources::MtnScaf])),
+                OperationalResource::new("Test three", Work::from(2.0), HashSet::from([Skill::MtnScaf])),
             ),
         ]);
 
@@ -2102,15 +2102,15 @@ mod tests
         let difference_actual = HashMap::from([
             (
                 "Test one".to_string(),
-                OperationalResource::new("Test one", Work::from(3.0), HashSet::from([Resources::MtnMech])),
+                OperationalResource::new("Test one", Work::from(3.0), HashSet::from([Skill::MtnMech])),
             ),
             (
                 "Test two".to_string(),
-                OperationalResource::new("Test two", Work::from(2.0), HashSet::from([Resources::MtnElec])),
+                OperationalResource::new("Test two", Work::from(2.0), HashSet::from([Skill::MtnElec])),
             ),
             (
                 "Test three".to_string(),
-                OperationalResource::new("Test three", Work::from(1.0), HashSet::from([Resources::MtnScaf])),
+                OperationalResource::new("Test three", Work::from(1.0), HashSet::from([Skill::MtnScaf])),
             ),
         ]);
 
@@ -2123,7 +2123,7 @@ mod tests
     fn test_update_load_1()
     {
         let period = Period::from_str("2025-W23-24").unwrap();
-        let resource = Resources::MtnMech;
+        let resource = Skill::MtnMech;
         let load = Work::from(30.0);
 
         let capacity = Work::from(100.0);
@@ -2132,7 +2132,7 @@ mod tests
         let operational_resource = OperationalResource::new(
             operational_id,
             capacity,
-            HashSet::from([Resources::MtnMech, Resources::MtnElec, Resources::Prodtech]),
+            HashSet::from([Skill::MtnMech, Skill::MtnElec, Skill::Prodtech]),
         );
 
         let operational_resources_by_period =
@@ -2180,7 +2180,7 @@ mod tests
     fn test_update_load_2()
     {
         let period = Period::from_str("2025-W23-24").unwrap();
-        let resource = Resources::VenMech;
+        let resource = Skill::VenMech;
         let load = Work::from(30.0);
 
         let capacity = Work::from(100.0);
@@ -2189,7 +2189,7 @@ mod tests
         let operational_resource = OperationalResource::new(
             operational_id,
             capacity,
-            HashSet::from([Resources::MtnMech, Resources::MtnElec, Resources::Prodtech]),
+            HashSet::from([Skill::MtnMech, Skill::MtnElec, Skill::Prodtech]),
         );
 
         let operational_resources_by_period =
@@ -2244,7 +2244,7 @@ mod tests
     fn test_update_load_3()
     {
         let period = Period::from_str("2025-W23-24").unwrap();
-        let resource = Resources::VenMech;
+        let resource = Skill::VenMech;
         let load = Work::from(30.0);
 
         let capacity = Work::from(100.0);
@@ -2253,7 +2253,7 @@ mod tests
         let operational_resource = OperationalResource::new(
             operational_id,
             capacity,
-            HashSet::from([Resources::MtnMech, Resources::MtnElec, Resources::Prodtech]),
+            HashSet::from([Skill::MtnMech, Skill::MtnElec, Skill::Prodtech]),
         );
 
         let operational_resources_by_period =
@@ -2315,19 +2315,19 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+                HashSet::from([Skill::MtnMech, Skill::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
+                HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
             ),
         ];
 
         let mut work_load_permutation = vec![
-            (Resources::MtnMech, Work::from(30.0)),
-            (Resources::MtnElec, Work::from(30.0)),
-            (Resources::MtnScaf, Work::from(30.0)),
+            (Skill::MtnMech, Work::from(30.0)),
+            (Skill::MtnElec, Work::from(30.0)),
+            (Skill::MtnScaf, Work::from(30.0)),
         ];
 
         // Ahh you should use your tests
@@ -2349,19 +2349,19 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+                HashSet::from([Skill::MtnMech, Skill::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
+                HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
             ),
         ];
 
         let mut work_load_permutation = vec![
-            (Resources::MtnMech, Work::from(30.0)),
-            (Resources::MtnElec, Work::from(30.0)),
-            (Resources::MtnScaf, Work::from(20.0)),
+            (Skill::MtnMech, Work::from(30.0)),
+            (Skill::MtnElec, Work::from(30.0)),
+            (Skill::MtnScaf, Work::from(20.0)),
         ];
 
         // Ahh you should use your tests
@@ -2385,19 +2385,19 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+                HashSet::from([Skill::MtnMech, Skill::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
+                HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
             ),
         ];
 
         let mut work_load_permutation = vec![
-            (Resources::MtnMech, Work::from(20.0)),
-            (Resources::MtnElec, Work::from(20.0)),
-            (Resources::MtnScaf, Work::from(20.0)),
+            (Skill::MtnMech, Work::from(20.0)),
+            (Skill::MtnElec, Work::from(20.0)),
+            (Skill::MtnScaf, Work::from(20.0)),
         ];
 
         let strategic_resource_option = super::determine_normal_work_order_resource_loadings(
@@ -2412,12 +2412,12 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+            HashSet::from([Skill::MtnMech, Skill::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(20.0),
-            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
+            HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
         );
 
         let mut strategic_resource = StrategicResources::default();
@@ -2436,19 +2436,19 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+                HashSet::from([Skill::MtnMech, Skill::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
+                HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
             ),
         ];
 
         let mut work_load_permutation = vec![
-            (Resources::MtnMech, Work::from(30.0)),
-            (Resources::MtnElec, Work::from(30.0)),
-            (Resources::MtnScaf, Work::from(30.0)),
+            (Skill::MtnMech, Work::from(30.0)),
+            (Skill::MtnElec, Work::from(30.0)),
+            (Skill::MtnScaf, Work::from(30.0)),
         ];
 
         let mut best_strategic_resource = StrategicResources::default();
@@ -2474,12 +2474,12 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+            HashSet::from([Skill::MtnMech, Skill::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(50.0),
-            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
+            HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
         );
         let mut strategic_resources = StrategicResources::default();
 
@@ -2498,19 +2498,19 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(40.0),
-                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+                HashSet::from([Skill::MtnMech, Skill::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(40.0),
-                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
+                HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
             ),
         ];
 
         let mut work_load_permutation = vec![
-            (Resources::MtnMech, Work::from(20.0)),
-            (Resources::MtnElec, Work::from(20.0)),
-            (Resources::MtnScaf, Work::from(20.0)),
+            (Skill::MtnMech, Work::from(20.0)),
+            (Skill::MtnElec, Work::from(20.0)),
+            (Skill::MtnScaf, Work::from(20.0)),
         ];
 
         let mut best_strategic_resource = StrategicResources::default();
@@ -2529,12 +2529,12 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+            HashSet::from([Skill::MtnMech, Skill::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(20.0),
-            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
+            HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
         );
         let mut strategic_resources = StrategicResources::default();
 
@@ -2553,20 +2553,20 @@ mod tests
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(30.0),
-                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+                HashSet::from([Skill::MtnMech, Skill::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(30.0),
-                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
+                HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
             ),
         ];
 
         let mut work_load_permutation = vec![
-            (Resources::MtnMech, Work::from(20.0)),
-            (Resources::MtnElec, Work::from(20.0)),
-            (Resources::MtnScaf, Work::from(20.0)),
-            (Resources::VenMech, Work::from(20.0)),
+            (Skill::MtnMech, Work::from(20.0)),
+            (Skill::MtnElec, Work::from(20.0)),
+            (Skill::MtnScaf, Work::from(20.0)),
+            (Skill::VenMech, Work::from(20.0)),
         ];
 
         let mut best_strategic_resource = StrategicResources::default();
@@ -2586,15 +2586,15 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(30.0),
-            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+            HashSet::from([Skill::MtnMech, Skill::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(30.0),
-            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
+            HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
         );
         let operational_resource_3 =
-            OperationalResource::new("VEN-MECH_dummy", Work::from(20.0), HashSet::from([Resources::VenMech]));
+            OperationalResource::new("VEN-MECH_dummy", Work::from(20.0), HashSet::from([Skill::VenMech]));
 
         let mut strategic_resources = StrategicResources::default();
 
@@ -2611,20 +2611,20 @@ mod tests
         let period = Period::from_str("2025-W23-24").unwrap();
 
         let mut work_load_permutation = vec![
-            (Resources::MtnMech, Work::from(20.0)),
-            (Resources::MtnElec, Work::from(20.0)),
+            (Skill::MtnMech, Work::from(20.0)),
+            (Skill::MtnElec, Work::from(20.0)),
         ];
 
         let loading_resources = [
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(20.0),
-                HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+                HashSet::from([Skill::MtnMech, Skill::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(20.0),
-                HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
+                HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
             ),
         ];
 
@@ -2640,12 +2640,12 @@ mod tests
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(-20.0),
-            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+            HashSet::from([Skill::MtnMech, Skill::MtnElec]),
         );
         let operational_resource_2 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(-20.0),
-            HashSet::from([Resources::MtnScaf, Resources::MtnElec]),
+            HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
         );
         let mut strategic_resources_manual = StrategicResources::default();
 
@@ -2666,27 +2666,27 @@ mod tests
         let period = Period::from_str("2026-W33-34").unwrap();
 
         let work_load_permutation = [
-            (Resources::MtnMech, Work::from(2.0)),
-            (Resources::Prodtech, Work::from(2.0)),
-            (Resources::MtnInst, Work::from(2.0)),
-            (Resources::MtnElec, Work::from(2.0)),
+            (Skill::MtnMech, Work::from(2.0)),
+            (Skill::Prodtech, Work::from(2.0)),
+            (Skill::MtnInst, Work::from(2.0)),
+            (Skill::MtnElec, Work::from(2.0)),
         ];
 
         let loading_resources = [
             OperationalResource::new(
                 "OP_TEST_1",
                 Work::from(6.0),
-                HashSet::from([Resources::MtnMech, Resources::Prodtech, Resources::MtnElec]),
+                HashSet::from([Skill::MtnMech, Skill::Prodtech, Skill::MtnElec]),
             ),
             OperationalResource::new(
                 "OP_TEST_2",
                 Work::from(0.0),
-                HashSet::from([Resources::MtnScaf, Resources::MtnRigg, Resources::MtnLagg]),
+                HashSet::from([Skill::MtnScaf, Skill::MtnRigg, Skill::MtnLagg]),
             ),
             OperationalResource::new(
                 "OP_TEST_0",
                 Work::from(2.0),
-                HashSet::from([Resources::MtnInst, Resources::MtnMech, Resources::MtnElec]),
+                HashSet::from([Skill::MtnInst, Skill::MtnMech, Skill::MtnElec]),
             ),
         ];
 
@@ -2742,29 +2742,29 @@ mod tests
         let mut work_load_2 = HashMap::new();
         let mut work_load_3 = HashMap::new();
 
-        work_load_1.insert(Resources::MtnMech, Work::from(10.0));
-        work_load_1.insert(Resources::MtnElec, Work::from(10.0));
-        work_load_1.insert(Resources::Prodtech, Work::from(10.0));
+        work_load_1.insert(Skill::MtnMech, Work::from(10.0));
+        work_load_1.insert(Skill::MtnElec, Work::from(10.0));
+        work_load_1.insert(Skill::Prodtech, Work::from(10.0));
 
-        work_load_2.insert(Resources::MtnMech, Work::from(20.0));
-        work_load_2.insert(Resources::MtnElec, Work::from(20.0));
-        work_load_2.insert(Resources::Prodtech, Work::from(20.0));
+        work_load_2.insert(Skill::MtnMech, Work::from(20.0));
+        work_load_2.insert(Skill::MtnElec, Work::from(20.0));
+        work_load_2.insert(Skill::Prodtech, Work::from(20.0));
 
-        work_load_3.insert(Resources::MtnMech, Work::from(30.0));
-        work_load_3.insert(Resources::MtnElec, Work::from(30.0));
-        work_load_3.insert(Resources::Prodtech, Work::from(30.0));
+        work_load_3.insert(Skill::MtnMech, Work::from(30.0));
+        work_load_3.insert(Skill::MtnElec, Work::from(30.0));
+        work_load_3.insert(Skill::Prodtech, Work::from(30.0));
 
         let mut strategic_resources = StrategicResources::default();
 
         let operational_resource_0 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+            HashSet::from([Skill::MtnMech, Skill::MtnElec]),
         );
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_1",
             Work::from(40.0),
-            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+            HashSet::from([Skill::MtnMech, Skill::MtnElec]),
         );
 
         strategic_resources.insert_operational_resource(periods[0].clone(), operational_resource_0);
@@ -2982,7 +2982,7 @@ mod tests
         let operational_resource_0 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
-            HashSet::from([Resources::MtnMech, Resources::MtnElec]),
+            HashSet::from([Skill::MtnMech, Skill::MtnElec]),
         );
 
         strategic_resources.insert_operational_resource(periods[0].clone(), operational_resource_0);

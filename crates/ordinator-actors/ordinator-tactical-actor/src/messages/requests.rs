@@ -1,5 +1,5 @@
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -14,17 +14,17 @@ pub enum TacticalResourceRequest
     GetLoadings
     {
         days_end: String,
-        select_resources: Option<Vec<Resources>>,
+        select_resources: Option<Vec<Skill>>,
     },
     GetCapacities
     {
         days_end: String,
-        select_resources: Option<Vec<Resources>>,
+        select_resources: Option<Vec<Skill>>,
     },
     GetPercentageLoadings
     {
         days_end: String,
-        resources: Option<Vec<Resources>>,
+        resources: Option<Vec<Skill>>,
     },
 }
 

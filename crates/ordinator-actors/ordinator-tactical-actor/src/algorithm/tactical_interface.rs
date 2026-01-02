@@ -10,7 +10,7 @@ use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 
 use super::tactical_solution::TacticalSolution;
 
@@ -90,7 +90,7 @@ impl TacticalInterface for TacticalSolution
             .collect()
     }
 
-    fn tactical_loadings(&self) -> BTreeMap<Resources, Vec<Work>>
+    fn tactical_loadings(&self) -> BTreeMap<Skill, Vec<Work>>
     {
         self.tactical_loadings
             .resources

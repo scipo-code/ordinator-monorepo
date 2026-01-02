@@ -1,4 +1,4 @@
-set terminal pngcairo enhanced font "Liberation Mono,14" size 1300,900
+set terminal pngcairo enhanced font "Liberation Mono,14" size 1300,1000
 timestamp = strftime("%Y-%m-%d", time(0))
 set output timestamp . output_file
 set multiplot layout 2,2
@@ -6,8 +6,8 @@ set fit errorvariables
 
 set xdata time
 set timefmt '%Y-%m-%dT%H:%M:%SZ'
-set format x '%H:%M:%S'
-set xlabel ''
+set format x "%Y-%m-%d\nT%H:%M:%SZ" 
+set xlabel "real-time: {/Symbol t}" offset 0,-1.0
 
 set key top right
 set key box
@@ -17,19 +17,20 @@ set key spacing 1.5
 
 set grid linewidth 2 linestyle 6
 
-set xtics rotate by 315
+set xtics 60 rotate by 315 
 
 set style line 1 lc "#000000" lt 1 lw 2.5
 
-set lmargin 12
-set rmargin 5.5
+set lmargin 12.0
+set rmargin 05.5
+set bmargin 07.0
 set ylabel "Urgency\n[priority \\& LAFD] (MIN)"
-plot strategic using 1:2 with lines linestyle 1 title "Scheduler (<2y) - Valentins Model" 
+plot strategic using 1:2 with lines linestyle 1 title "Scheduler (<2y) - Strategic Model" 
 
 set lmargin 10
 set rmargin 7.5
 set ylabel "Urgency\n[priority \\& LAFD] (MIN)"
-plot tactical using 1:2 with lines linestyle 1 title "Scheduler (<4M)- Brians Model"  
+plot tactical using 1:2 with lines linestyle 1 title "Scheduler (<4M) - Tactical Model"  
 
 set lmargin 12
 set rmargin 5.5
@@ -41,7 +42,7 @@ set lmargin 10
 set rmargin 7.5
 set yrange [0:100]
 set ylabel "Hands On Tool Time\n[%] (MAX)"
-plot operational_1 using 1:2 with lines linestyle 1 title "10 Technician Average" 
+plot operational_1 using 1:2 with lines linestyle 1 title "Technician Average (<4W)" 
 unset yrange 
 
 

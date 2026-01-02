@@ -12,7 +12,7 @@ use ordinator_scheduling_environment::work_order::work_order_info::revision::Rev
 use ordinator_scheduling_environment::work_order::work_order_info::system_condition::SystemCondition;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_text::WorkOrderText;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 
 use crate::fixtures::work_orders::OperationInput;
 use crate::fixtures::work_orders::WorkOrderData;
@@ -36,7 +36,7 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
 
     for work_order in work_order_data.iter() {
         wo_builder = wo_builder.work_order_builder(work_order.work_order_number, |wob| {
-            let mut wob = wob.main_work_center(Resources::MtnMech);
+            let mut wob = wob.main_work_center(Skill::MtnMech);
             for opr in &work_order.operations {
                 wob = wob
                     .operations_builder(opr.activity, opr.resource, |ob| {

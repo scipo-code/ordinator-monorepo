@@ -13,6 +13,8 @@
 
 **.log*
 **.dat
+**.tfstate
+**.terraform
 
 *.folded
 

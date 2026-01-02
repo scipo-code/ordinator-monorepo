@@ -1,6 +1,6 @@
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Deserialize;
 
 pub mod work_orders_0100_work_orders_04_resource_types;
@@ -30,5 +30,5 @@ pub struct OperationInput
     early_start: (i32, u32, u32, u32, u32, u32),
     early_finish: (i32, u32, u32, u32, u32, u32),
     preparation: f64,
-    resource: Resources,
+    resource: Skill,
 }

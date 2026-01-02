@@ -7,14 +7,14 @@ use ordinator_scheduling_environment::work_order::work_order_info::revision::Rev
 use ordinator_scheduling_environment::work_order::work_order_info::system_condition::SystemCondition;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_text::WorkOrderText;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 
 pub fn material_test_work_orders(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilder
 {
     wo_builder
         .work_order_builder(WorkOrderNumber(1111990000), |wob| {
-            wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+            wob.main_work_center(Skill::MtnMech)
+                .operations_builder(10, Skill::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -62,8 +62,8 @@ pub fn material_test_work_orders(wo_builder: WorkOrdersBuilder) -> WorkOrdersBui
                 })
         })
         .work_order_builder(WorkOrderNumber(1111990001), |wob| {
-            wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+            wob.main_work_center(Skill::MtnMech)
+                .operations_builder(10, Skill::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -111,8 +111,8 @@ pub fn material_test_work_orders(wo_builder: WorkOrdersBuilder) -> WorkOrdersBui
                 })
         })
         .work_order_builder(WorkOrderNumber(1111990002), |wob| {
-            wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+            wob.main_work_center(Skill::MtnMech)
+                .operations_builder(10, Skill::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -160,8 +160,8 @@ pub fn material_test_work_orders(wo_builder: WorkOrdersBuilder) -> WorkOrdersBui
                 })
         })
         .work_order_builder(WorkOrderNumber(1111990003), |wob| {
-            wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+            wob.main_work_center(Skill::MtnMech)
+                .operations_builder(10, Skill::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates
@@ -209,8 +209,8 @@ pub fn material_test_work_orders(wo_builder: WorkOrdersBuilder) -> WorkOrdersBui
                 })
         })
         .work_order_builder(WorkOrderNumber(1111990004), |wob| {
-            wob.main_work_center(Resources::MtnMech)
-                .operations_builder(10, Resources::MtnMech, |ob| {
+            wob.main_work_center(Skill::MtnMech)
+                .operations_builder(10, Skill::MtnMech, |ob| {
                     ob.operation_info(|oib| oib.work_remaining(5.0).work(5.0).work_actual(5.0))
                         .operation_dates(|dates| {
                             dates

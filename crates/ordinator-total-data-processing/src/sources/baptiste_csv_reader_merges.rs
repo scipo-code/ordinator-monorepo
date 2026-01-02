@@ -21,7 +21,7 @@ use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfo
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrders;
-use ordinator_scheduling_environment::worker_environment::resources::Resources;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use rayon::prelude::*;
 
 use super::baptiste_csv_reader::populate_csv_structures;
@@ -105,7 +105,7 @@ fn create_work_orders(
     let arc_mutex_inner_work_orders = Arc::new(Mutex::new(HashMap::new()));
 
     work_orders.into_iter().filter(|e| work_operations_csv.inner.contains_key(&e.0)).collect::<HashMap<_,_>>().par_iter().for_each(|(work_order_number, work_order_csv): (&WorkOrderNumber, &WorkOrdersCsv)|   {
-        let main_work_center: Resources = Resources::from_str(
+        let main_work_center: Skill = Skill::from_str(
             work_center
                 .get(&work_order_csv.WO_WBS_ID)
                 .unwrap()
@@ -152,7 +152,7 @@ fn create_work_orders(
             .iter()
             .map(|(operations_number, operation_csv)| -> Result<(u64, Operation)> {
                 let resource =
-                    Resources::from_str(&work_center.get(&operation_csv.OPR_WBS_ID).unwrap().WBS_Name).map_err(|e| anyhow!(e))?;
+                    Skill::from_str(&work_center.get(&operation_csv.OPR_WBS_ID).unwrap().WBS_Name).map_err(|e| anyhow!(e))?;
 
                 // This is not a good way of doing it. This should be defined as a function and not loaded in like this. We will
                 // get into trouble if we do it this way. If a period is updated we will have to reinitialize all unloading point

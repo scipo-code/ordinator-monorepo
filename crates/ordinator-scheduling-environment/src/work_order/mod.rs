@@ -41,7 +41,7 @@ use self::work_order_info::functional_location::FunctionalLocation;
 use self::work_order_info::priority::Priority;
 use self::work_order_info::work_order_type::WorkOrderType;
 use super::time_environment::period::Period;
-use super::worker_environment::resources::Resources;
+use super::worker_environment::resources::Skill;
 use crate::Asset;
 use crate::materials::MaterialToPeriod;
 use crate::time_environment::day::Day;
@@ -120,7 +120,7 @@ impl WorkOrders
         Ok(())
     }
 
-    pub fn resource(&self, work_order_activity: &(WorkOrderNumber, u64)) -> Option<Resources>
+    pub fn resource(&self, work_order_activity: &(WorkOrderNumber, u64)) -> Option<Skill>
     {
         Some(
             self.inner
@@ -262,7 +262,7 @@ impl WorkOrders
 pub struct WorkOrder
 {
     pub(crate) work_order_number: WorkOrderNumber,
-    pub(crate) main_work_center: Resources,
+    pub(crate) main_work_center: Skill,
     pub(crate) operations: Operations,
     pub(crate) material_checked: bool,
     pub(crate) work_order_analytic: WorkOrderAnalytic,
@@ -318,7 +318,7 @@ impl WorkOrder
             .number)
     }
 
-    pub fn operation_resource(&self, activity_number: u64) -> Result<Resources>
+    pub fn operation_resource(&self, activity_number: u64) -> Result<Skill>
     {
         Ok(self
             .operations
@@ -363,7 +363,7 @@ pub enum FixedWorkOrder
 pub struct WorkOrderBuilder
 {
     work_order_number: WorkOrderNumber,
-    main_work_center: Option<Resources>,
+    main_work_center: Option<Skill>,
     operations: Operations,
     // FIX
     // Every operation needs to have a relation between them. There
@@ -404,7 +404,7 @@ impl WorkOrderBuilder
         self
     }
 
-    pub fn main_work_center(mut self, main_work_center: Resources) -> Self
+    pub fn main_work_center(mut self, main_work_center: Skill) -> Self
     {
         self.main_work_center = Some(main_work_center);
         self
@@ -419,7 +419,7 @@ impl WorkOrderBuilder
     pub fn operations_builder<F>(
         mut self,
         operation_number: u64,
-        resource: Resources,
+        resource: Skill,
         f: F,
     ) -> Result<Self>
     where
@@ -1131,7 +1131,7 @@ impl WorkOrder
         Ok(weight)
     }
 
-    pub fn work_order_load(&self) -> Result<HashMap<Resources, Work>>
+    pub fn work_order_load(&self) -> Result<HashMap<Skill, Work>>
     {
         self.operations
             .0
@@ -1301,8 +1301,8 @@ impl WorkOrder
     pub fn work_order_test() -> Result<Self>
     {
         Ok(WorkOrder::builder(WorkOrderNumber(2100000001))
-            .main_work_center(Resources::MtnMech)
-            .operations_builder(10, Resources::Prodtech, |e| {
+            .main_work_center(Skill::MtnMech)
+            .operations_builder(10, Skill::Prodtech, |e| {
                 e.operation_info(|oi| oi.number(1).work_remaining(10.0))
                     .operation_analytic(|e| e.preparation_time(0.0).duration(1.0))
                     .operation_dates(|b| {
@@ -1318,7 +1318,7 @@ impl WorkOrder
                         )
                     })
             })?
-            .operations_builder(20, Resources::MtnMech, |ob| {
+            .operations_builder(20, Skill::MtnMech, |ob| {
                 ob.operation_info(|oi| oi.number(1).work_remaining(20.0))
                     .operation_analytic(|e| e.preparation_time(0.0).duration(1.0))
                     .operation_dates(|b| {
@@ -1334,7 +1334,7 @@ impl WorkOrder
                         )
                     })
             })?
-            .operations_builder(20, Resources::MtnMech, |ob| {
+            .operations_builder(20, Skill::MtnMech, |ob| {
                 ob.operation_info(|oi| oi.number(1).work_remaining(30.0))
                     .operation_analytic(|e| e.preparation_time(0.0).duration(1.0))
                     .operation_dates(|b| {
@@ -1350,7 +1350,7 @@ impl WorkOrder
                         )
                     })
             })?
-            .operations_builder(40, Resources::Prodtech, |ob| {
+            .operations_builder(40, Skill::Prodtech, |ob| {
                 ob.operation_info(|oi| oi.number(1).work_remaining(40.0))
                     .operation_analytic(|e| e.preparation_time(0.0).duration(1.0))
                     .operation_dates(|b| {
@@ -1415,7 +1415,7 @@ pub struct WorkOrderView
 pub struct OperationView
 {
     pub activity: u64,
-    pub resource: Resources,
+    pub resource: Skill,
     pub remaining_work: Work,
     pub actual_work: Work,
     pub number_of_people: u64,

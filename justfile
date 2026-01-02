@@ -2,7 +2,7 @@ run:
     cargo run --release -p ordinator-api-server 2> temp_output_from_program.log
 
 run-test:
-    cargo test master_system_test_1 -- --ignored --nocapture 2> temp_output_from_program.log
+    cargo test master_system_test_6400_work_orders_30_technicians -- --ignored --nocapture 2> temp_output_from_program.log
 
 bs-test:
     bs target/debug/deps/ordinator_tactical_actor-cd5c23df1ab83245 

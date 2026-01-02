@@ -21,7 +21,7 @@ use ordinator_contracts::supervisor::SupervisorResourcesDto;
 use ordinator_contracts::supervisor::SupervisorResponseMessageDto;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
-use ordinator_orchestrator::Resources;
+use ordinator_orchestrator::Skill;
 use ordinator_orchestrator::StartError;
 use ordinator_orchestrator::StateLink;
 use ordinator_orchestrator::SupervisorRequestMessage;
@@ -431,7 +431,7 @@ pub async fn add_technician(
     let mut resources = vec![];
     for resource_string in resources_string {
         let resource =
-            Resources::from_str(&resource_string).map_err(|e| AppError::Anyhow(e.to_string()))?;
+            Skill::from_str(&resource_string).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
         resources.push(resource);
     }
