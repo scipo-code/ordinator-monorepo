@@ -18,5 +18,9 @@ cargo test --test master_system_system_0100_work_orders_03_technicians -- --igno
 
 Then go to `localhost:3000/swagger` for the API specification.
 
+# Test instance generation
+Test datasets have been generated using `perl` scripts and are found in the ./scripts/perl/test_case_generations/
+
+
 # Developer Contribution
 Found in [CONTRIBUTING](/CONTRIBUTING.md)
