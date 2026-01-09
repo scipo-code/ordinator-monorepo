@@ -9,12 +9,40 @@ use crate::auth::provider::Provider;
 
 static CONFIG: OnceLock<AppConfig> = OnceLock::new();
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Environment
+{
+    Production,
+    Development,
+}
+
+impl FromStr for Environment
+{
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err>
+    {
+        match s.to_lowercase().as_str() {
+            "development" | "dev" => Ok(Self::Development),
+            "production" | "prod" => Ok(Self::Production),
+            _ => Err(anyhow!(
+                "Invalid environment: '{}'. Must be 'development' or 'production'",
+                s
+            )),
+        }
+    }
+}
+
 pub struct AppConfig
 {
+    pub environment: Environment,
+    pub dev_bypass_auth: bool,
     pub auth_provider: Provider,
     pub jwt_secret: String,
-    pub jwt_expiration: u64,
-    pub refresh_expiration: u64,
+    pub jwt_token_expiration: i64,
+    pub jwt_refresh_token_expiration: i64,
+    pub jwt_issuer: String,
+    pub jwt_audience: String,
     pub server_address: String,
     pub server_port: u16,
     pub database_url: String,
@@ -24,13 +52,22 @@ impl AppConfig
 {
     pub fn from_env() -> anyhow::Result<Self>
     {
-        if let Ok(bypass_auth) = dotenvy::var("DEV_BYPASS_AUTH") {
-            if bypass_auth == "1" {
-                warn!("DEV_BYPASS_AUTH is set. This will disable authentication.");
-            } else {
-                warn!("DEV_BYPASS_AUTH is defined but not initialized");
-            }
+        let environment = dotenvy::var("ENVIRONMENT").context("ENVIRONMENT variable not set")?;
+        let environment = Environment::from_str(&environment)?;
+
+        let dev_bypass_auth = dotenvy::var("DEV_BYPASS_AUTH").ok().as_deref() == Some("1");
+
+        if environment == Environment::Production && dev_bypass_auth {
+            anyhow::bail!(
+                "SECURITY ERROR: DEV_BYPASS_AUTH=1 is set but ENVIRONMENT=production. \
+                This is forbidden. Remove DEV_BYPASS_AUTH from production config."
+            );
         }
+
+        if dev_bypass_auth {
+            warn!("DEV_BYPASS_AUTH is set. This will disable authentication.");
+        }
+
         let auth_provider = dotenvy::var("AUTH_PROVIDER")
             .context("AUTH_PROVIDER environment variable must be set")?;
 
@@ -46,13 +83,19 @@ impl AppConfig
 
         let jwt_expiration = dotenvy::var("JWT_EXPIRATION")
             .unwrap_or_else(|_| "3600".to_string()) // 1 hour default
-            .parse::<u64>()
+            .parse::<i64>()
             .context("JWT_EXPIRATION must be a valid number (seconds)")?;
 
-        let refresh_expiration = dotenvy::var("REFRESH_TOKEN_EXPIRATION")
+        let jwt_refresh_expiration = dotenvy::var("REFRESH_TOKEN_EXPIRATION")
             .unwrap_or_else(|_| "604800".to_string()) // 7 days default
-            .parse::<u64>()
+            .parse::<i64>()
             .context("REFRESH_TOKEN_EXPIRATION must be a valid number (seconds)")?;
+
+        let jwt_issuer =
+            dotenvy::var("JWT_ISSUER").context("JWT_ISSUER environment variable must be set")?;
+
+        let jwt_audience =
+            dotenvy::var("JWT_ISSUER").context("JWT_ISSUER environment variable must be set")?;
 
         let server_address =
             dotenvy::var("SERVER_ADDRESS").unwrap_or_else(|_| "127.0.0.1".to_string());
@@ -66,10 +109,14 @@ impl AppConfig
             .context("DATABASE_URL environment variable must be set")?;
 
         Ok(Self {
+            environment,
+            dev_bypass_auth,
             auth_provider,
             jwt_secret,
-            jwt_expiration,
-            refresh_expiration,
+            jwt_token_expiration: jwt_expiration,
+            jwt_refresh_token_expiration: jwt_refresh_expiration,
+            jwt_issuer,
+            jwt_audience,
             server_address,
             server_port,
             database_url,
