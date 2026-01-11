@@ -79,6 +79,7 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
     let developer_path: PathBuf = log_dir_path.clone().join("ordinator.developer.log");
     let debug_path: PathBuf = log_dir_path.clone().join("ordinator.debug.log");
     let business_events_path: PathBuf = log_dir_path.clone().join("ordinator.business_events.log");
+    let auth_path: PathBuf = log_dir_path.clone().join("ordinator.auth.log");
 
     // Create the files that will contain the logs with specific options for each of
     // these.
@@ -114,6 +115,14 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
         None,
     );
 
+    let auth_file = FileRotate::new(
+        auth_path,
+        AppendCount::new(5),
+        ContentLimit::Time(file_rotate::TimeFrequency::Weekly),
+        Compression::None,
+        None,
+    );
+
     // Create the writers that `write!` to the individual file.
     let (research_writer, research_log_guard) = non_blocking(research_file);
     std::mem::forget(research_log_guard);
@@ -124,6 +133,9 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
     let (business_events_writer, business_events_guard) = non_blocking(business_events_file);
     std::mem::forget(business_events_guard);
 
+    let (auth_writer, auth_guard) = non_blocking(auth_file);
+    std::mem::forget(auth_guard);
+
     // Set targets so that logs are routes to the correct file at the call site.
     // Specified with `event!(target: "<NAME OF FILE>")`.
 
@@ -133,6 +145,9 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
     let developer_targets = Targets::new().with_target("developer", Level::TRACE);
     let business_event_targets = Targets::new().with_target("business_events", Level::INFO);
     let stdout_targets = Targets::new().with_target("stdout", Level::TRACE);
+
+    let auth_targets = Targets::new().with_target("auth", Level::TRACE);
+
     // Make the logging layers
     let research_layer = fmt::layer()
         .with_writer(research_writer)
@@ -168,6 +183,15 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
         .with_thread_names(true)
         .with_filter(business_event_targets);
 
+    let auth_layer = fmt::layer()
+        .with_writer(auth_writer) // or stdout/file depending on preference
+        .with_ansi(true)
+        .with_file(true)
+        .with_thread_ids(true)
+        .with_thread_names(true)
+        .with_line_number(true)
+        .with_filter(auth_targets);
+
     let stdout_layer = tracing_subscriber::fmt::layer().with_filter(stdout_targets);
 
     // let flame_layer = FlameLayer::with_file(
@@ -197,6 +221,7 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
         .with(developer_layer)
         .with(debug_layer)
         .with(business_events_layer)
+        .with(auth_layer)
         .with(stdout_layer)
         // .with(flame_layer)
         .init();

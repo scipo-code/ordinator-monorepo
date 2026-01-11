@@ -4,6 +4,7 @@ pub mod routes;
 use std::sync::Arc;
 
 use async_trait::async_trait;
+use ordinator_contracts::auth::LocalAuthPayload;
 
 use crate::auth::current_timestamp;
 use crate::auth::db::AuthDb;
@@ -14,7 +15,6 @@ use crate::auth::models::TokenClaims;
 use crate::auth::models::UserError;
 use crate::auth::provider::CredentialAuthProvider;
 use crate::auth::provider::TokenValidator;
-use crate::auth::provider::local::models::LocalAuthPayload;
 
 pub struct LocalAuthProvider
 {
@@ -44,29 +44,38 @@ impl CredentialAuthProvider for LocalAuthProvider
             .get_user_by_email(&credentials.client_id)
             .await
             .map_err(|e| match e {
-                DbError::NotFound => AuthError::UserNotFound, /* Do not leak user does not */
+                DbError::NotFound => {
+                    tracing::error!(target: "auth", error=?e, email=%credentials.client_id, "User Not found error.");
+                    AuthError::UserNotFound /* Do not leak user does not */
+                }
                 // exist
-                _ => AuthError::InternalError,
+                _ => {
+                    tracing::error!(target: "auth", error=?e, email=%credentials.client_id, "Database error during user lookup.");
+                    AuthError::InternalError
+                },
             })?
             .ok_or(AuthError::WrongCredentials)?;
 
         let is_valid = user.verify_password(&credentials.client_secret).map_err(|e| match e{
             UserError::MissingPassword => {
-                tracing::error!(error=?e, user_email = %user.email, "Local user missing password hash - data integrity error");
+                tracing::error!(target: "auth", error=?e, user_email = %user.email, "Local user missing password hash - data integrity error");
 
                 AuthError::InternalError}, // User exists without password = config error. This should not happen for local provider
             UserError::HashError(e) => {
-                tracing::error!(error=?e, user_email = %user.email, "Password verification failed");
+                tracing::error!(target: "auth", error=?e, user_email = %user.email, "Password verification failed");
                 AuthError::InternalError
             }})?;
 
         if !is_valid {
+            tracing::warn!(target: "auth", user_email = %user.email, "Invalid login credentials");
             return Err(AuthError::WrongCredentials);
         }
 
         if !user.is_active {
+            tracing::warn!(target: "auth", user_email = %user.email, "User inactive credentials login attempt");
             return Err(AuthError::UserInactive);
         }
+        tracing::info!(target: "auth", user_email = %user.email, "Succesful user login");
 
         let claims = TokenClaims::new(
             user.email.clone(),
@@ -75,6 +84,7 @@ impl CredentialAuthProvider for LocalAuthProvider
             user.provider.clone(),
         );
 
+        tracing::info!(target: "auth", user_email=&user.email, role=?user.role, "User authenticated succesfully");
         Ok(claims)
     }
 }
