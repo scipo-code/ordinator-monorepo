@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use anyhow::Context;
 use axum::Json;
 use axum::debug_handler;
@@ -12,13 +10,11 @@ use axum::response::Result;
 use axum_extra::extract::Query;
 use ordinator_contracts::AssetNames;
 use ordinator_contracts::PeriodDto;
-use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::WorkOrderNumberDto;
 use ordinator_contracts::scheduler::SchedulerWorkOrderDto;
 use ordinator_contracts::scheduler::WorkOrderInfoWithSchedulingDto;
 use ordinator_contracts::scheduler::WorkOrderSingleRowSimpleDto;
 use ordinator_orchestrator::Asset;
-use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::StateLink;
 use ordinator_orchestrator::StrategicInterface;
 use ordinator_orchestrator::SystemSolutions;
@@ -29,7 +25,7 @@ use utoipa::IntoParams;
 use utoipa::ToSchema;
 
 use crate::AppState;
-use crate::auth::extractors::AsScheduler;
+use crate::auth::models::TokenClaims;
 use crate::routes::api::AppError;
 
 // This is a handler. Not a `Route` you should change that. Keep working.
@@ -58,7 +54,7 @@ pub struct WorkOrdersWithSchedulingQueryParams
 )]
 #[instrument(target = "business_events", fields(elapsed_time), skip(state))]
 pub async fn get_scheduler_work_orders(
-    AsScheduler(claims): AsScheduler,
+    claims: TokenClaims,
     State(state): State<AppState>,
     Path(asset): Path<AssetNames>,
     Query(query): Query<WorkOrdersWithSchedulingQueryParams>,
