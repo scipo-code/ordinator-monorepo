@@ -37,11 +37,13 @@ async fn master_system_test_0100_work_orders_03_technicians() -> anyhow::Result<
 
     orchestrator.asset_factory(&Asset::Test)?;
 
-    let db = Arc::new(SqliteUserDb::new("sqlite::memory:").await.unwrap());
+    let db = SqliteUserDb::new("sqlite::memory:").await.unwrap();
+    db.migrate().await?;
+    let db_arc = Arc::new(db);
     let config = init_config()?;
 
     tokio::select! {
-        result = start_application(orchestrator.clone(), db, config, &environment) => {
+        result = start_application(orchestrator.clone(), db_arc.clone(), config, &environment) => {
             info!(target: "stdout", server_shutdown_message = ?result, "Main server shutting down");
             Ok(())
         }
