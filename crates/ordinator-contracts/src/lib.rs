@@ -22,6 +22,7 @@ pub mod orchestrator;
 pub mod scheduler;
 pub mod supervisor;
 pub mod technician;
+pub mod auth;
 // This is a DTO object, it should be moved out of the
 // `scheduling-environment`
 #[derive(
