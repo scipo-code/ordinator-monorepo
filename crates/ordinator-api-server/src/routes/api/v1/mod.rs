@@ -23,7 +23,7 @@ use crate::auth::routes::authentication_nest;
 pub async fn api_scope(state: AppState) -> OpenApiRouter<AppState>
 {
     OpenApiRouter::new()
-        .nest("/auth/", authentication_nest(state.clone()).await)
+        .nest("/auth", authentication_nest(state.clone()).await)
         .nest("/scheduler/", scheduler_nest(state.clone()).await)
         .nest("/export", export_xlsx(state.clone()).await)
         .nest("/orchestrator", orchestrator_api_scope(state.clone()).await)
