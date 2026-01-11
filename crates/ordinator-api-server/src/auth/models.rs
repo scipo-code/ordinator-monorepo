@@ -20,6 +20,7 @@ use jsonwebtoken::DecodingKey;
 use jsonwebtoken::EncodingKey;
 use jsonwebtoken::Validation;
 use jsonwebtoken::decode;
+use ordinator_orchestrator::Asset;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::json;
@@ -27,11 +28,12 @@ use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::auth::current_timestamp;
-use crate::auth::jwt::JWT_CONFIG;
 use crate::auth::provider::Provider;
+use crate::config::get_config;
 
 pub static KEYS: LazyLock<Keys> = LazyLock::new(|| {
-    let secret = JWT_CONFIG.secret.clone();
+    let config = get_config();
+    let secret = config.jwt_secret.clone();
 
     Keys::new(secret.as_bytes())
 });
@@ -54,23 +56,25 @@ pub struct TokenClaims
 
     // Custome fields
     pub role: UserRole,
-    pub assets: Vec<String>,
+    pub assets: Vec<Asset>,
     pub provider: Provider,
 }
 
 impl TokenClaims
 {
-    pub fn new(sub: String, role: UserRole, assets: Vec<String>, provider: Provider) -> Self
+    pub fn new(sub: String, role: UserRole, assets: Vec<Asset>, provider: Provider) -> Self
     {
         let now = current_timestamp();
+        let config = get_config();
+
         Self {
             sub,
             jti: Uuid::new_v4().to_string(),
-            exp: now + JWT_CONFIG.access_token_expiration,
+            exp: now + config.jwt_token_expiration,
             iat: now,
             nbf: now,
-            iss: JWT_CONFIG.issuer.clone(),
-            aud: JWT_CONFIG.audience.clone(),
+            iss: config.jwt_issuer.clone(),
+            aud: config.jwt_audience.clone(),
 
             role,
             assets,
@@ -80,11 +84,23 @@ impl TokenClaims
 
     pub fn require_asset(&self, asset: &str) -> Result<(), AuthError>
     {
-        if self.assets.contains(&asset.to_string()) {
-            Ok(())
+        // let potential_asset = Asset::new_from_string(asset).unwrap_or_else(f)
+        //
+        if let Some(a) = Asset::new_from_string(asset) {
+            if self.assets.contains(&a) {
+                Ok(())
+            } else {
+                Err(AuthError::Forbidden)
+            }
+            
         } else {
-            Err(AuthError::Forbidden)
+            Err(AuthError::InternalError)
         }
+        // if self.assets.contains() {
+        //     Ok(())
+        // } else {
+        //     Err(AuthError::Forbidden)
+        // }
     }
 
     // WARN This is a dev function for bypassing authentication
@@ -94,7 +110,7 @@ impl TokenClaims
         TokenClaims::new(
             "test@ordinator.io".to_string(),
             role,
-            vec!["test".to_string()],
+            vec![Asset::Test],
             Provider::Local,
         )
     }
@@ -123,14 +139,45 @@ where
         _state: &S,
     ) -> Result<Self, Self::Rejection>
     {
+        let config = get_config();
+
+        if config.dev_bypass_auth {
+            return Ok(TokenClaims::dev_default(UserRole::Scheduler));
+        }
+
         let TypedHeader(Authorization(bearer)) = parts
             .extract::<TypedHeader<Authorization<Bearer>>>()
             .await
-            .map_err(|_| AuthError::InvalidToken)?;
+            .map_err(|e| {
+                tracing::warn!(target: "auth", error=?e, path=%parts.uri.path(), "Missing or malformed Authorization header");
+                AuthError::InvalidToken
+            })?;
 
         let token_data =
             decode::<TokenClaims>(bearer.token(), &KEYS.decoding, &Validation::default())
-                .map_err(|_| AuthError::InvalidToken)?;
+                .map_err(|e| {
+                    let error_kind = match e.kind() {
+                        jsonwebtoken::errors::ErrorKind::ExpiredSignature => "expired",
+                        jsonwebtoken::errors::ErrorKind::InvalidToken => "invalid",
+                        jsonwebtoken::errors::ErrorKind::InvalidSignature => "invalid_signature",
+                        jsonwebtoken::errors::ErrorKind::InvalidIssuer => "invalid_issuer",
+                        jsonwebtoken::errors::ErrorKind::InvalidAudience => "invalid_audience",
+                        _ => "unknown",
+                    };
+                    tracing::warn!(target: "auth", error_kind=%error_kind, "JWT validation failed");
+                    match e.kind() {
+                        jsonwebtoken::errors::ErrorKind::ExpiredSignature => AuthError::TokenExpired,
+                        _ => AuthError::InvalidToken
+                    }
+                })?;
+
+        tracing::info!(
+            target: "auth",
+            user=%token_data.claims.sub,
+            user=?token_data.claims.role,
+            path=parts.uri.path(),
+            "Token validated successfully"
+        );
 
         Ok(token_data.claims)
     }
@@ -161,14 +208,15 @@ impl RefreshTokenClaims
     pub fn new(sub: String, provider: Provider) -> Self
     {
         let now = current_timestamp();
+        let config  = get_config();
         Self {
             sub,
             jti: Uuid::new_v4().to_string(),
-            exp: now + JWT_CONFIG.refresh_token_expiration,
+            exp: now + config.jwt_refresh_token_expiration,
             iat: now,
             nbf: now,
-            iss: JWT_CONFIG.issuer.clone(),
-            aud: JWT_CONFIG.audience.clone(),
+            iss: config.jwt_issuer.clone(),
+            aud: config.jwt_audience.clone(),
             provider,
             token_type: "refresh".to_string(),
         }
@@ -189,11 +237,33 @@ where
         let TypedHeader(Authorization(bearer)) = parts
             .extract::<TypedHeader<Authorization<Bearer>>>()
             .await
-            .map_err(|_| AuthError::InvalidToken)?;
+            .map_err(|e| {
+                tracing::warn!(target: "auth", error=?e, path=%parts.uri.path(), "Missing or malformed Authorization header");
+                AuthError::InvalidToken
+            })?;
 
         let token_data =
             decode::<RefreshTokenClaims>(bearer.token(), &KEYS.decoding, &Validation::default())
-                .map_err(|_| AuthError::InvalidToken)?;
+                .map_err(|e| {
+                    let error_kind = match e.kind() {
+                        jsonwebtoken::errors::ErrorKind::ExpiredSignature => "expired",
+                        jsonwebtoken::errors::ErrorKind::InvalidToken => "invalid",
+                        jsonwebtoken::errors::ErrorKind::InvalidSignature => "invalid_signature",
+                        jsonwebtoken::errors::ErrorKind::InvalidIssuer => "invalid_issuer",
+                        jsonwebtoken::errors::ErrorKind::InvalidAudience => "invalid_audience",
+                        _ => "unknown",
+                    };
+                    tracing::warn!(target: "auth", error_kind=%error_kind, "JWT refresh validation failed");
+                    match e.kind() {
+                        jsonwebtoken::errors::ErrorKind::ExpiredSignature => AuthError::TokenExpired,
+                        _ => AuthError::InvalidToken
+                    }
+                })?;
+        tracing::debug!(
+            target: "auth",
+            path=parts.uri.path(),
+            "RefreshToken validated successfully"
+        );
 
         Ok(token_data.claims)
     }
@@ -318,7 +388,7 @@ pub struct User
     pub email: String,
     pub password_hash: Option<String>, //Argon2 with salt string embedded
     pub role: UserRole,
-    pub assets: Vec<String>,
+    pub assets: Vec<Asset>,
     pub provider: Provider,
     pub is_active: bool,
 }
@@ -330,7 +400,7 @@ impl User
         email: String,
         password_str: Option<String>,
         role: UserRole,
-        assets: Vec<String>,
+        assets: Vec<Asset>,
         provider: Provider,
         is_active: bool,
     ) -> Result<Self, UserError>
@@ -370,8 +440,14 @@ impl User
             .password_hash
             .as_ref()
             .ok_or_else(|| UserError::MissingPassword)?;
+
         let parsed_hash =
-            PasswordHash::new(password_hash_str).map_err(|e| UserError::HashError(e))?;
+            PasswordHash::new(password_hash_str)
+            .map_err(|e| {
+               tracing::error!(target: "auth", error=?e, user_email=%self.email, "Failed to parse password hash");
+               UserError::HashError(e) 
+            })?;
+
         let is_correct = Argon2::default()
             .verify_password(password.as_bytes(), &parsed_hash)
             .is_ok();

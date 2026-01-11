@@ -94,8 +94,8 @@ impl AppConfig
         let jwt_issuer =
             dotenvy::var("JWT_ISSUER").context("JWT_ISSUER environment variable must be set")?;
 
-        let jwt_audience =
-            dotenvy::var("JWT_ISSUER").context("JWT_ISSUER environment variable must be set")?;
+        let jwt_audience = dotenvy::var("JWT_AUDIENCE")
+            .context("JWT_AUDIENCE environment variable must be set")?;
 
         let server_address =
             dotenvy::var("SERVER_ADDRESS").unwrap_or_else(|_| "127.0.0.1".to_string());
