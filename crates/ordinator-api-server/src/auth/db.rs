@@ -144,6 +144,8 @@ impl AuthDb for SqliteUserDb
 #[cfg(test)]
 mod tests
 {
+    use ordinator_orchestrator::Asset;
+
     use super::*;
     use crate::auth::models::UserRole;
 
@@ -162,7 +164,7 @@ mod tests
             email.to_string(),
             Some(password.to_string()),
             UserRole::Technician,
-            vec!["asset-1".to_string()],
+            vec![Asset::Test],
             crate::auth::provider::Provider::Local,
             true,
         )

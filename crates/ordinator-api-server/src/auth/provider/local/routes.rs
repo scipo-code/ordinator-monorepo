@@ -2,6 +2,9 @@ use axum::Json;
 use axum::extract::State;
 use jsonwebtoken::Header;
 use jsonwebtoken::encode;
+use ordinator_contracts::AssetNames;
+use ordinator_contracts::auth::LocalAuthPayload;
+use ordinator_contracts::auth::LoginResponse;
 
 use crate::AppState;
 use crate::auth::models::AuthError;
@@ -10,8 +13,6 @@ use crate::auth::models::RefreshTokenClaims;
 use crate::auth::models::TokenClaims;
 use crate::auth::provider::CredentialAuthProvider;
 use crate::auth::provider::local::LocalAuthProvider;
-use crate::auth::provider::local::models::LocalAuthPayload;
-use crate::auth::routes::LoginResponse;
 
 #[utoipa::path(
     post,
@@ -43,10 +44,18 @@ pub async fn login(
     let refresh_token = encode(&Header::default(), &refresh_claims, &KEYS.encoding)
         .map_err(|_| AuthError::TokenCreation)?;
 
+    let assets = claims
+        .assets
+        .iter()
+        .map(|a| AssetNames::from(a.clone()))
+        .collect::<Vec<AssetNames>>();
+
     Ok(Json(LoginResponse {
         access_token,
         refresh_token,
         token_type: "Bearer".to_string(),
+        role: claims.role.to_string(),
+        assets,
     }))
 }
 
@@ -94,9 +103,17 @@ pub async fn refresh(
     let refresh_token = encode(&Header::default(), &new_refresh_claims, &KEYS.encoding)
         .map_err(|_| AuthError::TokenCreation)?;
 
+    let assets = claims
+        .assets
+        .iter()
+        .map(|a| AssetNames::from(a.clone()))
+        .collect::<Vec<AssetNames>>();
+
     Ok(Json(LoginResponse {
         access_token: access_token,
         refresh_token: refresh_token,
         token_type: "Bearer".to_string(),
+        role: claims.role.to_string(),
+        assets,
     }))
 }
