@@ -66,6 +66,7 @@
               ];
             })
 
+            pkgs.sqlite # For interacting with dev database
             pkgs.zellij
             pythonEnv
             (pkgs.writeShellScriptBin "lldb-dap" ''
