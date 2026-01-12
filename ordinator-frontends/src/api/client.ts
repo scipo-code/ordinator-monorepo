@@ -24,6 +24,7 @@ class ApiClient {
             ...options?.headers,
         };
 
+        console.log(headers);
         let response = await fetch(`${this.baseUrl}${endpoint}`, {
             ...options,
             headers
@@ -66,7 +67,7 @@ class ApiClient {
 
     async tryLocalLogin(
         payload: LocalAuthPayload
-    ): Promise<string> {
+    ): Promise<LoginResponse> {
         const endpoint = "/api/v1/auth/login";
         const options = {
             method: "POST",
@@ -81,7 +82,7 @@ class ApiClient {
 
             localStorage.setItem("access_token", data.access_token);
             localStorage.setItem("refresh_token", data.refresh_token);
-            return "Login succesful"
+            return data;
 
         }
 
