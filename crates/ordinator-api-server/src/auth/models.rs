@@ -153,8 +153,13 @@ where
                 AuthError::InvalidToken
             })?;
 
+        let mut validator = Validation::new(config.jwt_algorithm);
+        validator.set_required_spec_claims(&["exp", "nbf", "aud", "iss", "sub"]);
+        validator.set_audience(&[config.jwt_audience.clone()]);
+        validator.set_issuer(&[config.jwt_issuer.clone()]);
+
         let token_data =
-            decode::<TokenClaims>(bearer.token(), &KEYS.decoding, &Validation::default())
+            decode::<TokenClaims>(bearer.token(), &KEYS.decoding, &validator)
                 .map_err(|e| {
                     let error_kind = match e.kind() {
                         jsonwebtoken::errors::ErrorKind::ExpiredSignature => "expired",
@@ -251,6 +256,9 @@ where
                         jsonwebtoken::errors::ErrorKind::InvalidSignature => "invalid_signature",
                         jsonwebtoken::errors::ErrorKind::InvalidIssuer => "invalid_issuer",
                         jsonwebtoken::errors::ErrorKind::InvalidAudience => "invalid_audience",
+                        jsonwebtoken::errors::ErrorKind::ImmatureSignature => "invalid_time_nbf_in_future",
+                        jsonwebtoken::errors::ErrorKind::MissingAlgorithm => "missing_algorithm",
+                        jsonwebtoken::errors::ErrorKind::InvalidAlgorithmName => "invalid_algorithm",
                         _ => "unknown",
                     };
                     tracing::warn!(target: "auth", error_kind=%error_kind, "JWT refresh validation failed");
