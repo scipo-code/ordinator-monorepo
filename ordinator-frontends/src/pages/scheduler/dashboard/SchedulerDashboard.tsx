@@ -6,7 +6,7 @@ import { useTableColDefs } from './ColDef';
 import { parseISO, format } from 'date-fns';
 import { Actors, StagnationDot } from '@/components/business/stagnationdot';
 import { useSystemClock } from '@/hooks';
-import { fetchWorkOrders } from '@/api/workorders';
+import { apiClient } from '@/api/client';
 
 
 // import { agGridThemeLight } from "./theme";
@@ -27,7 +27,7 @@ const Scheduler: React.FC = () => {
     queryKey: ["workOrders", asset],
     // don’t run until we have a real asset
     enabled: !!asset,
-    queryFn: () => fetchWorkOrders(asset!),
+    queryFn: () => apiClient.fetchWorkOrders(asset!),
     retry: 2,                       // exponential-backoff retries
     refetchInterval: 2000,
     staleTime: 0,
