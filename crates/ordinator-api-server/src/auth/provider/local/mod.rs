@@ -45,7 +45,7 @@ impl CredentialAuthProvider for LocalAuthProvider
             .await
             .map_err(|e| match e {
                 DbError::NotFound => {
-                    tracing::error!(target: "auth", error=?e, email=%credentials.client_id, "User Not found error.");
+                    tracing::warn!(target: "auth", error=?e, email=%credentials.client_id, "Login attempt. User Not found error.");
                     AuthError::UserNotFound /* Do not leak user does not */
                 }
                 // exist
@@ -54,7 +54,10 @@ impl CredentialAuthProvider for LocalAuthProvider
                     AuthError::InternalError
                 },
             })?
-            .ok_or(AuthError::WrongCredentials)?;
+            .ok_or_else(|| {
+                tracing::warn!(target: "auth", email=%credentials.client_id, "Login attempt. Wrong credentials: User email.");
+                AuthError::WrongCredentials
+            })?;
 
         let is_valid = user.verify_password(&credentials.client_secret).map_err(|e| match e{
             UserError::MissingPassword => {
@@ -67,7 +70,7 @@ impl CredentialAuthProvider for LocalAuthProvider
             }})?;
 
         if !is_valid {
-            tracing::warn!(target: "auth", user_email = %user.email, "Invalid login credentials");
+            tracing::warn!(target: "auth", user_email = %user.email, "Invalid login credentials: Password");
             return Err(AuthError::WrongCredentials);
         }
 
@@ -75,7 +78,6 @@ impl CredentialAuthProvider for LocalAuthProvider
             tracing::warn!(target: "auth", user_email = %user.email, "User inactive credentials login attempt");
             return Err(AuthError::UserInactive);
         }
-        tracing::info!(target: "auth", user_email = %user.email, "Succesful user login");
 
         let claims = TokenClaims::new(
             user.email.clone(),
