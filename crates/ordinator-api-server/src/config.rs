@@ -3,6 +3,7 @@ use std::sync::OnceLock;
 
 use anyhow::Context;
 use anyhow::anyhow;
+use jsonwebtoken::Algorithm;
 use tracing::warn;
 
 use crate::auth::provider::Provider;
@@ -33,6 +34,7 @@ impl FromStr for Environment
     }
 }
 
+// #[derive(Debug, Clone)]
 pub struct AppConfig
 {
     pub environment: Environment,
@@ -43,6 +45,7 @@ pub struct AppConfig
     pub jwt_refresh_token_expiration: i64,
     pub jwt_issuer: String,
     pub jwt_audience: String,
+    pub jwt_algorithm: Algorithm,
     pub server_address: String,
     pub server_port: u16,
     pub database_url: String,
@@ -97,6 +100,19 @@ impl AppConfig
         let jwt_audience = dotenvy::var("JWT_AUDIENCE")
             .context("JWT_AUDIENCE environment variable must be set")?;
 
+        let jwt_algorithm_str = dotenvy::var("JWT_ALGORITHM")
+            .context("JWT_ALGORITHM environment variable must be set")?;
+
+        let jwt_algorithm = match jwt_algorithm_str.as_str() {
+            "HS256" => Algorithm::HS256,
+            "HS512" => Algorithm::HS512,
+            "RS256" => Algorithm::RS256,
+            "RS512" => Algorithm::RS512,
+            _ => anyhow::bail!(
+                "JWT_ALGORITHM did not match allowed values: HS256, HS512, RS256, RS512"
+            ),
+        };
+
         let server_address =
             dotenvy::var("SERVER_ADDRESS").unwrap_or_else(|_| "127.0.0.1".to_string());
 
@@ -117,6 +133,7 @@ impl AppConfig
             jwt_refresh_token_expiration: jwt_refresh_expiration,
             jwt_issuer,
             jwt_audience,
+            jwt_algorithm,
             server_address,
             server_port,
             database_url,

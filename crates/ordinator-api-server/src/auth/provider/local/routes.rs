@@ -13,6 +13,7 @@ use crate::auth::models::RefreshTokenClaims;
 use crate::auth::models::TokenClaims;
 use crate::auth::provider::CredentialAuthProvider;
 use crate::auth::provider::local::LocalAuthProvider;
+use crate::config::get_config;
 
 #[utoipa::path(
     post,
@@ -33,16 +34,21 @@ pub async fn login(
     Json(credentials): Json<LocalAuthPayload>,
 ) -> Result<Json<LoginResponse>, AuthError>
 {
+    let config = get_config();
     let provider = LocalAuthProvider::new(state.db.clone());
     let claims = provider.authenticate(credentials).await?;
 
-    let access_token = encode(&Header::default(), &claims, &KEYS.encoding)
+    let access_token = encode(&Header::new(config.jwt_algorithm), &claims, &KEYS.encoding)
         .map_err(|_| AuthError::TokenCreation)?;
 
     let refresh_claims = RefreshTokenClaims::new(claims.sub.clone(), claims.provider.clone());
 
-    let refresh_token = encode(&Header::default(), &refresh_claims, &KEYS.encoding)
-        .map_err(|_| AuthError::TokenCreation)?;
+    let refresh_token = encode(
+        &Header::new(config.jwt_algorithm),
+        &refresh_claims,
+        &KEYS.encoding,
+    )
+    .map_err(|_| AuthError::TokenCreation)?;
 
     let assets = claims
         .assets
