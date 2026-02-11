@@ -1,4 +1,4 @@
-set terminal pngcairo enhanced font "Liberation Mono,14" size 1300,1000
+set terminal tikz size 5in,4in
 timestamp = strftime("%Y-%m-%d", time(0))
 set output timestamp . output_file
 set multiplot layout 2,2

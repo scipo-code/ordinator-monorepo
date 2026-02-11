@@ -106,7 +106,7 @@ if test "$_flag_ordinator_test"
           operational_1='scripts/research/data/operational-001-01.dat';
           operational_2='scripts/research/data/operational-001-02.dat';
           operational_3='scripts/research/data/operational-002-01.dat';
-          output_file='$current_date-$_flag_ordinator_test.png';
+          output_file='$current_date-$_flag_ordinator_test.tex';
         " ./scripts/research/2-by-2-objective-value-plot.gp
 
     else
@@ -150,7 +150,7 @@ if test "$_flag_ordinator_test"
           operational_1='scripts/research/data/operational-001-01.dat';
           operational_2='scripts/research/data/operational-001-02.dat';
           operational_3='scripts/research/data/operational-002-01.dat';
-          output_file='$current_date-$_flag_ordinator_test.png';
+          output_file='$current_date-$_flag_ordinator_test.tex';
         " ./scripts/research/3-by-2-objective-value-plot.gp
     end
 end
