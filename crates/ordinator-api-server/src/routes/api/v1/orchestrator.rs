@@ -18,7 +18,6 @@ pub async fn export_xlsx(
         .with_state(state)
 }
 
-// This function is only for providing the correct routes.
 pub async fn orchestrator_api_scope(
     state: Arc<Orchestrator<TotalSystemSolution>>,
 ) -> OpenApiRouter<Arc<Orchestrator<TotalSystemSolution>>>

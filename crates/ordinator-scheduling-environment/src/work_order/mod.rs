@@ -48,11 +48,7 @@ use crate::time_environment::day::Day;
 use crate::worker_environment::IdString;
 use crate::worker_environment::resources::ActorCompositeId;
 
-// TODO [ ]
-//
-// You should really consider making this into a struct so that
-// you can define custom behavior on it. I do not think that there
-// is a better way of defining the code here.
+// TODO: Consider converting to a struct to allow custom behavior implementation.
 pub type WorkOrderActivity = (WorkOrderNumber, ActivityNumber);
 pub type WorkOrderValue = u64;
 
@@ -85,18 +81,14 @@ impl std::fmt::Display for WorkOrderNumber
         write!(f, "{}", self.0)
     }
 }
-// Everything in the `SchedulingEnvironment` should implement
-// `Serialize` it has to, to be able to go into the database.
+// All items in `SchedulingEnvironment` must implement `Serialize` for database storage.
 type SubnetworkNumber = u64;
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WorkOrders
 {
     pub inner: HashMap<WorkOrderNumber, WorkOrder>,
-    // TODO [ ] 2025-07-22 extend the `WorkOrders` to contain
-    // `Subnetwork`
+    // TODO: Extend `WorkOrders` to contain `Subnetwork` (2025-07-22)
     _subnetwork: HashMap<SubnetworkNumber, Vec<WorkOrder>>,
-    // Are these in the correct place in the code? Yes I think
-    // that they are.
 }
 
 impl WorkOrders
@@ -133,10 +125,7 @@ impl WorkOrders
     }
 }
 
-// What should you do now?
-// WARN
-// Configurations should only be used during initialization not the
-// remaining parts of the code.
+// WARN: Configurations should only be used during initialization, not during runtime.
 pub struct WorkOrdersBuilder
 {
     inner: Option<HashMap<WorkOrderNumber, WorkOrder>>,
@@ -227,37 +216,8 @@ impl WorkOrders
     }
 }
 
-// TODO [ ] 2025-07-22 make a common locked functionality state
-// Also the `Scheduled` should be modelled in a different way than
-// using the status codes. The `WorkOrder` should flow through the
-// system towards the correct state. I think that using the `TypeState`
-// pattern here would be a good idea.
-//
-// ESSAY:
-// How should the code look here? Should you make a type? You
-// have originally thought that this should be handled in the
-// `Actors` but that is not the correct approach here. You
-// should strive to centralize the state required here.
-//
-// You should make a `method`! Great! That is the best path
-// forward here! You do not want to add any thing here.
-//
-// You need a single method returning the correct state!
-// And it should be defined on the `WorkOrder` what about
-// the `Subnetwork`
-//
-// ESSAY: WorkOrder and Subnetwork interaction.
-// This is a crucial point for later on. I bacically
-// means that there can be interactions between the
-// different WorkOrders. And this in turn means that
-// there can be interactions between different days
-// of the work order. The best approach for solving
-// this is probably to make the system work correctly.
-//
-// Remember that the `basic_start` migth have to
-// be a `Arc<Mutex<DateTime<Utc>>` so that when
-// you move a work order around all the different
-// days are changed!
+// TODO: Create common locked functionality state and model `Scheduled` via TypeState pattern (2025-07-22).
+// TODO: Consider WorkOrder and Subnetwork interactions for cross-day scheduling.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct WorkOrder
 {
@@ -268,7 +228,7 @@ pub struct WorkOrder
     pub(crate) work_order_analytic: WorkOrderAnalytic,
     pub(crate) work_order_dates: WorkOrderDates,
     pub(crate) work_order_info: WorkOrderInfo,
-    // This is not acceptable. You should move it out
+    // TODO: Extract `fixed_by` field to separate structure.
     pub(crate) fixed_by: FixedWorkOrder,
 }
 
@@ -333,7 +293,7 @@ impl WorkOrder
         self.operations
             .0
             .get(&activity_number)
-            .expect("Should should never be missing")
+            .expect("Operation should always exist for a given activity number")
     }
 
     pub fn work_order_number(&self) -> WorkOrderNumber
@@ -342,32 +302,24 @@ impl WorkOrder
     }
 }
 
-// This is not allowed.
+// TODO: Revisit design to properly separate worker and time concerns.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum FixedWorkOrder
 {
-    // You are mixing workers and `time`
     Period(Period),
     BasicStart(NaiveDate),
     Operational(DateTime<Utc>),
     BusinessLogic,
 }
 
-// Should you work on this now? No! Practice skills and read.
-// #[derive(Serialize, Deserialize, Clone, Debug)]
-// pub struct ManuallyInputtedInformation
-// {
-//     excluded_periods: HashSet<Rc<Period>>,
-// }
+// FUTURE: Implement ManuallyInputtedInformation struct for tracking excluded periods.
 
 pub struct WorkOrderBuilder
 {
     work_order_number: WorkOrderNumber,
     main_work_center: Option<Skill>,
     operations: Operations,
-    // FIX
-    // Every operation needs to have a relation between them. There
-    // is no way around this. It should be an enforced invariant.
+    // FIX: Enforce invariant that every operation must have relations between them.
     work_order_analytic: Option<WorkOrderAnalytic>,
     work_order_dates: Option<WorkOrderDates>,
     work_order_info: Option<WorkOrderInfo>,
@@ -410,12 +362,7 @@ impl WorkOrderBuilder
         self
     }
 
-    // TODO [ ]
-    // Make this function simply reuse the functionality of the `Operations`.
-    // QUESTION
-    // How do we do this?
-    // This is crucial! There is something that you do not understand here
-    // How do we extract this so that it works?
+    // TODO: Refactor to reuse `Operations` functionality directly.
     pub fn operations_builder<F>(
         mut self,
         operation_number: u64,
@@ -491,8 +438,7 @@ pub enum ActivityRelation
     Postpone(TimeDelta),
 }
 
-// `operating_time` is separate from the work order data and should be removed
-// from the `scheduling_environment`
+// TODO: Extract `operating_time` from `scheduling_environment` as it belongs elsewhere.
 #[allow(dead_code)]
 #[derive(Eq, PartialEq, Serialize, Deserialize, Debug, Clone)]
 pub struct WorkOrderPolicies
@@ -616,27 +562,7 @@ pub struct ClusteringWeights
     pub equipment_tag: u64,
 }
 
-// ESSAY: Should this type handle both forced and excluded?
-// I think that is a good idea. Maybe a better option would
-// be to make two types,
-//
-// ESSAY: In operation research is there really only:
-// 1. The required decisions
-// 2. The not allowed decisions
-// 3. The open solution space of the decisions that can be optimized
-// these three types?
-//
-// Effectively they are all constraints. For the network flow problems
-// there is the the flows that needs to be satisfied, the paths that cannot
-// be taken, and then there is the decisions that are up for the model to
-// decide.
-//
-// For the graph coloring problem. All vertices needs a color (required), two
-// vercies cannot share an edge and have the same color (not allowed), find the
-// least amount of colors.
-// Does this cover everything that the code needs to do here? You will need
-// to add a rules engine at somepoint, and you will need the hexagonal
-// architecture from the start.
+// TODO: Implement rules engine and hexagonal architecture for handling forced work order constraints.
 #[derive(Debug)]
 pub enum ForcedWorkOrder
 {
@@ -695,48 +621,7 @@ pub struct TechnicianExclude
     intervals: HashSet<Option<(Day, Day)>>,
 }
 
-// pub enum SchedulePlan
-// {
-//     ForcedPeriod,
-//     ForcedDays,
-//     ForcedTechnician,
-//     // Remember that the only thing that you want here is
-//     // 1. Required Decisions (Include)
-//     // 2. Disallowed Decisions (Exclude)
-//     // 3. Optimizable Desisions (Weight and optimize)
-//     //
-//     // Rules have to determine the first and the second, weight have to
-//     // determine the third. Yes I think that we have the approach going
-// forward. }
-
-// pub struct ScheduleContribution
-// {
-//     vendor: bool,
-//     sch: bool,
-//     aswc: bool,
-// }
-
-// pub trait ScheduleRule
-// {
-//     fn is_applicable(&self, work_order: &WorkOrder) -> bool;
-//     fn contribution(&self, work_order: &WorkOrder) -> ScheduleContribution;
-// }
-
-// Is this a good idea? No
-// struct Vendor;
-
-// impl ScheduleRule for Vendor
-// {
-//     fn is_applicable(&self, _work_order: &WorkOrder) -> bool
-//     {
-//         todo!()
-//     }
-
-//     fn contribution(&self, _work_order: &WorkOrder) -> ScheduleContribution
-//     {
-//         todo!()
-//     }
-// }
+// FUTURE: Implement SchedulePlan with rule-based constraint system for optimizable decisions.
 
 impl WorkOrder
 {
@@ -768,34 +653,7 @@ impl WorkOrder
         self.work_order_analytic.system_status_codes.rel
     }
 
-    // How should this function be implemented? You need to look in the
-    // WorkOrderDates and the Operations and the StatusCodes. The idea
-    // here is that you should move the logic out of the `Actor`s and
-    // into the `SchedulingEnvironment` is this correct? Yes! You need
-    // a single source of truth here.
-    //
-    // For now simply make it simple. That is the most important! The
-    // crucial part here is scheduling the work order so that the
-    // system will scale. The logic cannot be in the parameters of the
-    // Actors that does simply not scale well enough.
-    // QUESTION: Should you make this a free function? Yes I actually think
-    // so. You are relying too much on `self` and it makes the dependencies
-    // of every method insanely big.
-    //
-    // You need to think very carefully about constructing this type. It is
-    // crucial that the code is each to understand. You will also need to
-    // have additional fields in the `SchedulingEnvironment` to accomdate the
-    // new informations.
-    //
-    // 0. Use value objects
-    // 0. Use a single constructor
-    // 1. Centralize first
-    // 2. List new options
-    // 3. Choose approach forward
-    // 4. Make enum
-    // 5. Make applicable rules
-    // 6. Implement typestate pattern
-    // 7. Implement runtime rules engine
+    // TODO: Consolidate forced work order logic with centralized state via TypeState pattern.
     pub fn forced_work_order(
         &self,
         periods: &[Period],
@@ -803,40 +661,27 @@ impl WorkOrder
         material_to_periods: &MaterialToPeriod,
     ) -> Result<ForcedWorkOrder>
     {
-        // Okay so the working idea is that every actor should call this. The actor
-        // might need certain other informations
-
-        // Ideally we should split the work orders by the operations in the code. I
-        // think that is the best approach going forward. For now simply take
-        // the first element of the code.
+        // Each actor should call this method with required context information.
+        // TODO: Split work orders by operations to enable independent scheduling.
         let unloading_point_period = self
             .operations
             .0
-            // This is a whole new nightmare
             .iter()
             .nth(0)
             .unwrap()
             .1
             .unloading_point(periods);
 
-        // So the whole thing is now about returning a single object that works for
-        // every Actor that means that we should focus on returning the simplest
-        // object possible. That encompass everything.
-        //
-        // This type
-        // The obstacle is the way here.
+        // Return simplest object that encompasses all actor requirements.
         match &self.fixed_by {
             FixedWorkOrder::Period(_period) => (),
             FixedWorkOrder::BasicStart(naive_date) => {
-                // TODO [ ] include
                 let day = days
                     .iter()
                     .find(|f| f.date == *naive_date)
                     .context("naive_date not found in TimeEnvironment")?
                     .clone();
-                // You need more complex logic to fix more of the code here.
-                // What you are doing here is wrong. You should fix it in a
-                // different way.
+                // TODO: Implement more complex logic for handling basic start dates.
                 return Ok(ForcedWorkOrder::Days(TacticalForceType::OnlyStartDay(day)));
             }
             FixedWorkOrder::Operational(_date_time) => (),
@@ -845,18 +690,14 @@ impl WorkOrder
         if self.vendor()
             && (unloading_point_period.is_some() || self.work_order_analytic.user_status_codes.awsc)
         {
-            // This needs to be corrected as well.
             let forced_work_order = match unloading_point_period {
                 Some(unloading_point_period) => {
                     let mut excluded_periods =
                         self.find_excluded_periods(periods, material_to_periods);
 
-                    // You have to determine a `Vec<Day>` for each of the workorders.
                     excluded_periods.remove(unloading_point_period);
-                    // Okay first make the type, then extend it
                     info!(target: "business_events", work_order_number = self.work_order_number.0, "vendor work order forced in UnloadingPoint");
 
-                    // You should use the basic start dates here.
                     Some(ForcedWorkOrder::Period((
                         unloading_point_period.clone(),
                         excluded_periods,
@@ -872,7 +713,6 @@ impl WorkOrder
                         let mut excluded_periods =
                             self.find_excluded_periods(periods, material_to_periods);
                         excluded_periods.remove(&locked_in_period);
-                        // Okay first make the type, then extend it
                         info!(target: "business_events", work_order_number = self.work_order_number.0, "vendor work order forced in BasicStartDate");
                         Some(ForcedWorkOrder::Period((
                             locked_in_period.clone(),
@@ -883,28 +723,14 @@ impl WorkOrder
                     }
                 }
             };
-            // CRUCIAL INSIGHT! You were not using value objects and the newtype pattern.
-            // This is a mistake.
+            // Ensure value objects and newtype pattern are consistently applied.
             if let Some(forced_work_order) = forced_work_order {
                 return Ok(forced_work_order);
             }
         }
 
-        // This should be removed. We cannot determine if this is true or not.
-        // if self.vendor() {
-        //     self.locked_in_period = None;
-        //     self.excluded_periods
-        //         .remove(self.locked_in_period.as_ref().unwrap());
-        //     info!(target: "business_events", work_order_number =
-        // work_order.work_order_number.0, "vendor work order unscheduled (Make sure
-        // that this is what you actually want)");     return Ok(self);
-        // };
-
-        // Okay make it work first.
-        // RULE 5: Only change one thing at a time.
+        // TODO: Refactor vendor scheduling logic.
         if self.work_order_analytic.user_status_codes.sch {
-            // TODO [ ]
-            // This really ought to be made in a completely different way here.
             let forced_work_order = if let Some(unloading_point_period) = unloading_point_period {
                 if periods[0..=1].contains(unloading_point_period) {
                     let mut excluded_periods =
@@ -941,8 +767,6 @@ impl WorkOrder
             }
         }
 
-        // This is the kind of thing that we really want to avoid.
-        // Okay we should also move the `basic_start_date`
         if self.work_order_analytic.user_status_codes.awsc {
             let scheduled_period = periods
                 .iter()
@@ -995,44 +819,8 @@ impl WorkOrder
             }
         }
 
-        // QUESTION: What are the factors that can force a `WorkOrder`?
-        // 1. UnloadingPoint
-        // 2. AWSC
-        // 3. SCH
-        // 4. BasicStart
-        // 5. EASD & LAFD
-        // if self.work_order_analytic.awaiting_scheduling() {
-        //     let basic_start = self.work_order_dates.basic_start_date;
-        //     return Ok(ForcedWorkOrder::Days(basic_start));
-        // }
-
-        // Is this correct? I am not really sure here. What should you do
-        // if the `UnloadingPoint` and other does not match?
-        // if self.work_order_analytic.scheduled() {
-        //     let basic_start = self.work_order_dates.basic_start_date;
-        //     return Ok(ForcedWorkOrder::Days(basic_start));
-        // }
-
-        // TODO [ ] 2025-07-22 make the code work with the ForcedWorkORder::Technician
-        // You ideally need to split every operation so that they can
-        // be planned whenever.
-        // if let Some(period_string) = &self
-        //     .operations
-        //     .0
-        //     .first_key_value()
-        //     .context("Every WorkOrder should have atleast one Operation")?
-        //     .1
-        //     .unloading_point
-        //     .period_string
-        // {
-        //     let period = periods
-        //         .iter()
-        //         .find(|p| p.period_string() == *period_string)
-        //         .context("`periods: &[Period]` does not contain the
-        // `period_string`")?;
-
-        //     return Ok(ForcedWorkOrder::Period(period.clone()));
-        // }
+        // Factors that can force a `WorkOrder`: UnloadingPoint, AWSC, SCH, BasicStart, EASD, LAFD.
+        // TODO: Support ForcedWorkOrder::Technician with split operations (2025-07-22).
         Ok(ForcedWorkOrder::FreeWorkOrder)
     }
 
@@ -1044,7 +832,7 @@ impl WorkOrder
             .any(|opr| opr.resource.is_ven_variant())
     }
 
-    //TODO [ ] 2025-07-24 a lot of invariants have to be enforced on this.
+    // TODO: Enforce invariants on basic start date changes (2025-07-24).
     pub fn set_basic_start_date(&mut self, basic_start_date: NaiveDate)
     {
         self.work_order_dates.basic_start_date = basic_start_date;
@@ -1056,14 +844,7 @@ impl WorkOrder
         work_order_configurations: &WorkOrderPolicies,
     ) -> Result<WorkOrderValue>
     {
-        // FIX
-        // This should be removed. Where should the global configs be read
-        // from? I am not really sure. You have done a lot today! I think that
-        // reading more. Is a really good idea. Maybe finish the one you started
-        // quickly.
-        // TODO [ ]
-        // There can be no stray `configs` like these! They have to be handled
-        // in a higher level.
+        // TODO: Move configuration management to higher-level module.
         let base_value = match &self.work_order_info.work_order_type {
             WorkOrderType::Wdf(wdf_priority) => match wdf_priority {
                 Priority::Int(int) if (&0..=&8).contains(&int) => {
@@ -1148,16 +929,12 @@ impl WorkOrder
             })
     }
 
-    /// This method determines that earliest allow start date and period for the
-    /// work order. This is a maximum of the material status and the
-    /// earliest start period of the operations. TODO : A stance will have
-    /// to be taken on the VEN, SHUTDOWN, and SUBNETWORKS. We will get an
-    /// error here! The problem is that after this the EASD will not be
-    /// contained anymore.
-    // TODO [ ]
-    // Extract these parameters into a config file.
-    // TODO [ ]
-    // Move this code into the Builder
+    /// Determine earliest allowed start date and period for the work order.
+    ///
+    /// Returns the maximum of the material status and earliest start period of operations.
+    /// TODO: Handle VEN, SHUTDOWN, and SUBNETWORKS edge cases.
+    // TODO: Extract parameters to config file.
+    // TODO: Move logic to Builder.
     pub fn find_excluded_periods(
         &self,
         periods: &[Period],
@@ -1186,9 +963,6 @@ impl WorkOrder
         self.operations.0.insert(operation.activity, operation);
     }
 
-    // QUESTION
-    // What should this function do? I think that the best approach is to
-    // create something that will
     pub fn date_to_period<'a>(periods: &'a [Period], date_time: &NaiveDate) -> &'a Period
     {
         let period: Option<&Period> = periods.iter().find(|period| {
@@ -1196,39 +970,20 @@ impl WorkOrder
                 && period.finish_datetime().date_naive() >= *date_time
         });
 
-        // This is created in a horrible way. I think that the best approach here
-        // is to make.
-        // You are effectively making a new instance period which is not. Should
-        // the work orders age? That is the fundamental question? I do not believe
-        // so. One thing is for sure, the old period should be in the
-        // `SchedulingEnvironment::time_environment`.
+        // Return matching period or default to first period if date not found.
         match period {
             Some(period) => period,
             None => periods.first().unwrap(),
         }
     }
 
-    // FIX
-    // This should be based on a different formulation. This whole thing should be
-    // formulated differently
+    // FIX: Reformulate earliest allowed start period calculation.
     pub fn earliest_allowed_start_period<'a>(
         &'a self,
         periods: &'a [Period],
         material_to_periods: &MaterialToPeriod,
     ) -> &'a Period
     {
-        // This whole thing is bull shit.
-        // TODO [ ]
-        //
-
-        // This is also not this straihtforward. There is an interplay between
-        // this and the
-        // assert!(
-        //     self.earliest_allowed_start_period(&periods)
-        //         .end_date()
-        //         .date_naive()
-        //         >= self.work_order_dates.earliest_allowed_start_date
-        // );
         let period =
             Self::date_to_period(periods, &self.work_order_dates.earliest_allowed_start_date);
 
@@ -1371,9 +1126,7 @@ impl WorkOrder
                     .user_status_codes(|sta| sta.smat(true))
             })
             .work_order_info_builder(|woib| {
-                // FIX [ ]
-                // This is wrong and it should be fixed. You should make the
-                // code work correctly no matter what.
+                // TODO: Properly initialize work order info builder.
                 woib.priority(Priority::Int(1))
                     .work_order_type(WorkOrderType::Wdf(Priority::Int(1)))
             })
@@ -1429,7 +1182,7 @@ pub struct OperationView
     // operation_user_status: String,
 }
 
-/// Read models should be implemented here.
+/// Read models for WorkOrder display and reporting.
 impl WorkOrder
 {
     pub fn view(&self) -> WorkOrderView
@@ -1501,12 +1254,6 @@ impl WorkOrder
         }
     }
 }
-// The issue with what you are doing is that we can keep implementing stuff like
-// this until the day we die. You have to simply go for the money here. I think
-// that is the best approach.
-//
-// You are not good enough to code. You are good enough to do this, Brian
-// believes in you. You simply have to keep working.
 
 #[cfg(test)]
 mod tests

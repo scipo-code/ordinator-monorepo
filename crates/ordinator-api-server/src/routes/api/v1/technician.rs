@@ -16,10 +16,9 @@ pub async fn technician_routes(
         .routes(routes!(
             crate::handlers::operational_handlers::operational_ids
         ))
-        // .route("/{asset}/{supervisor_id}", get(status))
         .with_state(state)
 
-    // TODO [ ] Put these into the handler
+    // TODO: Move these into the handler
     // let orchestrator = orchestrator.lock().unwrap();
 
     // Ok(orchestrator

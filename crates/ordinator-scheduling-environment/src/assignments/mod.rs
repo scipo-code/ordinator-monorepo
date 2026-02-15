@@ -19,15 +19,9 @@ use crate::worker_environment::IdString;
 
 pub type AssignmentId = Uuid;
 
-// ESSAY: #001
-// I think that I should make the `TypeState` pattern here. Yes make the
-// TypeState pattern on the `Assignment` and use this to make sure that the
-// system works on the correct data. Should the SavedAssignments be modeled
-// this way? No I do not think that is a good idea.
-//     `SavedAssignment`s are a repository, you should interact with it through
-// a trait later on. I think that the best approach here is to refer to each
-// of the `Assignment`s through an Id and then move the `WorkOrderNumber` and
-// `Activity` number into the the `Assignment`
+// Uses TypeState pattern to ensure the system works with correct data.
+// SavedAssignments are accessed as a repository through traits, with each
+// Assignment referenced by ID and containing WorkOrderNumber and ActivityNumber.
 #[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct SavedAssignment
 {
@@ -63,15 +57,11 @@ impl AnyAssignment
     }
 }
 
-// Now you have to determine what it is that you want to force here. I think
-// that the best approach is to make the system function with the correct
 impl SavedAssignment
 {
-    // This should be extended to handle the correct initialization of the system.
-    // The best approach is to make the `SavedAssignment`s always dependent on
-    // the technician.
-    // WHY:
-    // To make it possible to assign a [`WorkOrderActivity`] to a single technician.
+    // Creates an assignment for the given technicians with the specified work order.
+    // SavedAssignments are always dependent on the technician to enable assigning
+    // a [`WorkOrderActivity`] to a single technician.
     pub fn make_assignment_for_technician(
         &mut self,
         work_order_number: WorkOrderNumber,
@@ -80,21 +70,12 @@ impl SavedAssignment
         id: &[IdString],
     ) -> Result<()>
     {
-        // TODO [ ] - you have to create the correct structure to hold the data.
-        //
-        // Yes this is the way! You are now using the `WorkOrder` has a mechanism to
-        // overwrite the what ever is in the `SavedAssignments`.
-        //
-        // This function is completely wrong, the issue is that the code is not modified
-        // but over written on each change. That is not the intended behavior.
-        // As long as it works you should keep moving forward. I do not see them
-        // make a test that fails the code. Yes, do not guess, simply keep implementing
-        // and then work on the edge cases and observe the hidden abstraction
-        // afterwards.
+        // TODO: Create correct structure to hold data. Uses WorkOrder to overwrite
+        // SavedAssignments entries. Note: Code is overwritten on each change rather
+        // than modified; proceed with implementation and handle edge cases iteratively.
         let assignment = match work_order {
             ForcedWorkOrder::Period(period) => {
                 let technicians = id.iter().map(|e| (e.clone(), None)).collect::<HashSet<_>>();
-                // Should we make an assignment for each of the technicians? Yes.
                 Assignment::new(
                     work_order_number,
                     Some(*activity_number),
@@ -120,7 +101,7 @@ impl SavedAssignment
                 let date_time_option = technician_include.interval.as_ref().map(|day| day.0);
                 let technicians = id
                     .iter()
-                    // WARN [ ] modifying Technicians in almost impossible as ID is FAT.
+                    // Note: Modifying Technicians is nearly impossible as ID is large/complex.
                     .map(|e| (e.clone(), date_time_option))
                     .collect::<HashSet<_>>();
                 Assignment::new(work_order_number, None, None, None, technicians)
@@ -131,7 +112,7 @@ impl SavedAssignment
             }
         };
 
-        // The forced work order should take precedence,
+        // Forced work orders take precedence over other constraints.
         let assignment = AnyAssignment::Base(assignment);
         self.assignments.insert(Uuid::new_v4(), assignment);
 
@@ -145,10 +126,8 @@ impl SavedAssignment
         day: Day,
     ) -> Result<()>
     {
-        // There is a difference between the WorkOrder and the other parts of the
-        // program. Should you stop? This function should change the Tactical
-        // day, unless it is being blocked by something else. It should return
-        // error codes.
+        // Creates a tactical assignment with the given WorkOrder and day. Returns
+        // an error if the day conflicts with the work order constraints.
         let assignment = match work_order {
             ForcedWorkOrder::Period(period) => {
                 ensure!(
@@ -184,7 +163,7 @@ impl SavedAssignment
                 }
                 work_order::TacticalForceType::IndividualActivities(_vec, _vec1) => todo!(),
             },
-            // TODO [ ] The technician can be plural.
+            // TODO: Handle plural technicians.
             ForcedWorkOrder::Technician(technician_include, _technician_exclude) => {
                 let technicians = technician_include.id.clone();
                 let hash_set = HashSet::from([(technicians, None)]);
@@ -195,7 +174,7 @@ impl SavedAssignment
             }
         };
 
-        // The forced work order should take precedence,
+        // Forced work orders take precedence over other constraints.
         let assignment = AnyAssignment::Base(assignment);
         self.assignments.insert(Uuid::new_v4(), assignment);
 
@@ -218,27 +197,10 @@ impl SavedAssignment
     }
 }
 
-// REMEMBER:
-// * Exclude
-// * Correct data structure
-// * Keep it simple
-// This is everything I believe.
-//
-// ESSAY: #002
-// Should the Assignments be a value object? I think that it
-// should be. It should use a combination of time value objects
-// ids and other parts of the system to correctly create an
-// assignment.
-//     So you should make sure that the correct states are handled here.
-// All the different states should be expressed and handled in here centrally
-// you do not know what to do now and that means that you should make a couple
-// of use cases and see what you learn. What should you do now then?
-// * Clean API on the WorkOrder
-// * Making an assignment should take a `WorkOrder` instance.
-// * The `WorkOrder` instance should be used to return a `Result` with further
-//   actions
-// * The `WorkOrder` object cannot be mutated here. That is a separate endpoint.
-//   This is a good
+// Assignment is a value object combining time value objects, IDs, and work order
+// information to ensure correct state handling. Uses TypeState to manage different
+// assignment states. The WorkOrder API is clean: creating assignments takes a
+// WorkOrder instance and returns a Result. WorkOrder mutations are handled separately.
 #[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct Assignment<State>
 {

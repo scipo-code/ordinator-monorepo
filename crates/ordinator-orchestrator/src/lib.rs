@@ -70,7 +70,6 @@ use self::actor_registry::ActorRegistry;
 use self::database::DataBaseConnection;
 use self::logging::LogHandles;
 
-// O
 pub struct Orchestrator<Ss>
 {
     pub scheduling_environment: Arc<std::sync::Mutex<SchedulingEnvironment>>,
@@ -110,9 +109,6 @@ pub enum StartError
     CouldNotCreateDependencies,
 }
 
-// These are basically handlers on the `Orchestrator` I think that they
-// should go into the. You have learned so much here but you have to
-// keep going. Remember to follow your guts here.
 impl<Ss> Orchestrator<Ss>
 where
     Ss: SystemSolutions<
@@ -131,85 +127,8 @@ where
     {
         match orchestrator_request {
             OrchestratorRequest::AgentStatusRequest => {
-                // for asset in self.agent_registries.keys() {
-                //     let strategic_agent_addr = &self
-                //         .agent_registries
-                //         .get(asset)
-                //         .unwrap()
-                //         .strategic_agent_sender;
-
-                //     let tactical_agent_addr = &self
-                //         .agent_registries
-                //         .get(asset)
-                //         .unwrap()
-                //         .tactical_agent_sender;
-
-                //     // What should we do here? I think that the best approach will be to make
-                // the     // code function
-                //     strategic_agent_addr.sender.send(ActorMessage::Actor(
-                //         StrategicRequestMessage::Status(StrategicStatusMessage::General),
-                //     ))?;
-
-                //     tactical_agent_addr.sender.send(ActorMessage::Actor(
-                //         TacticalRequestMessage::Status(TacticalStatusMessage::General),
-                //     ))?;
-
-                //     for (_id, addr) in self
-                //         .agent_registries
-                //         .get(asset)
-                //         .unwrap()
-                //         .supervisor_agent_senders
-                //         .iter()
-                //     {
-                //         addr.sender
-                //             .send(ActorMessage::Actor(SupervisorRequestMessage::Status(
-                //                 SupervisorStatusMessage::General,
-                //             )))?
-                //     }
-
-                //     for (_id, addr) in self
-                //         .agent_registries
-                //         .get(asset)
-                //         .unwrap()
-                //         .operational_agent_senders
-                //         .iter()
-                //     {
-                //         addr.sender.send(ActorMessage::Actor(
-                //
-                // OperationalRequestMessage::Status(OperationalStatusRequest::General),
-                //         ))?;
-                //     }
-
-                //     let agent_status = self
-                //         .agent_registries
-                //         .get(asset)
-                //         .expect("Asset should always be present")
-                //         .recv_all_agents_status()?;
-
-                //     agent_status_by_asset.insert(asset.clone(), agent_status);
-                // }
-                // let orchestrator_response_status =
-                // AgentStatusResponse::new(agent_status_by_asset);
-                // let orchestrator_response =
-                //     OrchestratorResponse::AgentStatus(orchestrator_response_status);
                 Ok(OrchestratorResponse::Success)
             }
-            // Do we want to use this? No.. Or actually yes.. We want to use the...
-            // We want to use either the SystemConfiguration, or the ActorEnvironment here. I think
-            // that is really the crux of the issue here.
-            // QUESTION [ ]
-            // How to make the code function correctly with the code here? I think that the best
-            // thing to do here is put the actor specification in as part of the database. Why are
-            // you hesitant? I am hesitant as I do not know the extend of the issue here. The best
-            // thing to do is to make the code run with the, this means that the data should be
-            // loaded from the `database` and not simply be a configuration. I think that means
-            // that the seperate... You could save a lot of code by making the mongodb at the
-            // center of all this... No I think that it is better. Remember that the code should
-            // work correctly with the database and the with the.
-            //
-            // So what is the dataflow here? You
-            // You should move the code into the SchedulingEnvironment. The TotalSap should handle
-            // the initialization
             OrchestratorRequest::GetWorkOrderStatus(work_order_number) => {
                 let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 
@@ -241,7 +160,7 @@ where
                 let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 
                 let cloned_work_orders: &WorkOrders = &scheduling_environment_guard.work_orders;
-                // This is not the correct implementation.
+                // TODO: Implement work order filtering correctly
                 let _work_orders: Vec<_> = cloned_work_orders
                     .inner
                     .iter()
@@ -294,25 +213,7 @@ where
                 _number_of_supervisor_periods,
                 _id_string,
             ) => {
-                // FIX
-                // Here you should create the system so that an entry in the
-                // `SchedulingEnvironment` is created.
-                // todo!();
-                // FIX
-                // The methods should be defined on the `actor_factory`
-                // This should be encapsulated. The factory method and the registry should be of
-                // the same process. Should this be inside of the `Orchestrator`
-                // or the `ActorFactory`? I think that the. So where should this
-                // be defined. I think that the best component is the Orchestrator itself.
-                // TODO [x] Make trait
-                // TODO [ ] Make method on Orchestrator
-                // TODO [ ] Integrate `ActorRegistry`
-                //
-                // FIX [ ] Make a `self.start_supervisor`
-
-                // let orchestrator_response =
-                // OrchestratorResponse::RequestStatus(response_string);
-
+                // TODO: Implement supervisor agent creation
                 Ok(OrchestratorResponse::Todo)
             }
             OrchestratorRequest::DeleteSupervisorAgent(asset, id_string) => {
@@ -336,9 +237,6 @@ where
                 let orchestrator_response = OrchestratorResponse::RequestStatus(response_string);
                 Ok(orchestrator_response)
             }
-            // Do we even want this?
-            // Yes it is crucial that `OperationalAgent`s can be created on demand. There is no
-            // excuse for not having that function.
             // OrchestratorRequest::CreateOperationalAgent(
             //     asset,
             //     id,
@@ -406,27 +304,8 @@ where
         }
     }
 
-    // QUESTION
-    // Is it correct to remove the agents here? I believe yes, the system have the
-    // agents that it does. In the scheduling environment. I do not think that
-    // we should move too much with this.
-    // TODO [ ]
-    // This should be a part of the asset_builder. Yes that is the correct way of
-    // going about it.
-    // Do not make a complete builder.
-    // FIX You should simply delete this message.
 }
 
-// You need to decouple the messages from the crates. How should
-// that be done? You need to create a trait with the correct kinds
-// of... God what is the right path forward here? You should make
-// tie them together here. I think that it the best approach.
-//
-// The idea is that you have a single function and then you decide to
-// make this function correctly with the right kind of
-//
-// You had completely misunderstood how this should work. Great that you are
-// growing so fast!
 impl ActorRegistry
 {
     fn new(
@@ -491,7 +370,6 @@ pub enum Environment
     Test(DateTime<Utc>),
 }
 
-// This should be removed and replaced with a dyn
 impl<Ss> Orchestrator<Ss>
 where
     Ss: SystemSolutions<
@@ -520,9 +398,6 @@ where
 
     pub fn asset_factory(&self, asset: &Asset) -> Result<&Self>
     {
-        // WARN: DO NOT CHANGE THE "0" HERE. It is forcing the Orchestrator to handle
-        // Actor errors before the Actor(s) can continue running.
-
         let system_solution = Arc::new(ArcSwap::new(Arc::new(Ss::new())));
 
         self.system_solutions
@@ -557,10 +432,6 @@ where
                 )?,
             );
 
-            // ISSUE: #000 [ ] - Make the `TimeEnvironment` return function based times
-            // ESSAY: #20250814-1
-            // You should make the time_environment into a system clock. No that
-            // fits into a port, and the adapter will then handle the relehj
             let input_tactical = &actor_specifications.tactical();
             debug!(target: "developer", days = ?days);
             let tactical_id = ActorCompositeId::new(
@@ -633,7 +504,6 @@ where
         };
 
         let strategic_communication = StrategicApi::construct_actor(
-            // You should make the code work correctly with the
             strategic_id.clone(),
             dependencies.0.clone(),
             dependencies.1.clone(),
@@ -642,9 +512,6 @@ where
             self.error_sender.clone(),
         )
         .with_context(|| format!("Could not construct StartegicActor {strategic_id}"))?;
-
-        // Where should their IDs come from? I think that the best approach is to
-        // include them from
 
         let tactical_communication = TacticalApi::construct_actor(
             tactical_id.clone(),
@@ -655,11 +522,6 @@ where
             self.error_sender.clone(),
         )
         .with_context(|| format!("{tactical_id} could not be constructed"))?;
-
-        // // This is a good sign. It means that the system is performing correctly.
-        // What // should be done about the code in general?
-        // // Why is the supervisor no used here? This is also not created in the best
-        // way.
 
         let mut supervisor_communications = HashMap::default();
         for supervisor_id in supervisors {
@@ -689,7 +551,6 @@ where
             operational_communications.insert(operational_id.clone(), operational_communication);
         }
 
-        // The flexibility of making a `HashMap` is a good idea.
         let agent_registry = ActorRegistry::new(
             strategic_communication,
             tactical_communication,
@@ -803,8 +664,6 @@ impl OrchestratorBuilder<StepSystemClock>
     }
 }
 
-// The most important thing is that you can sustain a good pace all the time
-// moving forward continuously and improving.
 impl OrchestratorBuilder<StepConfiguration>
 {
     pub fn system_configurations(self) -> OrchestratorBuilder<StepSchedulingEnvironment>
@@ -936,32 +795,15 @@ impl OrchestratorBuilder<StepBuild>
         let (sender, error_receiver): (Sender<anyhow::Error>, Receiver<anyhow::Error>) =
             flume::bounded(0);
 
-        // WARN THIS SHOULD BE CHANGED
-        // The primary issue here is that the code is not made for testing. That is a
-        // huge issue, you should ideally inject a test time only to test the
-        // components that need this. You are making something that is not the best
-        // approach. Also, you should refactor all
-
-        // This should be a bus::Bus instead.
-        // The current time should come from the SystemClock not the other way
-        // around. You are experiencing pain. And that pain is what is needed to
-        // grow and solve this problem.
-        // This is completely wrong... Not you simply have to be able to inject your own
-        // scheduling environment here. That is the main issue with this
-        // function.
-
-        // CRUCIAL LESSON: For types that there exists multiple versions of always
-        // qualify the whole path.
+        // TODO: Refactor to support dependency injection for testing
         let state_link_bus: std::sync::Mutex<bus::Bus<StateLink>> =
             std::sync::Mutex::new(bus::Bus::new(5));
-        // WARN THIS SHOULD BE CHANGED
         let orchestrator = Orchestrator::<Ss> {
             scheduling_environment: self.scheduling_environment.expect("Should be type safe"),
             system_solutions: std::sync::Mutex::new(HashMap::new()),
             actor_registries: std::sync::Mutex::new(HashMap::new()),
             state_link_bus,
             system_configurations: self.system_configurations.expect("Should be type safe"),
-            // We are not using it yet and you should remove it from the system
             database_connections: DataBaseConnection,
             system_clock_tick_receiver: self
                 .system_clock_tick_receiver
@@ -1005,64 +847,21 @@ where
 {
     pub fn export_xlsx_solution(&self, _asset: Asset) -> Result<(Vec<u8>, String)>
     {
-        // let system_solution = self
-        //     .system_solutions
-        //     .get(&asset)
-        //     .with_context(|| {
-        //         format!("Could not retrieve the shared_solution for asset
-        // {asset:#?}")     })?
-        //     .load();
-
-        // This is where it gets a little weird. The handlers should only call methods
-        // on the orchestrator.
-        // This function should lie in the `orchestrator` crate. How in the world did it
-        // ever end up in here
-        // let strategic_agent_solution =
-        // system_solution.strategic().all_scheduled_tasks();
-        // let tactical_agent_solution =
-        // system_solution.tactical().all_scheduled_tasks();
         let _work_orders = {
             let scheduling_environment_lock = self.scheduling_environment.lock().unwrap();
             scheduling_environment_lock.work_orders.clone()
         };
 
-        // ISSUE #000 [ ] - introduce the `create_excel_dump` in the system.
-        // let xlsx_filename = create_excel_dump(
-        //     asset.clone(),
-        //     work_orders,
-        //     self.system_solutions
-        //         .lock()
-        //         .unwrap()
-        //         .get(&asset)
-        //         .with_context(|| {
-        //             format!("You should start up a Scheduling System for Asset
-        // {asset}")         })?
-        //         .load(),
-        // )
-        // .unwrap();
-        // let mut buffer = Vec::new();
-        // let mut file = File::open(&xlsx_filename).unwrap();
-        // file.read_to_end(&mut buffer).unwrap();
-        // std::fs::remove_file(xlsx_filename).expect("The XLSX file could not be
-        // deleted"); let filename = format!("ordinator_xlsx_dump_for_{asset}");
-        // let http_header = format!("attachment; filename={filename}");
-
-        // Ok((buffer, http_header))
         Err(anyhow!("REIMPLEMENT THE EXCEL EXPORT FUNCTION"))
     }
 }
 
-// We should start the system clock and then have it send messages to the
-// Orchestrator. That means that the Orchestrator should have a future the
-// same as the `error_channel`. Yes that is the best approach here. I do
-//
 pub enum TimeCommand
 {
     Advance(chrono::Duration),
     SetTime(chrono::DateTime<Utc>),
 }
-// ISSUE #000 TODO [ ] 2025-07-21 fix the message channel. Make the
-// [`Orchestrator`] await the [`SystemClock`].
+
 pub struct TestSystemClock
 {
     current_time: chrono::DateTime<chrono::Utc>,
@@ -1105,9 +904,6 @@ impl ProductionSystemClock
     }
 }
 
-// Okay, just quickly get this working. I think that the best approach here
-// is to make the system work quickly first, and then know that you have a
-// place for all time related logic in here.
 impl SystemClock for TestSystemClock
 {
     fn now(&self) -> chrono::DateTime<Utc>
@@ -1132,9 +928,7 @@ impl SystemClock for TestSystemClock
         })
     }
 }
-// The ProductionClock should only have the ticker. You are not allowed to
-// modify the timer. Is this correct? Yes I think so. You are making good
-// progress here.
+
 impl SystemClock for ProductionSystemClock
 {
     fn now(&self) -> chrono::DateTime<Utc>

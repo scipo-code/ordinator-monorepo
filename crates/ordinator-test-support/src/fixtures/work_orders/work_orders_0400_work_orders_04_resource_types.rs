@@ -1,6 +1,6 @@
-// /// This file is for making complex data for the tests. Here structure does
-// not /// matter as much as we are not testing attributes directly. Instead we
-// are /// working with stress testing the algorithms and their interplay.
+//! This file creates complex test data for stress testing optimization algorithms.
+//! Structure is less important than exercising the system's ability to handle
+//! internal message passing and algorithm interplay.
 use chrono::TimeDelta;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
@@ -16,7 +16,7 @@ use ordinator_scheduling_environment::worker_environment::resources::Skill;
 ///
 /// Numbering scheme is:
 /// 1. 111199xxxx: normal filler work order, no binding status code, no vendor,
-//    no shutdown.
+///    no shutdown.
 /// 2. 222299xxxx: normal filler work order, no binding status code, no vendor,
 ///    with status code modifiers
 /// 3. 333399xxxx: edgecase work orders, added to determine a particular aspect
@@ -49,8 +49,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -98,8 +97,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -147,8 +145,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -196,8 +193,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -245,8 +241,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -294,8 +289,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -343,8 +337,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -392,8 +385,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -441,8 +433,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -490,8 +481,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -539,8 +529,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -588,8 +577,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -637,8 +625,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -686,8 +673,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -735,8 +721,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -784,8 +769,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -833,8 +817,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -882,8 +865,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -931,8 +913,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -980,8 +961,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1029,8 +1009,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1078,8 +1057,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1127,8 +1105,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1176,8 +1153,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1225,8 +1201,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1274,8 +1249,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1323,8 +1297,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1372,8 +1345,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1421,8 +1393,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1470,8 +1441,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1529,8 +1499,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1588,8 +1557,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1647,8 +1615,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1706,8 +1673,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1765,8 +1731,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1824,8 +1789,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1883,8 +1847,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -1942,8 +1905,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2001,8 +1963,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2060,8 +2021,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2129,8 +2089,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2198,8 +2157,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2267,8 +2225,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2336,8 +2293,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2405,8 +2361,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2474,8 +2429,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2543,8 +2497,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2612,8 +2565,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2681,8 +2633,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2750,8 +2701,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2799,8 +2749,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2848,8 +2797,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2897,8 +2845,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2946,8 +2893,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -2995,8 +2941,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3044,8 +2989,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3093,8 +3037,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3142,8 +3085,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3191,8 +3133,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3240,8 +3181,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3289,8 +3229,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3338,8 +3277,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3387,8 +3325,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3436,8 +3373,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3485,8 +3421,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3534,8 +3469,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3583,8 +3517,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3632,8 +3565,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3681,8 +3613,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3730,8 +3661,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3779,8 +3709,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3828,8 +3757,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3877,8 +3805,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3926,8 +3853,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -3975,8 +3901,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4024,8 +3949,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4073,8 +3997,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4122,8 +4045,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4171,8 +4093,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4220,8 +4141,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4269,8 +4189,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4318,8 +4237,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4367,8 +4285,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4416,8 +4333,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4465,8 +4381,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4514,8 +4429,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4563,8 +4477,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4612,8 +4525,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4661,8 +4573,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4710,8 +4621,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4759,8 +4669,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4808,8 +4717,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4857,8 +4765,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4906,8 +4813,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -4955,8 +4861,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5004,8 +4909,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5053,8 +4957,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5102,8 +5005,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5151,8 +5053,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5200,8 +5101,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5249,8 +5149,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5298,8 +5197,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5347,8 +5245,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5396,8 +5293,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5445,8 +5341,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5494,8 +5389,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5543,8 +5437,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5592,8 +5485,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5641,8 +5533,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5690,8 +5581,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5739,8 +5629,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5788,8 +5677,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5837,8 +5725,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5886,8 +5773,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5935,8 +5821,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -5984,8 +5869,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6033,8 +5917,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6082,8 +5965,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6131,8 +6013,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6180,8 +6061,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6229,8 +6109,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6278,8 +6157,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6327,8 +6205,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6376,8 +6253,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6425,8 +6301,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6474,8 +6349,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6523,8 +6397,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6572,8 +6445,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6621,8 +6493,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6670,8 +6541,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6719,8 +6589,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6768,8 +6637,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6817,8 +6685,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6866,8 +6733,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6915,8 +6781,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -6964,8 +6829,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7013,8 +6877,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7062,8 +6925,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7111,8 +6973,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7160,8 +7021,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7209,8 +7069,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7258,8 +7117,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7307,8 +7165,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7356,8 +7213,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7405,8 +7261,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7454,8 +7309,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7503,8 +7357,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7552,8 +7405,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7601,8 +7453,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7650,8 +7501,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7699,8 +7549,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7748,8 +7597,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7797,8 +7645,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7846,8 +7693,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7895,8 +7741,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7944,8 +7789,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -7993,8 +7837,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8042,8 +7885,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8091,8 +7933,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8140,8 +7981,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8189,8 +8029,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8238,8 +8077,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8287,8 +8125,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8336,8 +8173,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8385,8 +8221,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8434,8 +8269,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8483,8 +8317,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8532,8 +8365,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8581,8 +8413,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8630,8 +8461,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8679,8 +8509,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8728,8 +8557,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8777,8 +8605,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8826,8 +8653,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8875,8 +8701,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8924,8 +8749,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -8973,8 +8797,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9022,8 +8845,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9071,8 +8893,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9120,8 +8941,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9169,8 +8989,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9218,8 +9037,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9267,8 +9085,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9316,8 +9133,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9365,8 +9181,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9414,8 +9229,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9463,8 +9277,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9512,8 +9325,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9561,8 +9373,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9610,8 +9421,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9659,8 +9469,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9708,8 +9517,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9757,8 +9565,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9806,8 +9613,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9855,8 +9661,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9904,8 +9709,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -9953,8 +9757,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10002,8 +9805,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10051,8 +9853,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10100,8 +9901,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10169,8 +9969,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10238,8 +10037,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10307,8 +10105,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10376,8 +10173,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10445,8 +10241,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10514,8 +10309,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10583,8 +10377,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10652,8 +10445,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10721,8 +10513,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10790,8 +10581,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10859,8 +10649,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10928,8 +10717,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -10997,8 +10785,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11066,8 +10853,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11135,8 +10921,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11204,8 +10989,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11273,8 +11057,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11342,8 +11125,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11411,8 +11193,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11480,8 +11261,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11549,8 +11329,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11618,8 +11397,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11687,8 +11465,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11756,8 +11533,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11825,8 +11601,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11894,8 +11669,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -11963,8 +11737,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12032,8 +11805,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12101,8 +11873,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12170,8 +11941,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12239,8 +12009,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12308,8 +12077,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12377,8 +12145,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12446,8 +12213,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12515,8 +12281,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12584,8 +12349,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12653,8 +12417,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12722,8 +12485,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12791,8 +12553,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12860,8 +12621,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12929,8 +12689,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -12998,8 +12757,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13067,8 +12825,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13136,8 +12893,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13205,8 +12961,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13274,8 +13029,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13343,8 +13097,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13412,8 +13165,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13481,8 +13233,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13550,8 +13301,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13619,8 +13369,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13688,8 +13437,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13757,8 +13505,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13826,8 +13573,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13895,8 +13641,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -13964,8 +13709,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14033,8 +13777,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14102,8 +13845,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14171,8 +13913,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14240,8 +13981,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14309,8 +14049,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14378,8 +14117,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14447,8 +14185,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14516,8 +14253,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14585,8 +14321,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14654,8 +14389,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14723,8 +14457,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14792,8 +14525,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14861,8 +14593,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14930,8 +14661,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -14999,8 +14729,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15068,8 +14797,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15137,8 +14865,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15206,8 +14933,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15275,8 +15001,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15344,8 +15069,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15413,8 +15137,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15482,8 +15205,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15551,8 +15273,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15620,8 +15341,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15689,8 +15409,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15758,8 +15477,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15827,8 +15545,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15896,8 +15613,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -15965,8 +15681,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16034,8 +15749,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16103,8 +15817,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16172,8 +15885,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16241,8 +15953,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16310,8 +16021,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16379,8 +16089,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16448,8 +16157,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16517,8 +16225,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16586,8 +16293,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16655,8 +16361,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16724,8 +16429,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16793,8 +16497,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16862,8 +16565,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -16931,8 +16633,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17000,8 +16701,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17069,8 +16769,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17138,8 +16837,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17207,8 +16905,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17276,8 +16973,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17345,8 +17041,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17414,8 +17109,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17483,8 +17177,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17552,8 +17245,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17621,8 +17313,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17690,8 +17381,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17759,8 +17449,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17828,8 +17517,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17897,8 +17585,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -17966,8 +17653,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18035,8 +17721,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18104,8 +17789,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18173,8 +17857,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18242,8 +17925,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18311,8 +17993,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18380,8 +18061,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18449,8 +18129,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18518,8 +18197,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18587,8 +18265,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18656,8 +18333,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18725,8 +18401,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18794,8 +18469,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18863,8 +18537,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -18932,8 +18605,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19001,8 +18673,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19070,8 +18741,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19139,8 +18809,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19208,8 +18877,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19277,8 +18945,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19346,8 +19013,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19415,8 +19081,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19484,8 +19149,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19553,8 +19217,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19622,8 +19285,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19691,8 +19353,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19760,8 +19421,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19829,8 +19489,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19898,8 +19557,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -19967,8 +19625,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20036,8 +19693,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20105,8 +19761,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20174,8 +19829,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20243,8 +19897,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20312,8 +19965,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20381,8 +20033,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20450,8 +20101,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20519,8 +20169,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20588,8 +20237,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20657,8 +20305,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20726,8 +20373,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20795,8 +20441,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20864,8 +20509,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -20933,8 +20577,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21002,8 +20645,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21071,8 +20713,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21140,8 +20781,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21209,8 +20849,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21278,8 +20917,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21347,8 +20985,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21416,8 +21053,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21485,8 +21121,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21554,8 +21189,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21623,8 +21257,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21692,8 +21325,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21761,8 +21393,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21830,8 +21461,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21899,8 +21529,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -21968,8 +21597,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22037,8 +21665,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22106,8 +21733,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22175,8 +21801,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22244,8 +21869,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22313,8 +21937,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22382,8 +22005,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22451,8 +22073,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22520,8 +22141,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22589,8 +22209,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22658,8 +22277,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22727,8 +22345,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22796,8 +22413,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22865,8 +22481,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -22934,8 +22549,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23003,8 +22617,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23072,8 +22685,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23141,8 +22753,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23210,8 +22821,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23279,8 +22889,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23348,8 +22957,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23417,8 +23025,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23486,8 +23093,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23555,8 +23161,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23624,8 +23229,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23693,8 +23297,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23762,8 +23365,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23831,8 +23433,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),
@@ -23900,8 +23501,7 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                         })
                         .functional_location_from_str("TEST/XX/XX/101")
                         .system_condition(SystemCondition::A)
-                        // It is clear that you need a thorough understanding of the whole
-                        // maintenance process to be able to develop this system.
+                        // Requires thorough understanding of the maintenance process.
                         .work_order_info_detail(WorkOrderInfoDetail {
                             subnetwork: "123".to_string(),
                             maintenance_plan: "PLAN TEST".to_string(),

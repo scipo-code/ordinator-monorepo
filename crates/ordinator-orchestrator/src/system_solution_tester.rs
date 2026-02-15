@@ -1,4 +1,4 @@
-// ISSUE #000 Come back to this later on.
+// TODO: Revisit this section
 // use std::sync::Arc;
 // use std::sync::Mutex;
 
@@ -6,12 +6,7 @@
 // use arc_swap::ArcSwap;
 // use ordinator_orchestrator_actor_traits::SystemSolutions;
 // use ordinator_scheduling_environment::SchedulingEnvironment;
-// ESSAY:
-// I think that I should make sure to start testing and developing on the
-// TacticalActor first and then do this. That is a better approach I think
-// hmm... No it is not you have to specify the constraints on the
-// data structure and then start developing. Otherwise you do not know
-// where to make changes to the algorithm.
+// Note: Constraints on the data structure should be specified before algorithm development
 // struct SystemSolutionTester
 // {
 //     system_solution: Arc<ArcSwap<dyn SystemSolutions>>,
@@ -32,9 +27,4 @@
 //     }
 // }
 
-// To make this correctly you will need to inject the state needed. There is
-// an issue that the Actor has the state that is needed to test the solution
-// I think that the best approach here will be to make the system work with
-// independently.
-//
-// You are getting frustrated! That is exactly what you need here.
+// TODO: Inject state for testing; consider making the system work independently

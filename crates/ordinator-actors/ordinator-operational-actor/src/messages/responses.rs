@@ -12,8 +12,6 @@ pub enum OperationalSchedulingResponse
     EventList(Vec<ApiAssignmentEvents>),
 }
 
-// What should this be called? I think that the best word is to call it
-// the
 #[derive(Debug, Serialize)]
 pub struct ApiAssignmentEvents
 {

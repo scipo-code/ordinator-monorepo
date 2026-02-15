@@ -97,21 +97,13 @@ where
         Actor::<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>::builder()
             .agent_id(id.clone())
             .scheduling_environment(Arc::clone(&scheduling_environment_guard))
-            // TODO
-            // Make a builder here!
-            // This is a little difficult. We would like to use the same scheduling environment
-            // Why am I not allowed to propagate the error here?
-            // Why is this so damn difficult for you to understand? What are you not understanding?
-            // I think that taking a short break is a good idea.
-            // The issue is that you do not understand `Fn` traits well enough
+            // TODO: Refactor algorithm builder to simplify initialization
             .algorithm(|ab| {
                 ab.id(id)
-                    // So this function returns a `Result`
                     .parameters_and_solution(&scheduling_environment_guard.lock().unwrap())?
                     .system_solution_arc_swap(shared_solution_arc_swap)
             })?
-            // TODO [x]
-            // These should be created in a single step
+            // TODO: Consolidate communication and state link creation
             .communication(error_channel, state_link_bus)
             .configurations(system_configurations)
             .build()

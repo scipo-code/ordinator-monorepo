@@ -81,20 +81,12 @@ impl SystemStatusCodes
 {
     pub fn builder() -> SystemStatusCodesBuilder
     {
-        // QUESTION
-        // How to handle this?
-        // You should use the `Default` trait and then rely on
-        // a `from_data` methods when you need to initialize
-        // directly from SAP data. I do not see a different
-        // way of doing it.
-        //
-        //
+        // Use Default trait and from_data methods for SAP initialization
         SystemStatusCodesBuilder(SystemStatusCodes::default())
     }
 }
 
-// This is the kind of thing that we need to avoid when doing
-// DDD crucial insight.
+// Avoid DDD anti-patterns in status code design
 #[derive(Default, Args, Clone, Serialize, Deserialize, Debug)]
 pub struct UserStatusCodes
 {
@@ -262,7 +254,7 @@ impl UserStatusCodesBuilder
         }
     }
 
-    // These functions will be crucial for testing! I do not
+    // Builder methods for testing
 
     pub fn smat(mut self, smat: bool) -> Self
     {
@@ -384,13 +376,10 @@ impl UserStatusCodesBuilder
 #[derive(Default)]
 pub struct SystemStatusCodesBuilder(SystemStatusCodes);
 
-/// Builder this correctly could be a real hassel
-// TODO [ ]
-// Add remaining fields that are also needed.
-// All these status codes should by definition never change
-// there is needed something else.
-//
-// A builder would primarily be for testing.
+/// Building correctly could be challenging
+// TODO: Add remaining fields that are also needed
+// TODO: Status codes should never change; alternative approach needed
+// Builder primarily used for testing
 impl SystemStatusCodesBuilder
 {
     pub fn build(self) -> SystemStatusCodes
@@ -435,8 +424,6 @@ impl SystemStatusCodesBuilder
 
     pub fn from_str(self, system_status_string: &str) -> Self
     {
-        // Patterns
-        //
         let rel_pattern = regex::Regex::new(r"REL").unwrap();
         let prc_pattern = regex::Regex::new(r"PRC").unwrap();
         let setc_pattern = regex::Regex::new(r"SETC").unwrap();
@@ -536,7 +523,6 @@ impl MaterialStatus
 {
     pub fn from_status_code_string(status_codes_string: &str) -> Self
     {
-        // Define individual patterns for clarity and precise matching
         let patterns = vec![
             ("SMAT", MaterialStatus::Smat),
             ("NMAT", MaterialStatus::Nmat),
@@ -545,7 +531,6 @@ impl MaterialStatus
             ("PMAT", MaterialStatus::Pmat),
         ];
 
-        // Check each pattern to see if it matches the status code string
         for (pattern, status) in patterns {
             if Regex::new(pattern).unwrap().is_match(status_codes_string) {
                 return status;
@@ -553,7 +538,6 @@ impl MaterialStatus
         }
 
         MaterialStatus::Unknown
-        // If no patterns match, return the Unknown variant
     }
 
     pub fn period_delay(&self, periods: &[Period]) -> Option<Period>

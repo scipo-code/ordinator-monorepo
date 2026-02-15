@@ -16,9 +16,7 @@ use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Deserialize;
 use serde::Serialize;
 
-// Where should the operational struct be found? I think that it should
-// be in the shared types. You should not deserialize this. You cannot
-// code software with this mentality.
+// TODO: Move OperationalResource to shared types rather than deserializing
 #[derive(Default, Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct StrategicResources(pub HashMap<Period, HashMap<OperationalId, OperationalResource>>);
 
@@ -38,8 +36,7 @@ impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for S
             }
         };
 
-        // You cannot create this without the ID of the Actor, as you do not know
-        // who to write here.
+        // Requires Actor ID to properly populate resource mapping
         let mut strategic_resources_inner =
             HashMap::<Period, HashMap<OperationalId, OperationalResource>>::new();
 
@@ -56,16 +53,11 @@ impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for S
                 .expect("Missing the required Actor")
                 .operational()
             {
-                // What is it that you are trying to do here? You want to instantiate an agent
-                // TODO: Could you reuse the OperationalResource. No could you inplement a
-                // into formulation here? I think that is a that ... THis is actually fun!
+                // TODO: Consider implementing trait-based conversion for OperationalResource
                 let mut skill_hours: HashMap<Skill, Work> = HashMap::new();
 
-                // let availability = &operational_agent.operational_configuration.availability;
-
-                // This does not make any sense for the longer term. I think that you should
-                // rely on the 13 days.
-                let days_in_period = 13.0; // WARN: period.count_overlapping_days(availability);
+                // TODO: Use period.count_overlapping_days(availability) instead of hardcoded 13 days
+                let days_in_period = 13.0;
 
                 for resource in &operational_agent.1.operational_configuration.resources {
                     skill_hours.insert(
@@ -168,11 +160,7 @@ impl StrategicResources
         Self(resources)
     }
 
-    // Okay so you have to determine a good way of updating the load here. The best
-    // approach would probably be to create a small heuristic
-    //
-    // The load should be updated and this means that we need to generate a small
-    // heuristic. As this is no longer deterministic.
+    // TODO: Implement heuristic for load updates now that the operation is non-deterministic
     pub fn update_load(
         &mut self,
         period: &Period,
@@ -311,7 +299,7 @@ impl StrategicResources
                     std::any::type_name::<StrategicResources>()
                 )
             })?
-            // WARN START HERE
+            // TODO: Verify aggregation logic handles edge cases correctly
             .values()
             .fold(Work::from(0.0), |acc, or| {
                 acc + *or.skill_hours.get(resource).unwrap_or(&Work::from(0.0))

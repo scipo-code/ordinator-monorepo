@@ -64,8 +64,7 @@ impl Parameters for TacticalParameters
             .work_orders
             .inner
             .iter()
-            // WARN: Unwrap accepted. Every agent should always be connected to an Asset
-            // QUESTION: Is this actually true?
+            // Warning: Every agent should always be connected to an asset.
             .filter(|(_, wo)| &wo.functional_location().asset == id.2.main_asset())
             .filter(|(_, wo)| wo.released_for_scheduling());
 
@@ -82,9 +81,7 @@ impl Parameters for TacticalParameters
                         .collect::<HashMap<_, _>>();
                 Ok((
                     *won,
-                    // This should also be found inside of the database.
-                    // There is something that has to be inverted here. You are not designing this
-                    // is the best possible way.
+                    // TODO: Design logic for inverting database constraints
                     create_tactical_parameter(wo, start_days_for_activities, work_order_policies)?,
                 ))
             })
@@ -103,7 +100,6 @@ impl Parameters for TacticalParameters
         })
     }
 
-    // We cannot reuse this component.
     fn create_and_insert_new_parameter(
         &mut self,
         _key: Self::Key,
@@ -114,15 +110,7 @@ impl Parameters for TacticalParameters
     }
 }
 
-// TODO
-// We should think carefully about putting this into the `Parameters` trait as
-// an associated function. These `create_parameter` functions will be insanely
-// important later on. Say every algorithm should have their own of these
-// functions... No there should only be one and that one should accept a
-// Generic?
-//
-// Is that even possible? I think that it is. Keep this up! You have to
-// continue.
+// TODO: Consider making `create_parameter` functions associated trait methods that accept generic types
 pub fn create_tactical_parameter(
     work_order: &WorkOrder,
     start_days_for_activities: HashMap<Option<ActivityNumber>, AnyAssignment>,
@@ -153,57 +141,37 @@ pub fn create_tactical_parameter(
 pub struct TacticalParameter
 {
     pub tactical_operation_parameters: BTreeMap<ActivityNumber, OperationParameter>,
-    // ISSUE #300 TODO [ ] 2025-07-17 implement the `forced_schedule_*` in the tactical
-    //
-    // pub forced_in_period: Option<Period>,
-    // You have to make a force schedule function. You are getting a
+    // TODO: ISSUE #300 Implement forced_schedule_* in the tactical actor
     pub weight: u64,
     pub relations: Vec<ActivityRelation>,
-    // TODO: These two should be moved out of the parameters. You might end up implementing
-    // that on the these on the `SchedulingEnvironment`
+    // TODO: Move earliest_allowed_start_date to SchedulingEnvironment
     pub earliest_allowed_start_date: NaiveDate,
 }
 
-// How should the parameters be build here?
 impl TacticalParameter
 {
     pub fn new(
         work_order: &WorkOrder,
-        // This should be a part of the options.
         work_order_configuration: &WorkOrderPolicies,
         operation_parameters: BTreeMap<ActivityNumber, OperationParameter>,
     ) -> Result<Self>
     {
         Ok(Self {
             tactical_operation_parameters: operation_parameters,
-            // Setting this field will be immensely difficult. This is where much of the business
-            // logic should recide. It will not be simple to create this.
-            // This is a crazy place to code the system. You have to work more on this.
-            // Should you wait with this? Yes you should... You cannot see the path forward
-            // and it is causing you pain here. The best approach forward here is to make the
-            // system function with o
-            // ISSUE #300 TODO [ ] 2025-07-17 implement the `forced_schedule_*` in the tactical
-            // actor forced_in_period: work_order.,
+            // TODO: ISSUE #300 Implement forced_schedule_* in the tactical actor
             weight: work_order.work_order_value(work_order_configuration)?,
             relations: work_order.activity_relations(),
             earliest_allowed_start_date: work_order.earliest_allowed_start_date(),
-            // So we have to create something that will let us fix the tactical work_orders. The
-            // enum here is a great bet.
         })
     }
 }
 
-// You cannot make a forced method for the `tactical` as you do not know where
-// to fit them in this.
-// TODO [x] This is lacking the earliest_strat_day. That is not good that
-// it is missing.
+// TODO: Add earliest_start_day field
 #[derive(Clone, Serialize, Debug)]
 pub struct OperationParameter
 {
-    // Okay here you need to add additional logic to the system. The most important thing is to
-    // make the system work correctly with the
     pub work_order_number: WorkOrderNumber,
-    // ISSUE #300 TODO [ ] 2025-07-17 implement the `forced_schedule_*` in the tactical
+    // TODO: ISSUE #300 Implement forced_schedule_* in the tactical actor
     // pub forced_start_day: Option<Day>,
     pub number: NumberOfPeople,
     pub duration: Work,
@@ -211,7 +179,6 @@ pub struct OperationParameter
     pub work_remaining: Work,
     pub resource: Skill,
     pub forced_start_date: Option<Day>,
-    // You did something right here. What was that? I am not really sure here.
     pub earliest_start_date: DateTime<Utc>,
     pub earliest_finish_date: DateTime<Utc>,
 }
@@ -229,8 +196,7 @@ impl OperationParameter
         Ok(Self {
             work_order_number,
             number: operation_view.number_of_people,
-            // FIX
-            // This should also have been created differently.
+            // TODO: Refactor duration initialization
             duration: operation_view.duration,
             operating_time,
             work_remaining: operation_view.remaining_work,

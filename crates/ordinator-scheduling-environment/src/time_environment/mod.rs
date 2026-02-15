@@ -19,10 +19,9 @@ use self::period::Period;
 pub mod day;
 pub mod period;
 
-// WARN: Make the fields private. It does not make sense to change these
-// individually. FIX
-// All Periods here refer to the same thing. You should use references
-// This should be build differently
+// TODO: Make fields private; changing them individually does not make sense.
+// All periods should use references to avoid duplication.
+// Consider restructuring this design.
 #[derive(Clone, Serialize, Deserialize, Debug, Default)]
 pub struct TimeEnvironment
 {
@@ -197,9 +196,7 @@ fn create_periods(current_time: DateTime<Utc>, number_of_periods: u64, days: &[D
 -> Vec<Period>
 {
     let mut periods: Vec<Period> = Vec::<Period>::new();
-    // TODO
-    // This needs to go. Where should we move it to?
-    //
+    // TODO: Determine proper location for this logic
     let mut start_time = current_time;
 
     // Get the ISO week number

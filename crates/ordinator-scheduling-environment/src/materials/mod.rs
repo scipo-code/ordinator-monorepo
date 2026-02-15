@@ -5,7 +5,7 @@ use serde::Serialize;
 pub struct MaterialRepo
 {
     pub material_to_period: MaterialToPeriod,
-    // ISSUE #000 [ ] - add control tower or other data source to the program
+    // TODO: Add control tower or other data source to the program
     // control_tower: ControlTower,
 }
 

@@ -1,6 +1,5 @@
-/// This file is for making complex data for the tests. Here structure does not
-/// matter as much as we are not testing attributes directly. Instead we are
-/// working with stress testing the algorithms and their interplay.
+/// Provides complex test data for stress testing optimization algorithms and their interplay.
+/// Structure is not critical as individual attributes are not directly tested.
 use chrono::TimeDelta;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
@@ -63,7 +62,7 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
             }
             wob.work_order_info_builder(|woib| {
                 woib.priority(Priority::new_int(3))
-                    // TODO [ ] You only need work order type to fix this correctly in the code.
+                    // TODO: Refactor to use work order type directly
                     .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
                     .revision(Revision::new("NOSD"))
                     .work_order_text(WorkOrderText {
@@ -76,8 +75,6 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                     })
                     .functional_location_from_str("TEST/XX/XX/101")
                     .system_condition(SystemCondition::A)
-                    // It is clear that you need a thorough understanding of the whole
-                    // maintenance process to be able to develop this system.
                     .work_order_info_detail(WorkOrderInfoDetail {
                         subnetwork: "123".to_string(),
                         maintenance_plan: "PLAN TEST".to_string(),

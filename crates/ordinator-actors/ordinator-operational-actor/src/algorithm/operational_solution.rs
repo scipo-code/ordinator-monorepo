@@ -1,8 +1,7 @@
 use std::collections::HashMap;
 use std::ops::ControlFlow;
 
-// You cannot know what the right thing is here as you do not know the state of the
-// program. You have to continuously have to work on
+// The correct implementation depends on runtime program state that is unknown at this point
 use anyhow::Context;
 use anyhow::Result;
 use anyhow::ensure;
@@ -26,22 +25,24 @@ use ordinator_scheduling_environment::worker_environment::resources::ActorCompos
 use serde::Serialize;
 use valuable::Valuable;
 
-// This is for the `constracts`, `conversions`, and the `orchstrator` to handle.
+// Used by contracts, conversions, and the orchestrator
 use super::ContainOrNextOrNone;
 use super::Unavailability;
 use super::no_overlap_by_ref;
 use super::operational_events::OperationalEvents;
 use super::operational_parameter::OperationalParameters;
 
-/// You want this to be a struct so that you can implement methods and
-/// formatting and logging.
+/// Objective value for operational actor optimization, enabling implementation of traits and custom formatting
 #[derive(Serialize, Copy, PartialEq, PartialOrd, Ord, Eq, Debug, Default, Clone, Valuable)]
 pub struct OperationalObjectiveValue
 {
-    /// utilization
+    /// Hands-on tool time utilization in milliseconds
     hands_on_tool_time: u64,
+    /// Assessment activity count
     assess: u64,
+    /// Assignment activity count
     assign: u64,
+    /// Total scheduled work order activities
     total_work_order_activities: u64,
 }
 
@@ -68,10 +69,7 @@ pub struct OperationalSolution
     pub(crate) non_productive: Vec<Assignment>,
 }
 
-// NOTE [ ]
-// You know that here you will have to make the system so that the code will
-// work correctly with the `Debug` implementation. Foresight is the only gift
-// that you can you to speed up development.
+// Debug implementation depends on formatting flags and anticipates future requirements
 impl Debug for OperationalSolution
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
@@ -137,20 +135,7 @@ impl Solution for OperationalSolution
     }
 }
 
-// Then here now you need to implement the SwapSolution trait for each System
-//
-// NOTE
-// Take a break before continuing. Now I lost it completely again. I think that
-// we simply have to continue here again.
-//
-// You did this because you needed to have a way of making the
-// system work generically with the swapping operation. Forget the
-// rest for now. That is the crucial part that needs to work
-// before you go home.
-// But the issue now with the Ss is that you only have access to the
-// swapping behavior through methods. That is also an issue here.
-//
-// I am beginning to...
+// Implement SwapSolution trait for generic system-wide swap operations
 impl<Ss> SwapSolution<Ss> for OperationalSolution
 where
     Ss: SystemSolutions<Operational = Self>,
@@ -220,7 +205,6 @@ impl OperationalSolution
     ) -> Option<&((WorkOrderNumber, u64), OperationalAssignment)>
     {
         self.scheduled_work_order_activities
-            // This value should be gotten from the
             .iter()
             .filter(|f| f.1.active_datetimes().contains(&day.date))
             .find(|e| e.0 == *work_order_activity)
@@ -243,19 +227,8 @@ impl OperationalSolution
         _activity_relation: ActivityRelation,
     ) -> Option<WorkOrderActivity>
     {
-        // ESSAY [ ]
-        // Where should this be implemented? The start time of a work_order_activity has
-        // to be greater than the finish time of the previous assigned one. I do
-        // not see anyway
-        //
-        // TODO { }
-        // * Go into the internal state of the Actor and make sure that the `Precedence`
-        //   relation
-        // - [ ] Put the precedence relation into the `OperationalParameter`
-        // is upheld. You should expand the `OperationalParameter`s to handle this so
-        // that the `Tactical` and the `Operational` actors are based on the
-        // same formulation. This means that a simply if statement here is a really bad
-        // idea. You need to trace it up to the root.
+        // TODO: Move precedence relation validation to OperationalParameters to align with Tactical actor
+        // Ensure work_order_activity start time is greater than previous activity finish time
         //
         for (
             window_index,
@@ -268,55 +241,14 @@ impl OperationalSolution
             .map(|x| (&x[0], &x[1]))
             .enumerate()
         {
-            // If this is a start-start relation then it should be reverted. to
-            // `operational_solution.0.start_time` otherwise simply stay as-is.
-
-            // TODO START HERE.
-            // we want to loop through the whole of the solution... Actually we want to loop
-            // from the reverse side
-            //
             if let ControlFlow::Break(_) =
                 self.check_precedence_constraint(work_order_activity, window_index)
             {
                 continue;
             }
 
-            // let latest_work_order_activity_in_solution = self
-            //     .scheduled_work_order_activities
-            //     .iter()
-            //     .filter(|f| f.0.0 == work_order_activity.0)
-            //     .filter(|f| f.0.1 < work_order_activity.1)
-            //     .max_by(|d, e| {
-            //         // If the relation between work_order `operational_solution.0` and
-            // key.1 is         // start-start we should take the start time of
-            // the two. This means that there         // are multiple things
-            // that are wrong here. You should aim to make the correct         //
-            // implementation. finish_time() is not the best approach here.
-            //         // You need to get the relation in here to do this. I think that this
-            //         // is in the wrong place of the code.
-            //         // You have to find the index of the `activity_number`. This is
-            // currently         // unknowable. Where should you pull it in
-            // from?         match activity_relation {
-            //             ActivityRelation::StartStart =>
-            // d.1.start_time().cmp(&e.1.start_time()),
-            // ActivityRelation::FinishStart => d.1.finish_time().cmp(&e.1.finish_time()),
-            //             // TODO [ ] 2025-07-15 fix this after the
-            //             ActivityRelation::Postpone(_time_delta) => {
-            //                 d.1.finish_time().cmp(&e.1.finish_time())
-            //             }
-            //         }
-            //     })
-            //     .map(|f| &f.1);
-
-            // TODO ISSUE [ ] 2025-07-15 add `StartStart` logic here.
-            // TODO ISSUE [ ] 2025-07-15 use `ActivityRelation::PostPone` to move the start
-            // date further.
-            //
-            // match activity_relation {
-            //     ActivityRelation::StartStart => {}
-            //     ActivityRelation::FinishStart => todo!(),
-            //     ActivityRelation::Postpone(time_delta) => todo!(),
-            // }
+            // TODO: Handle StartStart and Postpone activity relations
+            // TODO: Validate activity_relation constraints during insertion
             let start_of_solution_window = operational_assignment_0.finish_time();
 
             let end_of_solution_window = operational_assignment_1.start_time();
@@ -410,9 +342,7 @@ impl OperationalSolution
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub struct OperationalAssignment
 {
-    // This is an auxilliary objective value. Where should it lie to solve this issue? You
-    // need one per `WorkOrderActivity` so removing it does not really make that much sense
-    // I think that you have to store them in the solution.
+    /// Marginal fitness value, stored per WorkOrderActivity in the solution
     pub(crate) marginal_fitness: MarginalFitness,
     pub(crate) assignments: Vec<Assignment>,
 }
@@ -427,7 +357,7 @@ impl OperationalAssignment
         }
     }
 
-    /// Start time of the Whole Assignment Vec
+    /// Return start time of the first assignment
     pub fn start_time(&self) -> DateTime<Utc>
     {
         self.assignments.first().unwrap().start
@@ -452,9 +382,7 @@ impl OperationalAssignment
     }
 }
 
-// This kind of behavior should be part of the `SharedSolutionTrait`
-// The issue here is that the code is not ready for use. We have to
-// change the different
+// TODO: Move behavior to SharedSolutionTrait once code is stabilized
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Assignment
 {
@@ -463,9 +391,7 @@ pub struct Assignment
     pub finish: DateTime<Utc>,
 }
 
-// This is implemented incorrectly. I think that the best approach
-// here is to make the code function so that there is only a single
-// source of truth.
+// NOTE: Ensure single source of truth for assignment time constraints
 impl Assignment
 {
     pub fn new(

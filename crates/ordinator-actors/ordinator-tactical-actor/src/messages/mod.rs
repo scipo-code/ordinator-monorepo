@@ -32,8 +32,7 @@ pub enum TacticalResponseMessage
     Update,
 }
 
-// TODO [ ]
-// Consider reintroducing this into the code at a later stage the idea is good.
+// TODO: Consider reintroducing this code at a later stage; the idea is sound.
 // #[derive(Debug, Clone, Serialize)]
 // pub struct TacticalInfeasibleCases {
 //     pub aggregated_load: ConstraintState<String>,

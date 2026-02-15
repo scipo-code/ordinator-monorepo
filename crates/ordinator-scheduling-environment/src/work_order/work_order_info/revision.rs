@@ -33,7 +33,7 @@ impl Revision
     pub fn shutdown(&self) -> bool
     {
         match self.revision_code {
-            // Careful here talk with [[Brian Friis Nielsen]]
+            // Verify behavior with Brian Friis Nielsen
             RevisionCode::Ne => false,
             RevisionCode::Nosd => false,
             RevisionCode::Code(_) => true,

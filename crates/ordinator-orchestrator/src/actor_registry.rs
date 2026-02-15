@@ -34,16 +34,9 @@ impl ActorRegistry
             .map(|(_, addr)| addr)
     }
 
-    // This function should be generic over all the different types of messages.
-    // So the idea behind this function is that it should take a generic for
-    // the interal message, but that the outer message is the same for every
-    // agent! This means that it should take like `Status` or something like
-    // that
-    // FIX
-    // Make this generic
-    // WARN
-    // Making this generic is probably not the best idea.
-    // We should  let the `AgentStatus`
+    // TODO: Make this function generic over message types. The outer message
+    // type should be consistent across agents, possibly a `Status` type.
+    // Note: Genericization may introduce complexity; consider design impact.
     // pub fn recv_all_agents_status(&self) -> Result<AgentStatus> {
     //     let mut supervisor_statai: Vec<SupervisorResponseStatus> = vec![];
     //     let mut operational_statai: Vec<OperationalResponseStatus> = vec![];

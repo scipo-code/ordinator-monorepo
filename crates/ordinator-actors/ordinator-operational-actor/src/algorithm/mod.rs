@@ -78,7 +78,6 @@ pub trait OperationalTraitUtils
     );
 }
 
-// Do you want this on the OperationalAlgorithm?
 impl<Ss> OperationalTraitUtils for OperationalAlgorithm<Ss>
 where
     Ss: SystemSolutions,
@@ -89,8 +88,6 @@ where
         next_operation: Option<&OperationalAssignment>,
     ) -> Result<(DateTime<Utc>, OperationalEvents)>
     {
-        // So the error is in here now. That means that we should strive for
-        // making this
         if self.0.parameters.break_interval.contains(current_time) {
             let time_interval = self.determine_time_interval_of_function(
                 next_operation,
@@ -122,8 +119,6 @@ where
                 OperationalEvents::Toolbox(self.0.parameters.toolbox_interval.clone()),
             ))
         } else {
-            // All this is much more complex than it needs to be. I can feel it.
-            //
             let start = *current_time;
             let (time_until_next_event, next_operational_event) =
                 self.determine_next_event(current_time).with_context(|| {
@@ -133,7 +128,6 @@ where
                         line!()
                     )
                 })?;
-            // We should think of this in
             let mut new_current_time = *current_time + time_until_next_event;
 
             if *current_time == new_current_time {
@@ -149,22 +143,13 @@ where
                 let time_interval = TimeInterval::new(start.time(), new_current_time.time())?;
                 Ok((
                     new_current_time,
-                    // So the issue is here. This is the only place that the
-                    // `OperationalEvents::NonProductiveTime` is instantiated.
-                    // Should you simply continue here? You should take a break now. Meditate
-                    // is the best course of action.
                     OperationalEvents::NonProductiveTime(time_interval),
                 ))
             }
         }
     }
 
-    // This function makes sure that the created event is adjusted to fit the
-    // schedule if there has been any manual intervention in the schedule for
-    // the OperationalAgent.
-    //
-    // You should feel good about this! Maturity comes here from accepting your
-    // own weaknesses.
+    // Adjust the created event to fit the schedule if there has been manual intervention
     fn determine_time_interval_of_function(
         &mut self,
         next_operation: Option<&OperationalAssignment>,
@@ -172,7 +157,6 @@ where
         interval: TimeInterval,
     ) -> Result<TimeInterval>
     {
-        // What is this code actually trying to do? I think
         let time_interval: TimeInterval = match next_operation {
             Some(operational_solution) => {
                 if operational_solution.start_time().date_naive() == current_time.date_naive() {
@@ -190,10 +174,7 @@ where
         Ok(time_interval)
     }
 
-    // This is a problem. What should you do about it? I think that the best thing
-    // that you can do is move all this into the `schedule` function and handle
-    // it while the code is running. That is probably the best call here. I
-    // do not see what other way it could be done in a better way.
+    // TODO: Move this logic into the `schedule` function
     fn update_marginal_fitness(
         &mut self,
         work_order_activity_previous: (WorkOrderNumber, ActivityNumber),
@@ -226,11 +207,8 @@ pub enum Unavailability
     End,
 }
 
-// FIX
-// Some of the methods here should be moved out of the agent. That will be
-// crucial. You have one hour to m make this compile again.
-// QUESTION
-// What should be changed here to make the ABLNS work on the Algorithm again?
+// TODO: Move some methods out of the agent
+// TODO: Determine what changes are needed to make ABLNS work on Algorithm
 
 impl<Ss> Deref for OperationalAlgorithm<Ss>
 where
@@ -254,9 +232,7 @@ where
     }
 }
 
-// TODO
-// The algorithms should not run until they have anything to schedule. We want
-// the `ScheduleIteration` counter to mean something always.
+// TODO: Prevent algorithms from running until there is something to schedule
 impl<Ss> ActorBasedLargeNeighborhoodSearch for OperationalAlgorithm<Ss>
 where
     Ss: SystemSolutions<Operational = OperationalSolution>,
@@ -266,9 +242,8 @@ where
     type Algorithm = Algorithm<OperationalSolution, OperationalParameters, (), Ss>;
     type Options = OperationalOptions;
 
-    // NOTE 2025-06-28
-    // [`Solution`]s should not be created in here. The `schedule` function should
-    // construct them directly to avoid state duplictions.
+    // NOTE 2025-06-28: Solutions should not be created in here. The `schedule` function
+    // should construct them directly to avoid state duplication
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
         let supervisor_work_order_activities_for_technician = self
@@ -291,11 +266,7 @@ where
                 !supervisor_work_order_activities_for_technician
                     .get(woa)
                     .unwrap_or({
-                        // NOTE [ ]
-                        // The main issue here is that the `ensure` here is not
-                        // correct. There could actually be [`WorkOrder`]s in the
-                        // OperationalActor that are not present in the [`SupervisorActor`]
-                        // This means that we should remove this
+                        // NOTE: WorkOrders may exist in OperationalActor but not in SupervisorActor
                         &Delegate::Assign
                     })
                     .is_drop()
@@ -305,15 +276,7 @@ where
 
     fn make_atomic_pointer_swap(&mut self)
     {
-        // Performance enhancements:
-        // * COW: #[derive(Clone)] struct SharedSolution<'a> { tactical: Cow<'a,
-        //   TacticalSolution>, // other fields... }
-        //
-        // * Reuse the old SharedSolution, cloning only the fields that are needed. let
-        //   shared_solution = Arc::new(SharedSolution { tactical:
-        //   self.tactical_solution.clone(), // Copy over other fields without cloning
-        //   ..(**old).clone() });
-        // This should be abstracted away at some point.
+        // TODO: Consider COW or selective cloning for performance optimization
         self.arc_swap_shared_solution.rcu(|old| {
             let mut shared_solution = (**old).clone();
             shared_solution.operational_swap(&self.id, self.solution.clone());
@@ -321,7 +284,7 @@ where
         });
     }
 
-    // If we are going to implement delta evaluation we should remove this part.
+    // TODO: Remove if delta evaluation is implemented
     fn calculate_objective_value(
         &mut self,
     ) -> Result<
@@ -352,20 +315,7 @@ where
             )
         })?;
         event!(Level::DEBUG, operational_events_len = ?operational_events.iter().filter(|val| val.operational_events.is_hands_on_tool_time()).collect::<Vec<_>>().len());
-        // TODO [x]
-        // How do we determine what should be done about the overlap here?
-        // The first thing to determine is whether the overlap are from two different
-        // sources meaning the
-
-        // Good so now we have that in place. Now we need the debugger to determine
-        // where the error is:
-        // Remember
-        // 1. Knowledge
-        // 2. Tools
-        // 3. Harness and tests
-        // 4. Source code
-        // 5. Runtime
-        //
+        // TODO: Determine handling for overlaps from different sources
         let all_events = operational_events
             .into_iter()
             .chain(self.solution.non_productive.clone())
@@ -395,8 +345,6 @@ where
         self.assert_no_operation_overlap()
             .context("Operational_events overlap in the operational objective value calculation")?;
 
-        // What is the problem here?
-        // If the work order changes you
         for assignment in all_events.clone() {
             match &assignment.operational_events {
                 OperationalEvents::WrenchTime((time_interval, work_order_activity)) => {
@@ -520,9 +468,7 @@ where
 
         let old_objective_value = self.solution.objective_value;
 
-        // This should not be set here! This is so disguisting! It is really
-        // not the way to make this work! You have to find a different
-        // way.
+        // TODO: Move objective value assignment to a more appropriate location
         self.solution.objective_value = new_objective_value;
         if self.solution.objective_value > old_objective_value {
             Ok(ObjectiveValueType::Better(new_objective_value))
@@ -531,20 +477,12 @@ where
         }
     }
 
-    // So after this function everything should be alright correct?
-    // TODO [ ] Test that the overlap in non existent after a schedule call
+    // TODO: Test that overlaps don't exist after a schedule call
     fn schedule(&mut self) -> Result<()>
     {
         self.solution.non_productive.clear();
-        // This method should now go into the trait for the supervisor. And its name
-        // will provide for the
-        // TODO [ ]
-        // Move this to the `interface`
-        // QUESTION
-        // What does this function do?
-        // It determines all work order activities that are either `Delegate::Assess` or
-        // `Delegate::Assign`
-        // it should be named: `task`?
+        // TODO: Move to the supervisor trait interface
+        // Determine delegated work order activities (Assess or Assign)
         let work_order_activities = &self
             .loaded_system_solution
             .supervisor_actor_solutions()
@@ -585,7 +523,6 @@ where
                 .get(&work_order_activity.0)
                 .unwrap();
 
-            // Can this ever be None?
             let activity_index = self
                 .parameters
                 .work_order_parameters
@@ -624,17 +561,12 @@ where
             .with_context(|| "Overlap between work order activities".to_string())?;
         let mut current_time = self.parameters.availability.start_datetime();
 
-        // Fill the schedule
-        // What does `ContainOrNextOrNone` even mean here? The fact that you do not know
-        // is a serious issue.
         loop {
             match self.solution.containing_operational_solution(current_time) {
                 ContainOrNextOrNone::Contain(individual_operational_assignment) => {
                     current_time = individual_operational_assignment.finish_time();
                 }
 
-                // You are having trouble here because you have not named things correctly. That is
-                // the main issue here.
                 ContainOrNextOrNone::Next(individual_operational_assignment) => {
                     let (new_current_time, operational_event) = self
                         .determine_next_event_non_productive(
@@ -643,25 +575,12 @@ where
                         )?;
                     ensure!(!operational_event.is_hands_on_tool_time());
                     ensure!(operational_event.time_delta() == new_current_time - current_time);
-                    // The amount of business logic that has to go into all of this is enourmous.
                     let assignment =
                         Assignment::new(operational_event, current_time, new_current_time)
                             .with_context(|| format!("Could not create the a work assignment\ncurrent_time: {current_time}\n new_current_time: {new_current_time}"))?;
 
                     current_time = new_current_time;
 
-                    // You need to assign the reason for the error every where. This is crucial.
-                    // Okay so what should happen to these two? I think that the best approach
-                    // is to simply.
-                    //
-                    // The issue with using a debugger is that you would have to note down
-                    // where everything lies in order for it to work correctly
-                    // What do we want to test now?
-                    // ensure!(
-                    //     (event_1.finish <= event_2.start) || (event_2.finish <= event_1.start),
-                    //     "event_1: {event_1:#?}\nevent_2: {event_2:#?}"
-                    // );
-                    // Remain calm. That is crucial.
                     ensure!(
                         individual_operational_assignment
                             .assignments
@@ -672,26 +591,15 @@ where
                         "{:<30}: {current_time}\n\n{:<30}: {:#?}\n\n{:<30}: {:#?}\n\n{:<30}: {:#?}",
                         "current_time",
                         "operational_solution_finish",
-                        // Why is there only a single element in this one? That is a
-                        // mistake that should be fixed.
                         individual_operational_assignment.assignments,
                         "assignment",
                         assignment,
                         "non_productive",
                         self.solution_intermediate,
                     );
-                    // This is the error. Hmm... The question then becomes who
-                    // should handle the hjjk
-                    // ESSAY
-                    // The issue is the the non-productive is also part of the solution. I do not
-                    // think that we can be without them. I think that we should just put the
-                    // non-productive into the `Solution`
-
-                    // TODO 2025-06-30 [ ] Make a custom push that only allows you to push
-                    // in `OperationalEvents::NonProductiveTime`.
+                    // TODO 2025-06-30: Make a custom push that only allows NonProductiveTime events
                     self.solution.non_productive.push(assignment);
                 }
-                // I think that this should be renamed.
                 ContainOrNextOrNone::None => {
                     let (new_current_time, operational_event) = self
                         .determine_next_event_non_productive(&mut current_time, None)
@@ -866,19 +774,14 @@ impl<Ss> OperationalAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    // Okay, you got an error here, but you do not understand where it came from.
-    // That means that you did the error handling incorrectly.
     fn determine_wrench_time_assignment(
         &self,
         work_order_activity: WorkOrderActivity,
-        // You have to handle the case where the
         operational_parameter: &OperationalParameter,
         start_time: DateTime<Utc>,
     ) -> Result<Vec<Assignment>>
     {
         ensure!(operational_parameter.work != Work::from(0.0));
-        // WARN
-        // There is a much better way of expressing the this.
         ensure!(!operational_parameter.operation_time_delta.is_zero());
         let mut assigned_work: Vec<Assignment> = vec![];
         let mut remaining_combined_work = operational_parameter.operation_time_delta;
@@ -997,7 +900,6 @@ where
             OperationalEvents::OffShift(self.parameters.off_shift_interval.clone()),
         );
 
-        // So the current time is wrong. I think tha
         // ensure!(
         //     break_diff.0 > TimeDelta::new(0, 0).unwrap(),
         //     format!(
@@ -1022,11 +924,7 @@ where
         //         line!()
         //     )
         // );
-        // FIX
-        // This is completely idiotic! We should never duplicate the state
-        // This is so fucking dumb. NEVER EVER DO THIS AGAIN!
-        // This is wrong, the time delta is the time until you hit
-        // the next event.
+        // FIX: Do not duplicate state
         // ensure!(
         //     break_diff.1.time_delta() == break_diff.0,
         //     format!(
@@ -1066,79 +964,27 @@ where
         operational_parameter: &OperationalParameter,
     ) -> Result<DateTime<Utc>>
     {
-        // Actually as the guard is always read only does this even make any sense?
-        //
-        // The issue here is that the components simply are really coupled and what you
-        // are wasting you time on is idiocy.
-        // Is this a true statement?
-        // No! You need to do this to make it scalable. Separate what varies from what
-        // that does not.
-        // Here we load in the `TacticalSolution` from the `loaded_shared_solution`.
-        // This should function to make the code work more seamlessly with the
-        // `TacticalSolution`. Are we doing this correctly? I do not think that
-        // we are. The thing is that the supervisor can force a work order here and then
-        // the Tactical and Strategic Agent has to respect that. That means that
-        // initialially this could be None, but we should strive to make this as
-        // perfect as possible. If there is a tactical days we should
-        // use that. If there is a Strategic period we should use that. If there is none
-        // we should check the manual part. The issue here is not that it is not
-        // scheduled, the issue is that the entry does not exist. What should
-        // you do here?
-        // You need to create something that will allow us to make.
-        // It cannot be done in this way. You need to simply make the most of
-        // the interfaces. You have to understand the tradeoffs.
-        // Remember that Option::None always means that a specific actor  not
-        // has not scheduled a specific operation.
-        // TODO [ ]
-        // move this into the trait. This is so difficult to make correctly. I think
-        // that the best approach is to... You are exposing the whole of the
-        // tactical solution to the operational agent, the is the issue. This is
-        // a horrible coding practice and you may be able to see through it now
-        // but later on you will not. Only expose what you need. The problem
-        // with your current approach is that you cannot control that the `operational`
-        // actor does not loop over the `tactical` state and simply insert everything
-        // that he wants.
-        //
-        // This is the fundamental issue that you are trying to solve here. That the
-        // access between algorithms should be defined by a contract clearly.
-        // Remember a master programmer builds programs that cannot fail.
-        // What exactly is this function trying to do?
+        // Load tactical and strategic scheduling information to determine start time window
+        // TODO: Move this into the trait and expose only necessary information
         let tactical_days_option = self
             .loaded_system_solution
             // Swap the solution in the `ArcSwap`
             .tactical_actor_solution()?
-            // FIX [ ]
-            // Rename this! It is basically a way of sharing what the
-            // `tactical` actor needs to do his scheduling.
+            // FIX: Consider a more descriptive name for this method
             .start_and_finish_dates(work_order_activity);
 
-        // .expect("This should always be present. If this occurs you should check the
-        // initialization. The implementation is that the tactical and strategic
-        // algorithm always provide a key for each WorkOrderNumber");
         let strategic_period_option = self
             .loaded_system_solution
             .strategic()?
             .scheduled_task(&work_order_activity.0);
 
-        // .expect("This should always be present. If this occurs you should check the
-        // initialization. The implementation is that the tactical and strategic
-        // algorithm always provide a key for each WorkOrderNumber");
-
-        // This should also be reformulated. The key to ask yourself here is "What
-        // exactly is it that you need?" You should not include anything else
-        // into the scope here. For a given work order and corresponding activity
-        // when can we start? This is the information that the operational actor
-        // needs to know to fullfill his duty. This is a crucial insight.
+        // Determine start and end windows based on tactical and strategic scheduling
         let (start_window, end_window) = match (strategic_period_option, tactical_days_option) {
-            // What is actually happening here?
             (None, None) => (
                 self.parameters.availability.start_datetime(),
                 self.parameters.availability.finish_datetime(),
             ),
-            // Here there will be a lot of interpretation.
-            //
-            // ISSUE #000 - change the time `07:00:00` and `19:00:00` to reflect the
-            // [`OperationalActors`] [`Availability`]. Consider night shifts.
+            // ISSUE #000: Change hardcoded times to reflect Availability and consider night shifts
             (_, Some((tactical_start, tactical_finish))) => (
                 tactical_start
                     .and_hms_opt(7, 0, 0)
@@ -1149,9 +995,7 @@ where
                     .context("DateTime created wrong. This really should never happen")?
                     .and_utc(),
             ),
-            // So the issue here is that the `StrategicActor` makes a period. That is
-            // depend on a current time. This means that it is not working on the
-            // correct `SystemClock`.
+            // Note: StrategicActor period depends on current time; ensure correct SystemClock
             (Some(WhereIsWorkOrder::Strategic(period)), _) => {
                 (*period.start_datetime(), *period.finish_datetime())
             }
@@ -1159,9 +1003,7 @@ where
                 self.parameters.availability.start_datetime(),
                 self.parameters.availability.finish_datetime(),
             ),
-            // This is actually find I think
             (Some(WhereIsWorkOrder::Tactical(_t)), None) => {
-                // What does it mean to be in here.
                 (
                     self.parameters.availability.start_datetime(),
                     self.parameters.availability.finish_datetime(),

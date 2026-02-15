@@ -14,8 +14,7 @@ pub struct OperationInfo
     pub(crate) work: Work,
 }
 
-// Good! The fields should be optional in the OperationInfoBuilder, not the
-// OperationInfo.
+// Fields are optional in the builder but required in the constructed struct
 pub struct OperationInfoBuilder
 {
     number: Option<NumberOfPeople>,

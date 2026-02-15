@@ -18,32 +18,13 @@ pub trait ActorBasedLargeNeighborhoodSearch
     type Algorithm: AbLNSUtils;
     type Options;
 
-    // This should be changed as well. You do not want to lock the database on every
-    // retry... Ahh this is why you made the SystemConfiguration use the
-    // ArcSwap... Hmm... This is really annoying. I think that the best
-    // approach. You cannot lock the Scheduling environment on every iteration.
-    // I think that you should... The value of having the Configuration is the
-    // database outweights the downside here.
-    //
-    // This is the issue. You have to work on getting the code into the correct
-    // form here. You should decide whether you should work on getting the code
-    // to work with. I believe that the user should be able to change these things.
-    //
-    // The issue is that the weights are cached on the workorder. So changing the
-    // should ideally also go through this functional process on every iteration.
-    // but we do not want that
-    // ISSUE #129
+    // TODO: Avoid locking the scheduling environment on every iteration. Weights are cached
+    // on the workorder, and configuration changes should be reflected dynamically. See ISSUE #129.
     fn run_lns_iteration(&mut self) -> Result<()>
         where
             <<<Self as ActorBasedLargeNeighborhoodSearch>::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective: Valuable
     {
-        // The options should be a part of the `Algorithm`... No part of the... It
-        // should either be a part of the Algorithm or a Part of the Actor. If
-        // it is a part of the actor it should be dependency injected. I think that this
-        // is the best approach
-        //
-        // You still have the same problem. Why do you keep running in circles? I do not
-        // understand it. You have to fix this. You will work longer hours.
+        // TODO: Options should be part of the Algorithm or Actor with dependency injection
         self.update_based_on_system_solution().with_context(|| {
             format!(
                 "Could not update the Algorithm state based on SystemSolution\nLocation: {}:{}",
@@ -52,7 +33,6 @@ pub trait ActorBasedLargeNeighborhoodSearch
             )
         })?;
 
-        // But that means that we cannot code this
         let current_solution = self.algorithm_util_methods().clone_algorithm_solution();
 
         self.unschedule()
@@ -91,16 +71,8 @@ pub trait ActorBasedLargeNeighborhoodSearch
 
     fn make_atomic_pointer_swap(&mut self);
 
-    // So the issue ultimately arises due to you wanting to avoid a state
-    // change when the options for the strategic actor updates itself.
-    //
-    // You will have to get over this as quickly as possible. I think
-    // that maybe the best approach here will be to
-    //
-    // I think that dependency injecting the Option is a fine approach
-    // the issue arises when you have to upsteam also lock the scheduling
-    // environment. Yes that is the issue. I think that this should simply
-    // be apart of the `StateLink`.
+    // TODO: State link should handle scheduling environment locks to avoid conflicts
+    // when options are updated dynamically
     fn calculate_objective_value(
         &mut self,
     ) -> Result<
@@ -124,16 +96,7 @@ pub trait ActorBasedLargeNeighborhoodSearch
         let state_change = self.incorporate_system_solution()?;
 
         if state_change {
-            // You are beginning to see the many ways that you have been wrong.
-            // FIX. This should not be here! This is clearly wrong.
-            // This is causing a lot of stress. You simply have to
-            // remove it from the code.
-            // self.schedule().unwrap();
-            // We have to determine where the error is located. If this fails we have to go
-            // into the crate and start unit testing.
-            // It does not make sense that the `calculate_objective_value` itself does this.
-            // The `calculate_objective` has no state to allow it to make that.
-            // decision.
+            // TODO: Refactor objective calculation to avoid redundant scheduling logic
             let objective = self.calculate_objective_value().with_context(|| format!("Could not calculate the objective value after a incorporating state from the system solution\nLocation: {}:{}", file!(), line!()))?;
             match objective {
                 ObjectiveValueType::Better(objective) => {
@@ -167,8 +130,7 @@ pub trait AbLNSUtils
 
     fn load_shared_solution(&mut self);
 
-    // You made the SolutionType to fix this issue. Now you are diviating
-    // from it again. I think that this is the best approach
+    // Updates objective value for the solution
     fn update_objective(&mut self, objective_value: <Self::SolutionType as Solution>::Objective);
 
     fn swap_to_old_solution(&mut self, solution: Self::SolutionType);

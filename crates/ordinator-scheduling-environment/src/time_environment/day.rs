@@ -8,9 +8,7 @@ use serde::Serialize;
 
 use crate::work_order::operation::Work;
 
-// NOTE
-// You will need the [`TimeEnvironment`] to find the correct day, the
-// index here relies on the `time_environment` to find the correct date.
+// Note: The day index relies on `TimeEnvironment` to resolve the correct date
 #[derive(PartialEq, Eq, Serialize, Deserialize, Debug, Clone)]
 pub struct Days
 {

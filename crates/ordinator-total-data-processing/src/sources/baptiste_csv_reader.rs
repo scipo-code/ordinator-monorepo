@@ -277,8 +277,7 @@ impl CsvType for WorkOrdersCsv
 
     fn make_entry(key: Self::KeyType, container: &mut Self::Container, value: Self)
     {
-        // This is custom logic needed to handle incorrectly formatted csv data
-        // This is not a permanent solution
+        // Custom logic to handle incorrectly formatted CSV data (temporary solution)
         if ["", "0"].contains(&value.WO_Earliest_Allowed_Start_Date.trim_end_matches(".0")) {
             return;
         }

@@ -51,7 +51,7 @@ where
             .get_iter()
             .map(|(woa, _)| woa.1 .0)
             .collect();
-        // What would it mean to schedule these work
+
         let symmetric_difference = tactical_operation_woas
             .symmetric_difference(&operational_state_woas)
             .cloned()
@@ -70,7 +70,7 @@ where
         Ok(())
     }
 
-    // This assertion tests that
+    // Assert that operational state machine work orders are a subset of tactical operations
     fn assert_operational_state_machine_woas_is_subset_of_tactical_shared_solution(
         &self,
     ) -> Result<()>

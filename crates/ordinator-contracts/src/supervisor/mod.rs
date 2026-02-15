@@ -45,7 +45,7 @@ pub struct SupervisorMainTableDto
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct DaySubtable
 {
-    // Each person should be mentioned once.
+    // Activities grouped by work center, with each technician appearing once per center
     work_order_activities_per_work_center: HashMap<String, Vec<WorkOrderSupervisorRow>>,
 }
 
@@ -75,7 +75,7 @@ impl From<(&WorkOrder, ActivityNumber, IdStringDto)> for WorkOrderSupervisorRow
 {
     fn from(value: (&WorkOrder, ActivityNumber, IdStringDto)) -> Self
     {
-        // ISSUE #999 [ ] -
+        // TODO: ISSUE #999 - Implement hands_on_tool_time calculation
         let hands_on_tool_time = 0.0;
         let work_order_view = value.0.view();
         let hours_worked = 0.0;
@@ -98,11 +98,7 @@ impl From<(&WorkOrder, ActivityNumber, IdStringDto)> for WorkOrderSupervisorRow
             material: work_order_view.material_status.into(),
             icc: None,
             description: work_order_view.description_work_order.clone(),
-            // This is rather complicated. It dependes on the current state of the operational
-            // Solution. You want to take the system solution and change this so that
-            // the amount of work that is in the past is the hours worked. The
-            // [`SystemClock`] will be crucial for the correct interpretation of this
-            // value.
+            // hours_worked depends on system solution state and SystemClock for correct interpretation
             hands_on_tool_time,
             hours_worked,
             hours_planned: hours_planned.to_f64(),
@@ -115,9 +111,7 @@ impl From<(&WorkOrder, ActivityNumber, IdStringDto)> for WorkOrderSupervisorRow
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct Percentage(f64);
 
-// This should be a trait as well. You should not do it like this I believe
-// This means that you will have to make a From implementation for each
-// kind of SystemSolution. I am not that is the best.
+// TODO: Consider using a trait to avoid per-SystemSolution From implementations
 impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for SupervisorMainTableDto
 {
     type Error = anyhow::Error;
@@ -183,8 +177,7 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
     }
 }
 
-// TODO [ ]
-// Implement the other messages here as well
+// TODO: Implement remaining SupervisorResponseMessage variants
 #[derive(Serialize, ToSchema)]
 pub enum SupervisorResponseMessageDto
 {
@@ -194,8 +187,7 @@ pub enum SupervisorResponseMessageDto
     Time,
 }
 
-// CRUCIAL INSIGHT
-// You are getting more mature here! You should simply keep it up.
+// Status information derived from supervisor response
 #[derive(Serialize, ToSchema, TS)]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct SupervisorResponseStatusDto
@@ -229,11 +221,8 @@ impl From<SupervisorResponseMessage> for SupervisorResponseMessageDto
         }
     }
 }
-// I think that you should take a break now. The most important thing here is to
-// make sure that the system runs as smoothly as possible. The frontend should
-// not decide a single thing here.
 
-// This can be derived uniquely from the SystemSolution
+// Can be derived uniquely from SystemSolution
 impl From<SupervisorSolution> for SupervisorResourcesDto
 {
     fn from(value: SupervisorSolution) -> Self

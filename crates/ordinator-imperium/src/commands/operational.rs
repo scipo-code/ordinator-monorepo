@@ -13,7 +13,7 @@ pub enum OperationalCommands
     {
         asset: Asset,
     },
-    // Access the scheduling commands for an OperationalAgent (Technicial)
+    // Access the scheduling commands for an operational agent (technician)
     Scheduling
     {
         #[clap(subcommand)]
@@ -26,12 +26,12 @@ pub enum OperationalCommands
 #[derive(Subcommand, Debug)]
 pub enum SchedulingCommands
 {
-    // Get all the IDs of technicians
+    // Retrieve all operational agent IDs
     OperationalIds
     {
         asset: Asset
     },
-    // Get information on a specific OperationalAgent
+    // Retrieve information for a specific operational agent
     OperationalAgent
     {
         asset: Asset,
@@ -61,8 +61,7 @@ impl OperationalCommands
                         asset,
                         operational_id,
                     } => {
-                        // TODO: Send message to the orchestrator to retrieve all information on a
-                        // specific operational agent
+                        // TODO: Send message to orchestrator to retrieve operational agent information
                         let operational_request_scheduling =
                             OperationalSchedulingRequest::OperationalState(operational_id.clone());
 

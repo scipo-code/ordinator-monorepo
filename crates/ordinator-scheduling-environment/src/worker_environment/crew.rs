@@ -11,22 +11,17 @@ use super::resources::Skill;
 use crate::time_environment::TimeInterval;
 use crate::worker_environment::worker::Worker;
 
-// TODO [ ]
-// This should go to the `SchedulingEnvironment::worker_environment`
-// How should this go about? Do you want to separate the workers
-// by Asset? Ideally you would not, but I think that here it is
-// a really good idea.
+// TODO: Move this to `SchedulingEnvironment::worker_environment`.
+// Consider separating workers by Asset for better organization.
 #[derive(Clone, Default, Serialize, Deserialize, Debug)]
 pub struct AgentEnvironment
 {
-    // TODO [ ]
-    // Rename these they have a horrible name, they have nothing to do with
+    // TODO: Rename these fields; their names do not reflect their purpose.
     pub operational: HashMap<ActorCompositeId, OperationalConfigurationAll>,
     pub supervisor: HashMap<ActorCompositeId, SupervisorConfigurationAll>,
 }
 
-// WARN
-// You should never be able to clone this.
+// WARN: This struct should not be cloneable in production code.
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct OperationalConfigurationAll
 {
@@ -51,13 +46,8 @@ impl OperationalConfigurationAll
     }
 }
 
-// Ahh shit. You have to make them work with the correct data. You have to
-// determine right now if you want to make something that. The way that you have
-// it have is a little weird You should make a high level decision about how to
-// structure the data correct.
-//
-// Ask God what to do here?
-// We should have all the required data in the scheduling environment.
+// TODO: Determine the high-level data structure design. All required data should
+// be available in the scheduling environment to avoid duplication.
 #[derive(Deserialize, Debug, Serialize, Clone)]
 pub struct OperationalConfiguration
 {
@@ -165,14 +155,12 @@ impl OperationalConfiguration
     }
 }
 
-// What should the fields be here?
+// TODO: Define required fields for supervisor configuration.
 #[derive(Default, Serialize, Deserialize, Debug, Clone)]
 pub struct SupervisorConfigurationAll
 {
     pub id: ActorCompositeId,
-    // FIX
-    // This information is found in two different places. That is an
-    // error that has to be fixed.
+    // FIX: This information exists in multiple locations; consolidate to single source.
     number_of_supervisor_periods: u64,
 }
 
@@ -187,9 +175,7 @@ impl SupervisorConfigurationAll
     }
 }
 
-// TODO [ ]
-// I do not think that this is relevant any more. It should be deleted and
-// not to be seen again.
+// TODO: Remove this struct; it is no longer used.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Crew
 {

@@ -95,43 +95,11 @@ impl Solution for SupervisorSolution
     type Objective = SupervisorObjectiveValue;
     type Parameters = SupervisorParameters;
 
-    // Here the solution should not be created based on the
-    // state of the parameters but on the state in the strategic
-    // actor. That is what you want to do here.
     fn from_parameters(_parameters: &Self::Parameters) -> Result<Self>
     {
-        // The SupervisorParameters should have knowledge of the agents.
-        // Does that mean that you simply have to instantiate a single
-        // empty `HashMap`.
-        // That means that you should comment this out and then work on the
-        // This should maybe be moved to the `incorporate_system_solution`
-
+        // TODO: Initialize from strategic actor state rather than parameters
         let operational_state_machine = HashMap::new();
-        // ISSUE #000
-        // let operational_state_machine: HashMap<(Id, WorkOrderActivity), Delegate> =
-        // parameters     .supervisor_work_orders
-        //     .iter()
-        //     .flat_map(|(won, inner)| {
-        //         inner.iter().flat_map(|(acn, sp)| {
-        //             // So here is the fundamental issue in the code. We have
-        //             // a parameters that is initialized first and synchronously. This
-        //             // means that we should work on the best way to make the code.
-        //             //
-        //             // We should make sure that this works in the best way possible.
-        //             //
-        //             // The flow is `SchedulingEnvironment` -> `Parameters` ->
-        // `Solution`             //
-        //             // This flow means that the if the `Solution` is inconsistent
-        // with the             // `Parameters` that is okay, but not the other
-        // way around.             parameters
-        //                 .operational_ids
-        //                 .iter()
-        //                 .filter(|e| e.1.contains(&sp.resource))
-        //                 .map(|e| ((e.clone(), (*won, *acn)), Delegate::Assess))
-        //         })
-        //     })
-        //     .collect();
-
+        // TODO: Implement initialization from supervisor work orders
         let objective_value = Percent::new(0, 100).unwrap();
 
         Ok(Self {
@@ -155,11 +123,8 @@ where
         system_solution.supervisor_swap(id, solution);
     }
 }
-/// The SupervisorSolution is a state machine that keeps track of all the
-/// states of the operational agents. It is a solution representation of
-/// a **iterative combinatorial auction algorithms**.
-///
-/// We should be careful about how we implement this system.
+/// Represents solution state for an iterative combinatorial auction system
+/// that tracks the operational status of all agents and work order activities
 impl SupervisorSolution
 {
     pub fn all_technicians(&self) -> BTreeSet<ActorCompositeId>
@@ -179,8 +144,7 @@ impl SupervisorSolution
             .collect()
     }
 
-    // This is implemented incorrectly. You should make the code work correctly with
-    // the. This means that each Id can only have a single WorkOrderActivity.
+    // TODO: Ensure each ActorCompositeId has only one WorkOrderActivity
     pub fn assess_and_assign_activities(&self) -> Vec<(ActorCompositeId, WorkOrderActivity)>
     {
         self.operational_state_machine
@@ -227,16 +191,15 @@ impl SupervisorSolution
         for (id_woa, delegate) in self
             .operational_state_machine
             .iter()
-            // We only take the work_orders_that are actually there.
+            // Filter for matching work order activity
             .filter(|id_and_woa| id_and_woa.0.1 == *work_order_activity)
             .filter(|id_and_woa| id_and_woa.1 == &Delegate::Assess)
         {
-            // We only consider the delagates if the operational actor is actually running.
+            // Only consider delegates from operational actors that are running
             if let Ok(operational_solution) =
                 loaded_shared_solution.operational_actor_solutions(&id_woa.0)
             {
-                // OperationalActor might not have had enough time to incorporate the
-                // state, in that case `None` is returned
+                // Returns None if operational actor hasn't incorporated state yet
                 let op = operational_solution
                     .marginal_fitness_for_operational_actor(work_order_activity);
 

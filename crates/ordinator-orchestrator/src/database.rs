@@ -17,12 +17,7 @@ use ordinator_total_data_processing::sources::baptiste_csv_reader_merges::load_c
 
 pub struct DataBaseConnection;
 
-// At the moment you are simply reading everything into a
-// single struct and then you forget about the MongoDB
-// connection. I do not think that is a good approach
-// here. You should be able to interact with the data
-// continuously for this to work.
-//
+// TODO: Refactor to maintain continuous MongoDB connection instead of loading all data at once
 impl DataBaseConnection
 {
     pub fn scheduling_environment(
@@ -31,16 +26,13 @@ impl DataBaseConnection
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,
     ) -> Result<Arc<Mutex<SchedulingEnvironment>>>
     {
-        // [`TimeEnvironment`] data
         let path_to_time_environment = PathBuf::from(
             "./temp_scheduling_environment_database/time_environment/time_input.toml",
         );
 
-        // [`WorkOrders`] data
         let path_to_work_orders = system_configurations.load().temp_database_path.clone();
         let csv_data_locations = &system_configurations.load().data_locations;
 
-        // [`WorkerEnvironment`] data
         let asset_string = asset.to_string().to_lowercase();
         let path = format!(
             "temp_scheduling_environment_database/actor_specifications/actor_specification_{asset_string}.toml",

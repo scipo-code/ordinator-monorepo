@@ -43,8 +43,6 @@ where
                     .strategic_work_order_parameters
                     .get(work_order_number)
                     .unwrap();
-                // This is not now! You have to remove all of this. It cannot be done in
-                // this way with the remaining time.
                 if strategic_solution == &period.clone() {
                     let work_load = &strategic_parameter.work_load;
                     for resource in Resources::iter() {

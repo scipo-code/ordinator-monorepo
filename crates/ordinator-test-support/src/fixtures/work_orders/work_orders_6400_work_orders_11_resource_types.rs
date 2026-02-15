@@ -1,8 +1,7 @@
 use std::fs;
 
-/// This file is for making complex data for the tests. Here structure does not
-/// matter as much as we are not testing attributes directly. Instead we are
-/// working with stress testing the algorithms and their interplay.
+/// Generates complex test data for stress testing the optimization algorithms and their interactions.
+/// Focuses on data volume rather than attribute correctness.
 use chrono::TimeDelta;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
@@ -17,14 +16,10 @@ use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use crate::fixtures::work_orders::OperationInput;
 use crate::fixtures::work_orders::WorkOrderData;
 
-/// These are the manually created `WorkOrder`s for the phd data set.
-///
-/// Numbering scheme is:
-/// 1. 111199xxxx: normal filler work order, no binding status code, no vendor,
-///    no shutdown.
-/// 2. 222299xxxx: normal filler work order, no binding status code, no vendor,
-///    with status code modifiers
-/// 3. 333399xxxx: edgecase work orders, added to determine a particular aspect
+/// Builds PhD dataset work orders with the following numbering scheme:
+/// - 111199xxxx: normal filler work order without binding status code, vendor, or shutdown
+/// - 222299xxxx: normal filler work order with status code modifiers
+/// - 333399xxxx: edge case work orders for testing specific aspects
 pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilder
 {
     let work_order_json_string =
@@ -72,7 +67,7 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
             }
             wob.work_order_info_builder(|woib| {
                 woib.priority(Priority::new_int(3))
-                    // TODO [ ] You only need work order type to fix this correctly in the code.
+                    // TODO: Use work order type parameter instead of hardcoded value
                     .work_order_type(WorkOrderType::Wdf(Priority::new_int(3)))
                     .revision(Revision::new("NOSD"))
                     .work_order_text(WorkOrderText {
@@ -85,8 +80,6 @@ pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBu
                     })
                     .functional_location_from_str("TEST/XX/XX/101")
                     .system_condition(SystemCondition::A)
-                    // It is clear that you need a thorough understanding of the whole
-                    // maintenance process to be able to develop this system.
                     .work_order_info_detail(WorkOrderInfoDetail {
                         subnetwork: "123".to_string(),
                         maintenance_plan: "PLAN TEST".to_string(),

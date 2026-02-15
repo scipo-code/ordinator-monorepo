@@ -22,7 +22,7 @@ pub async fn solution_status_routes(
         // .route("/{asset}/{supervisor_id}", get(status))
         .with_state(state)
 
-    // TODO [ ] Put these into the handler
+    // TODO: Move the supervisor request handling into the handler
     // let orchestrator = orchestrator.lock().unwrap();
 
     // Ok(orchestrator

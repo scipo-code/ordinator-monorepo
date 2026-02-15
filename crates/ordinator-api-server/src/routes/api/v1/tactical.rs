@@ -8,7 +8,7 @@ use utoipa_axum::routes;
 
 use crate::handlers::tactical_handlers::status;
 
-// Making a `status` for each actor is probably a really good idea.
+// Create status endpoint for each actor in the orchestrator
 pub async fn tactical_route(
     state: Arc<Orchestrator<TotalSystemSolution>>,
 ) -> OpenApiRouter<Arc<Orchestrator<TotalSystemSolution>>>
@@ -25,13 +25,13 @@ pub async fn tactical_route(
         .with_state(state)
 }
 
-// TODO [ ]
+// TODO: Implement orchestrator request handling
 // let orchestrator = orchestrator.lock().unwrap();
 // Ok(orchestrator
 //     .handle_tactical_request(tactical_request)
 //     .await?)
 //
-// NOTE [ ] 2025-07-02 here is how you do.
+// TODO: Add supervisor handlers for available technicians
 // .routes(routes!(
 //     crate::handlers::supervisor_handlers::all_available_technicians
 // ))

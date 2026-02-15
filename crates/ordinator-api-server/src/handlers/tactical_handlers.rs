@@ -28,15 +28,8 @@ use utoipa::ToSchema;
 
 use crate::routes::api::AppError;
 
-// So each handler should construct a specific message. That is the key point
-// here. This function uses the orchestrator to send any kind of message. Which
-// way is the correct one here?
-//
-// ESSAY: What is the best thing to put into the `TacticalRequest`? The
-// fundamental issue here is what should be in the URL. I think that we should
-// put the data inside of the messages into a JSON but that the handlers should
-// only take a single RequestMessage and a corresponding `<Actor>StatusMessage`.
-// That means that the handler here should only construct a single message
+// Each handler should construct a specific message and send it via the orchestrator.
+// Consider consolidating to pass a single RequestMessage with a corresponding StatusMessage.
 #[utoipa::path(
     get,
     tag = "Scheduler",
@@ -133,7 +126,7 @@ where
 )]
 pub async fn assign_start_day_for_work_order<Ss>(
     State(orchestrator): State<Arc<Orchestrator<Ss>>>,
-    // TODO [ ] `asset` should be used for authentication.
+    // TODO: Use `asset` for authentication.
     Path((asset, work_order_number)): Path<(AssetNames, WorkOrderNumber)>,
     Json(basic_start_date_dto): Json<NaiveDateDto>,
 ) -> Result<Response, AppError>
@@ -166,8 +159,7 @@ where
         .get_mut(&work_order_number)
         .with_context(|| format!("{work_order_number:#?} not found in SchedulingEnvironment"))
         .map_err(|e| AppError::Anyhow(e.to_string()))?
-        // TODO [ ] You should clearly differentiate between the WO modifying code and the
-        // normal code.
+        // TODO: Separate work order modification code from regular code path.
         .set_basic_start_date(basic_start_date);
 
     drop(scheduling_environment_lock);

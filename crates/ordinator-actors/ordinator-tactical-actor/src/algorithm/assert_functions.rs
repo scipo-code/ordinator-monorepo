@@ -78,8 +78,7 @@ where
                     .solution
                     .tactical_loadings
                     .get_resource(&resource, day.0)
-                    // The important thing here is that the asserts should not know
-                    // about the initialization of the
+                    // Asserts must not depend on initialization details
                     .unwrap_or(&zero_work);
 
                 // info!(target: "debug", day = ?day.0, ?agg_load, ?sch_load);
@@ -148,10 +147,7 @@ where
                 .tactical_operation_parameters;
 
             if let WhereIsWorkOrder::Tactical(wo) = work_order_solution.1 {
-                // TODO [ ] Add the parameters here instead.
-                // ESSAY:
-                // I think that what is happening is the tactical stops when it cannot find room
-                // for an Operation, where it should instead continue.
+                // TODO: Tactical should continue searching when unable to fit an operation, not stop
                 for (activity_number, operation_parameter) in work_order_work.iter() {
                     let work_remaining = operation_parameter.work_remaining;
 

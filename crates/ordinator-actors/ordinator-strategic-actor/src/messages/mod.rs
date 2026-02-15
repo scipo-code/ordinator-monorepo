@@ -18,8 +18,6 @@ pub type StrategicRequestMessage = RequestMessage<
     StrategicSchedulingEnvironmentCommands,
 >;
 
-// You should determine a better way of making this in the
-// code I think that the best approach is to make something.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum StrategicSchedulingEnvironmentCommands
 {

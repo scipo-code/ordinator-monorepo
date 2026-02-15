@@ -76,11 +76,7 @@ impl WorkOrderInfoBuilder
     pub fn build(self) -> WorkOrderInfo
     {
         WorkOrderInfo {
-            // All this unwrap is not really a good idea. I think that the best
-            // approach here will be to make a decision about making the
-            // code run with the `unwrap()`, or making it type safe?
-            //
-            // I think that we should just call the error.
+            // TODO: Consider making this type-safe rather than using unwrap
             priority: self.priority.unwrap(),
             work_order_type: self.work_order_type.unwrap(),
             functional_location: self.functional_location.unwrap(),
@@ -152,8 +148,7 @@ impl WorkOrderInfoBuilder
     }
 }
 
-// WARN
-// You should be careful with this here.
+// WARN: Use with caution
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 pub struct WorkOrderInfoDetail
 {

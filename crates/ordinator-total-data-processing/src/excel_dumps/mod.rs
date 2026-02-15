@@ -18,8 +18,7 @@ use rust_xlsxwriter::IntoExcelData;
 
 // use crate::sap_mapper_and_types::DATS;
 
-// The thing with this file is that it has nothing to do with infrastructure, it
-// is related to a DTO or an API
+// This module handles DTOs and APIs, not infrastructure concerns
 // #[derive(Debug)]
 // struct AllRows(Vec<RowNames>);
 
@@ -157,8 +156,6 @@ use rust_xlsxwriter::IntoExcelData;
 //     }
 // }
 
-// This should go into the
-
 // #[derive(Debug)]
 // struct RowNames
 // {
@@ -198,15 +195,8 @@ use rust_xlsxwriter::IntoExcelData;
 //     room: String,
 // }
 
-// This function will create an excel dump based on the current state of the:
-// * SchedulingEnvironment
-// * StrategicAlgorithm
-// * TacticalAlgorithm
-//
-// The function will dump the excel file in the folder specified by the
-// EXCEL_DUMP_DIRECTORY environment variable.
-// What should you do here? You could make the function into a
-// It is acceptable that it gets the shared traits.
+// Create an excel dump of the current SchedulingEnvironment, StrategicAlgorithm,
+// and TacticalAlgorithm state. The file is saved to EXCEL_DUMP_DIRECTORY
 // pub fn create_excel_dump<Ss>(
 //     asset: Asset,
 //     work_orders: WorkOrders,
@@ -243,26 +233,16 @@ use rust_xlsxwriter::IntoExcelData;
 //             None => ReasonForNotScheduling::Unknown("Work Order not part of
 // scheduling process".to_string()),         };
 
-//         // DECISION [ ]
-//         // comment it out.
 //         for activity in work_order.op {
 //             let tactical_solution = shared_solution
 //                 .tactical_actor_solution()?
 //                 .start_and_finish_dates(&(work_order_number, *activity.0));
 
 //             let option_day = match tactical_solution {
-//                 // Day::index is a weird thing. How should it work in a real
-// time system? I think                 // that the best approach would
 //                 Some(tactical_day) => OptionDay(Some(*tactical_day.0)),
 //                 None => OptionDay(None),
 //             };
 
-//             // The issue with what you are doing is that we can keep
-// implementing stuff like             // this until the day we die. You have to
-// simply go for the money here. I think             // that is the best
-// approach.             //
-//             // You are not good enough to code. You are good enough to do
-// this, Brian             // believes in you. You simply have to keep working.
 //             let one_row = RowNames {
 //                 strategic_schedule: strategic_schedule.clone(),
 //                 tactical_schedule: option_day,
@@ -407,9 +387,7 @@ use rust_xlsxwriter::IntoExcelData;
 //     worksheet.write(0, 32, "room").unwrap();
 // }
 
-// Core domain models only does domain things. `IntoExcelData` is not a domain
-// thing. The best approach here would be to
-// This should be in the `scheduling_environment_crate`
+// TODO: Move to `scheduling_environment_crate` as `IntoExcelData` is not a domain concern
 #[derive(Debug, Clone)]
 pub enum ReasonForNotScheduling
 {

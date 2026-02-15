@@ -25,9 +25,7 @@ impl StrategicResponsePeriods
     }
 }
 
-// This is a low level type and it should not be exposed here
-// TODO [ ] FIX [ ]
-// Make a custom type for the StrategicResourcesApi
+// TODO: Create a custom type for StrategicResourcesApi instead of exposing this low-level type
 #[derive(Debug, Serialize)]
 pub enum StrategicResponseResources
 {
@@ -85,9 +83,7 @@ where
 
         let number_of_periods = value.algorithm.parameters.strategic_periods.len();
 
-        // You need to generate a trait for the `objective value`
-        // I would rather want to have a `from` implementation on this type than
-        // make something like this.
+        // TODO: Consider creating a trait for objective value extraction instead of direct field access
         StrategicResponseStatus {
             number_of_strategic_work_orders,
             number_of_periods,

@@ -67,8 +67,7 @@ pub async fn api_scope(
 //     // .route("/scheduler/assets", web::get().to(scheduler_asset_names))
 // }
 //
-// ISSUE #131 TODO [ ]
-// Replace the `SystemMessages` structure with routers instead.
+// TODO: Issue #131 - Replace the `SystemMessages` structure with routers instead
 // pub enum SystemMessages {
 //     Orchestrator(OrchestratorRequest),
 //     Strategic(StrategicRequest),

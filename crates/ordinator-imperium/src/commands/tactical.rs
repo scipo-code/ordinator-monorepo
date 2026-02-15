@@ -166,7 +166,7 @@ pub enum ResourceCommands
     },
 }
 
-/// I will need to generate the manual resources for the tactical agent.
+/// Generates manual resources for the tactical agent from a TOML configuration file.
 fn generate_manual_resources(client: &Client, toml_path: String) -> TacticalResources
 {
     let days: Vec<Day> = orchestrator::tactical_days(client);

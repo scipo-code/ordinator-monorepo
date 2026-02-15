@@ -9,8 +9,7 @@ pub trait OperationalAlgorithmAsserts
     fn assert_no_operation_overlap(&self) -> Result<()>;
 }
 
-// TODO [ ]
-// These kind of asserts should also look at the `SharedSolution`
+// TODO: These kinds of asserts should also look at the `SharedSolution`
 impl<Ss> OperationalAlgorithmAsserts for OperationalAlgorithm<Ss>
 where
     Ss: SystemSolutions,

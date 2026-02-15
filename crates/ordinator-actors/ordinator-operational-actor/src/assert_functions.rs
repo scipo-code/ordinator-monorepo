@@ -23,9 +23,7 @@ impl<Ss> OperationalAssertions for Algorithm<OperationalSolution, OperationalPar
 where
     Ss: SystemSolutions,
 {
-    // This also have to be moved out of the code
-    // TODO [ ]
-    // Turn this into the interface!
+    // TODO: Extract this function into a trait interface.
     fn assert_operational_solutions_does_not_have_delegate_unassign(&self) -> Result<()>
     {
         for delegate in self

@@ -17,7 +17,7 @@ use shared_types::SystemMessages;
 #[derive(Subcommand, Debug)]
 pub enum StrategicCommands
 {
-    /// overview of the strategic agent
+    /// Overview of the strategic agent
     Status
     {
         asset: Asset,

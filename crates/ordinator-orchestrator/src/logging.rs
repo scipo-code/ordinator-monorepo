@@ -66,7 +66,6 @@ pub struct LogHandles
 
 pub fn setup_logging() -> anyhow::Result<LogHandles>
 {
-    // Set the log directory
     let log_dir = env::var("ORDINATOR_LOG_DIR")
         .expect("A logging/tracing directory should be set in the .env file");
 
@@ -74,14 +73,11 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
     setup_logging_directory_structure(&log_dir_path)
         .context("Could not setup logging directories")?;
 
-    // Set the log file paths.
     let research_path: PathBuf = log_dir_path.clone().join("ordinator.research.log");
     let developer_path: PathBuf = log_dir_path.clone().join("ordinator.developer.log");
     let debug_path: PathBuf = log_dir_path.clone().join("ordinator.debug.log");
     let business_events_path: PathBuf = log_dir_path.clone().join("ordinator.business_events.log");
 
-    // Create the files that will contain the logs with specific options for each of
-    // these.
     let research_file = FileRotate::new(
         research_path,
         AppendCount::new(1),
@@ -114,7 +110,6 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
         None,
     );
 
-    // Create the writers that `write!` to the individual file.
     let (research_writer, research_log_guard) = non_blocking(research_file);
     std::mem::forget(research_log_guard);
     let (developer_writer, developer_log_guard) = non_blocking(developer_file);
@@ -124,8 +119,7 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
     let (business_events_writer, business_events_guard) = non_blocking(business_events_file);
     std::mem::forget(business_events_guard);
 
-    // Set targets so that logs are routes to the correct file at the call site.
-    // Specified with `event!(target: "<NAME OF FILE>")`.
+    // Configure targets to route logs to correct files via event!(target: "...")
 
     let research_targets = Targets::new().with_target("research", Level::INFO);
     let debug_targets = Targets::new().with_target("debug", Level::TRACE);
@@ -133,12 +127,12 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
     let developer_targets = Targets::new().with_target("developer", Level::TRACE);
     let business_event_targets = Targets::new().with_target("business_events", Level::INFO);
     let stdout_targets = Targets::new().with_target("stdout", Level::TRACE);
-    // Make the logging layers
+
     let research_layer = fmt::layer()
         .with_writer(research_writer)
         .json()
         .with_ansi(true)
-        .with_file(true) // Include file name in logs
+        .with_file(true)
         .with_thread_ids(true)
         .with_thread_names(true)
         .with_line_number(true)
@@ -147,7 +141,7 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
     let developer_layer = fmt::layer()
         .with_writer(developer_writer)
         .with_ansi(true)
-        .with_file(true) // Include file name in logs
+        .with_file(true)
         .with_thread_ids(true)
         .with_thread_names(true)
         .with_line_number(true)
@@ -156,7 +150,7 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
     let debug_layer = fmt::layer()
         .with_writer(debug_writer)
         .with_ansi(true)
-        .with_file(true) // Include file name in logs
+        .with_file(true)
         .with_thread_ids(true)
         .with_thread_names(true)
         .with_line_number(true)
@@ -183,15 +177,7 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
     //     developer_layer.boxed(),
     // ];
 
-    // TODO [ ] 2025-07-07 implement tracing::reload if you need dynamic changing of
-    // the logging system. If you need better logging.
-    // let (research_layer, research_reload_handle) =
-    // reload::Layer::new(research_layer); let (flame_layer,
-    // flame_reload_handle) = reload::Layer::new(flame_layer);
-    //
-    // So the `schedule()` function works correctly. But where is the bug
-    // introduced? I really have to find this as the next step. I do not see a
-    // different way of going about it.
+    // TODO: Implement tracing::reload for dynamic logging reconfiguration
     tracing_subscriber::registry()
         .with(research_layer)
         .with(developer_layer)

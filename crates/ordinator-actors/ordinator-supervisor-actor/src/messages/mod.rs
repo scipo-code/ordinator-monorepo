@@ -30,9 +30,7 @@ pub enum SupervisorType
     Other,
 }
 
-// You cannot have this one here. You have to do something else instead. I think
-// that the best approach is to make a `From` implementation.
-//
+// Implement `From` trait instead of implementing this directly
 #[derive(Debug, Serialize)]
 pub enum SupervisorResponseMessage
 {

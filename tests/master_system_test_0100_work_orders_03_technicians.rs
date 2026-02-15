@@ -39,10 +39,8 @@ async fn master_system_test_0100_work_orders_03_technicians() -> anyhow::Result<
             Ok(())
         }
         result = error_receiver.recv_async() => {
-            tracing::error!(ordinator_error_message = ?result, "Ordinator
-            Scheduling Systems experienced a catastraphoic error");
-            bail!("Ordinator Scheduling Systems experienced a catastraphoic
-            error:\n{:?}", result );
+            tracing::error!(ordinator_error_message = ?result, "Ordinator Scheduling Systems experienced a catastrophic error");
+            bail!("Ordinator Scheduling Systems experienced a catastrophic error:\n{:?}", result);
         }
     }
 }

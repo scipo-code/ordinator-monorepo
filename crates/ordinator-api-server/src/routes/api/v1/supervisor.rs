@@ -26,13 +26,5 @@ pub async fn supervisor_routes(
         .routes(routes!(
             crate::handlers::supervisor_handlers::add_technician
         ))
-        // .route("/{asset}/{supervisor_id}", get(status))
         .with_state(state)
-
-    // TODO [ ] Put these into the handler
-    // let orchestrator = orchestrator.lock().unwrap();
-
-    // Ok(orchestrator
-    //     .handle_supervisor_request(supervisor_request)
-    //     .await?)
 }

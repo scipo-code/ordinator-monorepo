@@ -30,7 +30,7 @@ use utoipa::ToSchema;
 
 use crate::routes::api::AppError;
 
-// This is a handler. Not a `Route` you should change that. Keep working.
+// Query parameters for work orders with scheduling
 #[derive(Debug, Deserialize, IntoParams, ToSchema)]
 pub struct WorkOrdersWithSchedulingQueryParams
 {
@@ -188,9 +188,8 @@ where
 // {
 // }
 
-/// This handler updates the [`SchedulingEnvironment`] that the UnloadingPoint
-/// has been updated and sends a command
-/// to every `Actor` that the [`SchedulignEnvironment`] has changed.
+/// Updates the [`SchedulingEnvironment`] and broadcasts the change to all actors
+/// when a work order is assigned to a period
 #[debug_handler]
 #[utoipa::path(
     post,
@@ -213,12 +212,7 @@ pub async fn assign_work_order_to_period(
     Json(period_dto): Json<PeriodDto>,
 ) -> Result<Response, AppError>
 {
-    // This should go into the handler, directory. There is no other way around it
-    // REMEMBER: You should only wrap method calls that the Orchestrator exposes.
-    //
-    // WARN: You are beginning to feel drained again. You should grap something to
-    // eat again.
-    // TODO [ ] add a `bus` for each `Asset`
+    // TODO: Add a `bus` for each `Asset`
     let _asset = Asset::try_from(asset_dto).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
     let mut scheduling_environment = orchestrator.scheduling_environment.lock().unwrap();
@@ -252,31 +246,17 @@ pub async fn assign_work_order_to_period(
         })
         .map_err(|e| AppError::Anyhow(format!("{}", e)))?;
 
-    // I hated that message structure when I first wrote it, now you have a lesson
-    // to learn. So the [`StateLink`] is responsible for updating the `Actors` when
-    // there has been a change to the scheduling_environment. The messages that
-    // simply guide the search procedure should be handled the same way as
-    // always.
+    // Broadcast state change to all actors
     let state_link = StateLink::WorkOrders(vec![work_order_number]);
-
-    // You are doing what you should have done a long time ago.
     orchestrator
         .state_link_bus
         .lock()
         .unwrap()
         .broadcast(state_link);
-    // Send a `StateLink` message to all Actors
-    // TODO [x] 2025-07-14 make a broadcast channel.
-    // It is very important that you get this right. You should make sure to use the
-    // correct construct. I think
-    //
-    // This is an issue, I think that the best approach here is to make the system
-    // work in a way that will not let the system.
+
     Ok(format!(
         "Command successfully processed in the system\nWork order {} was correctly scheduled into period {}",
         work_order_number,
         period.period_string()
     ).into_response())
-    // TODO [ ] M
-    // orchestrator.get_work_order(id)
 }

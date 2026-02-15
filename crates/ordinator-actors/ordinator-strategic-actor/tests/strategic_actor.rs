@@ -102,9 +102,7 @@ fn test_calculate_objective_value() -> anyhow::Result<()>
     // let scheduling_environment =
     // Arc::new(Mutex::new(SchedulingEnvironment::default()));
 
-    // // You have to make these tests again. There is no other way around it.
-    // Every // function have to be tested. But for now the issue is with
-    // the let id = Id::default();
+    // TODO: All functions need testing, but currently blocked by Id::default() issue
 
     // let strategic_options = StrategicOptions::default();
 
@@ -122,11 +120,8 @@ fn test_calculate_objective_value() -> anyhow::Result<()>
     //     HashMap::from([(Resources::MtnMech, Work::from(10.0))]),
     // );
 
-    // // QUESTION
-    // // Should you create a Dependency injection for the
-    // `SchedulingEnvironment`? // TODO
-    // // This should be created so that each type that implements `Parameters`
-    // have // an insert function.
+    // TODO: Consider dependency injection for SchedulingEnvironment to allow
+    // all Parameters implementers to have an insert function
     // strategic_parameters
     //     .insert_strategic_parameter(WorkOrderNumber(2100023841),
     // strategic_parameter);
@@ -169,9 +164,7 @@ fn test_calculate_objective_value() -> anyhow::Result<()>
 }
 // use std::fmt::Display;
 
-// TODO
-// Make a generic display for `Agent` so that we can view all the different
-// agent easily. impl Display for Agent {
+// TODO: Implement generic Display for Agent to enable viewing all agent types
 //     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
 //         write!(
 //             f,

@@ -68,7 +68,6 @@ where
 
     fn assert_aggregated_load(&self) -> Result<()>
     {
-        // let mut aggregated_strategic_load = StrategicResources::default();
         let mut aggregated_strategic_load = HashMap::new();
         for period in &self.parameters.strategic_periods {
             for (work_order_number, strategic_solution) in self.solution.every_work_order().iter() {
@@ -78,11 +77,8 @@ where
                     .get(work_order_number)
                     .unwrap();
 
-                // The aggregate load, should that be determined by the Tactical or the
-                // Strategic? I think that the Strategic is the best approach
-                // here. Yes, this is for testing the internals in the
-                // `StrategicSolution` this is crucial to remember, if you accepted
-                // the TacticalSolutions here as well that will be a nightmare.
+                // Strategic load aggregation is used to test internal StrategicSolution consistency.
+                // Do not include TacticalSolutions here.
                 if let WhereIsWorkOrder::Strategic(strategic_scheduled_period) = strategic_solution
                     && strategic_scheduled_period == period
                 {
@@ -90,10 +86,7 @@ where
                     for resource in Skill::iter() {
                         let load: Work =
                             work_load.get(&resource).cloned().unwrap_or(Work::from(0.0));
-                        // We just need to test that the total hours are correct. We do not have
-                        // to focus on the individual resources. We
-                        // can handle that in another assert
-                        // function.
+                        // Verify total hours; individual resource validation handled separately.
 
                         match aggregated_strategic_load.entry((period, resource)) {
                             Entry::Occupied(mut occupied_entry) => {
@@ -108,8 +101,7 @@ where
             }
         }
 
-        // We should match that all the aggregated total_hours add up to
-        // all the total hours for the actual loadings.
+        // Verify aggregated total_hours match actual loadings.
         for (resource, total_work) in aggregated_strategic_load {
             let loadings = self
                 .solution
@@ -142,13 +134,7 @@ where
                 .get(work_order_number)
                 .unwrap();
 
-            // Here should you enforce both the Tactical and the Strategic? I am
-            // not really sure? I think that the best approach here is to... If
-            // The tactical start date cannot be outside of the period. But we
-            // should not be concerned about that here.
-            //
-            // CRUCIAL INSIGHT: Using the [`WhereIsWorkOrder`] is the best option
-            // for solving this until we find a better approach.
+            // Use [`WhereIsWorkOrder`] to validate strategic period constraints.
             if let WhereIsWorkOrder::Strategic(period) = scheduled_period {
                 ensure!(
                     !excluded_periods.contains(period),

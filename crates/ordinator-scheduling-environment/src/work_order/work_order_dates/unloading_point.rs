@@ -5,24 +5,17 @@ use rust_xlsxwriter::IntoExcelData;
 use serde::Deserialize;
 use serde::Serialize;
 
-// ISSUE #000 TODO [ ] 2025-07-17 This domain type should be extended
-// significantly. Interview Brian
+// TODO: Extend this domain type significantly (see issue #000, interview Brian)
 #[derive(Default, Args, Clone, Serialize, Deserialize, Debug)]
 pub struct UnloadingPoint
 {
     pub(crate) string: String,
     pub(crate) period_string: Option<String>,
 }
-// This field simply needs to be derived when we want a period. That is the only
-// way of implementing it in a way that will scale into the future. You cannot
-// afford not to FIX things that are in error.
-// You have to make this one work correctly,
+// Derive period_string when needed for future scalability
 impl UnloadingPoint
 {
-    // UnloadingPoint is a value object. That means that it should be always built
-    // from new.
-    // You are doing it wrong again. You should split the original. You are
-    // performing duplication of data.
+    // Construct a new UnloadingPoint, deriving period_string if not provided
     pub fn new(unloading_point_string: String, period_string: Option<String>) -> Self
     {
         if let Some(period_string) = period_string {
@@ -31,7 +24,6 @@ impl UnloadingPoint
                 period_string: Some(period_string),
             };
         }
-        // let re = regex::Regex::new(r"(\d{2})?-?[W|w](\d+)-?[W|w]?(\d+)").unwrap();
         let regex = regex::Regex::new(
             r"(?P<year>\d{4}|\d{2})?-?[Ww](?P<from>\d{1,2})-?[Ww]?(?P<to>\d{1,2})?",
         )

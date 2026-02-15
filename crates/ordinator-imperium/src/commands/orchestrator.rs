@@ -160,8 +160,7 @@ impl OrchestratorCommands
             }
             OrchestratorCommands::SupervisorAgent(supervisor_agent_command) => {
                 match supervisor_agent_command {
-                    // WARN
-                    // I strongly believe that this is coded in the wrong way.
+                    // FIXME: This implementation needs to be reworked
                     SupervisorAgentCommands::Create {
                         asset,
                         shift: _,
@@ -226,10 +225,7 @@ impl OrchestratorCommands
                 let contents = std::fs::read_to_string(resource_toml).unwrap();
                 let system_agents: ActorSpecifications = toml::from_str(&contents).unwrap();
 
-                // FIX: STRATEGIC AND TACTICAL SHOULD ALSO BE UPDATED HERE.
-                // Actually this whole thing should be reworked. I think that
-                // the best approach here is to use the WorkerEnvironment to
-                // also initialize the;
+                // FIXME: Rework to initialize Strategic, Tactical, and Operational agents through WorkerEnvironment
 
                 SystemMessages::Orchestrator(OrchestratorRequest::InitializeSystemAgentsFromFile(
                     asset,

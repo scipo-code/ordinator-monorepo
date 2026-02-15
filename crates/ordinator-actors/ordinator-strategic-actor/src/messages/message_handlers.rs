@@ -24,27 +24,8 @@ use crate::algorithm::strategic_solution::StrategicSolution;
 use crate::messages::StrategicRequestScheduling;
 use crate::messages::StrategicResponseScheduling;
 
-// This will not work
-// ESSAY [ ]
-// What should... You have made a mistake, splitting the crates is like
-// bounded contexts. You will have to reformulate the types.
-//
-// I do not know what to do here. You have to start writing to get the
-// most out of this.
-//
-// Okay you have to make this work... You have some decisions to make
-// the issue here is that the OrphanRule means that I have to create
-// either a new type or a new trait. The issue currently is that you
-// have a blanket implementation for the LNS, which is crucial. The
-// blanket implementation handles messages aswell. This means that
-// it will be difficult to make the code work. You discovered something
-// crucial. You made a blanket implementation on the inner type while
-// in the Actors themselves you implemened the actual functionality.
-// This means that you have found a huge bug in the system. What should
-// you do now? I think that the best approach is to make the system.
-// Work
-//
-// You have to  f
+// TODO: Refactor type system to resolve blanket implementation conflicts with Orphan Rule.
+// The LNS blanket implementation on inner types conflicts with actor-level implementations.
 impl<Ss> CommandHandler<StrategicRequestMessage, StrategicResponseMessage>
     for Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>
 where
@@ -59,19 +40,12 @@ where
             ordinator_actor_core::RequestMessage::Status(strategic_status_message) => {
                 match strategic_status_message {
                     StrategicStatusMessage::General => {
-                        // // You should not provide a message of this type with the
-                        // // CRUCIAL INSIGHT
-                        // // You should always strive to make the code run with the correct,
-                        // let response = StrategicResponseStatus::from(&mut *self);
-
-                        // let strategic_response_message =
-                        //     StrategicResponseMessage::Success(response);
-
+                        // TODO: Implement general status message handling
                         Err(anyhow::anyhow!(
                             "Implement this. And please, do it correctly and thoughtfully the first time"
                         ))
                     }
-                    // This could be created by the `Orchestrator` instead
+                    // Consider moving period creation to the Orchestrator
                     StrategicStatusMessage::Period(period) => {
                         if !self
                             .algorithm
@@ -125,9 +99,7 @@ where
 
                         bail!("The endpoints are being refactored")
                     }
-                    // This should be created in a different way. I think that you should rely
-                    // on a lot of `From` implementations here. I think that is the best approach
-                    // to fixing this issue.
+                    // Use `From` implementations for work order conversion
                     StrategicStatusMessage::WorkOrder(_work_order_number) => {
                         // TODO [ ]
                         // Make a `From` implementation.
@@ -229,14 +201,9 @@ where
             ordinator_actor_core::RequestMessage::SchedulingEnvironment(
                 strategic_scheduling_environment_commands,
             ) => match strategic_scheduling_environment_commands {
-                // This should be removed now. It is now the sole responsibility
-                // Should should be handled with the DTO in the `ordinator-contracts` and the
-                // `ordinator-orchestrator`. Here you should only read the `SchedulingEnvironment`
-                // and update the `StrategicParameters` accordingly.
-                //
-                // What should you do now? Should you remove the whole thing? I guess that is the
-                // best approach. The use cases should be handled in the Orchestrator. Yes,
-                // recognize this idiocy quickly and move on and grow.
+                // TODO: Move user status handling to Orchestrator. This handler should only read
+                // SchedulingEnvironment and update StrategicParameters, delegating business logic
+                // elsewhere through DTO-based approaches.
                 StrategicSchedulingEnvironmentCommands::UserStatus(
                     _strategic_user_status_codes,
                 ) => {
@@ -271,55 +238,9 @@ where
                     //         user_status_codes.awsc = awsc;
                     //     }
 
-                    // Should this be handeled here? I think that the best
-                    // approach is to simple update
-                    // the scheduling environment and then the
-                    // algorithm should handle the rest. The issue is that
-                    // you are leaking internals in
-                    // the system and that is making it
-                    // impossible for you to understand the systems
-                    // behavior. Ideally the the
-                    // only think that you change is scheduling
-                    // environment and then the parameters are derived from
-                    // this afterwards. I do not see
-                    // that there is a better way of
-                    // doing the project.
-
-                    // QUESTION
-                    // Should these message handlers mutate self? No I do
-                    // not think so. What should
-                    // happen then instead?
-                    // This should happen in a different message.
-                    // FIX THIS should happen in the internal logic of the
-                    // `StrategicAlgorithm`! That is
-                    // the best way of doing all this. I think that the best
-                    // approach here is to make the
-                    // system work so that the `Actor`s cannot ever modify
-                    // anything inside of the
-                    // `Algorithm` here you will need to create an interface
-                    // through which they are
-                    // allowed to communicate together.
-                    //
-                    //
-                    // This means that writing `self.algorithm.<field or
-                    // method>` is a complete no go.
-                    // I do not see another way around it. You have to
-                    // *encapsulate* the `Algorithm`
-                    // it becomes impossible to handle the coding thing
-                    // otherwise, too much state.
-                    // That also raises the question of how we should handle
-                    // the `SchedulingEnvironment`.
-                    // There is a question or whether we should make it
-                    // in the orchestrator... Hmm I think that you should
-                    // maybe create an `InteractWithSchedulingEnvironment`
-                    // that each of the different `Actor` should implement.
-                    // Yes that is a good idea. Then the public
-                    // interface for the Actor will include that and then
-                    // the message handler can only extract that
-                    // from the interface.
-                    //
-                    // I think that this is the best way of doing it.
-                    //
+                    // TODO: Encapsulate Algorithm to prevent direct mutation. Message handlers should not
+                    // access internal fields. Instead, implement InteractWithSchedulingEnvironment trait
+                    // for each Actor type to provide controlled access to state modifications.
                     //     let last_period =
                     //         self.algorithm.parameters.strategic_periods.
                     // last().cloned();
@@ -393,9 +314,7 @@ where
                     // FIX
                     // }
 
-                    // Signal Orchestrator that the it should tell all actor to update work orders
-                    // Well this is not needed anymore either. As the Actors are not responsible
-                    // for this anymore. You should keep going!
+                    // TODO: Remove work order update notification - Actors no longer handle this responsibility
                     // let asset = self.actor_id.asset().clone();
 
                     // self.notify_orchestrator
@@ -446,7 +365,7 @@ where
                             material_to_period,
                         )?
                         .build();
-                    // 1. Do not guess, attact the debugger.
+                    // Do not guess - use a debugger to understand state
                     drop(scheduling_environment_guard);
                     self.algorithm
                         .parameters

@@ -16,8 +16,6 @@ use rust_xlsxwriter::IntoExcelData;
 use serde::Deserialize;
 use serde::Serialize;
 
-// Clap should not be in the `SchedulingEnvironment`
-
 #[derive(Serialize, Deserialize, Eq, PartialEq, Hash, Clone, PartialOrd, Ord)]
 pub struct Period
 {
@@ -204,21 +202,17 @@ impl Display for Period
     }
 }
 
-// This is then no longer possible. What should you do instead? I think
-// that the best approach would be to make the systems.
 impl FromStr for Period
 {
     type Err = String;
 
     fn from_str(period_string: &str) -> Result<Self, Self::Err>
     {
-        // Parse the string
         let parts: Vec<&str> = period_string.split('-').collect();
         if parts.len() != 3 {
             return Err("Invalid period string format".to_string());
         }
 
-        // Parse year and weeks
         let mut year = parts[0].parse::<i32>().map_err(|_| "Invalid year")?;
 
         let start_week = if parts[1].len() == 2 {
@@ -232,8 +226,6 @@ impl FromStr for Period
         };
         let mut finish_week = parts[2].parse::<u32>().map_err(|_| "Invalid end week")?;
 
-        // Convert week number to a DateTime<Utc>
-
         let local = NaiveDate::from_isoywd_opt(year, start_week, chrono::Weekday::Mon).unwrap();
         let local_datetime = local.and_hms_opt(0, 0, 0).unwrap();
         let start_date = Utc.from_local_datetime(&local_datetime);
@@ -241,23 +233,19 @@ impl FromStr for Period
         let end_date = if finish_week == 52
             || (finish_week == 53 && NaiveDate::from_isoywd_opt(year, 53, Weekday::Mon).is_some())
         {
-            // Last moment of week 52 or 53
             let local = NaiveDate::from_isoywd_opt(year, finish_week, Weekday::Sun).unwrap();
             let local_datetime = local.and_hms_opt(23, 59, 59);
             Utc.from_local_datetime(&local_datetime.unwrap()).unwrap()
         } else {
-            // Handle rollover to the next year
             if finish_week > 52 {
                 finish_week = 1;
                 year += 1;
             }
-            // Moment just before the start of the next week
             let local = NaiveDate::from_isoywd_opt(year, finish_week + 1, Weekday::Mon).unwrap();
             let local_datetime = local.and_hms_opt(0, 0, 0);
             Utc.from_local_datetime(&local_datetime.unwrap()).unwrap() - Duration::seconds(1)
         };
 
-        // Create Period
         Ok(Period {
             period_string: period_string.to_string(),
             start_date: start_date.unwrap(),
@@ -265,7 +253,7 @@ impl FromStr for Period
             year,
             start_week,
             finish_week,
-            //WARN [ ] 2025-07-02 We should be very careful about doing this/
+            // TODO: We should be very careful about initializing empty day_indices
             day_indices: vec![],
         })
     }
@@ -309,18 +297,13 @@ mod tests
     #[test]
     fn test_period_add_duration_1()
     {
-        // Setup initial period
         let initial_start_date = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
         let initial_end_date = Utc.with_ymd_and_hms(2023, 1, 14, 23, 59, 59).unwrap();
         let period = Period::new(initial_start_date, initial_end_date, vec![]);
 
-        // Define the duration to add (e.g., 1 month)
-        let duration_to_add = Duration::weeks(2); // Adjust as per your Duration type
-
-        // Perform the addition
+        let duration_to_add = Duration::weeks(2);
         let new_period = period + duration_to_add;
 
-        // Assert that the new period has the expected values
         assert_eq!(new_period.start_date, initial_start_date + duration_to_add);
         assert_eq!(new_period.end_date, initial_end_date + duration_to_add);
     }
@@ -328,18 +311,13 @@ mod tests
     #[test]
     fn test_period_add_duration_2()
     {
-        // Setup initial period
         let initial_start_date = Utc.with_ymd_and_hms(2023, 12, 18, 0, 0, 0).unwrap();
         let initial_end_date = Utc.with_ymd_and_hms(2023, 12, 31, 23, 59, 59).unwrap();
         let period = Period::new(initial_start_date, initial_end_date, vec![]);
 
-        // Define the duration to add (e.g., 1 month)
-        let duration_to_add = Duration::weeks(2); // Adjust as per your Duration type
-
-        // Perform the addition
+        let duration_to_add = Duration::weeks(2);
         let new_period = period + duration_to_add;
 
-        // Assert that the new period has the expected values
         assert_eq!(new_period.start_date, initial_start_date + duration_to_add);
         assert_eq!(new_period.end_date, initial_end_date + duration_to_add);
         assert_eq!(new_period.period_string, "2024-W1-2".to_string());

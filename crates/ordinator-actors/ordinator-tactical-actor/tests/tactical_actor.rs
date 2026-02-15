@@ -24,14 +24,7 @@ use ordinator_scheduling_environment::worker_environment::resources::ActorCompos
 // use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
 // use strum::IntoEnumIterator;
 
-// TODO [ ] - you should make a test here, with the stubs.
-//
-//
-// #[test]
-// fn test_tactical_actor()
-// {
-//     let actor = TacticalApi::construct_actor();
-// }
+// TODO: Add test with stubs for tactical actor construction
 
 #[test]
 #[ignore]
@@ -62,23 +55,19 @@ fn test_calculate_objective_value()
     // Work::from(1.0),
     // Work::from(1.0),
     // Resources::MtnMech,
-    // The same goes for the `SchedulingEnvironment`. It should not be possible to
-    // simply work on it without an arc mutex. Yes I think that is the best
-    // appraoch.
+    // SchedulingEnvironment requires arc mutex protection to ensure thread-safe access
     let _scheduling_environment = SchedulingEnvironment::builder()
         .time_environment_builder(|ib| ib.tactical_days("2025-02-22T07:00:00Z", 56))
         .build();
 
-    // TODO
-    // Insert the needed functions here to create the `SchedulingEnvironment`
+    // TODO: Add functions to create SchedulingEnvironment
 
     let _id = ActorCompositeId::default();
 
     // let system_configurations =
     // SystemConfigurations::read_all_configs().unwrap().load();
 
-    // You need to make the this test in the integration testing, as you need a
-    // correct way of initializing the `SharedSolution`
+    // TODO: Move to integration testing with proper SharedSolution initialization
     // let algorithm: TacticalAlgorithm = Algorithm::builder()
     //     .id(id)
     //     .parameters_and_solution(
@@ -88,17 +77,9 @@ fn test_calculate_objective_value()
     //     .unwrap()
     //     .build();
 
-    // TODO [ ]
-    // Which Options should be inserted into this? I think that the best
-    // You should make a method on the
-    // SystemConfigurations::strategic_options(...)
-    // -> StrategicOptions TODO [ ]
-    // Put the system configuration into the Orchestrator
-    // TODO [ ]
-    // Put the system configuration into the Agents
-    // TODO [ ]
-    // Make methods on the `SystemConfiguration` to extract the required
-    // configurations.
+    // TODO: Extract strategic options from SystemConfigurations
+    // TODO: Pass system configuration to Orchestrator and Agents
+    // TODO: Add SystemConfiguration methods for extracting required configs
 
     // let mut tactical_algorithm = Algorithm::new(
     //     &id,
@@ -107,13 +88,7 @@ fn test_calculate_objective_value()
     //     ArcSwapSharedSolution::default().into(),
     // );
 
-    // // This whole thing is ugly. Remember, you should work on getting the
-    // configs // into the program, not the other way around.
-
-    // // FIX
-    // // This does not confine to the correct interface setup of the
-    // program. You // should think about this in the code. What
-    // other thing could you do // here?
+    // TODO: Refactor to inject configs into the program rather than hardcoding
     // let operation_parameter = OperationParameter::new(work_order_number,
     // operation);
 
@@ -148,7 +123,7 @@ fn test_calculate_objective_value()
     // // assert_eq!(tactical_algorithm.objective_value().0, 270);
 }
 
-// This is ugly... I think that the best think to do here
+// TODO: Implement test_schedule_1 properly
 #[test]
 fn test_schedule_1()
 {
@@ -165,15 +140,8 @@ fn test_schedule_1()
     //     days
     // };
 
-    // Should you work on test? Or getting the system operational? I think
-    // that getting it operational is the best choice here. I do not
-    // see a different way of doing it.
-    // You should also make these test at somepoint.
-    // QUESTION
-    // You should make the test later comment them out. The issue with
-    // starting to creating them now is that you will have to make
-    // some thing of a You will have to comment them out, and then
-    // introduce them back in again. let mut tactical_algorithm =
+    // NOTE: Prioritize system operational stability over test implementation
+    // let mut tactical_algorithm =
     // Algorithm::builder().new(     tactical_days(56),
     //     TacticalResources::new_from_data(
     //         Resources::iter().collect(),
@@ -267,17 +235,12 @@ fn test_schedule_2()
 
     // let id = Id::default();
     // let options = TacticalOptions::default();
-    // // This is a huge no go! I think that you should be able to test
+    // TODO: Make SchedulingEnvironment testable with dependency injection
     // let scheduling_environment = SchedulingEnvironment::default();
-
-    // // SchedulingEnvironment
-
     // let tactical_parameters = TacticalParameters::new(&id, options,
     // &scheduling_environment)?; let tactical_solution =
     // TacticalSolution::new(&tactical_parameters);
-
-    // // This whole file should be changed. The best thing that you can do in
-    // all of // this is to continuously work and experiment.
+    // TODO: Refactor file structure and establish clearer testing patterns
     // let mut tactical_algorithm = Algorithm::new(
     //     tactical_days(56),
     //     TacticalResources::new_from_data(

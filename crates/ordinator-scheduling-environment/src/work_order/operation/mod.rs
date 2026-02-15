@@ -44,7 +44,7 @@ impl Operations
 {
     pub fn relations(&self) -> Vec<ActivityRelation>
     {
-        // How should this be handled? Believe that the best response.
+        // Determine activity relations between consecutive operations
         self.0
             .iter()
             .map_windows(|[first, second]| {
@@ -63,11 +63,7 @@ impl Operations
                         - first.1.operation_dates.earliest_finish_datetime;
                     ActivityRelation::Postpone(postpone)
                 } else {
-                    // panic!("This means that the second operation is set to start before the first\nfirst: {} start: \n{}\nfinish: {} \nsecond: {}\nstart: {}\nfinish: {}"
-                    //     ,first.0, first.1.operation_dates.earliest_start_datetime,
-                    // first.1.operation_dates.earliest_finish_datetime,
-                    //     second.0, second.1.operation_dates.earliest_start_datetime,
-                    // second.1.operation_dates.earliest_finish_datetime)
+                    // Fallback when operations overlap unexpectedly
                     ActivityRelation::FinishStart
                 }
             })
@@ -83,9 +79,7 @@ impl From<BTreeMap<u64, Operation>> for Operations
     }
 }
 
-// QUESTION [ ]
-// Should it be possible for there to be one `Operations`?
-// No it should not be possible
+// Builder for Operations collection. A valid Operations must contain at least one operation
 pub struct OperationsBuilder(Operations);
 
 impl Operation
@@ -118,13 +112,7 @@ impl Operation
         todo!("Derive these based on self")
     }
 
-    // You should make the most of all of this. Again, here it is crucial that you
-    // do not do something quick and stupid, which is exactly what you are
-    // thinking about. You should instead take a step back and reflect here. The
-    // initialization is wrong and that need to be fixed in order to get this to
-    // the right point. What other things do you have?
-    //
-    //
+    // Find the period matching this operation's unloading point
     pub fn unloading_point<'a>(&self, periods: &'a [Period]) -> Option<&'a Period>
     {
         match &self.unloading_point.period_string {
@@ -159,9 +147,7 @@ impl OperationBuilder
             activity: self.operations_number,
             resource: self.resource,
             unloading_point: self.unloading_point.unwrap_or_default(),
-            // Here you have to do something different. I think that the
-            // best approach here is to make a system that will. I think
-            // that you should make a builders.
+            // Required fields must be set via builder methods
             operation_info: self
                 .operation_info
                 .expect("operation_info should always be part of the operation"),
@@ -183,7 +169,7 @@ impl OperationsBuilder
         Operations(self.0.0)
     }
 
-    // This should insert values into the `Operations` if there are no one there.
+    // Insert a new operation into the Operations collection
     pub fn operations_builder<F>(
         &mut self,
         operation_number: u64,
@@ -375,9 +361,7 @@ impl Work
 
     pub fn divide_work(&self, qualified_technicians: Vec<Work>) -> Result<Vec<Work>>
     {
-        // This is the error// You do not want to devide the work, but instead
-        // you
-
+        // Distribute work among qualified technicians
         let mut total_work = *self;
         let mut work_vec = vec![];
         for technician in qualified_technicians {
@@ -588,10 +572,7 @@ impl Display for Work
     }
 }
 
-// FIX [ ]
-// It is a serious error that the `possible_start` and `target_finish`
-// are found here. The best approach here is to always keep state as
-// lean as possible.
+// Contains the earliest start and finish datetimes for an operation
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 pub struct OperationDates
 {

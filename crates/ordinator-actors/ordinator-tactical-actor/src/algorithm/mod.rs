@@ -52,7 +52,7 @@ use self::assert_functions::TacticalAssertions;
 use self::tactical_parameters::TacticalParameters;
 use self::tactical_solution::OperationSolution;
 
-// If you had a single crate you should simply call thie
+// If using a single crate, call this directly
 #[derive(Debug)]
 pub struct TacticalAlgorithm<Ss>(
     Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>,
@@ -102,9 +102,7 @@ where
     {
         let mut objective_value_from_excess = 0;
         for (resources, days) in self.parameters.tactical_capacity.resources.iter() {
-            // You do not want to use the `Day` here. Remember that the `Day` is a core
-            // domain model. And it should be treated as such. There are many additions
-            // coming up into the [`SchedulingEnvironement`].
+            // Avoid using `Day` directly; it's a core domain model with upcoming extensions in `SchedulingEnvironement`
             let loadings = self
                 .solution
                 .tactical_loadings
@@ -149,18 +147,11 @@ where
 
             let strategic_period = &self
                 .loaded_system_solution
-                // This should be an option instead
+                // TODO: Consider returning an Option instead of using ok()
                 .strategic()
                 .ok();
 
-            // You need a thoughtful way of handling this. I think that the best approch
-            // here is to make the
-            //
-            // ESSAY: Do you want the Tactical here? Ahh you are in the
-            // I think that the Tactical period should not make any sense here.
-            // Here you are relying on the StrategicActor to determine the
-            // tardiness. That is actually fine I think, it simply means that
-            // you have to take the
+            // Determine period start date from strategic actor, which handles tardiness calculation
             let period_start_date: NaiveDate = strategic_period
                 .and_then(|period| period.scheduled_task(work_order_number))
                 .map(|where_is_work_order| {
@@ -194,8 +185,7 @@ where
                 .0
                 .date;
 
-            // Ahh this is completely wrong again. I think that the best approach here is to
-            // make the system work.
+            // Calculate the difference in days, ensuring non-negative value
             let day_difference = (last_day - period_start_date).max(TimeDelta::zero());
 
             objective_value_from_tardiness +=
@@ -220,6 +210,7 @@ where
 
         let all_keys = loading_keys.chain(capacity_keys).collect::<HashSet<_>>();
         let zero_days = Days::new(vec![Work::from(0.0); length]);
+
         for key in all_keys {
             total_loading += loadings
                 .resources
@@ -258,11 +249,7 @@ where
                 .get(&work_order_number)
                 .context("WorkOrder not present in TacticalActor")?;
 
-            // TODO [x] - break, consider if you are going in the right direction here
-            // TODO [ ] - Make a generic forced concept in the code.
-            // We need a common expression here to make the code work as expected.
-            //
-            // You want to put this into the,
+            // TODO: Create a generic forced scheduling concept for reuse
             let start_days = parameters
                 .tactical_operation_parameters
                 .iter()
@@ -312,9 +299,7 @@ where
     }
 }
 
-// Essay should you fix this now? Or make a new endpoint?
-// TODO [ ] - add different resources between operation specific logic
-// TODO [ ] - add number_of_people logic
+// TODO: Add resource-specific and people count logic
 #[allow(unused_assignments)]
 fn determine_forced_tactical_assignment(
     scheduled_days: &[(Option<Day>, Work, Work, u64)],
@@ -332,7 +317,7 @@ fn determine_forced_tactical_assignment(
     let mut operational_schedule_information = &scheduled_days[operation_index];
 
     while !done_indices.iter().all(|e| *e) {
-        // This is to extract the correct
+        // Extract the current operation's schedule information
         operational_schedule_information = match &scheduled_days.get(operation_index) {
             Some(value) => value,
             None => {
@@ -402,11 +387,10 @@ fn determine_forced_tactical_assignment(
                 dbg!(&current_day, operation_index);
             }
 
-            // If the current day is not defined. We should start from here.
+            // Initialize current day if not yet set
             None => match &operational_schedule_information.0 {
-                // Some if the operation is forced to a particular day.
+                // If the operation has a forced start date, use it
                 Some(operation_day) => {
-                    // A forced operation should always override
                     current_day = Some(operation_day.clone());
                     continue;
                 }
@@ -464,45 +448,8 @@ where
 
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
-        // Here we have to
-        // TODO [ ] 2025-07-17 make the `incorporate_system_solution`
-        // ESSAY [ ] 2025-07-17
-        // What should be done here?
-        // When the `UnloadingPoint` leaves the tactical schedule it should
-        // be forced out of the solution. So we the work order is Unscheduled
-        // and the work order is not in the tactical point of view we should
-        // make the code unschedule the WorkOrder if the new date is outside
-        // of the `tactical_days`. Yes that is the way of coding this system.
-        // First two TEST.
-        // [ ] Does scheduling inside of the `tactical_days` also give an error?
-        // -> No it does not, that means that it is only when the work order
-        //    leaves the tactical_days that we have an issue
-        // [ ] Does removing the `assert` in the `schedule` function remove the error?
-        // ESSAY: Should the schedule handle this? No! I think that we need a very
-        // clear policy here.
-        //
-        // This will be crucial, the tactical have to respect the `TechnicianActor` as
-        // well. I think that the best approach is to make the system. Work with
-        // that, but now the goal is to make Brian happy.
-        // for (work_order_number, tactical_parameter) in
-        // &self.parameters.tactical_work_orders {
-
-        // tactical_parameter.
-
-        // Now we want to remove the work orders that are no longer to be a
-        // part of the solution.
-        // }
-        //
-
-        // ISSUE #000 - make a method for force scheduling in the
-        // ActorBasedLargeNeighborhoodSearch.
-        // TODO [ ] Every actor needs this function. Is that correct? Yes! Every single
-        // Now? Yes.
-        //
-        // for operation in forced_operations {
-        //     self.force_schedule(forced_operations);
-        // }
-        //
+        // TODO: Unschedule work orders that fall outside tactical_days window
+        // TODO: Implement force scheduling method in ActorBasedLargeNeighborhoodSearch
         self.force_schedule()
             .context("Could not force schedule tactical solutions")?;
 
@@ -512,14 +459,7 @@ where
 
     fn make_atomic_pointer_swap(&mut self)
     {
-        // Performance enhancements:
-        // * COW: #[derive(Clone)] struct SharedSolution<'a> { tactical: Cow<'a,
-        //   TacticalSolution>, // other fields... }
-        //
-        // * Reuse the old SharedSolution, cloning only the fields that are needed. let
-        //   shared_solution = Arc::new(SharedSolution { tactical:
-        //   self.solution.clone(), // Copy over other fields without cloning
-        //   ..(**old).clone() });
+        // TODO: Optimize with COW or selective cloning of SharedSolution fields
         self.arc_swap_shared_solution.rcu(|old| {
             let mut shared_solution = (**old).clone();
             shared_solution.tactical_swap(&self.id, self.solution.clone());
@@ -546,26 +486,6 @@ where
 
         tactical_objective_value.aggregate_objectives();
 
-        // What is it that you actually want to test here? I am not sure, you need to
-        // get an understanding of what the system is doing. That is the most
-        // crucial. Remember
-        // 1. Knowledge
-        // 2. Tools
-        // 3. Harness and tests
-        // 4. Source code
-        // 5. Runtime
-        // You are currently lacking the knowledge of why this system is not performing
-        // as it should. And that is the major problem here. You have several
-        // options here and it is crucial that you know which one to use:
-        // 1. tracing
-        // 2. debugger
-        // 3. error, assertion, and constraint handling
-        // 4. tester thread
-        // 5. Swagger pinging
-        //
-        // Take your time here. It is crucial that you spend your time getting this
-        // correct What other tools do you have available here?
-
         event!(
             Level::INFO,
             target = "optimization",
@@ -582,19 +502,7 @@ where
 
     fn schedule(&mut self) -> Result<()>
     {
-        // The code here is all wrong. It is not as performant as it should be
-        // and it is not as maintainable as it could be. It has been
-        // designed for being understandable and that is also good.
-        //
-        // Just be aware of the issue.
-
-        // I am not sure whether this assertion should even be here/
-        // ESSAY on whether the `incorporate_state` or `schedule` and `unschedule`
-        // should handle the changes to the [`SchedulingEnvironment`].
-        //
-        // What part of the program should be responsible for all of this? I believe
-        // that the fundamental issue here is that we should be able to make
-        // something that can change the way that we work with the.
+        // TODO: Optimize performance and maintainability of scheduling logic
         self.assert_that_loading_matches_scheduled()
             .with_context(|| {
                 format!(
@@ -637,8 +545,6 @@ where
         };
 
         let mut counter = 0;
-        // The issue is that the code here is running a lot of iterations. What should
-        // we do about this? I am not really sure! I thi
 
         'back_to_loop_state_handle: loop {
             counter += 1;
@@ -751,8 +657,6 @@ where
                 );
 
                 let mut activity_load = Vec::<(Day, Work)>::new();
-                // The breaks here mean that the code might input a partial work order
-                // This should not matter for correctness.
 
                 for load in loadings {
                     let day = match current_day.peek() {
@@ -825,36 +729,9 @@ where
         Ok(())
     }
 
-    // NOTE:
-    // All of this is formulated in the wrong way. I think that the best approach
-    // here is to make the system work with as little state duplication as
-    // possible.
-
-    // So what should be checked to understand this?
-    // We know that the error is not in the creation of the parameters
-    //
-    // TODO [ ]
-    // Confirm that it is the `schedule` method that is causing the issue
-    // Remember that you should only change one thing at a time.
-    // Where do we want to fix this? The change is not found in the Strategic
-    // Actor alone. That means that it should not be in the
-    // `incorporate_system_solution` although that function also needs to be
-    // implemented correctly.
-    //
-    // What other options do we have here? I think that the best approach is
-    // to make the system work correctly with the. You are not the most focussed at
-    // the moment. What should you do here? I think that the best approach is to
-    // make the system work correctly.
-    //
-    // QUESTION [ ] 2025-07-17 where are the forced work orders handled in the
-    // tactical actor?
-    //
-    // Okay so the TacticalActor does not have an `schedule_forced` that
-    // makes this really difficult to work with.
-    //
-    // How does the parameters even fit in together with the idea that the
-    // code should be working with the earliest_start_day to put the
-    // work_order on the correct day?
+    // TODO: Reduce state duplication in scheduling implementation
+    // TODO: Verify `schedule` method is the issue source
+    // TODO: Implement `schedule_forced` method for forced work order handling
     fn unschedule(&mut self) -> Result<()>
     {
         let mut rng = rng();
@@ -873,8 +750,7 @@ where
                 .number_of_removed_work_orders,
         );
 
-        // How can you make something that will allow us to catch the
-        // error instantneously?
+        // Log work order count for debugging
         event!(target: "developer", Level::INFO, number_of_work_orders_in_tactical_solution = self.solution.tactical_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Tactical(_))).count());
         for work_order_number in random_work_order_numbers {
             self.unschedule_specific_work_order(*work_order_number)
@@ -1095,14 +971,6 @@ pub mod tests
         let operating_time = Work::from(5.0);
         let work_remaining = Work::from(10.0);
 
-        // You need a `SharedSolution` to call this function... Does this even
-        // make anysense? I think that it does but this is going to be really really
-        // difficult. You should strive to make the code here
-        // This sure is a horrible trait. I think that there is a way of making this
-        // in a really good way
-        //
-        // You could also simply remove the function from the `Algorithm inplementation`
-
         let loadings = determine_load(remaining_capacity, &operating_time, work_remaining);
 
         assert_eq!(
@@ -1151,13 +1019,7 @@ pub mod tests
         assert_eq!(min_work, Work::from(10.0));
     }
 
-    // You should test all this in the right order. I think that...
-    // QUESTION
-    // Is it correct of you to move this into the integration testing? Yes
-    // absolutely. I do not see anyother way, as the `objective value` may
-    // always be dependent on the other `Solution`s.
-    // GOOD a decision was made here.
-
+    // Integration tests preferred; objective value depends on other Solutions
     #[test]
     fn test_determine_forced_assignment_1()
     {

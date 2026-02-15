@@ -28,11 +28,7 @@ use crate::time_environment::TimeInterval;
 
 pub type OperationalId = String;
 
-// ESSAY:
-//
-// There is something rotten about all this! I think that the best
-// approach is to create something that will allow us to better
-// forcast how the system will behave.
+// TODO: Improve system behavior prediction model
 #[derive(Deserialize, Serialize, Debug)]
 pub struct ActorEnvironment<A>
 where
@@ -52,8 +48,7 @@ impl<A> ActorEnvironment<A>
 where
     A: ActorSpecification + Debug + ?Sized,
 {
-    // TODO [ ]
-    // This should be refactored!
+    // TODO: Refactor builder pattern
     pub fn builder() -> ActorEnvironmentBuilder<A>
     {
         ActorEnvironmentBuilder {
@@ -98,10 +93,6 @@ pub trait ActorSpecification: Send + Sync + Debug
 
     fn operational(&self) -> &HashMap<IdString, InputOperational>;
 
-    // let lock = orchestrator.actor_registries.lock().unwrap();
-    // let asset = Asset::try_from(asset).map_err(|e|
-    // AppError::Anyhow(e.to_string()))?;
-
     fn technician_availability(
         &self,
     ) -> BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Skill>)>;
@@ -113,12 +104,10 @@ pub trait ActorSpecification: Send + Sync + Debug
         resources: Vec<Skill>,
         start_date: DateTime<Utc>,
         finish_date: DateTime<Utc>,
-        // This should return a
     ) -> anyhow::Result<ActorCompositeId>;
 }
 
-//
-// ISSUE #004 [ ] - make a trait implementation for this.
+// TODO: Create trait implementation for IdString
 pub type IdString = String;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ActorSpecifications
@@ -127,9 +116,7 @@ pub struct ActorSpecifications
     pub tactical: InputTactical,
     pub supervisors: Vec<InputSupervisor>,
     pub operational: HashMap<IdString, InputOperational>,
-    // QUESTION [x] Is this the way to do it?
-    // It cannot be like this. The idea of a relational database is beginning
-    // to make a lot of sense.
+    // TODO: Consider using relational database structure instead of HashMap
 }
 
 impl ActorSpecification for ActorSpecifications
@@ -184,7 +171,6 @@ impl ActorSpecification for ActorSpecifications
         resources: Vec<Skill>,
         start_date: DateTime<Utc>,
         finish_date: DateTime<Utc>,
-        // This should return a
     ) -> anyhow::Result<ActorCompositeId>
     {
         let availability = Availability::new(start_date, finish_date, assets)?;
@@ -318,12 +304,7 @@ impl ActorSpecificationBuilder
     }
 }
 
-// This should be handled as well. What should you do not? I think that a
-// meditation session.
-//
-
-// TODO #00 #00 #03 [x] Move the `./configuration/work_order_parameters.json`
-// here. Is this
+// TODO: Move work_order_parameters.json configuration here
 #[derive(Eq, PartialEq, Serialize, Deserialize, Debug)]
 pub struct InputStrategic
 {
@@ -348,8 +329,7 @@ pub struct InputSupervisor
     pub supervisor_options: SupervisorOptions,
 }
 
-// TODO [ ]
-// Load in the IDs directly.
+// TODO: Load IDs directly from configuration
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct InputOperational
 {
@@ -391,28 +371,11 @@ impl InputOperational
         }
     }
 }
-/// This type is for loading in the `Strategic` configurations
-/// so that the `StrategicOptions` can be loaded in to the `Agent`
-/// in the correct format.
-/// How to resolve this duplication? Do you want this in the database?
-/// So you have already understood that this is the case. This is the
-/// priority that you need to understand here.
-// QUESTION [ ]
-// What should you do about the `StdRng`? I think that the best approach
-// here is to make the code. You have to make you own Deser
-//
-// It should leave. The five why was essential. Leave the code out of this. I think
-// that the correct way of making this is the the Orchestrator should apply changes
-//
-// QUESTION [ ]
-// So the key question here is whether the Actor will ever need to
-// see the options? I do not believe that it is. Actuallu does the
-// [`Orchestrator`] even need to know the Actors?
-//
-// The issue here is that you are afraid of using `dyn`. That is the
-// main thing that you need to have more decoupling.
-//
-// This has to be Clone. Otherwise you will not be able to understand the
+/// Loads strategic configurations for use by agents
+///
+/// TODO: Resolve duplication between StrategicOptions and database representation
+/// TODO: Address StdRng configuration and custom deserialization
+/// TODO: Reduce coupling between Actor and Orchestrator
 #[derive(Clone, Eq, PartialEq, Serialize, Deserialize, Debug)]
 pub struct StrategicOptions
 {
@@ -420,17 +383,10 @@ pub struct StrategicOptions
     pub urgency_weight: usize,
     pub resource_penalty_weight: usize,
     pub clustering_weight: usize,
-    // These two should go into the `SchedulingEnvironment` that means that
-    // the code should strive to... This means that the StrategicAgent, would
-    // simply import this directly into itself. There is no need for a
-    //
-    // You can move this directly from the scheduling environment into the
-    // Actor. Is the a good idea? I think that it is
-    // The priority should be the same for each work order, correct? Yes
-    // I think that is the correct answer.
+    // TODO: Move weight parameters to SchedulingEnvironment
 }
 
-// The `rng` should not be inside of the `ordinator-scheduling-environment`
+// TODO: Move RNG configuration outside of ordinator-scheduling-environment
 #[derive(Eq, Hash, PartialEq, Serialize, Deserialize, Debug, Clone)]
 pub struct TacticalOptions
 {
@@ -964,21 +920,6 @@ mod tests
     //     assert_eq!(system_agents.operational[0].id.1, [Resources::MtnElec]);
 
     use std::collections::HashMap;
-    //     assert_eq!(
-    //         system_agents.operational[0]
-    //             .operational_configuration
-    //             .off_shift_interval
-    //             .start,
-    //         NaiveTime::from_hms_opt(19, 0, 0).unwrap(),
-    //     );
-    //     assert_eq!(
-    //         system_agents.operational[0]
-    //             .operational_configuration
-    //             .off_shift_interval
-    //             .end,
-    //         NaiveTime::from_hms_opt(7, 0, 0).unwrap(),
-    //     );
-    // }
     use std::str::FromStr;
 
     use chrono::NaiveDateTime;
@@ -992,7 +933,6 @@ mod tests
     use crate::worker_environment::resources::ActorCompositeId;
     use crate::worker_environment::resources::Skill;
 
-    //
     #[test]
     fn test_actor_specification_builder()
     {
@@ -1041,7 +981,7 @@ mod tests
     #[test]
     fn test_add_technician()
     {
-        // You have to mock all these dependencies to test the code.
+        // Mock dependencies for testing
 
         #[derive(Debug)]
         struct TestActorSpecification
@@ -1096,7 +1036,6 @@ mod tests
                 resources: Vec<Skill>,
                 start_date: chrono::DateTime<chrono::Utc>,
                 finish_date: chrono::DateTime<chrono::Utc>,
-                // This should return a
             ) -> anyhow::Result<super::resources::ActorCompositeId>
             {
                 let availability = Availability::new(start_date, finish_date, assets)?;

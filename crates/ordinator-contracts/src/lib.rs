@@ -22,8 +22,7 @@ pub mod orchestrator;
 pub mod scheduler;
 pub mod supervisor;
 pub mod technician;
-// This is a DTO object, it should be moved out of the
-// `scheduling-environment`
+// TODO: Move this DTO object out of `scheduling-environment`
 #[derive(
     Hash, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS,
 )]
@@ -38,14 +37,14 @@ pub struct PeriodDto(pub String);
     Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS, Default,
 )]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
-/// Example 2025-02-20
+/// Represents a naive date (e.g., 2025-02-20) as a string
 pub struct NaiveDateDto(pub String);
 
 #[derive(
     Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS, Default,
 )]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
-/// Example 2025-02-20T07:00:00
+/// Represents a datetime (e.g., 2025-02-20T07:00:00) as a string in RFC3339 format
 pub struct DateTimeDto(pub String);
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, ToSchema, TS)]
@@ -138,7 +137,7 @@ impl TryFrom<NaiveDateDto> for NaiveDate
     }
 }
 
-// ISSUE #000 How do we handle datetime?
+// TODO: Clarify datetime handling strategy and parsing requirements
 impl TryFrom<DateTimeDto> for DateTime<Utc>
 {
     type Error = chrono::ParseError;

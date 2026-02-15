@@ -26,7 +26,7 @@ pub struct Cli
     command: Commands,
 }
 
-/// Main function of the imperium command line tool
+/// Parse CLI arguments and handle the command request
 fn main() -> anyhow::Result<()>
 {
     let cli = Cli::parse();

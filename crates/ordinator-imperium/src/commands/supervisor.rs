@@ -21,7 +21,7 @@ pub enum SupervisorCommands
         asset: Asset,
         supervisor: SupervisorType,
     },
-    /// Get the commands for manually scheduling a work order activity.
+    /// Get the commands for manually scheduling a work order activity
     Scheduling
     {
         asset: Asset,

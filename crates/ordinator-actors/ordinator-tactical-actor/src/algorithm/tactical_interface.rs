@@ -65,7 +65,6 @@ impl TacticalInterface for TacticalSolution
     >
     {
         self
-            // FIRST APPROACH
             .tactical_work_orders
             .0
             .iter()

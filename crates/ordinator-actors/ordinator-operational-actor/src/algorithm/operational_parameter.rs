@@ -1,16 +1,7 @@
 use std::collections::HashMap;
-// TODO [ ]
-// I think that I myself want to control how this type should be displayed. That
-// will make the most sense.
-//
-// NOTE [ ] Should only make it yourself or simply derive it now? I think that
-// deriving it now is the best decision that you can make and then simply be
-// ready to make a better one when it is needed
-//
-// NOTE [ ]
-// Remember that what you generally want is to have the code put out the
-// [`SystemSolution`] that is currently loaded into the program. Not the current
-// one.
+// TODO: Implement custom Display implementation for better control over formatting
+// NOTE: Derive Debug for now; replace with custom implementation when needed
+// NOTE: Ensure output displays the currently loaded [`SystemSolution`], not previous versions
 use std::fmt::Debug;
 use std::sync::MutexGuard;
 
@@ -30,23 +21,8 @@ use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
-// Again there are here multiple ways of doing things. You should be careful
-// I think that the best approach is to put the... You could reformulate
-// the [`SchedulingEnvironment`] and then update the precedence relation
-// directly from the source. is this a good idea? The other approach is
-// to have the code have an additional field here.
-//
-// You have a dilemma here, in the the choice of turning the
-// SchedulingEnvironment into a highly concurrent data structure will allow you
-// to remove an insane amount of state duplication. I am not sure that this is
-// something that you want. It is?
-//
-// You have to make a SWAT analysis. From your current view point it seems like
-// a good idea. but is it? I am not really sure. You are doing everything right
-// here.
-//
-// I do not think that you should make a highly concurrent SchedulingEnvironment
-// yet
+// Consider refactoring SchedulingEnvironment into a highly concurrent data structure
+// to reduce state duplication. For now, maintain current approach with separate fields.
 pub struct OperationalParameters
 {
     pub work_order_parameters: HashMap<WorkOrderActivity, OperationalParameter>,
@@ -119,19 +95,13 @@ impl Debug for OperationalParameters
     }
 }
 
-// There is something rotten about this function.
 impl Parameters for OperationalParameters
 {
     type Key = WorkOrderActivity;
 
-    // You should not put it in the Options
-
-    // Do we even want the code to look like this in the first place?
     fn from_source(
         id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
-        // This is not needed. It should always be a part of your SchedulingEnvironment.
-        // Yes this is the best approach here.
     ) -> Result<Self>
     {
         let mut work_order_parameters = HashMap::default();
@@ -154,7 +124,6 @@ impl Parameters for OperationalParameters
                     preparation_time.context("Could not derive preparation_time")?,
                 );
 
-                // Are we mutating this function?
                 let operational_parameter = match operational_parameter_option {
                     Some(operational_parameter) => operational_parameter,
                     None => continue,
@@ -244,7 +213,6 @@ impl OperationalParameter
         // marginal_fitness: MarginalFitness,
     ) -> Option<Self>
     {
-        //
         let combined_time = (work + _preparation).in_seconds();
         let operation_time_delta = TimeDelta::new(combined_time, 0).unwrap();
         if work.to_f64() == 0.0 {

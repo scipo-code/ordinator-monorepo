@@ -19,7 +19,6 @@ use crate::algorithm::supervisor_solution::SupervisorSolution;
 use crate::messages::responses::SupervisorResponseScheduling;
 use crate::messages::responses::SupervisorResponseStatus;
 
-// Should you implement on the new ty
 impl<Ss> CommandHandler<SupervisorRequestMessage, SupervisorResponseMessage>
     for Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>
 where
@@ -29,10 +28,7 @@ where
     {
         match state_link {
             StateLink::WorkOrders(changed_work_orders) => {
-                // It is beginning to seem a little horrible that the self. here holds both the
-                // `scheduling_environment` and the `algorithm`. There is a
-                // couple of issues here relating to how we interact
-                // with the algorithm. I
+                // TODO: Architectural concern - self holds both scheduling_environment and algorithm, which couples concerns
                 let work_orders = {
                     let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 

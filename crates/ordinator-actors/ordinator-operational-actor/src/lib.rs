@@ -29,8 +29,6 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 
-// You are beginning to see the truth. That there are no shortcuts
-// to be made here and no.
 pub struct OperationalActor<Ss: Debug>(
     Actor<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>,
 )
@@ -96,7 +94,6 @@ where
         .scheduling_environment(Arc::clone(&scheduling_environment_guard))
         .algorithm(|ab| {
             ab.id(id)
-                // So this function returns a `Result`
                 .parameters_and_solution(
                     &scheduling_environment_guard.lock().unwrap(),
                 )?

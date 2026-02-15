@@ -19,17 +19,9 @@ use crate::traits::AbLNSUtils;
 
 // pub type SharedSolution = SharedSolution<
 
-// QUESTION
-// You are making a lot of fields public here. I do not think that
-// is a good idea. Why you should use a method to retain and remove
-// solutions. And this is the only way of doing it.
-// WARN TODO [ ]
-// You have to split the algorithm into a set of different traits.
-// with each one controlling access to the underlying code. That
-// is important that we do it that way.
-//
-// You have to tell the specific `Algorithm` how to handle the
-// error that you saw previously.
+// TODO: Consider making fields private and adding accessor methods to control solution management.
+// TODO: Split the algorithm into separate traits, each controlling access to specific functionality.
+// TODO: Add error handling to the specific `Algorithm` implementation.
 #[derive(Debug)]
 pub struct Algorithm<S, P, I, Ss>
 where
@@ -45,10 +37,7 @@ where
     pub loaded_system_solution: Guard<Arc<Ss>>,
 }
 
-// You are designing these all wrong. You have to spend the time that it takes
-// to actually learn this. I do not see what other option we have... You will
-// move way to slow if you do not master this skill. There is simply no way
-// around it.
+/// Builder for constructing an [`Algorithm`] with required parameters.
 pub struct AlgorithmBuilder<S, P, I, Ss>
 where
     S: Solution,
@@ -103,8 +92,7 @@ where
 
     fn swap_to_old_solution(&mut self, solution: S)
     {
-        // When swapping we should update the [`Solution`] and also
-        // the counters
+        // Revert the solution and update internal counters
         self.solution.revert_to_old_solution(solution);
     }
 
@@ -114,11 +102,7 @@ where
     }
 }
 
-// Why does this function require a `Alg` that is `Result<Alg>`
-// Then each Solution will have to implement the trait for a
-// specific concrete type. I think that is the best approach here
-// Do you want to rethink this before. The issue here is that
-// we might have to make a lot of different
+// Generic parameter `Alg` allows custom type conversions from Algorithm.
 impl<S, P, I, Ss> AlgorithmBuilder<S, P, I, Ss>
 where
     S: SwapSolution<Ss> + Solution<Parameters = P> + Clone,
@@ -127,15 +111,8 @@ where
     Ss: SystemSolutions,
 {
     pub fn build<Alg>(self) -> Result<Alg>
-    // So here the function will return a `Alg` which is the same as
-    // the
     where
-        // So here the `Algorithm` has to implement the
-        // `Into` trait. This means that the code should
-        // work correct? The issue is that I do not know where
-        // the code is going wrong here.
-        // I really do not understand all this. I think that the best
-        // approach is to make something that can make the whole system
+        // Algorithm must implement Into<Alg> for type conversion
         Algorithm<S, P, I, Ss>: Into<Alg>,
     {
         let algorithm_inner = Algorithm {
@@ -157,13 +134,7 @@ where
         self
     }
 
-    // This is a needless level of indirection. You should be careful of this type
-    // of thing. The issue here is what we should do about this.
-    // What should happen to this function? I think that the best place to have
-    // there kind of things
-    //
-    // What should be done? Keep the current setup. But move the Options in the the
-    // Algortihm.
+    // TODO: Consider refactoring to avoid this level of indirection; explore moving options into Algorithm.
     pub fn parameters_and_solution(
         mut self,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
@@ -174,10 +145,7 @@ where
             scheduling_environment,
         )?;
 
-        // Okay so the issue here is that the code is not working correctly. So the
-        // reason that you. Ahh CRUCIAL INSIGHT... The S is the actual concrete type
-        // here and `Solution` was simply the trait... This is a crucial insight here.
-        // There is so many
+        // S is the concrete type, Solution is the trait
         self.solution = Some(SolutionState::new(
             S::from_parameters(&parameters).with_context(|| {
                 format!(
@@ -200,14 +168,9 @@ where
         Ss: SystemSolutions,
     {
         self.arc_swap_shared_solution = Some(system_solution_arc_swap);
-        // CRUCIAL INSIGHT
-        // The individual solutions should specify how to swap the
-        // solution in the [`SystemSolution`]. It is not the task
-        // of the system solution to know this.
-        // This is crucial
+        // Individual solutions specify how to swap within the system solution
         self.arc_swap_shared_solution.as_ref().unwrap().rcu(|old| {
             let mut system_solution = (**old).clone();
-            // SwapSolution takes a mutable reference to the `SystemSolution`
             SwapSolution::swap(
                 self.id.as_ref().unwrap(),
                 self.solution.as_ref().unwrap().clone(),
@@ -228,9 +191,7 @@ where
     }
 }
 
-// TODO [x]
-// Where should this be moved to? I am not really sure! I think that the best
-// place is the `Algorithm` no I think it is the `ordinator-actors` crate
+// TODO: Determine appropriate module location for this enum
 pub enum LoadOperation
 {
     Add,

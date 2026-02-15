@@ -37,15 +37,13 @@ impl std::fmt::Debug for TacticalResources
 
             let number_of_days = days.days.len();
 
-            // Do you want to call it?
-            //
             let mut days_loading = vec![Work::from(0.0); days.days.len()];
             let average_hours_per_day = self.resources.values().map(|day| {
                 days_loading.iter_mut().enumerate().for_each(|f| {
                     *f.1 += day
                         .days
                         .get(f.0)
-                        .expect("This should neven happen. Look at the implementation above")
+                        .expect("Day index should always be valid for initialized resources")
                 })
             });
             write!(
@@ -68,7 +66,6 @@ impl TacticalResources
         TacticalResources { resources }
     }
 
-    // This is a horrible data structure,
     pub fn get_resource(&self, resource: &Skill, day: DayIndex) -> Result<&Work>
     {
         self.resources
@@ -79,7 +76,6 @@ impl TacticalResources
             .with_context(|| format!("Day not present {day}"))
     }
 
-    // This is a horrible data structure,
     pub fn get_resource_mut(&mut self, resource: &Skill, day: DayIndex) -> Result<&mut Work>
     {
         self.resources
@@ -122,10 +118,8 @@ impl TacticalResources
         Ok(days
             .iter()
             .enumerate()
-            // How should we handle this? The goal is to connect a given period to a set of daily
-            // indices. You should do this first I think? Yes?
+            // Filter to days within the period
             .filter(|(index, _)| period.day_indices.contains(&(*index as u64)))
-            // This is where you have to think about the architecture of the code.
             .map(|(_, work)| work)
             .fold(Work::from(0.0), |acc, work| &acc + work))
     }
@@ -141,14 +135,11 @@ impl TacticalResources
     }
 }
 
-// Is this the correct way to think about the different things? Yes
-// let the caller decide
 impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for TacticalResources
 {
     fn from(value: (&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)) -> Self
     {
-        // TODO [ ]
-        // Move this out of the code and into `configuration`
+        // TODO: Move hours_per_day to configuration
         let _hours_per_day = 6.0;
 
         let gradual_reduction = |i: usize| -> f64 {
@@ -159,11 +150,7 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for Ta
             }
         };
 
-        // WARN
-        // Should this be multi skill?
-        // This was always wrong. You should never have to make the system function
-        // in that way.
-        // Should you simply move the Everything? Yes
+        // FIXME: Support multi-skill resources; currently only handles single skill
         let mut tactical_resources_inner = HashMap::<Skill, Days>::new();
         for operational_configuration_all in value
             .0
@@ -174,15 +161,9 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for Ta
             .operational()
             .iter()
         {
-            // There is an error here! You are moving slow on this. You should take a small
-            // break and then fix this. After that I think that you should start
-            // thinking about what we should do next.
             for (i, _) in value.0.time_environment.days.iter().enumerate() {
                 let resource_periods = tactical_resources_inner
-                    // FIX
-                    // WARN
-                    // There is a logic error here. If we want to compare with the
-                    // `StrategicAgent`.
+                    // FIXME: Logic error when comparing with StrategicAgent
                     .entry(
                         operational_configuration_all
                             .1

@@ -23,8 +23,7 @@ pub struct SupervisorParameters
     pub options: SupervisorOptions,
 }
 
-// ASSERT on elements in the Vec. That is a really good point.
-// ISSUE START HERE
+// TODO: Add assertions on vector elements
 impl std::fmt::Debug for SupervisorParameters
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
@@ -38,11 +37,6 @@ impl std::fmt::Debug for SupervisorParameters
                 self.supervisor_periods,
             )
         } else {
-            // You should really use the
-            // NOTE [ ] CRUCIAL LESSON
-            // You should use a debugger. I think that you should
-            // You head is a faulty interpreter! Good point! I think that
-            // we should.
             panic!("Use the alternate version of the Debug formatter")
         }
     }
@@ -59,10 +53,8 @@ impl Parameters for SupervisorParameters
     {
         let mut supervisor_parameters = HashMap::new();
 
-        // Should you Clone this? Yes.. But ideally you should simply use Functional
-        // programming. That is the only way in a situation like this.
-        // You should make part of the SchedulingEnvironment reside inside of the
-        // Arc<WorkOrders> and the other part an ArcSwap<TimeEnvironment>
+        // Consider refactoring SchedulingEnvironment to use Arc<WorkOrders> and ArcSwap<TimeEnvironment>
+        // for better performance with Functional programming patterns
         let input_supervisor = scheduling_environment
             .worker_environment
             .actor_specification
@@ -75,7 +67,6 @@ impl Parameters for SupervisorParameters
 
         let options = input_supervisor
             .supervisor_options
-            // ISSUE #130
             .clone();
 
         let supervisor_periods = &scheduling_environment
@@ -126,9 +117,6 @@ impl Parameters for SupervisorParameters
 #[allow(dead_code)]
 impl SupervisorParameters
 {
-    // ISSUE #000
-    // make-the-actor-create-parameters-directly-from-the-scheduling-environment
-    //
     pub(crate) fn supervisor_parameter(
         &self,
         work_order_activity: &WorkOrderActivity,
@@ -143,8 +131,7 @@ impl SupervisorParameters
         Ok(supervisor_parameter)
     }
 
-    // This should be a part of the `Parameters` trait. You are starting to feel
-    // overwhelmed again. Relax
+    // TODO: Consider moving this to the `Parameters` trait
     pub(crate) fn insert_supervisor_parameter(
         &mut self,
         work_order_activity: &WorkOrderActivity,
@@ -155,7 +142,6 @@ impl SupervisorParameters
             .entry(work_order_activity.0)
             .or_default()
             .insert(work_order_activity.1, supervisor_parameter);
-        // DEBUG: Make assertions here!
     }
 }
 

@@ -36,28 +36,17 @@ pub struct StrategicParameters
     pub strategic_clustering: StrategicClustering,
     pub period_locks: HashSet<Period>,
 
-    // TODO #04 #00 #01
-    // enum PeriodState {
-    //     Previous(Period),
-    //     Frozen(Period),
-    //     Draft(Period),
-    //     Draft2(Period),
-    // }
-    // Create this and have it change based on the value
-    // of the [`SystemClock`].
+    // TODO #04 #00 #01: Create PeriodState enum that changes based on SystemClock
     pub strategic_periods: Vec<Period>,
-    // Should the options be here? Yes they, no they should not
     pub strategic_options: StrategicOptions,
 }
 
-// QUESTION
-// Should you make a builder for the `Parameters`?
-// I believe that this is a good idea, but I am not really sure
+// TODO: Consider implementing a builder pattern for Parameters
 impl Parameters for StrategicParameters
 {
     type Key = WorkOrderNumber;
 
-    // That change in the asset, was not complete without downsides.
+    // The asset change introduced some tradeoffs that need consideration
     fn from_source(
         id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
@@ -70,8 +59,7 @@ impl Parameters for StrategicParameters
         let strategic_periods = &scheduling_environment.time_environment.periods;
         let days = &scheduling_environment.time_environment.days;
 
-        // Ideally all this should be removed to a different place in the
-        // code.
+        // TODO: Move actor specifications retrieval to a separate module
         let actor_specifications = scheduling_environment
             .worker_environment
             .actor_specification
@@ -82,29 +70,22 @@ impl Parameters for StrategicParameters
         let work_order_configurations = &scheduling_environment.work_order_policies;
         let material_to_period = &scheduling_environment.material_repo.material_to_period;
 
-        // You need to develop this together with Dall!
-        // Okay so you should put the
-        //
+        // Filter work orders for this asset that are released for scheduling
         let filter = work_orders
             .inner
             .iter()
             .filter(|(_, wo)| wo.functional_location().asset == *asset)
             .filter(|(_, wo)| wo.released_for_scheduling());
 
-        // ISSUE #000
-        // This is crucial to fix correctly now
+        // ISSUE #000: Critical to fix correctly
         let strategic_work_order_parameters = filter
             .map(|(won, wo)| {
                 Ok((
                     *won,
-                    // TODO #000001 [ ] Move time environment configuraion into
-                    // SchedulingEnvironment TODO #000002 [ ] Move work order
-                    // parameters from `./configuration` to
-                    // `./temp_scheduling_environmen_database`
-                    // You shoul
+                    // TODO #000001: Move time environment configuration into SchedulingEnvironment
+                    // TODO #000002: Move work order parameters to temp_scheduling_environment_database
                     WorkOrderParameter::builder()
-                        // This should be created with a list of work order numbers instead
-                        // of the current implementation.
+                        // TODO: Accept list of work order numbers instead of current implementation
                         .with_scheduling_environment(
                             wo,
                             strategic_periods,
@@ -125,8 +106,7 @@ impl Parameters for StrategicParameters
                 .clustering_weights,
         )?;
 
-        // The `SchedulingEnvironment` should not know about the `StrategicResources`
-        // This is wrongly implemented and therefore should be changed.
+        // TODO: Decouple SchedulingEnvironment from StrategicResources
         let strategic_capacity = StrategicResources::from((scheduling_environment, id));
 
         Ok(Self {
@@ -139,10 +119,8 @@ impl Parameters for StrategicParameters
         })
     }
 
-    // TODO [ ]
-    // This should be created as a `Builder` I am not sure that the best decision
-    // will be here. You should create this in a functional way.
-    // ISSUE #000 create-individual-parameters-for-each-actor
+    // TODO: Create as Builder using functional approach
+    // ISSUE #000: create-individual-parameters-for-each-actor
     fn create_and_insert_new_parameter(
         &mut self,
         _key: Self::Key,
@@ -161,10 +139,7 @@ pub struct StrategicClustering
     pub inner: HashMap<(WorkOrderNumber, WorkOrderNumber), ClusteringValue>,
 }
 
-/// WARNING
-/// There is a good change that there should be a generic parameter in this
-/// type as there are so many different ways that a `StrategicParameter`
-/// can be handled.
+/// WARNING: Consider adding a generic parameter to support multiple StrategicParameter handling approaches
 #[derive(Debug, PartialEq, Clone, Serialize)]
 pub struct WorkOrderParameter
 {
@@ -173,20 +148,13 @@ pub struct WorkOrderParameter
     pub latest_period: Period,
 
     pub weight: i64,
-    // This weight is derived from the ['StrategicOptions`]. This means that the code should
-    // work better
+    // Weight derived from StrategicOptions
     pub work_load: HashMap<Skill, Work>,
 }
 
-// This should be reformulated in a different way I think. You
-// should strive to make something that will enable us to make
-// the most of the procious time here.
-//
-// This has to be formulated together with the
-// I believe that we should experiment here with making the `Type state`
-// pattern.
-// ISSUE #000 introduce-type-state-pattern-to-handle-complex-business-variants
-// ISSUE #000 read-learning-domain-driven-design
+// TODO: Reformulate using Type State pattern for complex business variants
+// ISSUE #000: introduce-type-state-pattern-to-handle-complex-business-variants
+// ISSUE #000: read-learning-domain-driven-design
 #[derive(Debug)]
 pub struct WorkOrderParameterBuilder
 {
@@ -194,8 +162,7 @@ pub struct WorkOrderParameterBuilder
     pub excluded_periods: HashSet<Period>,
     pub latest_period: Option<Period>,
     pub weight: Option<u64>,
-    // This weight is derived from the ['StrategicOptions`]. This means that the code should
-    // work better
+    // Weight derived from StrategicOptions
     pub work_load: HashMap<Skill, Work>,
 }
 
@@ -250,33 +217,19 @@ impl StrategicParameters
 
 impl WorkOrderParameterBuilder
 {
-    // WARN
-    // This builder is crucial for the whole business logic of things. I am not sure
-    // what the best approach is for continuing this.
-    // TODO [ ]
-    // You need a function for each field here, and you have to understand what each
-    // of them means.
-    // QUESTION
-    // _Where should the configs come from?_
-    // The higher level Parameters implementation includes the
-    // `SchedulingEnvironment` that means that it should be possible to include
-    // the `WorkOrderConfigurations` here.
-
+    // This builder is crucial for business logic. Add functions for each field and clarify their meanings.
+    // Configs come from the higher-level Parameters implementation via SchedulingEnvironment.
     pub fn with_scheduling_environment(
         mut self,
         work_order: &WorkOrder,
         periods: &[Period],
         days: &[Day],
         work_order_configurations: &WorkOrderPolicies,
-        // Then you can also move this one out of the system.
+        // TODO: Move material_to_period out of the system
         material_to_period: &MaterialToPeriod,
     ) -> Result<Self>
     {
-        // FIX [x]
-        // This is horribly written and very error prone
-        // Use a TypeState pattern if you are in doubt.
-        // todi!
-
+        // TODO: Use TypeState pattern to improve error handling
         let forced_work_order = work_order.forced_work_order(periods, days, material_to_period)?;
 
         info!(target: "developer", forced_work_order = ?forced_work_order);
@@ -285,10 +238,7 @@ impl WorkOrderParameterBuilder
                 self.locked_in_period = WhereIsWorkOrder::Strategic(period.0);
                 self.excluded_periods = period.1;
             }
-            // What should happen here? I think that the best approach is to
-            // structure the code so that it will
-            // If this happens complete control should be given to the tactical, correct? Yes
-            // What should happen here? The Strategic should make the WhereIsWorkOrder::Tactical.
+            // Give tactical control via WhereIsWorkOrder::Tactical when forced to days
             ForcedWorkOrder::Days(days) => {
                 match &days {
                     TacticalForceType::OnlyStartDay(day) => {
@@ -301,17 +251,13 @@ impl WorkOrderParameterBuilder
                     }
                     TacticalForceType::IndividualActivities(_items, _hash_sets) => todo!(),
                 }
-                // If the date is contained in a period the period should not be excluded. Or
-                // all days in a period should be excluded if the entire thing
-                // should be excluded.
-                //
-                // If this is true we should make the
+                // Collect excluded periods where all days are excluded
                 let excluded_periods = periods
                     .iter()
                     .filter(|per| days.excluded_days(per))
                     .cloned()
                     .collect::<HashSet<Period>>();
-                // CRUCIAL INSIGHT! You are using the wrong data structure here.
+                // TODO: Evaluate if this data structure is optimal
                 self.excluded_periods = excluded_periods;
             }
             ForcedWorkOrder::Technician(_technician_include, _technician_exclude) => todo!(),
@@ -363,7 +309,6 @@ impl WorkOrderParameter
 {
     pub fn builder() -> WorkOrderParameterBuilder
     {
-        // SHould we accept a
         WorkOrderParameterBuilder {
             locked_in_period: WhereIsWorkOrder::NotScheduled,
             excluded_periods: HashSet::default(),

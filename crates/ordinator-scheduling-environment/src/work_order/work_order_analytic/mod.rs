@@ -26,12 +26,8 @@ impl WorkOrderAnalyticBuilder
     pub fn build(self) -> WorkOrderAnalytic
     {
         WorkOrderAnalytic {
-            // FIX [ ]
-            // This is wrong, you should design it so that the code
-            // How should the fixed be calculated? I am not sure that it ever should.
-            // Things that are fixed for one model may not be for all the other ones.
-            // You should design the system so that these things are calculated and
-            // should be part of the parameters of the applications.
+            // FIXME: Design system so fixed values are calculated from application parameters
+            // rather than hardcoded, as they may vary between models
             system_status_codes: self
                 .system_status_codes
                 .expect("Check that all builder steps are followed"),
@@ -66,16 +62,11 @@ impl WorkOrderAnalyticBuilder
     }
 }
 
-// You are doing something very shitty at the moment. Do you actually need any
-// builders anymore when you are simply reading data from the... Yes you are
-// doing it to ease testing that is the purpose.
+// Builders are used to ease testing despite reading data from external sources
 impl WorkOrderAnalytic
 {
-    //
     pub fn builder() -> WorkOrderAnalyticBuilder
     {
-        // QUESTION
-        // How should this be designed?
         let system_status_codes = Some(SystemStatusCodes::builder().build());
         let user_status_codes = Some(UserStatusCodes::builder().build());
 
@@ -85,7 +76,7 @@ impl WorkOrderAnalytic
         }
     }
 
-    // TODO [ ]
+    // TODO: Implement using status codes and material statuses
     pub fn fixed(&self) -> bool
     {
         todo!(

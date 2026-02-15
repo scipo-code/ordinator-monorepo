@@ -40,7 +40,7 @@ pub struct TacticalObjectiveValue
     pub percent_scheduled: (usize, Percent),
 }
 
-/// TacticalObjectiveValue, assumes Minimization
+/// Represents a tactical objective value with multiple optimization criteria (assumes minimization)
 impl TacticalObjectiveValue
 {
     pub fn new(tactical_options: &TacticalOptions) -> Self
@@ -93,7 +93,7 @@ impl std::fmt::Debug for TacticalSolution
         }
     }
 }
-// This should be put into the `algorithm.rs` file
+
 impl Solution for TacticalSolution
 {
     type Objective = TacticalObjectiveValue;
@@ -119,7 +119,6 @@ impl Solution for TacticalSolution
             .map(|won| (*won, WhereIsWorkOrder::NotScheduled))
             .collect();
 
-        // You are still learning this.
         Ok(Self {
             objective_value: TacticalObjectiveValue::new(&parameters.tactical_options),
             tactical_work_orders: TacticalScheduledWorkOrders(tactical_scheduled_work_orders_inner),
@@ -184,21 +183,12 @@ impl TacticalSolution
         );
     }
 }
-// This is part of the solution. I think that you should rewrite the trait here
-// so that you can work with the
+
 #[derive(PartialEq, Eq, Debug, Default, Clone)]
 pub struct TacticalScheduledWorkOrders(
-    // ISSUE #000 TODO START HERE 2025-07-22.
-    // You should return an `WhereIsWorkOrder` here. That is what will
-    // allowk
-    // You need to respect the `WhereIsWorkOrder` here. The
     pub HashMap<WorkOrderNumber, WhereIsWorkOrder<TacticalScheduledOperations>>,
 );
 
-// TODO [ ]
-// Make a trait here to implement the type.
-// This is basically an interface to the type that we need to implement this
-// on. I think that the
 pub trait TacticalWhereIsWorkOrder
 {
     fn is_tactical(&self) -> bool;
@@ -244,7 +234,6 @@ impl TacticalScheduledWorkOrders
 #[derive(PartialEq, Eq, Debug, Default, Clone)]
 pub struct TacticalScheduledOperations(pub BTreeMap<ActivityNumber, OperationSolution>);
 
-//
 impl TacticalScheduledOperations
 {
     pub fn insert_operation_solution(

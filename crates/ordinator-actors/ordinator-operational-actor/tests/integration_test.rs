@@ -51,18 +51,7 @@ struct TestSystemSolution<Zs: SupervisorInterface + Clone>
     operational: HashMap<ActorCompositeId, SolutionState<OperationalSolution>>,
 }
 
-// What should you do here? I believe that I should refactor the
-// trait. You already knew that this would be a problem and you
-// hated it the first time that you made it. Now it is time to
-// do this again. I believe that this will have to do in this
-// case.
-//
-//
-// Okay, simply give each of these a dummy.
-// QUESTION [ ]
-// Should you refactor this now? I think that is a good idea!
-//
-//
+// TODO: Refactor trait implementation - currently using dummy implementations
 #[derive(PartialEq, PartialOrd, Ord, Clone, Copy, Debug, Eq)]
 struct TestStrategic;
 impl StrategicInterface for TestStrategic
@@ -241,14 +230,7 @@ impl Solution for TestStrategic
 #[ignore]
 fn start_operational_actor()
 {
-    // How do we make a `WorkerEnvironment`. Do we want to rely on files? No! We do
-    // not want to rely on raw database JSON/BSON files directly.
-    // QUESTION [ ] Should you even be using the `SchedulingEnvironment`? No I do
-    // not think that is the best approach here. What other thing could you do?
-    // I think that making the a builder for the Actor is the best approach. But
-    // how should that look like?
-    //
-    // TODO [ ] build an OperationalActor and a SupervisorSolution.
+    // TODO: Build OperationalActor and SupervisorSolution using builder pattern instead of file-based configuration
     let asset = Asset::Test;
     let asset_string = asset.to_string().to_lowercase();
 
@@ -259,16 +241,12 @@ fn start_operational_actor()
     println!("{}\n{}", path_to_data.display(), line!());
     // println!("{:?}", std::fs::canonicalize(path_to_data.clone()).unwrap());
 
-    // We do not want to test against data files. I think that the best approach
-    // here will be to test against something else.
     let worker_environment = ActorEnvironment::<dyn ActorSpecification>::builder()
         .add_actor_specification(
             asset,
             Box::new(ActorSpecifications::actor_specification_from_toml(path_to_data).unwrap()),
         )
         .build();
-    // Should you build the actors yourself. Or do something different? I think that
-    // the best approach here is to do the same thing again.
 
     let time_input = TimeInput {
         number_of_periods: 3,
@@ -311,8 +289,7 @@ fn start_operational_actor()
                                 })
                                 .functional_location_from_str("DF/XX/XX/101")
                                 .system_condition(SystemCondition::A)
-                                // It is clear that you need a thorough understanding of the whole
-                                // maintenance process to be able to develop this system.
+                                // Developing this system requires thorough understanding of the maintenance process
                                 .work_order_info_detail(WorkOrderInfoDetail {
                                     subnetwork: "123".to_string(),
                                     maintenance_plan: "PLAN TEST".to_string(),
@@ -361,8 +338,7 @@ fn start_operational_actor()
                                 })
                                 .functional_location_from_str("DF/XX/XX/101")
                                 .system_condition(SystemCondition::A)
-                                // It is clear that you need a thorough understanding of the whole
-                                // maintenance process to be able to develop this system.
+                                // Developing this system requires thorough understanding of the maintenance process
                                 .work_order_info_detail(WorkOrderInfoDetail {
                                     subnetwork: "123".to_string(),
                                     maintenance_plan: "PLAN TEST".to_string(),
@@ -388,8 +364,7 @@ fn start_operational_actor()
         .build()
         .expect("Could not build SchedulingEnvironment");
 
-    // Get it to work first, then change the API
-    // TODO [ ] 2025-07-09 make a module that contains SchedulingEnvironment
+    // TODO: Create module for SchedulingEnvironment (2025-07-09)
 
     let operational_id = &scheduling_environment
         .lock()
@@ -437,8 +412,7 @@ fn start_operational_actor()
 
     let supervisor = SupervisorSolution::new_from_parts(operational_state_machine);
     dbg!(&supervisor);
-    // TODO [ ] 2025-07-08 Make a `builder` for the `SystemSolution`.
-    // You need to construct a builder for the `SystemSolution` as well.
+    // TODO: Implement builder for SystemSolution (2025-07-08)
     let (sender, receiver) = flume::unbounded();
     let system_configuration = SystemConfigurations::read_all_configs().unwrap();
 
@@ -452,7 +426,6 @@ fn start_operational_actor()
     .scheduling_environment(Arc::clone(&scheduling_environment))
     .algorithm(|ab| {
         ab.id(operational_id.clone())
-            // So this function returns a `Result`
             .parameters_and_solution(&scheduling_environment.lock().unwrap())
             .unwrap()
             .system_solution_arc_swap(_system_solution.clone())
@@ -461,12 +434,7 @@ fn start_operational_actor()
     .communication(sender, state_link_bus)
     .configurations(system_configuration)
     .build();
-    // Okay now this has to work as expected. What is the best path forward
-    // here?
-    //
-    // You have made this now. I think that you
-    //
-    //
+
     match receiver.recv() {
         Ok(t) => panic!(),
         Err(e) => {
@@ -485,6 +453,4 @@ fn start_operational_actor()
     //         .iter()
     //         .any(|d| d.0 == (WorkOrderNumber(1001), 10))
     // );
-    // I am so frustrated about this! I am not really sure what it is that I am
-    // doing!
 }

@@ -7,10 +7,8 @@ use super::Work;
 pub struct OperationAnalytic
 {
     pub(crate) preparation_time: Work,
-    // FIX
-    // This is wrong, this field should be given completely by the
-    // numbers and `work_remaining` you should integrate this into
-    // the builder.
+    // Fix: duration should be computed from numbers and work_remaining
+    // in the builder, not stored as a separate field
     pub(crate) duration: Work,
 }
 

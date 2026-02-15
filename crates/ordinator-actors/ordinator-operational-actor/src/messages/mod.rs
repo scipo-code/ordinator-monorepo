@@ -16,8 +16,7 @@ pub type OperationalRequestMessage = RequestMessage<
     OperationalSchedulingEnvironmentCommands,
 >;
 
-// You need type safety here I do not see another way around it
-//
+// Type-safe response message variant for handling multiple response types
 pub enum ResponseMessage<S, Sc, R, T>
 {
     Status(S),
@@ -26,9 +25,7 @@ pub enum ResponseMessage<S, Sc, R, T>
     Time(T),
 }
 
-// You should use the module paths in `operational::response::Status`,
-// `supervisor::request::Status`. Yes that is the correct approach here.
-// I do not think that there is a better way of doing it.
+// Use module paths for namespacing (e.g., `operational::response::Status`, `supervisor::request::Status`)
 #[derive(Debug, Serialize)]
 pub enum OperationalResponseMessage
 {
@@ -45,13 +42,7 @@ pub struct OperationalStatus
     objective: f64,
 }
 
-// We should stop working on this now. Your primary difficulty here is
-// what to do with all these messages. I think that the best thing may be
-// to give each Actor a large enum that can handle all the different cases.
-//
-// What other approaches do I have
-// This is so ugly, how could you even get yourself to code this? I think that
-// the best thing to do now is take a little break and then continue.
+// Wrapper enum for different operational response types
 #[derive(Serialize)]
 pub enum OperationalResponse
 {
@@ -152,8 +143,6 @@ mod tests
             .unwrap()
             .to_utc();
 
-        // Making Vec based datastructures will be cricial. You should learn how to make
-        // a good and solid API for this
         let time_interval = TimeInterval::new(start_time, end_time).unwrap();
 
         assert!(!time_interval.contains(&current_time));

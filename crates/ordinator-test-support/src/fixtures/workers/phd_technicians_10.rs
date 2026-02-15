@@ -4,19 +4,9 @@ use ordinator_scheduling_environment::worker_environment::ActorSpecificationBuil
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 
-/// * 2 Mech     (DONE)
-/// * 1 Elec     (DONE)
-/// * 1 Inst     (DONE)
-/// * 1 Lagg     (DONE)
-/// * 1 Tele     (DONE)
-/// * 1 Rope     (DONE)
-/// * 1 Cran     (DONE)
-/// * 1 Scaf     (DONE)
-/// * 1 Rigg     (DONE)
-/// * 1 Rous     (DONE)
-/// * 1 Prodtech (DONE)
-///
-/// Total: 30
+/// Builds a test worker configuration with 30 workers across 11 different specializations:
+/// 2 Mechanical, 1 Electrical, 1 Instrumentation, 1 Lagging, 1 Telehandler, 1 Rope Access,
+/// 1 Crane, 1 Scaffolding, 1 Rigging, 1 Routine, and 1 Production Technician.
 pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificationBuilder
 {
     actor_builder

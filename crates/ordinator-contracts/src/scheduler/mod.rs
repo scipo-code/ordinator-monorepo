@@ -49,8 +49,7 @@ impl PeriodStatus
     }
 }
 
-// This should all be strings. You should reuse the logic from the other
-// component. I do not see what other aspect that we have.
+// All fields should be strings and reuse logic from other components
 #[derive(Serialize, ToSchema, TS)]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct SingleRowDto
@@ -148,7 +147,6 @@ impl
             let strategic_schedule = match strategic_period {
                 Some(opt_period) => match opt_period {
                     WhereIsWorkOrder::Strategic(period) => period.clone().to_string(),
-                    // This does not have to be perfect.
                     WhereIsWorkOrder::Tactical(period) => period.clone().to_string(),
                     WhereIsWorkOrder::NotScheduled => {
                         "Could not be scheduled under current business rules".to_string()
@@ -190,18 +188,10 @@ impl
                     operation_view.activity,
                 ));
                 let option_day = match tactical_days {
-                    // Day::index is a weird thing. How should it work in a real time system? I
-                    // think that the best approach would
                     Some(tactical_day) => tactical_day.0.to_string(),
                     None => "Work order was not scheduled".to_string(),
                 };
 
-                // The issue with what you are doing is that we can keep implementing stuff like
-                // this until the day we die. You have to simply go for the money here. I think
-                // that is the best approach.
-                //
-                // You are not good enough to code. You are good enough to do this, Brian
-                // believes in you. You simply have to keep working.
                 let one_row = SingleRowDto {
                     work_order_number: work_order_view.work_order_number.to_string(),
                     suggested_scheduled_period: strategic_schedule.clone(),
@@ -334,7 +324,6 @@ impl
         let strategic_schedule = match strategic_period {
             Some(opt_period) => match opt_period {
                 WhereIsWorkOrder::Strategic(period) => period.clone().to_string(),
-                // This does not have to be perfect.
                 WhereIsWorkOrder::Tactical(period) => period.clone().to_string(),
                 WhereIsWorkOrder::NotScheduled => {
                     "Could not be scheduled under current business rules".to_string()

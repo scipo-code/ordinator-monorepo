@@ -1,9 +1,6 @@
-// TODO ISSUE #000 [ ] make the `handle_state_link` method into a
-// function that accpect `handle_state_link(&mut Parameters,
-// &SchedulingEnvironment)`
-//
-//
-//
+// TODO ISSUE #000: Refactor `handle_state_link` method into a function that accepts
+// `handle_state_link(&mut Parameters, &SchedulingEnvironment)`
+
 // #[cfg(not(target_env = "msvc"))]
 // use tikv_jemallocator::Jemalloc;
 // #[cfg(not(target_env = "msvc"))]
@@ -33,16 +30,12 @@ async fn main() -> Result<()>
     dotenvy::dotenv()
         .context("You need to provide an .env file. Look at the .env.example for guidance")?;
 
-    // TODO [ ] 2025-06-29 turn this into `match
-    // dotenvy::var("DEPLOY_ENVIRONMENT");`
+    // TODO: Refactor to use `match dotenvy::var("DEPLOY_ENVIRONMENT")` pattern instead of hardcoded value
 
     let denmark_time = Copenhagen.with_ymd_and_hms(2025, 1, 13, 7, 00, 00).unwrap();
     let current_time = denmark_time.to_utc();
 
-    // ISSUE #000 Turn the nested `std::sync::Mutex` into `tokio::sync::Mutex`
-    // ISSUE #000 TODO [ ] 2025-06-29 turn this into `match
-    //  dotenvy::var("DEPLOY_ENVIRONMENT");` instead of `Option::Some(current_time)`
-    // TODO [ ] This is quite annoying.}
+    // ISSUE #000: Replace nested `std::sync::Mutex` with `tokio::sync::Mutex`
 
     let asset = Asset::DF;
     let environment = ordinator_orchestrator::Environment::Test(current_time);
@@ -54,8 +47,8 @@ async fn main() -> Result<()>
             .scheduling_environment_from_database(&asset)?
             .build()?;
 
-    // WARN: Manually add `Asset`s here. Everything added here should be done from
-    // the API in actual production. So this is only a temporary solution.
+    // WARN: Assets are manually added here. In production, assets should be added via the API.
+    // This is a temporary solution.
 
     orchestrator.asset_factory(&asset)?;
 
@@ -65,15 +58,13 @@ async fn main() -> Result<()>
             Ok(())
         }
         result = error_receiver.recv_async() => {
-            tracing::error!(ordinator_error_message = ?result, "Ordinator
-            Scheduling Systems experienced a catastraphoic error");
-            bail!("Ordinator Scheduling Systems experienced a catastraphoic
-            error:\n{:?}", result );
+            tracing::error!(ordinator_error_message = ?result, "Ordinator Scheduling Systems experienced a catastrophic error");
+            bail!("Ordinator Scheduling Systems experienced a catastrophic error:\n{:?}", result);
         }
     }
 }
 
-// WARN [ ] 2025-07-02 move this to the api module. This is good inspiration.
+// WARN: Move this to the API module. This code provides good OpenAPI/Swagger UI configuration inspiration.
 // let openapi = OpenApiBuilder::from(openapi)
 //     // ‣ info (title, version, description, license)
 //     .info(
@@ -135,7 +126,7 @@ async fn main() -> Result<()>
 //
 //
 // use axum::{
-// WARN [ ] move this, good inspiration.
+// WARN: Move this to appropriate module. Provides good code organization reference.
 //     routing::{get, post},
 //     Router,
 // };

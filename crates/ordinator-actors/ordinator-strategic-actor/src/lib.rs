@@ -102,7 +102,6 @@ where
         .scheduling_environment(Arc::clone(&scheduling_environment_guard))
         .algorithm(|ab| {
             ab.id(id)
-                // So this function returns a `Result`
                 .parameters_and_solution(&scheduling_environment_guard.lock().unwrap())?
                 .system_solution_arc_swap(shared_solution_arc_swap)
         })?
@@ -120,10 +119,7 @@ mod tests
     // use ordinator_scheduling_environment::work_order::work_order_dates::unloading_point::UnloadingPoint;
     // use ordinator_scheduling_environment::worker_environment::resources::Resources;
 
-    // You should make this again at a later date.
-    // TODO [ ]
-    // Make this test after determining what should be done about the
-    // builders
+    // TODO: Rewrite this test after determining the builder design
     // #[test]
     // fn test_extract_state_to_scheduler_overview()
     // {
@@ -142,4 +138,4 @@ mod tests
     //         })
     //         .build();
     // }
-} // Crucial note, all algorithm tests have to be made in the integration tests
+} // Note: All algorithm tests must be written as integration tests

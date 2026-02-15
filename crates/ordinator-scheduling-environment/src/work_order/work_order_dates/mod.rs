@@ -12,9 +12,7 @@ pub struct WorkOrderDates
 {
     pub(crate) earliest_allowed_start_date: NaiveDate,
     pub(crate) latest_allowed_finish_date: NaiveDate,
-    // TODO [ ]
-    // This should be a function. It can be uniquely
-    // derived from the other fields.
+    // TODO: Convert to a function derived from other fields
     pub(crate) basic_start_date: NaiveDate,
     pub(crate) basic_finish_date: NaiveDate,
     #[serde(
@@ -24,14 +22,11 @@ pub struct WorkOrderDates
     pub(crate) duration: Duration,
     pub(crate) basic_start_scheduled: Option<DateTime<Utc>>,
     pub(crate) basic_finish_scheduled: Option<DateTime<Utc>>,
-    // TODO [ ]
-    // This should be a function. It can be uniquely
-    // derived from the other fields.
+    // TODO: Convert to a function derived from other fields
     pub(crate) material_expected_date: Option<DateTime<Utc>>,
 }
 
-// FIX
-// Find the latest allowed finish period and replace it with a function.
+// TODO: Replace latest allowed finish period with a function
 pub struct WorkOrderDatesBuilder
 {
     earliest_allowed_start_date: Option<NaiveDate>,

@@ -39,9 +39,7 @@ use super::baptiste_csv_reader::WBSID;
 use crate::sap_mapper_and_types::DATS;
 use crate::sap_mapper_and_types::TIMS;
 
-// TODO
-// Insert main configuration here,
-// `operating time` is crucial
+// TODO: Insert main configuration here; `operating time` is crucial.
 pub fn load_csv_data(file_path: &BaptisteToml) -> Result<WorkOrders>
 {
     let functional_locations_csv =
@@ -120,7 +118,7 @@ fn create_work_orders(
             None => "WARN: FUNCTIONAL_LOCATION MISSING IS THIS CORRECT?",
         };
 
-        // ISSUE #000 [] - make a builder here
+        // TODO: Refactor to use a builder pattern for WorkOrderText
         let work_order_text = WorkOrderText::new(
             None,
             None,
@@ -154,11 +152,7 @@ fn create_work_orders(
                 let resource =
                     Skill::from_str(&work_center.get(&operation_csv.OPR_WBS_ID).unwrap().WBS_Name).map_err(|e| anyhow!(e))?;
 
-                // This is not a good way of doing it. This should be defined as a function and not loaded in like this. We will
-                // get into trouble if we do it this way. If a period is updated we will have to reinitialize all unloading point
-                // fields for all structures. This will not be a good way of proceding.
-                // FIX [ ]
-                // This is state duplication in the code! This is always morally wrong especially when in the `SchedulingEnvironment`
+                // TODO: Extract unloading point initialization to a separate function to avoid state duplication
                 let unloading_point: UnloadingPoint =
                     UnloadingPoint::new(operation_csv.OPR_Scheduled_Work.clone(), None);
 
@@ -167,12 +161,7 @@ fn create_work_orders(
 
                 let actual_work = operation_csv.OPR_Actual_Work.clone().parse::<f64>().unwrap_or_default();
 
-                // This is an error! Your error handling stopped this right in its tracks. You should make the
-                // code do the thing 
-                // This should not actually happen. I think that the best approach here is to make the system
-                // 
-                // We are lacking the `remaining_work` in the model. And then is the biggest issue at the moment.
-                // 
+                // Calculate remaining work, handling negative values from data inconsistencies
                 let remaining_work = {
                     let work_remaining = operation_csv.OPR_Planned_Work.clone().parse::<f64>().unwrap_or_default() - operation_csv.OPR_Actual_Work.clone().parse::<f64>().unwrap_or_default();
                     if work_remaining < 0.0 {
@@ -182,8 +171,7 @@ fn create_work_orders(
                     }
                 };
 
-                // We need to use the DATS here! I think that is the only way forward! I think that to scale this
-                // we also need to be very clear on the remaining types of the system.
+                // Convert SAP DATS format to NaiveDate for start and end datetimes
                 let naive_start_DATS: NaiveDate = DATS(operation_csv.OPR_Start_Date.clone()).try_into().expect("The OPR_Start_Date should have been filtered out, we should not experience this error.");
                 let naive_start_TIMS: NaiveTime = TIMS(operation_csv.OPR_Start_Time.clone()).into();
 
@@ -196,8 +184,7 @@ fn create_work_orders(
                 let utc_start_datetime = naive_start_datetime.and_utc();
                 let utc_end_datetime = naive_end_datetime.and_utc();
 
-                // Operating time is on the resource, not on the 
-                // This is very good! The model should take in raw values and then verify them.
+                // Build operation with resource and timing information
                 let operation = Operation::builder(*operations_number, resource)
                     .unloading_point(unloading_point)
                     .operation_description(operation_csv.OPR_Description.clone())
@@ -210,8 +197,6 @@ fn create_work_orders(
                     })
 
                     .operation_analytic(|oab| {
-                        // TODO [ ]
-                        // Add `.duration(f64)` here if needed.
                         oab.preparation_time(1.0)
                     })
                     .operation_dates(|odb| {
@@ -250,7 +235,6 @@ fn create_work_orders(
             .try_into()
             .expect("The WorkOrders that have invalid EASD are filtered out");
 
-        // dsafsdaf;ksdlajf;sdakfjsdafsdafdsafsdafsdafsdafl;sdakjfsad;lkfjsdalkjfsadl;kfj lsakdjf l;sadkjf l;sadkj fl;sdak jfla;sdk jflsad;k jflasdk ;jf
         let duration = basic_finish_date - basic_start_date;
 
         let work_order = WorkOrder::builder(*work_order_number)
@@ -278,10 +262,7 @@ fn create_work_orders(
             })
             .build();
 
-        // FIX [ ]
-        //
-        // You should load the correct `MaterialToPeriod` for for the system to work correctly.
-        // assert!(work_order.earliest_allowed_start_period(periods, self.).contains_date(work_order.work_order_dates.earliest_allowed_start_date));
+        // TODO: Validate work order dates against MaterialToPeriod
         arc_mutex_inner_work_orders.lock().unwrap().insert(*work_order_number, work_order);
     });
     let work_orders = arc_mutex_inner_work_orders.lock().unwrap().clone();

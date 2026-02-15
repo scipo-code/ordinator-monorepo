@@ -65,13 +65,9 @@ where
     }
 }
 
-// You have to work much harder to get this going. You have to remain completely
-// calm.
 pub struct SupervisorApi {}
 
-// When you do it like this you tie the code of the Ss into the type. You have
-// to be aware of this for the future, but for now you simply need to get this
-// working again.
+// Note: This implementation binds Ss type parameters to the impl block.
 impl<Ss> ActorFactory<Ss> for SupervisorApi
 where
     Ss: SystemSolutions<Supervisor = SupervisorSolution> + Send + Sync + 'static + Debug,
@@ -100,7 +96,6 @@ where
         .scheduling_environment(Arc::clone(&scheduling_environment_guard))
         .algorithm(|ab| {
             ab.id(id)
-                // So this function returns a `Result`.
                 .parameters_and_solution(
                     &scheduling_environment_guard.lock().unwrap(),
                 )?

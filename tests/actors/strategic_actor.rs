@@ -21,43 +21,6 @@
             .id(Id::default())
             .parameters(strategic_options, &scheduling_environment.lock().unwrap());
 
-        // let mut strategic_algorithm = Algorithm::new(
-        //     &id,
-        //     strategic_solution,
-        //     strategic_parameters,
-        //     ArcSwapSharedSolution::default().into(),
-        // );
-
-        // let strategic_parameter = WorkOrderParameter::new(
-        //     Some(periods[0].clone()),
-        //     HashSet::new(),
-        //     periods.first().unwrap().clone(),
-        //     1000,
-        //     HashMap::new(),
-        // );
-
-        // strategic_algorithm
-        //     .parameters
-        //     .strategic_work_order_parameters
-        //     .insert(work_order_number, strategic_parameter);
-
-        // strategic_algorithm
-        //     .update_scheduling_state(strategic_scheduling_internal)
-        //     .unwrap();
-
-        // assert_eq!(
-        //     strategic_algorithm
-        //         .parameters
-        //         .strategic_work_order_parameters
-        //         .get(&work_order_number)
-        //         .as_ref()
-        //         .unwrap()
-        //         .locked_in_period
-        //         .as_ref()
-        //         .unwrap()
-        //         .period_string(),
-        //     "2023-W47-48"
-        // );
         Ok(())
     }
 
@@ -103,61 +66,11 @@
             HashMap::from([(Resources::MtnMech, Work::from(10.0))]),
         );
 
-        // QUESTION
-        // Should you create a Dependency injection for the `SchedulingEnvironment`?
-        // TODO
-        // This should be created so that each type that implements `Parameters` have
-        // an insert function.
+        // TODO: Consider dependency injection for `SchedulingEnvironment` and add insert
+        // functions to all types implementing `Parameters`
         strategic_parameters
             .insert_strategic_parameter(WorkOrderNumber(2100023841), strategic_parameter);
 
-        // let strategic_solution = StrategicSolution::new(&strategic_parameters);
-        // let mut strategic_algorithm = Algorithm::new(
-        //     &Id::default(),
-        //     strategic_solution,
-        //     strategic_parameters,
-        //     ArcSwapSharedSolution::default().into(),
-        // );
-
-        // strategic_algorithm
-        //     .solution
-        //     .strategic_scheduled_work_orders
-        //     .insert(work_order_number, None);
-
-        // strategic_algorithm
-        //     .schedule_forced_work_order(&ForcedWorkOrder::Locked(work_order_number))?
-        // ;
-
-        // let objective_value_type = strategic_algorithm.calculate_objective_value()?;
-
-        // let objective_value =
-        //     if let ObjectiveValueType::Better(objective_value) = objective_value_type
-        // {         objective_value
-        //     } else {
-        //         panic!();
-        //     };
-
-        // strategic_algorithm.solution.objective_value = objective_value;
-
-        // assert_eq!(
-        //     strategic_algorithm.solution.objective_value.objective_value, 2000,
-        //     "{:#?}",
-        //     strategic_algorithm.solution.objective_value
-        // );
         Ok(())
     }
 }
-// use std::fmt::Display;
-
-// TODO
-// Make a generic display for `Agent` so that we can view all the different
-// agent easily. impl Display for Agent {
-//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-//         write!(
-//             f,
-//             "SchedulerAgent: \n
-//             Platform: {}, \n",
-//             self.asset,
-//         )
-//     }
-// }

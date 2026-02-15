@@ -50,15 +50,8 @@ use crate::messages::requests::StrategicRequestScheduling;
 use crate::messages::responses::StrategicResponseResources;
 use crate::messages::responses::StrategicResponseScheduling;
 
-// How would it look like here if you made it generic? impl
-// Algorithm<StrategicSolution, StrategicParameters, StrategicAssertions> {
-//
-// }
-// One thing is for sure. If you decide to do this over, you should do it
-// correctly. The issue is that you will have so many bugs due to the fact that
-// many generic things have to be changed in 4 different places, even though you
-// want the same behavior. I think that making the behavior generic is the most
-// important thing here.
+// How would this look if made generic? impl Algorithm<StrategicSolution, StrategicParameters, StrategicAssertions> { }
+// Note: Making behavior generic is important, as changes would be needed in 4 places with the current design.
 
 #[derive(Debug)]
 pub struct StrategicAlgorithm<Ss>(
@@ -105,16 +98,13 @@ where
         Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>;
     type Options = StrategicOptions;
 
-    /// Reasons:
-    /// * Update internal state based on [`SystemSolution`]
-    /// * Force schedule [`WorkOrder`] that demand it
-    /// * 
+    /// Incorporates the system solution by updating internal state and force scheduling work orders
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
 
         let mut state_change = true;
         let periods = self.parameters.strategic_periods.clone();
-        // So the strategic actually loops over all the parameters.
+        // Strategic loops over all parameters
         for (work_order_number, strategic_parameter) in self
             .parameters
             .strategic_work_order_parameters
@@ -154,13 +144,8 @@ where
             state_change = true;
         }
 
-        // CRUCIAL: forced is always part of the `incorporate` shared state. This means
-        // that if a solution leaves the
-        //
-        // You should look into the Tactical Solution and make sure that the code
-        // is performing as expected.
-        // I believe that this function should determine itself what is actually forced.
-        // The incorporate should only update the [`StrategicParameters`]. 
+        // CRUCIAL: Forced work orders are always part of the shared state in incorporate()
+        // This function should determine what is forced and only update StrategicParameters 
 
         self.force_schedule()?;
         Ok(state_change)
@@ -168,20 +153,10 @@ where
 
     fn make_atomic_pointer_swap(&mut self)
     {
-        // Performance enhancements:
-        // * COW: #[derive(Clone)] struct SharedSolution<'a> { tactical: Cow<'a,
-        //   TacticalSolution>, // other fields... }
-        //
-        // * Reuse the old SharedSolution, cloning only the fields that are needed. let
-        //   shared_solution = Arc::new(SharedSolution { tactical:
-        //   self.tactical_solution.clone(), // Copy over other fields without cloning
-        //   ..(**old).clone() });
+        // TODO: Optimize by using Cow or selectively cloning only needed fields
         self.arc_swap_shared_solution.rcu(|old| {
             let mut shared_solution = (**old).clone();
-            // TODO [ ]
-            // Make a swap here.
-            // Should you make a swap here? Yes that is the next piece of code that is
-            // crucial for this to work.
+            // Swap the strategic solution in shared state
             shared_solution.strategic_swap(&self.id, self.solution.clone());
             Arc::new(shared_solution)
         });
@@ -210,9 +185,7 @@ where
 
         new_objective_value.aggregate_objectives();
 
-        // This should not happen. We should always work on self and then
-        // substitute out the remaining parts.
-        // panic!();
+        // We always work on self and substitute remaining parts
         if new_objective_value.objective_value
             < self.solution.objective_value().objective_value
         {
@@ -225,14 +198,7 @@ where
     fn schedule(&mut self) -> Result<()>
     {
 
-        // WARNING
-        // I am not sure that this is the correct place of putting this.
-        // What should we change here? I think that the best thing would be to make this
-        // as Hmm... you need to think hard about this. You were using the
-        // schedule_forced to handle the state updates. That is not the correct
-        // approach here. I think that we instead should strive to make a clean
-        // schedule function. and then we should make a shared_state_update
-        // function. Maybe it is also time to clean up in all this code.
+        // TODO: Refactor to separate schedule and shared_state_update concerns
         while !self.solution_intermediate.is_empty() {
             for period in self.parameters.strategic_periods.clone() {
                 let (work_order_number, weight) = match self.solution_intermediate.pop() {
@@ -243,8 +209,7 @@ where
                     }
                 };
 
-                // You are a little overloaded! I think that you should forget about this for
-                // now, but remember about it.
+                // TODO: Review overloaded logic here
                 let inf_work_order_number = self
                     .schedule_strategic_work_order(work_order_number, &period)
                     .with_context(|| {
@@ -295,7 +260,6 @@ where
             .collect::<Vec<_>>()
             .clone();
 
-        // assert!(self.solution.scheduled_periods.values().all(|per| per.is_some()));
         for work_order_number in sampled_work_order_keys {
             self.unschedule_specific_work_order(*work_order_number)
                 .with_context(|| {
@@ -324,19 +288,17 @@ where
     fn force_schedule(&mut self) -> Result<()> {
 
 
-        // ISSUE #999
+        // ISSUE #999 - Disabled temporarily
         return Ok(());
 
-        // [`StrategicParameter::locked_in_period`] should be derived from the
-        // [`SchedulingEnvironment`]. 
+        // TODO: Derive StrategicParameter::locked_in_period from SchedulingEnvironment
         let forced_work_orders: Vec<_> = self
             .parameters
             .strategic_work_order_parameters
             .iter()
             .filter(|e|e.1.locked_in_period.strategic_forced())
             .map(|e|{
-                // This is technical debt. 
-                // TODO [ ] - remove the `ForcedWorkOrder` if necessary.
+                // TODO: Remove ForcedWorkOrder if unnecessary
                 ForcedWorkOrder::Locked(*e.0)
             }).collect();
 
@@ -431,10 +393,7 @@ where
         for (work_order_number, scheduled_period) in self.solution.every_work_order() {
             let optimized_period = match scheduled_period {
                 WhereIsWorkOrder::Strategic(optimized_period) => optimized_period,
-                // Should the `objective` here be based on the Tactical? Yes it should!
-                // That is actually fundamental. Could this lead to monotone objective
-                // functions?
-                // CRUCIAL INSIGHT
+                // CRUCIAL: Objective should be based on Tactical solution
                 WhereIsWorkOrder::Tactical(period) => period,
 
                 WhereIsWorkOrder::NotScheduled => self
@@ -499,8 +458,7 @@ where
                                 None
                             }
                         }
-                        // This is the kind of code that you have to make to succeed
-                        WhereIsWorkOrder::NotScheduled => None,
+                                WhereIsWorkOrder::NotScheduled => None,
                     }
                 })
                 .collect();
@@ -542,9 +500,7 @@ where
         Ok(())
     }
 
-    // The resource penalty should simply be calculated on the total amount of
-    // exceeded hours. I do not see a different way of coding it. It could work
-    // on the skill_hours, but that would be needlessly complex in this setting.
+    // Calculate resource penalty based on total exceeded hours
     fn determine_resource_penalty(
         &mut self,
         strategic_objective_value: &mut StrategicObjectiveValue,
@@ -637,8 +593,7 @@ where
     }
 }
 
-// This should be in a different place as well. I think that the best approach
-// will be to consolidate this together with the other models.
+// TODO: Consolidate with other models
 #[derive(Debug)]
 pub enum ForcedWorkOrder
 {
@@ -665,13 +620,7 @@ pub enum ScheduleWorkOrder
     Unschedule,
 }
 
-// You cannot define it like this. It is horrible for
-// There has to be changed something in here as well.
-// TODO [ ]
-// This function should be a part of the `TacticalSolution` interface.
-// That is the main point for these types of things. The interface is
-// what defines the "Metavariables" from the paper and this is what
-// should we.
+// TODO: Move this trait to TacticalSolution interface (defines "Metavariables" from the paper)
 pub trait StrategicUtils
 {
     fn schedule_strategic_work_order(
@@ -702,20 +651,12 @@ pub trait StrategicUtils
         schedule: ScheduleWorkOrder,
     ) -> Result<Option<StrategicResources>>;
 }
-// This should be exchanged by a binary heap. This is an issue as well. You do
-// not need to have all this code in the
+// TODO: Use binary heap instead
 impl<Ss> StrategicUtils for StrategicAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    // TODO [ ]
-    // This should be changed as well. But now I will go home. I think that your
-    // best approach is to make something that will allow us to implement this
-    // and create something for our fellow man. You should remove this function
-    // from the code. And you should instead rely on the interface. I think that
-    // the interface is the most important thing here. This function is simply
-    // about taking the first day of a specific tactical work order and determine
-    // its associated period. Nothing else is required for this to function.
+    // TODO: Rely on interface instead. This function should determine period for tactical work order's first day
 
     fn schedule_strategic_work_order(
         &mut self,
@@ -810,22 +751,7 @@ where
         Ok(None)
     }
 
-    // This function makes sure that the strategic work order if forced scheduled
-    // and if the date change. It makes sure that the Are there other ways of
-    // doing this that would fit the pattern even better? I am not really sure.
-    // The best approach would probably be to make sure that you are working on
-    // this in the correct order The problem with making a `schedule_forced_*`
-    // for each actor is that you have to remember to call it. I really think
-    // that you need to be smart here. You could use a template trait here. To
-    // make sure that each actor performs the optations in the same way. I
-    // actually think that this is the best idea.
-    //
-    // And maybe the handle state_link should only take a function parameter to a
-    // &mut impl Parameters. This is also a really good idea. What other approaches
-    // do you have here that you could work with. So what you are approaching here
-    // is to make the code work correctly on a higher level.
-    //
-    // What should the state_link affect here?
+    // Ensures forced work orders are scheduled in correct order using template trait pattern
     fn schedule_forced_strategic_work_order(
         &mut self,
         force_schedule_work_order: &ForcedWorkOrder,
@@ -843,30 +769,22 @@ where
                 })?;
         }
 
-        // The primary issue here is whether the locked in period should be overwritten.
-        // If the tactical says something that you simply overwrite the
-        // Stratigic... No forced WorkOrders and Operations are always the
-        // product of state in the SchedulingEnvironment. That means
-        // that we should look to there to find the correct solution.
+        // Forced work orders come from SchedulingEnvironment state
         let locked_in_period = match &force_schedule_work_order {
             ForcedWorkOrder::Locked(work_order_number) => self
                 .parameters
                 .get_locked_in_period(work_order_number)
                 .clone(),
-            // The `loadings` comes from the TacticalActor naturally. If the
-            // Tactical has scheduled the work order that Strategic should do nothing.
+            // If Tactical scheduled the work order, Strategic should not reschedule it
             ForcedWorkOrder::FromTactical((_, period)) => period.clone(),
         };
 
-        // Should the update loadings also be included here? I do not think that is a
-        // good idea. What other things could we do?
-        // This should be done by the SchedulingEnvironment not the actor
+        // TODO: Move update loadings logic to SchedulingEnvironment
 
         let work_order_number = force_schedule_work_order.work_order_number();
 
         self.solution
-            // You need to move this interface higher up into the system. This is too low
-            // of a level to make this function correctly.
+            // TODO: Move this interface to higher system level
             .set_work_order_to_strategic(*work_order_number, locked_in_period.clone())
             .with_context(|| {
                 format!(
@@ -894,7 +812,6 @@ where
         Ok(())
     }
 
-    //
     fn is_scheduled(&self, work_order_number: &WorkOrderNumber) -> bool
     {
         self.solution
@@ -904,28 +821,14 @@ where
             .strategic_forced()
     }
 
-    /// This function updates the StrategicResources based on the a provided
-    /// loading.
-    ///
-    // WARN This function should never have anyside effects. This is impossible to understand.
-    // 
+    /// Updates StrategicResources based on the provided loading
     fn update_loadings(
         &mut self,
         strategic_resources: StrategicResources,
         load_operation: LoadOperation,
     )
     {
-        // How should the change be handled in this function? The most important thing
-        // here is to make the function work correctly on the new resource type.
-        // This will be difficult as we cannot make the FIX This loading
-        // function is not correct. How should we change it so that it will be able to
-        // function correctly without calling the permutation loop? We cannot,
-        // it would not make sense for this kind of function. I believe that the best
-        // decision here is to make a function that lets us manually update and change a
-        // value.
-        // 
-        // WARN
-        // This function is doing two things. 
+        // TODO: Refactor to handle changes correctly without permutation loop 
         for (period, operational_resources) in strategic_resources.0 {
             for (operational_id, operational_resource_loading) in operational_resources {
                 assert!(operational_resource_loading.skill_hours.iter().all(|e| e.1 == &operational_resource_loading.total_hours),
@@ -948,7 +851,7 @@ where
                                         .entry(*skill) .and_modify(|wor| *wor += hours)
                                         .or_insert(*hours);
                                 }
-                                
+
                             })
                             .or_insert(operational_resource_loading);
 
@@ -960,7 +863,6 @@ where
                             .0
                             .get_mut(&period)
                             .expect("All Periods should be initialized at this point")
-                            // What happens if the value is not present? Should we simply insert it?
                             .get_mut(&operational_id)
                             .unwrap();
 
@@ -972,20 +874,16 @@ where
                                     .and_modify(|wor| *wor -= hours)
                                     .or_insert((*hours).negate());
                             }
-                                
+
                     }
                 }
             }
         }
     }
 
-    /// This was such a stupid direction to take the code in.
-    /// This function is created to find the best permutation of all the work
-    /// order assignments to all technicians. This function has two
-    /// purposes:
-    /// * Determine if there is a feasible permutaion
-    /// * If true, return the loading that should be put into the
-    ///   StrategicSolution::strategic_loadings.
+    /// Determines the best permutation of work order assignments to technicians
+    ///
+    /// Returns whether a feasible permutation exists and the loading to apply
     fn determine_best_permutation(
         &self,
         work_load: HashMap<Skill, Work>,
@@ -1023,9 +921,7 @@ where
             .cloned()
             .unwrap_or_else(HashMap::new);
 
-        // This is the difference between the capacity and the loading
-        // * val < 0: loading is higher than capacity
-        // * val > 0: capacity is higher than loading
+        // Difference between capacity and loading: positive means capacity available, negative means overloaded
         let difference_resources = determine_difference_resources(
             strategic_capacity_resources,
             &strategic_loading_resources,
@@ -1043,7 +939,7 @@ where
                 ensure!(operational_resource.skill_hours.iter().all(|e| e.1 == &operational_resource.total_hours),
                 "Each skill_hours should always be equal to the value of the total_hours\noperational_resource: {:#?}\nScheduleWorkOrder: {:?}\n{}", operational_resource, schedule, std::panic::Location::caller());
         }
-        // Perform 10 different technician permutations
+        // Try 10 different technician permutations
         let mut error_for_unschedule = HashSet::new();
         let mut store_strategic_resources_options = vec![];
         for _ in 0..10 {
@@ -1053,7 +949,7 @@ where
                 .collect::<Vec<_>>();
             technician_permutation.shuffle(&mut rng);
 
-            // Perform 10 different work_load permutations
+            // Try 10 different work_load permutations
             for _ in 0..10 {
                 let mut work_load_permutation = work_load.clone().into_iter().collect::<Vec<_>>();
 
@@ -1106,16 +1002,11 @@ where
                         strategic_resource_loadings_option
                     }
 
-                    // You are seeing a rounding issue here. Your mind cannot handle this.
+                    // TODO: Handle rounding issues
                     ScheduleWorkOrder::Unschedule => {
-                        // TODO [x] Remake the `combined_loadings` to handle individual resources
-                        // TODO [ ] Fix the rounding issue
-                        // What is it that you want to find out? You want to ensure that the
-                        // code will work correctly on the, After every schedule operation
-                        // you want to ensure that the `strategic_loading` is higher than the
-                        //
-                        //
-                        // `work_load`
+                        // TODO: Remake combined_loadings to handle individual resources
+                        // TODO: Fix the rounding issue
+                        // Ensure strategic_loading is higher than work_load after each schedule operation
 
 
                         combined_loadings(&work_load, &strategic_loading_resources)
@@ -1196,14 +1087,7 @@ where
                     }
                 };
 
-                // If the work_order_resource_loadings is none it means
-                // that the code was not able completely satisfy the
-                // resource_constraint. This means that we should try to work on
-                // a new work_load_permutation. And remember that this one will
-                // be replenished
-                // There are many different cases here. We should work on the one associated
-                // with the Unschedule which means that if the unscheduling
-                // operations is not possible we should try to make something.
+                // If None, resource constraints not met; try next work_load_permutation
                 let strategic_resource_loadings = match strategic_resource_loadings_option {
                     Some(strategic_resource_loadings) => strategic_resource_loadings,
                     None => continue,
@@ -1220,10 +1104,7 @@ where
                     }
                     ScheduleWorkOrder::Forced => {
                         let equal_resources =
-                            // Example:
-                            // * let a = work_load.keys(): MTN_MECH
-                            // * let b = best_work_order_resource_loadings.<LOGIC FROM BELOW>: {MTN_MECH, MTN_ELEC, PRODTECH}
-                            // * a.is_subset(&b): true
+                            // Verify work_load skills are subset of available resources
                             work_load
                                 .keys()
                                 .collect::<HashSet<&Skill>>() 
@@ -1249,7 +1130,7 @@ where
                         );
                         return Ok(Some(best_work_order_resource_loadings));
                     }
-                    // It is always possible to unschedule work, so therefore we can simply
+                    // Unscheduling is always possible
                     ScheduleWorkOrder::Unschedule => {
                         ensure!(combined_loadings(&work_load, &strategic_loading_resources).iter().all(|(res, work)| work >= work_load.get(res).unwrap()), "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
                             possible errors:\n\
@@ -1283,14 +1164,12 @@ where
                 }
             }
         }
-        // This is made in a wierd wa
+        // TODO: Refactor return logic
         match schedule {
             ScheduleWorkOrder::Normal => Ok(None),
             ScheduleWorkOrder::Forced => Ok(Some(best_work_order_resource_loadings)),
             ScheduleWorkOrder::Unschedule => {
-                // NOTE [ ]
-                // You made a crucial debugging error here. And you made it because you were
-                // tired from coding too much during a week.
+                // Verify resource constraints before returning
 
                 ensure!(combined_loadings(&work_load, &strategic_loading_resources).iter().all(|(res, work)| work >= work_load.get(res).unwrap()), "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
                     possible errors:\n\
@@ -1324,7 +1203,6 @@ where
                     })
                     .collect();
 
-                // We have found what it is that we have to `ensure!` Good job @
                 bail!(
                     "Unscheduling work order should always be possible\n\
                     {period:#?}\n\
@@ -1344,13 +1222,13 @@ where
     }
 }
 
-/// This function is 
+/// Combines skill-based loadings for a work order
 fn combined_loadings(
     work_load: &HashMap<Skill, Work>,
     strategic_loading_resources: &HashMap<String, OperationalResource>,
 ) -> HashMap<Skill, Work>
 {
-    // We want this as a HashMap, with one for each resource.
+    // HashMap of skill to total work for matching skills
     let mut strategic_loading: HashMap<Skill, Work, _> = HashMap::default();
     for resource in strategic_loading_resources.iter().filter(|(_, res)| {
         work_load
@@ -1421,13 +1299,7 @@ fn determine_unschedule_work_resource_loadings(
             .collect::<HashSet<_>>()
             .contains(resources));
 
-        // Here we do not want to go over the operational_resource in random order. We
-        // want to determine the best possible way to visit the structure to
-        // make a correct scheduling approach.
-        //
-        // You should use the `Result::Err` to jump out of the function with the
-        // required information You are not doing this correctly. You have to
-        // test the functions.
+        // TODO: Determine optimal order to visit operational resources
         for operational_resource in loading_resources_cloned.iter_mut() {
             if !operational_resource.skill_hours.contains_key(resources) {
                 continue;
@@ -1485,8 +1357,7 @@ fn determine_unschedule_work_resource_loadings(
         }
     }
 
-    // So it returns an `Option::None` if it was not possible to determine this
-    // correctly.
+    // Return the strategic resources if all work_load is assigned
     if work_load_permutation
         .iter()
         .all(|ele| ele.1 == Work::from(0.0))
@@ -1495,8 +1366,6 @@ fn determine_unschedule_work_resource_loadings(
     } else {
         Ok(None)
     }
-    // If all work_load_permutation are Work::from(0.0) we can simply return the
-    // value.
 }
 
 /// This function determines the resource load for when a work order should be
@@ -1511,8 +1380,7 @@ fn determine_forced_work_order_resource_loadings(
 ) -> Result<Option<StrategicResources>>
 {
     let mut work_order_resource_loadings = StrategicResources::default();
-    // FIX [ ]
-    // There may need to be a `Vec` to handle the case of multiple Technicians.
+    // TODO: Use Vec to handle multiple technicians
     for (resources, work) in work_load_permutation.iter_mut() {
         let mut qualified_technicians = technician_permutation
             .iter_mut()
@@ -1531,15 +1399,7 @@ fn determine_forced_work_order_resource_loadings(
             );
             
         }
-        // If there are no qualified technicians. All technicians should be assumed to
-        // be responsible? Yes let us just do that!
-        //
-        // You are a pathetic idiot! You are risking everything because you
-        // do not know...
-        //
-        // NOTE [ ]
-        // Where is the code being calculated that causes this issue? I think that the
-        // issue is with the
+        // If no qualified technicians, create dummy technician for skill
         let mut resources_store_dummy: Option<OperationalResource> = None;
         if qualified_technicians.is_empty() {
             let operational_resource = OperationalResource::new(
@@ -1551,23 +1411,8 @@ fn determine_forced_work_order_resource_loadings(
             qualified_technicians.push(resources_store_dummy.as_mut().unwrap());
         };
 
-        // TODO [ ]
-        // Change this so that each technician is filled up individually.
-        // Here you actually only want it to run for the ones that are non zero!
-        //
-        // That is important! I do not see what other way of doing it.
-        // Again! You always want to minimize the degrees of freedom, even though the
-        // code is slightly bigger.
-        //
-        // CRUCIAL INSIGHT!
-        // Resources are forced here! That means that division was better! Now the code
-        // does not work for larger jobs than what you have resources available
-        // for. That is an issue. That means that you need a small algorithm
-        // here as well to sort this out. Should you do that? The idea is stressing you
-        // a little here. I do not think that this is the best way of going about it.
-        //
-        // NOTE [ ]
-        // There is a critical lesson to learn here and you should take it.
+        // TODO: Fill each technician individually; minimize degrees of freedom
+        // TODO: Handle jobs larger than available resources
         let work_load_by_resources_by_technician = work
             .divide_work(
                 qualified_technicians
@@ -1594,11 +1439,7 @@ fn determine_forced_work_order_resource_loadings(
                 .skill_hours
                 .iter_mut()
                 .for_each(|(_, wor)| *wor -= work_load_by_technician);
-            // So here you are inserting the work_load for that particular skill. You have
-            // to instead make a dummy here. I do not see what other options
-            // that we have?
-            //
-            // You cannot give vendor work to the
+            // TODO: Create dummy for skill if needed
             work_order_resource_loadings.update_load(
                 period,
                 *resources,
@@ -1631,16 +1472,7 @@ fn determine_normal_work_order_resource_loadings(
 ) -> Result<Option<StrategicResources>>
 {
     let mut work_order_resource_loadings = StrategicResources::default();
-    // FIX
-    //
-    // The error is in here! The crucial part to learn here, is how you got in here!
-    // You got into this mess because you did not know what to do about the state
-    // of the program in you error handling. Because you did not encode the state
-    // in ensure!() and bubble it up you have now spend 3 days simple to determine
-    // a thing that should have taken 1 minute.
-    //
-    // Think about that! You really need to develop the experience for finding these
-    // kind of bug much much quicker!
+    // Encode state in ensure!() macros to improve error handling and debugging
     let total_work_load = work_load_permutation
         .iter()
         .fold(Work::from(0.0), |acc, e| acc + e.1);
@@ -1729,9 +1561,7 @@ fn determine_normal_work_order_resource_loadings(
                     operational_resource,
                     LoadOperation::Add,
                 );
-                // This would have done it! Remember!
-                // PRINCIPLE
-                // It is okay to fail and fall short, it is unacceptable not to learn from it
+                // PRINCIPLE: Failure is acceptable; not learning from it is not
                 ensure!(
                     work_order_resource_loadings
                         .0
@@ -1778,10 +1608,7 @@ fn determine_normal_work_order_resource_loadings(
     }
     ensure!(work_load_permutation.iter().all(|e| e.1.is_zero()));
 
-    // CRUCIAL INSIGHT
-    // If the code used custom enum error we could have used ? and then ignored the
-    // variant associated with that error. Those numerical issues have to be
-    // handled centrally at somepoint! You cannot keep postphoning the issue.
+    // TODO: Handle numerical issues centrally with custom error types
     ensure!(
         total_work_load
             == work_order_resource_loadings
@@ -1827,8 +1654,6 @@ fn determine_difference_resources(
         let loading = loading_resources
             .get(capacity.0)
             .cloned()
-            // What should happen if the resources are not available here?
-            // This is where we should create a new entry
             .unwrap_or_default();
         let total_hours = capacity.1.total_hours - loading.total_hours;
         let skills = capacity.1.skill_hours.clone().into_keys().collect();
@@ -1853,16 +1678,13 @@ impl<Ss> StrategicAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    // ISSUE #000
+    // ISSUE #000 - Pending implementation
     pub fn update_resources_state(
         &mut self,
         _strategic_resources_request: StrategicRequestResource,
     ) -> Result<StrategicResponseResources>
     {
-        // You should have done this! But you will need to
-        // work a lot on this! You have to be comfortable with all
-        // this. You will experience a lot of pain from doing this
-        // work. But you will need to learn it
+        // TODO: Implement resource state update logic
         // match strategic_resources_request {
 
         //     StrategicRequestResource::GetLoadings {
@@ -1983,8 +1805,7 @@ where
         Ok(())
     }
 
-    // FIX
-    // Determine what to do with this
+    // TODO: Refactor populate_priority_queue
     pub fn populate_priority_queue(&mut self)
     {
         for work_order_number in self.solution.every_work_order().clone().keys() {

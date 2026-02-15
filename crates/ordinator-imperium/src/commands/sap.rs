@@ -15,7 +15,7 @@ pub enum SapCommands
     /// authorization)
     PushTacticalToSap,
 
-    /// Access the 2WF (operational) opmized data (requires user authorization)
+    /// Access the 2WF (operational) optimized data (requires user authorization)
     Operational,
 }
 
@@ -25,14 +25,7 @@ impl SapCommands
     {
         match self {
             SapCommands::ExtractFromSap => {
-                // let url = "https://help.sap.com/docs/SAP_BUSINESSOBJECTS_BUSINESS_INTELLIGENCE_PLATFORM/9029a149a3314dadb8418a2b4ada9bb8/099046a701cb4014b20123ae31320959.html"; // Replace with the actual SAP authorization URL
-
-                // if webbrowser::open(url).is_ok() {
-                //     println!("Opened {} in the default web browser.", url);
-                // } else {
-                //     // There was an error opening the URL
-                //     println!("Failed to open {}.", url);
-                // }
+                // TODO: Implement SAP extraction with proper authorization handling
                 SystemMessages::Sap
             }
             SapCommands::PushStrategicToSap => {

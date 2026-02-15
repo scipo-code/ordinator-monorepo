@@ -104,37 +104,16 @@ where
     type Algorithm = Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>;
     type Options = SupervisorOptions;
 
-    // I think that we can move this out
     fn make_atomic_pointer_swap(&mut self)
     {
-        // Performance enhancements:
-        // * COW: #[derive(Clone)] struct SharedSolution<'a> { tactical: Cow<'a,
-        //   TacticalSolution>, // other fields... }
-        //
-        // * Reuse the old SharedSolution, cloning only the fields that are needed. let
-        //   shared_solution = Arc::new(SharedSolution { tactical:
-        //   self.tactical_solution.clone(), // Copy over other fields without cloning
-        //   ..(**old).clone() });
-        // NOTE
-        // Every actor will have to specify how to make this work
-        // on its own. There is no other way of doing it I think.
-        //
-        // Yes you have to make it like that. Also I can sense that
-        // you will have to make the code work more efficiently with the
-        // `SchedulingEnvironment` in the future.
-        //
-        // I do not see what other way we could make this work. The best
-        // approach would possibly be
+        // TODO: Consider extracting this method.
+        // Performance optimization opportunities:
+        // - Use Copy-on-Write pattern to avoid cloning entire SharedSolution
+        // - Clone only the fields that have changed, reuse others
+        // Note: Each actor must implement its own version of this swap logic
         self.arc_swap_shared_solution.rcu(|old| {
             let mut system_solutions = (**old).clone();
-            // You have to invert the dependency here.
-            // I cannot see how to make this function in a correct
-            // manner. The best possible way here is to make the system work with
-            // the required,
             SwapSolution::swap(&self.id, self.solution.clone(), &mut system_solutions);
-            // <SupervisorSolution as SwapSolution>::swap(self.id, self.solution,
-            // system_solutions) swap(self.id, self.solution.clone(),
-            // shared_solution)
             system_solutions.supervisor_swap(&self.id, self.solution.clone());
             Arc::new(system_solutions)
         });
@@ -155,39 +134,15 @@ where
         let new_objective_value = Percent::new(assigned_woas.len() as u64, all_woas.len() as u64)
             .with_context(|| format!("{}", Location::caller()))?;
 
-        // Why is there not assigned more WOs from the supervisor? There are
-        // a couple of reasons, either the OperationalActors are not
-        // able to insert them or the Supervisor is bad at optimizing the
-        // `Delegate`s based on the otherwise good functioning of the
-        // OperationalActors.
-        //
-        // I think that the most propable is the Operational not actually scheduling
-        // that much I will include this here
-        //
-        // TODO [ ] 2025-07-03 Essay on the different tracing files.
-        // TODO [ ] 2025-07-03 Determine how much is actually scheduled by the
-        // operational actors.
-        //
+        // TODO: Determine how much is actually scheduled by operational actors to improve optimization
         if self.solution.objective_value < new_objective_value {
-            // NOTE [ ] 2025-07-03 We should work on getting this to work correctly
-            // with
-            //
             Ok(ObjectiveValueType::Better(new_objective_value))
         } else {
             Ok(ObjectiveValueType::Worse(new_objective_value))
         }
     }
 
-    // Because you pulled the `schedule` out it means that you cannot create a
-    // supervisor specific error code. Is this an issue? I do not think that it
-    // is actually. I simply means that you have to think carefully about how
-    // you structure your error messages.
-    //
-    // Good you are ready to move on now.
-    // ISSUE Start here [ ]
-    // You have to fix the initialization.
-    // TODO [ ]
-    // FIX the supervisor initialization.
+    // TODO: Fix supervisor initialization logic
     fn schedule(&mut self) -> Result<()>
     {
         ensure!(
@@ -246,15 +201,13 @@ where
                     &self.loaded_system_solution,
                 )?;
 
-            // Ahh you filter them out here! So that there will be none left
             ensure!(
                 operational_status_by_work_order_activity
                     .iter()
                     .all(|e| matches!(e.1, Delegate::Assess))
             );
 
-            // This should be based on the current solution instead of the derived data!
-            // Crucial insight!
+            // Count assigned delegates from the current solution
             let number_of_assigned = self
                 .solution
                 .operational_state_machine
@@ -313,9 +266,6 @@ where
                         Location::caller()
                     )
                 } else {
-                    // if delegate_status == Delegate::Assign {
-                    //     continue;
-                    // }
                     event!(target: "debug", Level::DEBUG, work_order_activity = ?work_order_activity, technician = ?actor_id, "unassigning `work_order_activity` to technician");
                     event!(target: "developer", Level::DEBUG, delegate_status = ?temporary_technician_delegate, solution_delegate = ?technician_delegate, work_order_activity = ?work_order_activity);
                     technician_delegate
@@ -379,7 +329,7 @@ where
 
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
-        // List current activities in the `SupervisorAgent`
+        // Collect current work order activities in the supervisor solution
         let current_activities = self
             .solution
             .operational_state_machine
@@ -387,33 +337,22 @@ where
             .map(|(_, woa)| woa.0)
             .collect::<HashSet<WorkOrderNumber>>();
 
-        // Filter for Strategic scheduled work orders that are inside of the
-        // `SupervisorAlgorithm.parameters.strategic_periods`. This can be made
-        // cleaner! Much cleaner,
+        // Fetch strategic work orders scheduled within the supervisor period
         let strategic_activities_in_supervisor_period = self
             .loaded_system_solution
             .strategic()?
             .supervisor_tasks(&self.parameters.supervisor_periods);
 
-        // Select only those that are not part of the `SupervisorAgent` already
+        // Filter to only new activities not already in the supervisor solution
         let incoming_activities = strategic_activities_in_supervisor_period
             .iter()
             .filter(|(won, _)| !current_activities.contains(won));
 
-        // Insert all the incoming activities as Delegate::default() for each
-        // `OperationalAgent` that has the required skill, `enum Resources`
-        // QUESTION
-        // Why does this happen here? I do not really know why and that is an
-        // issue. You should find out now.
-        //
-        // TODO [ ]
-        // determine exactly how to fix this.
-        //
+        // Assign incoming activities to operational agents with required resources
         let work_order_parameters = self.parameters.supervisor_work_orders.clone();
         let all_operational_actors = self.loaded_system_solution.all_operational().clone();
 
-        // Infeasible [`WorkOrder`]s
-
+        // Track work orders that cannot be incorporated due to infeasibility or missing resources
         let mut non_incorporated_work_orders: HashSet<WorkOrderNumber> = HashSet::new();
         for (work_order_number, _) in incoming_activities {
             let activity_number = work_order_parameters
@@ -422,10 +361,7 @@ where
                 .keys()
                 .cloned();
 
-            // IMPORTANT. The supervisor and strategic state does not necessarily
-            // have to be the same... As there are cases where the strategic
-            // work order cannot be accepted into the supervisor state. This means
-            // that it is crucial. That the work is added no matter what.
+            // Note: Strategic and supervisor states may differ; work is added if feasible
             for activity_number in activity_number {
                 for operational_id in &all_operational_actors {
                     let supervisor_parameter = self
@@ -498,9 +434,6 @@ where
                 .difference(&strategic_activities),
         );
 
-        // After all the state has been in corporated, an [`ArcSwap`] must be
-        // performed.
-        // NOTE 2025-06-28
         Ok(true)
     }
 

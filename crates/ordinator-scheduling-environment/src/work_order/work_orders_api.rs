@@ -5,9 +5,9 @@ use crate::time_environment::period::Period;
 use crate::work_order::WorkOrderNumber;
 use crate::work_order::WorkOrders;
 
-/// TODO WARN [ ] 2025-07-14 `UnloadingPoint` is Total Specific
-/// This is an endpoint for setting the `UnloadingPoint` for the
-/// entire `WorkOrder` in every `Operation`
+/// Updates the `UnloadingPoint` for the entire `WorkOrder` across all operations.
+///
+/// TODO WARN [ ] 2025-07-14 `UnloadingPoint` is site-specific
 impl WorkOrders
 {
     pub fn update_scheduled_period(
@@ -40,9 +40,7 @@ impl WorkOrders
             .operations
             .0
             .iter_mut()
-            // This is a little bit bummer. I think that the best thing to do here is to make the
-            // code work correctly with the supplied
-            // This is not okay. I think that there are many different paths to take here.
+            // Update the unloading point with the new period for each operation
             .for_each(|e| {
                 e.1.unloading_point = UnloadingPoint::new(
                     e.1.unloading_point.string.clone(),

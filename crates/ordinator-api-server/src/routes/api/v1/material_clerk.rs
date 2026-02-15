@@ -14,7 +14,7 @@ pub async fn material_clerk_routes(
         // .route("/{asset}/{supervisor_id}", get(status))
         .with_state(state)
 
-    // TODO [ ] Put these into the handler
+    // TODO: Move this logic into the handler
     // let orchestrator = orchestrator.lock().unwrap();
 
     // Ok(orchestrator

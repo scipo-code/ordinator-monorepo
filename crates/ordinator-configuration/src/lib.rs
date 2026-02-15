@@ -14,19 +14,11 @@ use ordinator_scheduling_environment::SystemConfigurationTrait;
 use throttling::Throttling;
 use toml_baptiste::BaptisteToml;
 
-// QUESTION
-// How should this be handled?
-// They should be handled by created by handling a `From<<Actor>OptionConfig>
-// for <Actor>Config` in the `ordinator-actors` crate!
-
-/// This struct is used to load in all configuraions centrally into the
-/// Orchestrator. The `Orchestrator` then uses dependency injection to provide
-/// the actors with the correct `Configurations`.
-// There is something that you do not understand here. Where should
-// all these configurations go?
-// WARN
-// Remember! You have a single source of all configurations here,
-// so there is no reason to question that in the system.
+/// Loads all configurations centrally into the Orchestrator using dependency
+/// injection to provide actors with their required configuration values.
+///
+/// Configuration conversions for each actor should be implemented as
+/// `From<ActorOptionConfig> for ActorConfig` in the `ordinator-actors` crate.
 #[derive(Debug)]
 pub struct SystemConfigurations
 {
@@ -37,11 +29,7 @@ pub struct SystemConfigurations
 
 impl SystemConfigurationTrait for SystemConfigurations {}
 
-// FIX [ ]
-// This is a good initial approach but remember to make it better if you have to
-// revisit it.
-// It has now come to making it better!
-// There is something completely wrong here.
+// TODO: Improve configuration handling if revisited
 impl SystemConfigurations
 {
     pub fn read_all_configs() -> Result<Arc<ArcSwap<SystemConfigurations>>>
@@ -64,9 +52,7 @@ impl SystemConfigurations
 
         let database_path = std::path::Path::new(database_path_string);
 
-        // I believe that it is the best appraoch here to make sure that the
-        // `Configurations` are always created wrapped. Then you will never
-        // make the mistake, of accessing wild and stray configurations.
+        // Always wrap configurations to prevent accidental uncontrolled access
         Ok(Arc::new(ArcSwap::new(Arc::new(SystemConfigurations {
             data_locations,
             throttling,
@@ -76,9 +62,7 @@ impl SystemConfigurations
 
     pub fn build_configs(throttling: Throttling) -> Arc<ArcSwap<SystemConfigurations>>
     {
-        // I believe that it is the best appraoch here to make sure that the
-        // `Configurations` are always created wrapped. Then you will never
-        // make the mistake, of accessing wild and stray configurations.
+        // Always wrap configurations to prevent accidental uncontrolled access
         Arc::new(ArcSwap::new(Arc::new(SystemConfigurations {
             data_locations: BaptisteToml::default(),
             throttling,
@@ -86,7 +70,7 @@ impl SystemConfigurations
         })))
     }
 
-    // This is actually a `From <SystemConfiguration> for StrateticOptions`
+    // TODO: Implement From<SystemConfiguration> for StrategicOptions
 }
 
 // This should be a part of the creation of the `SchedulingEnvironment`

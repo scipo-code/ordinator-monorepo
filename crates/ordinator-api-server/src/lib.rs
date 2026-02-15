@@ -36,7 +36,7 @@ pub async fn start_application(
         .with_state(orchestrator)
         .split_for_parts();
 
-    // Here you can modify the the 'OpenApi' specification
+    // Customize the OpenApi specification
     let swagger_ui_name = match environment {
         Environment::Prod => "Ordinator API Specification (Production Environment)",
         Environment::Test(_) => "Ordinator API Specification (Test Environment)",
@@ -45,7 +45,7 @@ pub async fn start_application(
         .info(Info::new(swagger_ui_name, "0.2.2"))
         .build();
 
-    // Here you can modify the [`SwaggerUi`]
+    // Configure the SwaggerUi display
     let swagger_config = Config::new(["/api-doc/openapi.json"])
         .display_request_duration(true)
         .with_syntax_highlight(false)

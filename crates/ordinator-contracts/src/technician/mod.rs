@@ -16,7 +16,7 @@ impl From<((WorkOrderNumber, ActivityNumber), OperationalAssignment)> for Operat
 {
     fn from(value: ((WorkOrderNumber, ActivityNumber), OperationalAssignment)) -> Self
     {
-        // TODO Start here.
+        // TODO: Verify and handle edge cases in assignment conversion
         Self {
             work_order_activity: (value.0 .0 .0, value.0 .1),
             start: value.1.start_time().to_rfc3339(),

@@ -11,8 +11,7 @@ use strum_macros::EnumIter;
 use super::availability::Availability;
 use crate::Asset;
 
-/// This enum holds all the resources that are available needed to schedule work
-/// order.
+/// Enum representing all available skills needed to schedule work orders.
 #[derive(
     Hash,
     PartialOrd,
@@ -308,15 +307,11 @@ impl Skill
     }
 }
 
-// TODO
-// You should add a function here to make the code work with the.
-// TODO [x] Start here. Put availability into the [`Id`].
-// TODO [ ]
+// TODO: Add function to integrate availability into the composite ID
 #[derive(Eq, Hash, Ord, PartialOrd, PartialEq, Serialize, Deserialize, Clone, Default)]
 pub struct ActorCompositeId(pub String, pub Vec<Skill>, pub Availability);
 
-// You have to learn to use the debugger in the code there is simply no other
-// way and you have to make the code work with
+// Custom Debug implementation for colored terminal output
 impl std::fmt::Debug for ActorCompositeId
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
@@ -370,8 +365,7 @@ impl Shift
     }
 }
 
-// NOTE [ ]
-// Only the `Debug::alternate()` can be colored.
+// Note: Only Debug::alternate() formatting supports colored output
 impl Display for ActorCompositeId
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result

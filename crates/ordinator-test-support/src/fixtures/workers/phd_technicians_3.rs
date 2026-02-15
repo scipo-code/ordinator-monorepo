@@ -73,8 +73,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                                     .unwrap(),
                                 )
                                 .add_resource(Skill::MtnElec)
-                                // THIS IS WHAT YOU SHOULD NOT DO! Each you are spilling out 3 types
-                                // that should be encapsulated.
+                                // TODO: Encapsulate the three time intervals instead of spilling them out
                                 .break_interval(TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap())
                                 .off_shift_interval(
                                     TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),

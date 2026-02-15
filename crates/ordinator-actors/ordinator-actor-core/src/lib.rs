@@ -34,22 +34,11 @@ use tracing::info;
 
 use self::traits::ActorBasedLargeNeighborhoodSearch;
 
-// I do not know if there is
-// TODO [ ] FIX [ ]
-// You should reuse the trait bounds on the Agent and the Algorithm.
-//
+// TODO: Reuse trait bounds on the Agent and the Algorithm.
 pub struct Actor<ActorRequest, ActorResponse, Algorithm>
 where
-    // What should you do here with the
-    // You should implement the MessageHandler for all of the
-    // Actors this means that you need to create a blanket
-    // implementation, and then the actors will have to supply
-    // an implementation of the functions needed to actually
-    // perform the required operations.
-    // TODO [ ]
-    // Look into whether it is possible for you to make a
-    // blanket implementation that simply makes the
-    // Actor implementations provide functions.
+    // TODO: Consider implementing a blanket MessageHandler trait
+    // that Actor implementations provide through a custom interface.
     Self: CommandHandler<ActorRequest, ActorResponse>,
     Algorithm: ActorBasedLargeNeighborhoodSearch + Debug,
     ActorResponse: Debug,
@@ -67,44 +56,19 @@ where
     pub error_channel: Sender<anyhow::Error>,
 }
 
-// TODO [ ]
-// You should consider making a trait here for the agent. That is the best way
-// of coding this. You are getting the hang of this and that is the most
-// important thing here
+// TODO: Consider implementing a trait for the agent as the primary interface.
 impl<ActorRequest, ActorResponse, Algorithm> Actor<ActorRequest, ActorResponse, Algorithm>
 where
-    // This is
-    // not possible.
-    // It cannot
-    // be implemented
-    // like this.
-    // That is
-    // problem.
-    // You
-    // were confused
-    // about this
-    // before.
-    // At least
-    // now you
-    // understand
-    // the
-    // implications of it.
     Self: CommandHandler<ActorRequest, ActorResponse>,
     Algorithm: ActorBasedLargeNeighborhoodSearch + Debug,
     ActorRequest: Send + Sync + 'static,
     ActorResponse: Send + Sync + 'static + Debug,
 {
-    // This method sends errors to the Orchestrator, which handles the errors
-    // from there.
-    //
-    // One thing is for sure. Now is not the time to fix this.
+    // Run the actor's main event loop, handling algorithm scheduling and orchestrator communication.
     pub fn run(&mut self)
     {
         info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
         let mut schedule_iteration = ScheduleIteration::default();
-
-        // I do not understand what I should be doing here? I think that the best
-        // approach is to understand this as well as I can.
 
         if let Err(actor_error) = self.algorithm.schedule().with_context(|| {
             format!(
@@ -124,7 +88,6 @@ where
 
         schedule_iteration.increment();
 
-        // There is something fundamental that you are not getting here.
         loop {
             while let Ok(state_link) = self.state_link_receiver.try_recv() {
                 match self.handle_state_link(state_link) {
@@ -173,8 +136,7 @@ where
         }
     }
 
-    // I believe that many of these fields can be set by themselves.
-    //
+    // Create a new ActorBuilder for constructing Actor instances.
     pub fn builder() -> ActorBuilder<ActorRequest, ActorResponse, Algorithm>
     {
         ActorBuilder {
@@ -191,9 +153,6 @@ where
     }
 }
 
-// Is what you are getting from this worth it? I do not really
-// think so. You will have to make a new function in the
-// other
 pub struct ActorBuilder<ActorRequest, ActorResponse, Algorithm>
 where
     Algorithm: ActorBasedLargeNeighborhoodSearch,
@@ -258,18 +217,10 @@ where
         self
     }
 
-    // QUESTION [ ]
-    // Do you actually want the `From` trait bound here?
-    //
-    // What are the alternative options here? I think that the best
-    // thing to do
-    // Algorithmh call `builder` itself. You should not have to do much.
+    // Configure the algorithm for this actor.
     pub fn algorithm<F, S, P, I, Ss>(mut self, configure: F) -> Result<Self>
     where
         SpecificAlgorithm: From<algorithm::Algorithm<S, P, I, Ss>>,
-        // I do not think that this should be implemented on the
-        // You are over engineering it here but I do not see what
-        // other options that we have for making this a success.
         S: Solution<Parameters = P> + Debug + Clone + SwapSolution<Ss>,
         Ss: SystemSolutions,
         P: Parameters,
@@ -285,8 +236,7 @@ where
         Ok(self)
     }
 
-    // What is the error here? I think that it has to do with the
-    // bounded channel.
+    // Set up communication channels with the orchestrator and state link bus.
     pub fn communication(
         mut self,
         error_channel: Sender<anyhow::Error>,
@@ -376,10 +326,9 @@ impl fmt::Debug for ScheduleIteration
     }
 }
 
-/// This type is the primary message type that all agents should receive.
-/// All agents should have the `StateLink` and each agent then have its own
-/// ActorRequest which is specifically created for each agent.
-// THIS should most likely be removed or refactored.
+/// Represents the feasibility state of an algorithm's solution.
+///
+/// This is the primary message type for communicating algorithm state to agents.
 #[derive(Debug, Serialize)]
 pub enum AlgorithmState<T>
 {
@@ -431,8 +380,6 @@ pub enum RequestMessage<S, Sc, R, T, C>
     Update,
 }
 
-// You need type safety here I do not see another way around it
-//
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub enum ResponseMessage<S, Sc, R, T, C>
 {

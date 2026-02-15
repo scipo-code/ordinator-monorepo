@@ -17,9 +17,6 @@ pub enum Priority
     Char(char),
 }
 
-// Is this a better way of doing it? Yes it is a much better way
-// This is now closely
-
 impl Priority
 {
     pub fn get_priority_string(&self) -> String

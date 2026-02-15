@@ -13,7 +13,7 @@ pub enum StatusCommands
     Time {},
 }
 
-/// We should put a lot of thought into the subcommand of the work orders.
+/// Subcommands for querying work order information
 #[derive(Subcommand, Debug)]
 pub enum WorkOrders
 {

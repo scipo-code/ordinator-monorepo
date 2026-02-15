@@ -14,15 +14,7 @@ use ts_rs::TS;
 
 use crate::AssetNames;
 
-// best to simply comment all of this out
-// Where should these be found? I think that the
-// FIX [ ]
-// This should be created with routes and handlers it should all go away
-// at somepoint.
-// I guess that this should be inside of the Orchestrator instead. What
-// other approach should we choose here? I think that creating the
-// This should lie inside of the Orchestrator. I do not see a way
-// around it.
+// TODO: Move route handlers into the Orchestrator struct.
 
 #[derive(Serialize)]
 #[allow(clippy::large_enum_variant)]
@@ -62,10 +54,10 @@ pub struct WorkOrderResponse
 #[derive(Serialize)]
 pub struct ApiSolution
 {
-    pub strategic: String,   //ApiStrategic,
-    pub tactical: String,    //ApiTactical,
-    pub supervisor: String,  //HashMap<Id, ApiSupervisor>,
-    pub operational: String, //HashMap<Id, ApiOperational>,
+    pub strategic: String,   // TODO: Replace with ApiStrategic type
+    pub tactical: String,    // TODO: Replace with ApiTactical type
+    pub supervisor: String,  // TODO: Replace with HashMap<Id, ApiSupervisor>
+    pub operational: String, // TODO: Replace with HashMap<Id, ApiOperational>
 }
 
 #[derive(Serialize)]
@@ -104,11 +96,7 @@ struct ApiOperational
     solution_data: String,
 }
 
-// TODO [ ]
-// Delete this type! These kind of things should always be found in the
-// `conversions` crate and not as a stray something in here.
-// Should you delete this thing?
-// Yes
+// TODO: Delete this type and move it to the `conversions` crate.
 
 #[derive(Serialize)]
 pub struct OptimizedWorkOrderResponse

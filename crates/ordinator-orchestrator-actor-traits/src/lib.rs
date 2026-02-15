@@ -63,14 +63,6 @@ pub struct Communication<RequestMessage, Res>
     pub receiver_from_actor: Receiver<Result<Res>>,
 }
 
-// StateLink is not a request. It is something different
-// Ahh this is good every Request message from each of the actors
-// should implement a `RequestMessage`. It is a little weird to
-// reuse the `Req` like this. You need to remember this to see
-// what you will learn from it.
-//
-// You are misunderstanding this because you are not using the
-// generics in the correct way. There is something to learn here.
 impl<RequestMessage, Res> Communication<RequestMessage, Res>
 {
     pub fn new(sender: Sender<RequestMessage>, receiver: Receiver<Result<Res>>) -> Self
@@ -81,11 +73,8 @@ impl<RequestMessage, Res> Communication<RequestMessage, Res>
         }
     }
 
-    // This is being wrapped twice. I think that the best approach is to
-    // make the system function with.
     pub fn from_agent(&self, message: RequestMessage) -> Result<()>
     {
-        // What is it that you need to do here? You should
         self.sender_to_actor.send(message).map_err(|e| anyhow!(e.to_string() )).context("The Actor has stopped running. If the reason for this is not obvious, it means that the error handling should be extended.")
     }
 
@@ -118,8 +107,6 @@ where
     U: SupervisorInterface + Solution,
     V: OperationalInterface + Solution,
 {
-    // What you are doing here is so important! That you decided to make this is
-    // one of the best idea that you have had in a long time!
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
         if f.alternate() {
@@ -157,8 +144,6 @@ where
     }
 }
 
-// This is made completely wrong. I am not sure what the
-// best approach of solving it will be.
 pub trait SystemSolutions: Clone + Sized
 {
     type Strategic: StrategicInterface;
@@ -185,7 +170,7 @@ pub trait SystemSolutions: Clone + Sized
     fn operational_actor_solutions(&self, id: &ActorCompositeId) -> Result<&Self::Operational>;
 
     fn all_operational(&self) -> HashSet<ActorCompositeId>;
-    // If you make all Id's internal you could simply work on those?
+
     fn operational_swap(
         &mut self,
         id: &ActorCompositeId,
@@ -194,7 +179,7 @@ pub trait SystemSolutions: Clone + Sized
         Self::Operational: Solution;
 }
 
-// ISSUE #000 [ ] - use trait composition instead of a single large trait.
+// TODO: Use trait composition instead of a single large trait.
 #[allow(dead_code, unused_variables)]
 impl<S, T, U, V> SystemSolutions for SystemSolution<S, T, U, V>
 where
@@ -254,7 +239,6 @@ where
             .inner)
     }
 
-    // Can you even do this? Is this allowed? I do not t
     fn operational_swap(
         &mut self,
         id: &ActorCompositeId,
@@ -298,48 +282,31 @@ where
 {
     type Key;
 
-    /// Who should build the parameters. That is the key question here.
-    /// Do you want to mutate it?
-    ///
-    /// I really do not like this trait declaration. Something has to change?
+    /// Build parameters from a scheduling environment for a given actor
     fn from_source(
         id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>;
 
-    /// WARNING
-    /// This method can become extremely complex in a practical setting.
-    /// You should do.
+    /// Create and insert a new parameter. Note: this method can become extremely complex in practice
     fn create_and_insert_new_parameter(
         &mut self,
         key: Self::Key,
         scheduling_environment: MutexGuard<SchedulingEnvironment>,
     );
 
-    // TODO [ ]
-    // Add methods for updating configurations.
+    // TODO: Add methods for updating configurations.
 }
 
-// There is something that I do not like about having `new` here
-// I think that the best option is to make the system work with the
-// `from` trait. Meaning that we should focus on making the system
-// work with the
-// Should this function have an option or not? Yes it should.
 pub trait Solution: Sized + Debug
 {
     type Objective: Debug + Valuable;
     type Parameters;
 
-    // The weightings are found inside of the
-    // `Solution`
-    // QUESTION
-    // Is this a good idea to create the Solution? I actually believe that it
-    // is!
-    // Should you have the options here? I think that you should derive the...
-    //
-    // The solution should only contain the things that actually change.
+    /// Create a solution from parameters
     fn from_parameters(parameters: &Self::Parameters) -> Result<Self>;
 
+    /// Update the solution's objective
     fn update_objective(&mut self, other_objective: Self::Objective);
 }
 
@@ -416,15 +383,8 @@ impl<S: Solution> SolutionState<S>
     }
 }
 
-// NOTE [ ]
-// You are actually turning this `MessageHandler` into a CQRS pattern. All reads
-// will be done through the `Orchestrator` and only commands will be send
-// through the `MassageHandler` channel.
-/// This trait should be implemented by every Actor so that it will be able to
-/// receive messages from the user and the [`Orchestrator`].  
-///
-/// Funny
-/// TODO [ ] You need to experience so much pain for this to work correctly
+/// Handle incoming messages for an actor using a CQRS pattern
+/// (reads via Orchestrator, commands via MessageHandler channel)
 pub trait CommandHandler<Req, Res>
 {
     fn handle_state_link(&mut self, state_link: StateLink) -> Result<Res>;
@@ -432,11 +392,7 @@ pub trait CommandHandler<Req, Res>
     fn handle_request_message(&mut self, request_message: Req) -> Result<Res>;
 }
 
-// There should only be a single interface here there should be a
-// a set of standard operations that every solution should inplement
-// this is to make sure that you do not make stray impl blocks and
-// TODO [ ]
-// Make a solution interface that is common
+// TODO: Create a common solution interface for all levels (Strategic, Tactical, Supervisor, Operational)
 pub trait StrategicInterface
 where
     Self: Clone + std::fmt::Debug + Eq + PartialEq,
@@ -471,20 +427,8 @@ where
     fn tactical_loadings(&self) -> BTreeMap<Skill, Vec<Work>>;
 }
 
-// This is a core type that each `Actor` should implement, I think
-// that it should be part of a trait but which is a little difficult
-// to tell.
-// QUESTION
-// What is this type set in the world to do?
-// The goal of it is to make sure that the `Actor` can make
-// custom logic internally depending on where they know the
-// work order to be located. This is crucial to respect
-// business logic.
-//
-// ESSAY: 2025-07-21
-// It is crucial that these types are correctly aligned here. I think
-// that the best idea is to.. You should not use any resource if it
-// is not in the StrategicActor.
+/// Indicates the scheduling level at which a work order is allocated.
+/// Allows actors to implement custom logic based on work order location.
 #[derive(PartialEq, Eq, Debug, Default, Clone, Serialize)]
 pub enum WhereIsWorkOrder<T>
 {
@@ -516,15 +460,6 @@ impl<T> WhereIsWorkOrder<T>
     }
 }
 
-// NOTE
-// One thing is for sure here. It does not make sense to
-// have `Ss` and then only have SystemSolution in here.
-// You have a dilemma here then. Either you make the
-// trait Ss or you remove Ss from everywhere in the
-// code. I can feel that is the right question to be
-// asking.
-//
-// I will keep the [`Ss`]
 pub trait SwapSolution<Ss>: Solution + Sized
 where
     Ss: SystemSolutions,
@@ -542,55 +477,28 @@ where
     Self: Clone + std::fmt::Debug + Eq + PartialEq,
 {
     fn delegated_tasks(&self, operational_agent: &ActorCompositeId) -> HashSet<WorkOrderActivity>;
-    // Where should the `Delegate` be located?
-    // I believe that the best place is in the `actor-core` the issue is that you
-    // wanted to use these interface for the `orchestrator` as well and that is not
-    // what you actually want. You need the orchestrator to have the delegate as
-    // well in general you would like to have the `Solutions` able to be
-    // exported directly from the `orchestrator`.
-    // QUESTION
-    // TODO [ ]
-    // Should you simply move the module into this crate? Yes I think that is a good
-    // idea.
-    // What should the `delegates` here be called? Remember that you can use
-    // associated types to fix this in the correct way. The best approach would
-    // QUESTION
-    // What exactly is the function doing? It is for a specific actor finding every
-    // work order activity that is relevant for this actor. The function is
-    // basically returning a `SortedSolution` for the `SupervisorSolution`.
-    //
-    // I think...
-    // The best approach here is to make something that we make a trait for each and
-    // then afterwards you look at all four of these traits and then make a
-    // common! Bullseye! This is the approach abstract should always be created
-    // with evidence not blind faith.
+
+    /// Get delegates assigned to an operational agent
     fn delegates_for_agent(
         &self,
         operational_agent: &ActorCompositeId,
     ) -> HashMap<WorkOrderActivity, Delegate>;
+
+    /// Count delegate types for an operational agent
     fn count_delegate_types(&self, operational_agent: &ActorCompositeId) -> (u64, u64, u64);
 }
-// The `solution` should be updated on the `SharedSolution` not the
-// individual solution. These interfaces are implemented on the
-// individual solution.
+
 pub trait OperationalInterface
 where
     Self: Clone + std::fmt::Debug + Eq + PartialEq,
 {
-    // This function is completely on the wrong level of abstraction, this
-    // feeling is what should guide you towards correct behavior.
-    // This interface should be implemented by the `operational` actor.
-    // And this means that the most important thing is the that the
-    // method cannot see the solution from the `supervisor` are you missing
-    // something here?
-    //
-    // This should not be a `Vec` correct? A `WorkOrderActivity` is unique to
-    // this actor? Yes
+    /// Get marginal fitness for a work order activity
     fn marginal_fitness_for_operational_actor<'a>(
         &'a self,
         work_order_activity: &WorkOrderActivity,
     ) -> Option<&'a MarginalFitness>;
 
+    /// Get all scheduled activities for this operational actor
     fn scheduled_activities_for_operational_actor(&self) -> HashSet<WorkOrderActivity>;
 }
 
@@ -614,12 +522,6 @@ pub enum StateLink
     TimeEnvironment,
 }
 
-// You can now remove it. The actors should never communicate state like
-// this! This is a bad way of... Maybe not... Knowing the `Actor` that
-// caused this message could be valuable... But I do not think so.
-//
-// This message was made when the idea was that the `Actor`s themselves
-// should create this. You are `Simplifying`!
 #[derive(Debug, Clone)]
 pub enum ActorSpecific
 {

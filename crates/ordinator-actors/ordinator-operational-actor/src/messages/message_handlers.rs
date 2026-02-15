@@ -17,8 +17,7 @@ use super::responses::OperationalResponseStatus;
 use crate::algorithm::OperationalAlgorithm;
 use crate::algorithm::operational_parameter::OperationalParameter;
 use crate::algorithm::operational_solution::OperationalSolution;
-// Was this actually needed? I am not really sure here I believe that
-// the best approach is to make something.
+
 impl<Ss> CommandHandler<OperationalRequestMessage, OperationalResponseMessage>
     for Actor<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>
 where
@@ -37,7 +36,7 @@ where
                 let locked_scheduling_environment = self
                     .scheduling_environment
                     .lock()
-                    .expect("SchedulignEnvironment Mutex could not be acquired.");
+                    .expect("SchedulingEnvironment Mutex could not be acquired.");
 
                 for work_order_number in changed_work_orders {
                     let work_order = locked_scheduling_environment
@@ -50,7 +49,7 @@ where
                         let operational_parameter = match OperationalParameter::new(
                             work_order
                                 .operation_work_remaining(activity_number)
-                                .context("operation_work_remaintin does not exist")?,
+                                .context("operation_work_remaining does not exist")?,
                             work_order
                                 .operation_preparation(activity_number)
                                 .context("operation_preparation does not exist")?,
@@ -80,7 +79,7 @@ where
     {
         match request {
             ordinator_actor_core::RequestMessage::Status(_) => {
-                // WARN DEBUG: This should be included if you get an error
+                // TODO: Include detailed debugging format if error occurs
                 //     format!(
                 //         "ID: {}, traits: {}, Objective: {:?}",
                 //         self.agent_id.0,
@@ -101,11 +100,8 @@ where
                     .supervisor_actor_solutions()?
                     .count_delegate_types(&self.actor_id);
 
-                // Remember that the business types should not be the same type as the
-                // algorithm types. That is crucial to understand in all this.
-                // These should not have the `OperationalResponseStatus`
-                // QUESTION
-                // Should the `OperationalObjectiveValue` be shareable? No I do not think so.
+                // Business types must remain distinct from algorithm types.
+                // Do not use `OperationalResponseStatus` for algorithm types.
                 let operational_response_status = OperationalResponseStatus::new(
                     self.actor_id.clone(),
                     assign,
@@ -123,8 +119,7 @@ where
                     OperationalSchedulingRequest::OperationalState(_) => {
                         // let mut json_assignments_events: Vec<ApiAssignmentEvents> = vec![];
 
-                        // I think that you should starte removing code that does not really
-                        // work here. You have to make something operational fast.
+                        // TODO: Remove non-functional code and prioritize operational implementation
                         // for (work_order_activity, operational_solution) in
                         //     &self.algorithm.solution.scheduled_work_order_activities
                         // {

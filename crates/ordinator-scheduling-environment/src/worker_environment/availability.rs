@@ -57,7 +57,7 @@ impl Availability
 
     pub fn main_asset(&self) -> &Asset
     {
-        self.assets.first().expect("This should never happen")
+        self.assets.first().expect("assets list must not be empty")
     }
 
     pub fn assets(&self) -> &Vec<Asset>

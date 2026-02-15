@@ -8,8 +8,6 @@ use ordinator_scheduling_environment::worker_environment::resources::ActorCompos
 
 use super::supervisor_solution::SupervisorSolution;
 
-/// I think that you have to either make this in the `supervisor` agent or
-/// in the
 impl SupervisorInterface for SupervisorSolution
 {
     fn delegates_for_agent(&self, operational_agent: &ActorCompositeId) -> HashMap<WorkOrderActivity, Delegate>
@@ -32,7 +30,7 @@ impl SupervisorInterface for SupervisorSolution
             .collect::<HashSet<_>>()
     }
 
-    // This function has to be moved.
+    // TODO: Move this function to a more appropriate location
     fn count_delegate_types(&self, operational_agent: &ActorCompositeId) -> (u64, u64, u64)
     {
         let mut count_assign = 0;

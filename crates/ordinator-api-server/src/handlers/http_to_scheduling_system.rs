@@ -1,23 +1,7 @@
-// FIX
-// This is a wrong way to import dependencies. It should be refactored.
-// So now you have to decide what the best approach is to proceed here. I think
-// that you should strive for making the sys
-// QUESTION [ ]
-// Should you make this work with the
-// Where should the system messages be found?
-
-// INFO
-// So the idea is that all the functions should be separate. And the endpoints
-// should simply call the different functions. What is the difference between
-// the orchesatrator functions and handlers? The orchestrator simply has
-// `Communication`s, `SchedulingEnvironment` `SystemSolutions` that you can use.
-// This is what the orchestrator is. The remaining things should come from the
-// handlers. They should provide the information that the orchestrator
-// needs to do what it is supposed to do.
-// You should make your own data structure here.
-
-// TODO [ ] Make a route and handler for each of these. The Orchestrator
-// should be a function parameter to this process.
+// TODO: Refactor dependency imports to follow best practices
+// TODO: Decide on system message location and architecture
+// TODO: Separate handler functions; orchestrator provides Communication, SchedulingEnvironment,
+//       and SystemSolutions, while handlers provide required context data
 
 // #[cfg(test)]
 // mod tests

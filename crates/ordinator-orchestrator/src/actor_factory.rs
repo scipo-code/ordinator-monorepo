@@ -42,10 +42,7 @@ where
         + 'static
         + Debug,
 {
-    // This is a helper function. This is where the problem becomes appearant
-    // It should be removed from the function.
-    // TODO [ ] You should move the actor registry out of the factory_dependencies
-    // again.
+    // TODO: Move the actor registry out of the factory_dependencies
     pub fn extract_factory_dependencies(
         &self,
         asset: &Asset,
@@ -53,8 +50,7 @@ where
     {
         Ok((
             Arc::clone(&self.scheduling_environment),
-            // This is the issue. FIX Remove this to proceed. Where should it go? I think that the
-            // best approach here is the make the code work well with the
+            // TODO: Determine proper location for system_solutions
             Arc::clone(
                 self.system_solutions
                     .lock()
@@ -66,24 +62,13 @@ where
         ))
     }
 
-    // So the `Id` is actually not only an ID, it specifies everything that is
-    // unique to that specific actor. I think that is the reason that the system
-    // works so well here.
+    // The `ActorCompositeId` uniquely identifies an actor and specifies all
+    // characteristics required for that specific actor instance
     pub fn start_strategic_actor(&mut self, id: &ActorCompositeId) -> Result<()>
     {
-        // Insert an entry on the SchedulingEnvironment
         let build_dependencies = self.extract_factory_dependencies(id.asset())?;
 
-        // Where should the code for the id come from? You need to make sure that you
-        // understand the process, correctly.
-        //
-        // Where should the id come from? I think that the best place to retrieve them
-        // from is the data itself. Usually this comes from either the database
-        // or from the API endpoint. What does that mean for the remaining part
-        // of the system. You should add something from the
-        //
-        //
-        // TODO [ ] - Determine what to do about the `ID` here.
+        // TODO: Determine source for actor ID (database, API, etc.)
         let communication = <StrategicApi as ActorFactory<Ss>>::construct_actor(
             id.clone(),
             build_dependencies.0,
@@ -94,8 +79,7 @@ where
         )
         .with_context(|| format!("Could not create StrategicActor for Asset {}", id.asset()))?;
 
-        // You should make a method for
-        // `actor_registries.lock().unwrap().get_mut(id.asset()).expect()`
+        // TODO: Extract registry access pattern into a helper method
         self.actor_registries
             .lock()
             .unwrap()
@@ -107,10 +91,10 @@ where
 
     pub fn start_tactical_actor(&mut self, id: &ActorCompositeId) -> Result<()>
     {
-        // TODO [ ] - Insert entry into the `SchedulingEnvironment`
+        // TODO: Insert entry into the `SchedulingEnvironment`
         let build_dependencies = self.extract_factory_dependencies(id.asset())?;
 
-        // TODO [ ] - Determine what to do about the `ID` here.
+        // TODO: Determine source for actor ID
         let communication = <TacticalApi as ActorFactory<Ss>>::construct_actor(
             id.clone(),
             build_dependencies.0,
@@ -130,10 +114,10 @@ where
         Ok(())
     }
 
-    // TODO [ ] - Move the ActorSpecification into the SchedulingEnvironment.
+    // TODO: Move the ActorSpecification into the SchedulingEnvironment
     pub fn start_supervisor_actor(&mut self, id: &ActorCompositeId) -> Result<()>
     {
-        // TODO [ ] - Insert entry into the `SchedulingEnvironment`
+        // TODO: Insert entry into the `SchedulingEnvironment`
         let build_dependencies = self.extract_factory_dependencies(id.asset())?;
 
         let communication = <SupervisorApi as ActorFactory<Ss>>::construct_actor(
@@ -156,15 +140,10 @@ where
         Ok(())
     }
 
-    // You should only ever build the actor based on the state that is present in
-    // the `SchedulingEnvironment` This actor is different. We have to insert a
-    // different component into the system here. The best approach would
-    // probably be to
-    //
-    // Use this to
+    // TODO: Build operational actor based on SchedulingEnvironment state
     pub fn start_operational_actor(&self, id: &ActorCompositeId) -> Result<(), StartError>
     {
-        // Here you should have typed Errors instead of what you are doing here.
+        // TODO: Use typed errors instead of generic error handling
         let build_dependencies = self
             .extract_factory_dependencies(id.asset())
             .map_err(|_e| StartError::CouldNotCreateDependencies)?;

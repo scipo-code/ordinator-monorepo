@@ -44,11 +44,8 @@ use self::time_environment::TimeEnvironment;
 use self::worker_environment::ActorEnvironment;
 
 // ESSAY: #20250814
-// All of these sould be `dyn` so you might aswell do it correctly now.
-// If you need `Serialize` and `Deserialize` you should implement that
-// on the concrete types.
-/// This is the main entrypoint into the domain models it is from here
-/// you can access every aggregate root.
+// All of these should be `dyn`. If you need Serialize and Deserialize, implement on concrete types.
+/// Main entry point to the domain models and aggregate roots
 #[derive(Debug)]
 pub struct SchedulingEnvironment
 {
@@ -68,34 +65,7 @@ pub enum TimeType
     SpecificTime(DateTime<Utc>),
 }
 
-// `new` and modification is very different here. You should clearly understand
-// the difference here.
-//
-
-// You have to make this work. That is the only thing that matters.
-
-// ESSAY [ ] How should the state interact?
-// I think that the best approach here is to make the system work on the
-// correct... Your issue here is that you need to respect a lot of things
-// in the work order, and the work order already has information about the
-// person that should do the job. This is a major problem. I think that the
-// best model here is to pull out all the `time` and `worker` state of the
-// `WorkOrders` and create something that will make it easy to reference the
-// correct thing. This means that some of the logic in the `WorkOrder` will
-// have to be pulled out of the struct. The other approach here is to make
-// the system work as a state machine. So to round up here. The state should
-// be completely separate, and the `fixed_by` here should simply reference the
-// correct elements. I do not see what other approach to choose.
-//
-// ESSAY: [ ] How would a state machine function here?
-// WorkOrder should be in a range of different states here. And depending on
-// what is needs we should treat the code differently.
-// We should create this function so that it will
-// All endpoints should change both the StateMachine and the WorkOrder (if
-// required)
-//
-// Do not think about DDD at the moment. Simply make the data structure
-// to support two different kinds of
+// TODO: Consider state machine pattern for WorkOrder state transitions and actor assignment
 #[allow(dead_code)]
 pub struct SchedulingEnvironmentBuilder
 {
@@ -138,16 +108,12 @@ pub trait SystemConfigurationTrait {}
 
 pub trait DatabaseConfigurationTrait {}
 
-// ISSUE #000 - turn the builder into a typestate pattern.
+// ISSUE #000 - Convert builder to typestate pattern
 impl SchedulingEnvironmentBuilder
 {
-    // QUESTION
-    // Do you believe that this is the most appropriate way of structuring the code
-    // here? Yes I think that this is the best way of doing it.
+    /// Build the SchedulingEnvironment with all configured components
     pub fn build(mut self) -> Result<Arc<Mutex<SchedulingEnvironment>>>
     {
-        // The `WorkOrder` have to help in deriving the `SavedAssignment`.
-        //
         let work_orders = self
             .work_orders
             .context("You should build the WorkOrders with the correct parameters injected.")?;
@@ -164,26 +130,7 @@ impl SchedulingEnvironmentBuilder
             .context("ActorEnvironment should always be available.")?;
 
         for work_order_number in work_orders.inner.keys() {
-            // ISSUE #002 - make the [`AssignmentRepo`]
-            // let forced_work_order = work_order
-            //     .forced_work_order(
-            //         &time_environment.periods,
-            //         &time_environment.days,
-            //         material_to_period,
-            //     )
-            //     .unwrap();
-
-            // We want to make the `ForcedWorkOrder` and turn it into the other aggregate!
-            // Yes that is the approach forward. o
-            //
-            //
-            // You should not be smart but scalable.
-
-            // Something here is tripping you up. You need to make the code work as well as
-            // possible with the
-            //
-            // REMEMBER:
-            // You simply have to get experience with modelling these kinds of structures.
+            // ISSUE #002 - Create AssignmentRepo and derive ForcedWorkOrder
             let assignment = assignments::AnyAssignment::Base(Assignment::new(
                 *work_order_number,
                 None,
@@ -194,7 +141,7 @@ impl SchedulingEnvironmentBuilder
             assignments.insert(Uuid::new_v4(), assignment);
         }
         let saved_assignments = SavedAssignment::new(assignments);
-        // ISSUE TODO [ ] - make a TypeState builder for the SchedulingEnvironment.
+        // ISSUE #TODO - Create typestate builder for SchedulingEnvironment
 
         let work_order_policies = self
             .work_order_policies
@@ -340,13 +287,11 @@ impl SchedulingEnvironmentBuilder
 
         let mut updated_environment = ActorEnvironment::<dyn ActorSpecification>::builder();
 
-        // Re-add existing specifications
         for (existing_asset, existing_spec) in actor_environment {
             updated_environment =
                 updated_environment.add_actor_specification(existing_asset, existing_spec);
         }
 
-        // Add the new specification
         updated_environment =
             updated_environment.add_actor_specification(asset, Box::new(actor_spec));
 
@@ -382,7 +327,6 @@ impl SchedulingEnvironmentBuilder
     }
 }
 
-// Do we want this? Yes I think that is a really good idea.
 impl fmt::Display for SchedulingEnvironment
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
@@ -409,8 +353,7 @@ impl fmt::Display for SchedulingEnvironment
     }
 }
 
-// TODO [ ]
-// Move to configuration files
+// TODO - Move Asset variants to configuration files
 #[derive(PartialEq, PartialOrd, Ord, Eq, Hash, Serialize, Deserialize, Debug, Clone, EnumIter)]
 pub enum Asset
 {
@@ -468,7 +411,7 @@ impl Asset
     /// Matches an asset value as string to Asset variant.
     pub fn new_from_string(asset_string: &str) -> Option<Asset>
     {
-        // NOTE: the to_uppercase. Requires the matching is on uppercase always.
+        // NOTE: Matching requires uppercase conversion
         match asset_string.to_uppercase().as_str() {
             "DF" => Some(Asset::DF),
             "DM" => Some(Asset::DM),

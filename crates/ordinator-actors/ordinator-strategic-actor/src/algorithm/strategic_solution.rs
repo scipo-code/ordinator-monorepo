@@ -22,10 +22,8 @@ use super::strategic_parameters::StrategicParameters;
 use super::strategic_resources::OperationalResource;
 use super::strategic_resources::StrategicResources;
 
-// CRUCIAL INSIGHT
-// Do not ever make fields in a solution `pub` this is a huge sin. The solution
-// has the strongest need for business invariants in the whole system. You are
-// never supposed to do this.
+// Solution fields should never be made `pub` to preserve business invariants,
+// which are critical in this system.
 #[derive(PartialEq, Eq, Clone)]
 pub struct StrategicSolution
 {
@@ -68,8 +66,7 @@ impl StrategicSolution
 
 impl StrategicInterface for StrategicSolution
 {
-    // Double `Option` is not a good idea. I am not sure what the best approach is
-    // forward here.
+    // Note: Double `Option` pattern - consider refactoring for clarity
     fn scheduled_task(
         &self,
         work_order_number: &WorkOrderNumber,
@@ -78,8 +75,6 @@ impl StrategicInterface for StrategicSolution
         self.strategic_scheduled_work_orders.get(work_order_number)
     }
 
-    // You are doing everything correct. Coding fast with a vision is the best
-    // approach.
     fn supervisor_tasks(
         &self,
         supervisor_periods: &[Period],
@@ -173,7 +168,7 @@ impl StrategicObjectiveValue
 
     pub fn aggregate_objectives(&mut self)
     {
-        // This can be negative!
+        // Note: objective_value can be negative
         self.objective_value = self.urgency.0 as i64 * self.urgency.1
             + self.resource_penalty.0 as i64 * self.resource_penalty.1
             - self.clustering_value.0 as i64 * self.clustering_value.1;
@@ -217,17 +212,7 @@ impl Solution for StrategicSolution
             .map(|won| (*won, WhereIsWorkOrder::NotScheduled))
             .collect();
 
-        // Motherfucker. Should the parameters have the options or not? This is a
-        // crucial question. I think that they should I am not sure what I
-        // should do here. This code is horrible... You have to do better, you
-        // need more faith... You have to remain calm in this.
-        // QUESTION
-        // Should the options be inside of the parameters or used as a dependency
-        // injected variable? I think that the best approach here is to make the
-        // code function. The issue is that this becomes very complex, You need to
-        // do it in a consistent way across all the different actors.
-        //
-        //
+        // TODO: Consider whether strategic options should be passed through parameters or injected as dependencies
         let strategic_objective_value = StrategicObjectiveValue::new(&parameters.strategic_options);
         Ok(Self {
             objective_value: strategic_objective_value,

@@ -68,7 +68,6 @@ impl Delegate
         }
     }
 
-    // Break now! You need to grap some fresh air now.
     pub fn state_change_to_assign(&mut self) -> anyhow::Result<()>
     {
         match self {

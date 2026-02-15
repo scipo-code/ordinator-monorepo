@@ -27,9 +27,6 @@ use ordinator_orchestrator::StateLink;
 use ordinator_orchestrator::SupervisorRequestMessage;
 use ordinator_orchestrator::SupervisorStatusMessage::General;
 use ordinator_orchestrator::WorkOrderNumber;
-// This again means that you are doing something wrong. You are implementing the
-// methods in the wrong place
-// This should be moved away from here.
 use serde::Deserialize;
 use serde::Serialize;
 use ts_rs::TS;
@@ -105,8 +102,7 @@ pub async fn status(
 )]
 pub async fn technician_availability(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    // TODO [ ]
-    // The `_supervisor_id` should be used in the future when we have additional
+    // TODO: Use `_supervisor_id` when additional filtering is needed
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
 ) -> Result<Json<SupervisorAllAvailableTechnicians>, AppError>
 {
@@ -144,14 +140,10 @@ pub async fn technician_availability(
 )]
 pub async fn all_technicians(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    // TODO [ ]
-    // The `_supervisor_id` should be used in the future when we have additional
+    // TODO: Use `_supervisor_id` when additional filtering is needed
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
 ) -> Result<Json<SupervisorResourcesDto>, AppError>
 {
-    // let lock = orchestrator.actor_registries.lock().unwrap();
-    // let asset = Asset::try_from(asset).map_err(|e|
-    // AppError::Anyhow(e.to_string()))?;
     let asset = Asset::try_from(asset)
         .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
 
@@ -175,31 +167,6 @@ pub async fn all_technicians(
         .inner()
         .clone()
         .into();
-
-    // ISSUE #000
-    // This code should be used for the Command part of the CQRS pattern
-    // let supervisor_agent_senders = &lock
-    //     .get(&asset.clone())
-    //     .with_context(|| format!("Asset {asset:?} is not present in the
-    // ActorRegistry"))     .unwrap()
-    //     .supervisor_agent_senders;
-
-    // let supervisor_id = supervisor_agent_senders
-    //     .keys()
-    //     .find(|e| e.0 == supervisor_id)
-    //     .ok_or(AppError::Anyhow(
-    //         anyhow!("Supervisor Not found").to_string(),
-    //     ))?;
-
-    // let communication = supervisor_agent_senders
-    //     .get(supervisor_id)
-    //     .ok_or(AppError::Anyhow(
-    //         anyhow!("Supervisor not found").to_string(),
-    //     ))?;
-
-    // communication
-    //     .from_agent(SupervisorRequestMessage::Status(General))
-    //     .unwrap();
 
     Ok(Json(supervisor_resources))
 }
@@ -229,8 +196,7 @@ pub struct MainTableQueryParams
 )]
 pub async fn supervisor_main_table(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    // TODO [ ]
-    // The `_supervisor_id` should be used in the future when we have additional
+    // TODO: Use `_supervisor_id` when additional filtering is needed
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
     Query(query): Query<MainTableQueryParams>,
 ) -> Result<Json<SupervisorMainTableDto>, AppError>
@@ -258,8 +224,6 @@ pub async fn supervisor_main_table(
             .map_err(|e| {
                 AppError::Anyhow(e.to_string() + "could not create the SupervisorMainTableDto")
             })?;
-    // let lock = orchestrator.actor_registries.lock().unwrap();
-    //
 
     let query_day = query.day;
 
@@ -283,6 +247,8 @@ pub struct WorkOrderActivityToTechnicianDto
     #[schema(example = "[l1113333, l1112222]")]
     technicians: Vec<String>,
 }
+
+// TODO: Verify that the number of technicians matches the number of assignments
 #[debug_handler]
 #[utoipa::path(
     patch,
@@ -304,8 +270,7 @@ pub struct WorkOrderActivityToTechnicianDto
 )]
 pub async fn assign_to_technicians(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    // TODO [ ]
-    // The `_supervisor_id` should be used in the future when we have additional
+    // TODO: Use `_supervisor_id` when additional filtering is needed
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
     Json(payload): Json<WorkOrderActivityToTechnicianDto>,
 ) -> Result<(), AppError>
@@ -337,8 +302,7 @@ pub async fn assign_to_technicians(
             "ActorSpecification not found for Asset".to_string(),
         ))?;
 
-    // Here you simply have to make the assignment. The Bus::<StateLink> will have
-    // the interation with multiple people.
+    // Make the assignment; StateLink bus handles interaction with multiple parties
     let technician = actor_specification
         .operational()
         .iter()
@@ -410,8 +374,7 @@ pub struct CreateTechnicianDto
 )]
 pub async fn add_technician(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    // TODO [ ]
-    // The `_supervisor_id` should be used in the future when we have additional
+    // TODO: Use `_supervisor_id` when additional filtering is needed
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
     Json(payload): Json<CreateTechnicianDto>,
 ) -> Result<Json<String>, AppError>
@@ -435,9 +398,8 @@ pub async fn add_technician(
 
         resources.push(resource);
     }
-    // This can only be created if there is somekind of... You need clear boundaries
-    // here. You should check that the Worker is not already present.
 
+    // TODO: Verify that the worker is not already present before adding
     let asset = Asset::try_from(asset)
         .map_err(|_e| AppError::Anyhow("Incorrect asset name".to_string()))?;
 
@@ -482,52 +444,3 @@ pub async fn add_technician(
         id
     )))
 }
-
-// _ISSUE_ #000 means unassigned
-// TODO [ ] ISSUE #000
-// You should craft the needed requests here. You should not be working on the
-// Making a general function to handle every type of request to each actor, is
-// a good idea. You should make this after the system is up and running.
-// pub async fn handle_supervisor_request<Ss>(
-//     State(orchestrator): State<Arc<Mutex<Orchestrator<Ss>>>>,
-//     supervisor_request: SupervisorRequest,
-// ) -> Result<HttpResponse, actix_web::Error>
-// where
-//     Ss: SystemSolutionTrait,
-// {
-//     event!(Level::INFO, supervisor_request = ?supervisor_request);
-//     let supervisor_agent_addrs = match
-// self.agent_registries.get(&supervisor_request.asset) {
-//         Some(agent_registry) => &agent_registry.supervisor_agent_senders,
-//         None => {
-//             return Ok(HttpResponse::BadRequest()
-//                 .json("SUPERVISOR: SUPERVISOR AGENT NOT INITIALIZED FOR THE
-// ASSET"));         }
-//     };
-//     let supervisor_agent_addr = supervisor_agent_addrs
-//                 .iter()
-//                 .find(|(id, _)| id.0 ==
-// supervisor_request.supervisor.to_string())                 .expect("This will
-// error at somepoint you will need to handle if you have added additional
-// supervisors")                 .1;
-
-//     // This was the reason that we wanted the tokio runtime.
-//     supervisor_agent_addr
-//         .sender
-//         .send(crate::agents::ActorMessage::Actor(
-//             supervisor_request.supervisor_request_message,
-//         ))
-//         .map_err(actix_web::error::ErrorInternalServerError)?;
-
-//     let response = supervisor_agent_addr
-//         .receiver
-//         .recv()
-//         .map_err(actix_web::error::ErrorInternalServerError)?
-//         .map_err(actix_web::error::ErrorInternalServerError)?;
-
-//     let supervisor_response =
-// SupervisorResponse::new(supervisor_request.asset, response);
-
-//     let system_responses = SystemResponses::Supervisor(supervisor_response);
-//     Ok(HttpResponse::Ok().json(system_responses))
-// }
