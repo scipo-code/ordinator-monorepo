@@ -10,21 +10,21 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 use tracing::Level;
 use tracing::event;
 
-use super::SupervisorRequestMessage;
-use super::SupervisorResponseMessage;
-use crate::algorithm::SupervisorAlgorithm;
-use crate::algorithm::supervisor_parameters::SupervisorParameter;
-use crate::algorithm::supervisor_parameters::SupervisorParameters;
-use crate::algorithm::supervisor_solution::SupervisorSolution;
-use crate::messages::responses::SupervisorResponseScheduling;
-use crate::messages::responses::SupervisorResponseStatus;
+use super::DailyRequestMessage;
+use super::DailyResponseMessage;
+use crate::algorithm::DailyAlgorithm;
+use crate::algorithm::supervisor_parameters::DailyParameter;
+use crate::algorithm::supervisor_parameters::DailyParameters;
+use crate::algorithm::supervisor_solution::DailySolution;
+use crate::messages::responses::DailyResponseScheduling;
+use crate::messages::responses::DailyResponseStatus;
 
-impl<Ss> CommandHandler<SupervisorRequestMessage, SupervisorResponseMessage>
-    for Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>
+impl<Ss> CommandHandler<DailyRequestMessage, DailyResponseMessage>
+    for Actor<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>
 where
-    Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
+    Ss: SystemSolutions<Daily = DailySolution> + Debug,
 {
-    fn handle_state_link(&mut self, state_link: StateLink) -> Result<SupervisorResponseMessage>
+    fn handle_state_link(&mut self, state_link: StateLink) -> Result<DailyResponseMessage>
     {
         match state_link {
             StateLink::WorkOrders(changed_work_orders) => {
@@ -40,7 +40,7 @@ where
                         format!(
                             "{:?} should always be present in {}",
                             work_order_number,
-                            std::any::type_name::<SupervisorParameters>()
+                            std::any::type_name::<DailyParameters>()
                         )
                     })?;
 
@@ -51,50 +51,50 @@ where
                             work_order.operation_work_remaining(activity_number)?;
 
                         let supervisor_parameter =
-                            SupervisorParameter::new(resource, number, work_remaining);
+                            DailyParameter::new(resource, number, work_remaining);
                         self.algorithm.parameters.insert_supervisor_parameter(
                             &(work_order_number, activity_number),
                             supervisor_parameter,
                         )
                     }
                 }
-                Ok(SupervisorResponseMessage::StateLink)
+                Ok(DailyResponseMessage::StateLink)
             }
-            StateLink::WorkerEnvironment => Ok(SupervisorResponseMessage::StateLink),
+            StateLink::WorkerEnvironment => Ok(DailyResponseMessage::StateLink),
             StateLink::TimeEnvironment => todo!(),
         }
     }
 
     fn handle_request_message(
         &mut self,
-        supervisor_request_message: SupervisorRequestMessage,
-    ) -> Result<SupervisorResponseMessage>
+        supervisor_request_message: DailyRequestMessage,
+    ) -> Result<DailyResponseMessage>
     {
         event!(Level::WARN, "start_of_supervisor_handler");
 
         match supervisor_request_message {
-            SupervisorRequestMessage::Scheduling(_scheduling_message) => Ok(
-                SupervisorResponseMessage::Scheduling(SupervisorResponseScheduling {}),
+            DailyRequestMessage::Scheduling(_scheduling_message) => Ok(
+                DailyResponseMessage::Scheduling(DailyResponseScheduling {}),
             ),
-            SupervisorRequestMessage::Update => {
+            DailyRequestMessage::Update => {
                 bail!(
-                    "IMPLEMENT update logic for Supervisor for Asset: {:?}",
+                    "IMPLEMENT update logic for Daily for Asset: {:?}",
                     self.actor_id.asset()
                 );
             }
-            SupervisorRequestMessage::Status(supervisor_status_message) => {
+            DailyRequestMessage::Status(supervisor_status_message) => {
                 event!(Level::WARN, "start of status message initialization");
                 tracing::info!(
-                    "Received SupervisorStatusMessage: {:?}",
+                    "Received DailyStatusMessage: {:?}",
                     supervisor_status_message
                 );
-                let supervisor_status = SupervisorResponseStatus {
+                let supervisor_status = DailyResponseStatus {
                     delegated_work_order_activities: self.algorithm.solution.count_unique_woa(),
                     objective: self.algorithm.solution.objective_value.percent(),
                 };
                 event!(Level::WARN, "after creation of the supervisor_status");
 
-                Ok(SupervisorResponseMessage::Status(supervisor_status))
+                Ok(DailyResponseMessage::Status(supervisor_status))
             }
         }
     }

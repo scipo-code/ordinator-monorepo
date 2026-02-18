@@ -8,7 +8,7 @@
 // use ordinator_scheduling_environment::work_order::operation::Work;
 // use ordinator_scheduling_environment::worker_environment::resources::Resources;
 // use ordinator_strategic_actor::algorithm::strategic_resources::OperationalResource;
-// use ordinator_strategic_actor::algorithm::strategic_resources::StrategicResources;
+// use ordinator_strategic_actor::algorithm::strategic_resources::WeeklyResources;
 
 #[test]
 fn test_update_scheduler_state() -> anyhow::Result<()>
@@ -21,7 +21,7 @@ fn test_update_scheduler_state() -> anyhow::Result<()>
     // period_string);
 
     // let strategic_scheduling_internal =
-    // StrategicRequestScheduling::Schedule(schedule_work_order);
+    // WeeklyRequestScheduling::Schedule(schedule_work_order);
 
     // let periods: Vec<Period> = vec![Period::from_str("2023-W47-48").unwrap()];
 
@@ -29,10 +29,10 @@ fn test_update_scheduler_state() -> anyhow::Result<()>
     // Arc::new(Mutex::new(SchedulingEnvironment::builder().build()));
 
     // let system_configuration = SystemConfigurations::read_all_configs().unwrap();
-    // let strategic_options = StrategicOptions::from((system_configuration,
+    // let strategic_options = WeeklyOptions::from((system_configuration,
     // &Id::default()));
 
-    // let algorithm: StrategicAlgorithm<Ss> = Algorithm::builder()
+    // let algorithm: WeeklyAlgorithm<Ss> = Algorithm::builder()
     //     .id(Id::default())
     //     .parameters(strategic_options, &scheduling_environment.lock().unwrap());
 
@@ -93,7 +93,7 @@ fn test_calculate_objective_value() -> anyhow::Result<()>
     //     Work::from(40.0),
     //     vec![Resources::MtnScaf, Resources::MtnElec, Resources::VenMech],
     // );
-    // let mut strategic_resources = StrategicResources::default();
+    // let mut strategic_resources = WeeklyResources::default();
 
     // strategic_resources.insert_operational_resource(period.clone(),
     // operational_resource_1); strategic_resources.
@@ -104,9 +104,9 @@ fn test_calculate_objective_value() -> anyhow::Result<()>
 
     // TODO: All functions need testing, but currently blocked by Id::default() issue
 
-    // let strategic_options = StrategicOptions::default();
+    // let strategic_options = WeeklyOptions::default();
 
-    // let mut strategic_parameters = StrategicParameters::new(
+    // let mut strategic_parameters = WeeklyParameters::new(
     //     &id,
     //     strategic_options,
     //     &scheduling_environment.lock().unwrap(),
@@ -127,7 +127,7 @@ fn test_calculate_objective_value() -> anyhow::Result<()>
     // strategic_parameter);
 
     // // let strategic_solution =
-    // StrategicSolution::new(&strategic_parameters); // let mut
+    // WeeklySolution::new(&strategic_parameters); // let mut
     // strategic_algorithm = Algorithm::new( //     &Id::default(),
     // //     strategic_solution,
     // //     strategic_parameters,

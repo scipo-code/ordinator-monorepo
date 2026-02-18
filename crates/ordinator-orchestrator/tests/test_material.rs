@@ -55,46 +55,46 @@ async fn test_material_1() -> anyhow::Result<()>
         .clone();
 
     match every_work_order.get(&WorkOrderNumber(1111990000)).unwrap() {
-        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Strategic(period) => {
+        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Weekly(period) => {
             assert!(period <= &time_environment[0])
         }
-        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Tactical(period) => {
+        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Project(period) => {
             assert!(period <= &time_environment[0])
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => unreachable!(),
     }
     match every_work_order.get(&WorkOrderNumber(1111990001)).unwrap() {
-        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Strategic(period) => {
+        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Weekly(period) => {
             assert!(period <= &time_environment[2])
         }
-        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Tactical(period) => {
+        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Project(period) => {
             assert!(period <= &time_environment[2])
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => unreachable!(),
     }
     match every_work_order.get(&WorkOrderNumber(1111990002)).unwrap() {
-        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Strategic(period) => {
+        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Weekly(period) => {
             assert!(period <= &time_environment[3])
         }
-        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Tactical(period) => {
+        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Project(period) => {
             assert!(period <= &time_environment[3])
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => unreachable!(),
     }
     match every_work_order.get(&WorkOrderNumber(1111990003)).unwrap() {
-        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Strategic(period) => {
+        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Weekly(period) => {
             assert!(period <= &time_environment[3])
         }
-        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Tactical(period) => {
+        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Project(period) => {
             assert!(period <= &time_environment[3])
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => unreachable!(),
     }
     match every_work_order.get(&WorkOrderNumber(1111990004)).unwrap() {
-        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Strategic(period) => {
+        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Weekly(period) => {
             assert!(period <= &time_environment[0])
         }
-        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Tactical(period) => {
+        ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Project(period) => {
             assert!(period <= &time_environment[0])
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => unreachable!(),

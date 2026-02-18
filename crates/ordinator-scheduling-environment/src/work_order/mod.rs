@@ -567,24 +567,24 @@ pub struct ClusteringWeights
 pub enum ForcedWorkOrder
 {
     Period((Period, HashSet<Period>)),
-    Days(TacticalForceType),
+    Days(ProjectForceType),
     Technician(TechnicianInclude, TechnicianExclude),
     FreeWorkOrder,
 }
 
 #[derive(Debug)]
-pub enum TacticalForceType
+pub enum ProjectForceType
 {
     OnlyStartDay(Day),
     IndividualActivities(Vec<Day>, Vec<HashSet<Day>>),
 }
-impl TacticalForceType
+impl ProjectForceType
 {
     pub fn get_contained_date(&self) -> NaiveDate
     {
         match self {
-            TacticalForceType::OnlyStartDay(day) => day.date,
-            TacticalForceType::IndividualActivities(start_days_per_activity, _) => {
+            ProjectForceType::OnlyStartDay(day) => day.date,
+            ProjectForceType::IndividualActivities(start_days_per_activity, _) => {
                 start_days_per_activity
                     .first()
                     .expect("A Day should always be contained in a period.")
@@ -596,8 +596,8 @@ impl TacticalForceType
     pub fn excluded_days(&self, per: &Period) -> bool
     {
         match self {
-            TacticalForceType::OnlyStartDay(_day) => false,
-            TacticalForceType::IndividualActivities(_, excluded_days) => excluded_days
+            ProjectForceType::OnlyStartDay(_day) => false,
+            ProjectForceType::IndividualActivities(_, excluded_days) => excluded_days
                 .iter()
                 .flatten()
                 .all(|f| per.day_indices.contains(&(f.day_index as u64))),
@@ -682,7 +682,7 @@ impl WorkOrder
                     .context("naive_date not found in TimeEnvironment")?
                     .clone();
                 // TODO: Implement more complex logic for handling basic start dates.
-                return Ok(ForcedWorkOrder::Days(TacticalForceType::OnlyStartDay(day)));
+                return Ok(ForcedWorkOrder::Days(ProjectForceType::OnlyStartDay(day)));
             }
             FixedWorkOrder::Operational(_date_time) => (),
             FixedWorkOrder::BusinessLogic => (),

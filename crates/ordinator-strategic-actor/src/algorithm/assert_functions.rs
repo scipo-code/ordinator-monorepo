@@ -15,29 +15,29 @@ use strum::IntoEnumIterator;
 use tracing::Level;
 use tracing::event;
 
-use super::strategic_parameters::StrategicParameters;
-use super::strategic_resources::StrategicResources;
-use super::strategic_solution::StrategicSolution;
+use super::strategic_parameters::WeeklyParameters;
+use super::strategic_resources::WeeklyResources;
+use super::strategic_solution::WeeklySolution;
 
 #[allow(dead_code)]
-pub trait StrategicAssertions
+pub trait WeeklyAssertions
 {
     fn assert_that_capacity_is_respected(
-        strategic_loading: &StrategicResources,
-        strategic_capacity: &StrategicResources,
+        strategic_loading: &WeeklyResources,
+        strategic_capacity: &WeeklyResources,
     ) -> Result<()>;
     fn assert_aggregated_load(&self) -> Result<()>;
     fn assert_excluded_periods(&self) -> Result<()>;
 }
 
-impl<Ss> StrategicAssertions
-    for Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>
+impl<Ss> WeeklyAssertions
+    for Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>
 where
     Ss: SystemSolutions,
 {
     fn assert_that_capacity_is_respected(
-        strategic_loading: &StrategicResources,
-        strategic_capacity: &StrategicResources,
+        strategic_loading: &WeeklyResources,
+        strategic_capacity: &WeeklyResources,
     ) -> Result<()>
     {
         for (period, operational_resources) in strategic_loading.0.iter() {
@@ -77,9 +77,9 @@ where
                     .get(work_order_number)
                     .unwrap();
 
-                // Strategic load aggregation is used to test internal StrategicSolution consistency.
-                // Do not include TacticalSolutions here.
-                if let WhereIsWorkOrder::Strategic(strategic_scheduled_period) = strategic_solution
+                // Weekly load aggregation is used to test internal WeeklySolution consistency.
+                // Do not include ProjectSolutions here.
+                if let WhereIsWorkOrder::Weekly(strategic_scheduled_period) = strategic_solution
                     && strategic_scheduled_period == period
                 {
                     let work_load = &strategic_parameter.work_load;
@@ -135,7 +135,7 @@ where
                 .unwrap();
 
             // Use [`WhereIsWorkOrder`] to validate strategic period constraints.
-            if let WhereIsWorkOrder::Strategic(period) = scheduled_period {
+            if let WhereIsWorkOrder::Weekly(period) = scheduled_period {
                 ensure!(
                     !excluded_periods.contains(period),
                     "\n{:#?}\nscheduled in:{:#?}\nlocked_in_period\n{:#?}\nwhich is part of the excluded periods:\n{:#?}",
@@ -145,7 +145,7 @@ where
                     excluded_periods,
                 );
             }
-            if let WhereIsWorkOrder::Strategic(locked_in_period) = locked_in_period {
+            if let WhereIsWorkOrder::Weekly(locked_in_period) = locked_in_period {
                 ensure!(!excluded_periods.contains(locked_in_period))
             }
         }

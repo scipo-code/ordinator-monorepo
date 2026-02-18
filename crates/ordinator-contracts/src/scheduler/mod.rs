@@ -3,9 +3,9 @@ use std::sync::MutexGuard;
 
 use anyhow::Result;
 use anyhow::anyhow;
-use ordinator_orchestrator_actor_traits::StrategicInterface;
+use ordinator_orchestrator_actor_traits::WeeklyInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_orchestrator_actor_traits::TacticalInterface;
+use ordinator_orchestrator_actor_traits::ProjectInterface;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
@@ -146,12 +146,12 @@ impl
 
             let strategic_schedule = match strategic_period {
                 Some(opt_period) => match opt_period {
-                    WhereIsWorkOrder::Strategic(period) => period.clone().to_string(),
-                    WhereIsWorkOrder::Tactical(period) => period.clone().to_string(),
+                    WhereIsWorkOrder::Weekly(period) => period.clone().to_string(),
+                    WhereIsWorkOrder::Project(period) => period.clone().to_string(),
                     WhereIsWorkOrder::NotScheduled => {
                         "Could not be scheduled under current business rules".to_string()
                         // ReasonForNotScheduling::Unknown(
-                        //                     "Strategic Algorithm could
+                        //                     "Weekly Algorithm could
                         // not schedule the Work Order. If this is a mistake
                         // please not down why, and send
                         // a message to
@@ -166,10 +166,10 @@ impl
 
             let period_status = match strategic_period {
                 Some(opt_period) => match opt_period {
-                    WhereIsWorkOrder::Strategic(period) => {
+                    WhereIsWorkOrder::Weekly(period) => {
                         PeriodStatus::status_for(period, &periods_for_frozen_and_draft)
                     }
-                    WhereIsWorkOrder::Tactical(period) => {
+                    WhereIsWorkOrder::Project(period) => {
                         PeriodStatus::status_for(period, &periods_for_frozen_and_draft)
                     }
                     WhereIsWorkOrder::NotScheduled => PeriodStatus::NotScheduled,
@@ -180,7 +180,7 @@ impl
             let tactical_solution = &system_solution
                 .tactical
                 .as_ref()
-                .ok_or(anyhow!("There is no TacticalActor present"))?;
+                .ok_or(anyhow!("There is no ProjectActor present"))?;
 
             for operation_view in sorted_operations {
                 let tactical_days = tactical_solution.start_and_finish_dates(&(
@@ -323,12 +323,12 @@ impl
 
         let strategic_schedule = match strategic_period {
             Some(opt_period) => match opt_period {
-                WhereIsWorkOrder::Strategic(period) => period.clone().to_string(),
-                WhereIsWorkOrder::Tactical(period) => period.clone().to_string(),
+                WhereIsWorkOrder::Weekly(period) => period.clone().to_string(),
+                WhereIsWorkOrder::Project(period) => period.clone().to_string(),
                 WhereIsWorkOrder::NotScheduled => {
                     "Could not be scheduled under current business rules".to_string()
                     // ReasonForNotScheduling::Unknown(
-                    //                     "Strategic Algorithm could
+                    //                     "Weekly Algorithm could
                     // not schedule the Work Order. If this is a mistake
                     // please not down why, and send
                     // a message to
@@ -345,10 +345,10 @@ impl
         let periods_for_frozen_and_draft = [periods[0].clone(), periods[1].clone()];
         let period_status = match strategic_period {
             Some(opt_period) => match opt_period {
-                WhereIsWorkOrder::Strategic(period) => {
+                WhereIsWorkOrder::Weekly(period) => {
                     PeriodStatus::status_for(period, &periods_for_frozen_and_draft)
                 }
-                WhereIsWorkOrder::Tactical(period) => {
+                WhereIsWorkOrder::Project(period) => {
                     PeriodStatus::status_for(period, &periods_for_frozen_and_draft)
                 }
                 WhereIsWorkOrder::NotScheduled => PeriodStatus::NotScheduled,
@@ -363,7 +363,7 @@ impl
                 let tactical_date = &system_solution
                     .tactical
                     .as_ref()
-                    .ok_or(anyhow!("There is no TacticalAgent present"))?
+                    .ok_or(anyhow!("There is no ProjectAgent present"))?
                     .start_and_finish_dates(&(
                         work_order_view.work_order_number,
                         operation.activity,

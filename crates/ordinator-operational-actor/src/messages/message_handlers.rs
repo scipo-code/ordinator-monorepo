@@ -5,7 +5,7 @@ use anyhow::Result;
 use ordinator_actor_core::Actor;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
-use ordinator_orchestrator_actor_traits::SupervisorInterface;
+use ordinator_orchestrator_actor_traits::DailyInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use tracing::Level;
 use tracing::event;

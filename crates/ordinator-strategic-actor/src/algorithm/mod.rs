@@ -24,59 +24,59 @@ use ordinator_actor_core::traits::ObjectiveValueType;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_orchestrator_actor_traits::TacticalInterface;
+use ordinator_orchestrator_actor_traits::ProjectInterface;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
-use ordinator_scheduling_environment::worker_environment::StrategicOptions;
+use ordinator_scheduling_environment::worker_environment::WeeklyOptions;
 use ordinator_scheduling_environment::Percent;
 use priority_queue::PriorityQueue;
 use rand::distr::weighted::Weight;
 use rand::prelude::SliceRandom;
 use rand::seq::IndexedRandom;
-use strategic_parameters::StrategicClustering;
-use strategic_parameters::StrategicParameters;
+use strategic_parameters::WeeklyClustering;
+use strategic_parameters::WeeklyParameters;
 use strategic_resources::OperationalResource;
-use strategic_resources::StrategicResources;
-use strategic_solution::StrategicObjectiveValue;
-use strategic_solution::StrategicSolution;
+use strategic_resources::WeeklyResources;
+use strategic_solution::WeeklyObjectiveValue;
+use strategic_solution::WeeklySolution;
 use strum::IntoEnumIterator;
 use tracing::instrument;
 
-use crate::messages::requests::StrategicRequestResource;
-use crate::messages::requests::StrategicRequestScheduling;
-use crate::messages::responses::StrategicResponseResources;
-use crate::messages::responses::StrategicResponseScheduling;
+use crate::messages::requests::WeeklyRequestResource;
+use crate::messages::requests::WeeklyRequestScheduling;
+use crate::messages::responses::WeeklyResponseResources;
+use crate::messages::responses::WeeklyResponseScheduling;
 
-// How would this look if made generic? impl Algorithm<StrategicSolution, StrategicParameters, StrategicAssertions> { }
+// How would this look if made generic? impl Algorithm<WeeklySolution, WeeklyParameters, WeeklyAssertions> { }
 // Note: Making behavior generic is important, as changes would be needed in 4 places with the current design.
 
 #[derive(Debug)]
-pub struct StrategicAlgorithm<Ss>(
-    pub Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>,
+pub struct WeeklyAlgorithm<Ss>(
+    pub Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>,
 )
 where
-    StrategicSolution: Solution,
-    StrategicParameters: Parameters,
+    WeeklySolution: Solution,
+    WeeklyParameters: Parameters,
     Ss: SystemSolutions,
-    Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>:
+    Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>:
         AbLNSUtils;
 
-impl<Ss> Deref for StrategicAlgorithm<Ss>
+impl<Ss> Deref for WeeklyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
     type Target =
-        Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>;
+        Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>;
 
     fn deref(&self) -> &Self::Target
     {
         &self.0
     }
 }
-impl<Ss> DerefMut for StrategicAlgorithm<Ss>
+impl<Ss> DerefMut for WeeklyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
@@ -86,17 +86,17 @@ where
     }
 }
 
-impl<Ss> ActorBasedLargeNeighborhoodSearch for StrategicAlgorithm<Ss>
+impl<Ss> ActorBasedLargeNeighborhoodSearch for WeeklyAlgorithm<Ss>
 where
-    Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>:
-        AbLNSUtils<SolutionType = StrategicSolution>,
-    StrategicSolution: Solution,
-    StrategicParameters: Parameters,
-    Ss: SystemSolutions<Strategic = StrategicSolution>,
+    Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>:
+        AbLNSUtils<SolutionType = WeeklySolution>,
+    WeeklySolution: Solution,
+    WeeklyParameters: Parameters,
+    Ss: SystemSolutions<Weekly = WeeklySolution>,
 {
     type Algorithm =
-        Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>;
-    type Options = StrategicOptions;
+        Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>;
+    type Options = WeeklyOptions;
 
     /// Incorporates the system solution by updating internal state and force scheduling work orders
     fn incorporate_system_solution(&mut self) -> Result<bool>
@@ -104,7 +104,7 @@ where
 
         let mut state_change = true;
         let periods = self.parameters.strategic_periods.clone();
-        // Strategic loops over all parameters
+        // Weekly loops over all parameters
         for (work_order_number, strategic_parameter) in self
             .parameters
             .strategic_work_order_parameters
@@ -112,7 +112,7 @@ where
             .iter()
 
         {
-            // Tactical model takes precedence over the strategic
+            // Project model takes precedence over the strategic
             let tactical_scheduled_period = self
                 .loaded_system_solution
                 .tactical_actor_solution()
@@ -126,16 +126,16 @@ where
                 .strategic_scheduled_work_orders
                 .get_mut(work_order_number)
                 .with_context(|| {
-                    format!("{work_order_number:?}\nis not found in the StrategicAlgorithm")
+                    format!("{work_order_number:?}\nis not found in the WeeklyAlgorithm")
                 })?;
 
-            // If the [`TacticalAlgorithm`] have the [`WorkOrder`] the [`Strategic`]
+            // If the [`ProjectAlgorithm`] have the [`WorkOrder`] the [`Weekly`]
             // should respect this, but not schedule it and use resources.
             if let Some(tactical_period) = tactical_scheduled_period {
-                if *strategic_scheduled_period != WhereIsWorkOrder::Tactical(tactical_period.clone()) {
+                if *strategic_scheduled_period != WhereIsWorkOrder::Project(tactical_period.clone()) {
                     state_change = true
                 };
-                *strategic_scheduled_period = WhereIsWorkOrder::Tactical(tactical_period.clone())
+                *strategic_scheduled_period = WhereIsWorkOrder::Project(tactical_period.clone())
             }
 
             if strategic_parameter.locked_in_period == strategic_scheduled_period.clone() {
@@ -145,7 +145,7 @@ where
         }
 
         // CRUCIAL: Forced work orders are always part of the shared state in incorporate()
-        // This function should determine what is forced and only update StrategicParameters 
+        // This function should determine what is forced and only update WeeklyParameters 
 
         self.force_schedule()?;
         Ok(state_change)
@@ -171,7 +171,7 @@ where
     >
     {
         let mut new_objective_value =
-            StrategicObjectiveValue::new(&self.parameters.strategic_options);
+            WeeklyObjectiveValue::new(&self.parameters.strategic_options);
 
         self.determine_urgency(&mut new_objective_value)
             .context("could not determine strategic urgency")?;
@@ -179,7 +179,7 @@ where
         self.determine_resource_penalty(&mut new_objective_value);
 
         self.determine_clustering(&mut new_objective_value)
-            .context("Could not determine StrategicObjective value")?;
+            .context("Could not determine WeeklyObjective value")?;
 
         self.determine_percent_scheduled(&mut new_objective_value)?;
 
@@ -291,7 +291,7 @@ where
         // ISSUE #999 - Disabled temporarily
         return Ok(());
 
-        // TODO: Derive StrategicParameter::locked_in_period from SchedulingEnvironment
+        // TODO: Derive WeeklyParameter::locked_in_period from SchedulingEnvironment
         let forced_work_orders: Vec<_> = self
             .parameters
             .strategic_work_order_parameters
@@ -317,7 +317,7 @@ where
     }
 }
 
-impl<Ss> StrategicAlgorithm<Ss>
+impl<Ss> WeeklyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
@@ -387,14 +387,14 @@ where
 
     fn determine_urgency(
         &mut self,
-        strategic_objective_value: &mut StrategicObjectiveValue,
+        strategic_objective_value: &mut WeeklyObjectiveValue,
     ) -> Result<()>
     {
         for (work_order_number, scheduled_period) in self.solution.every_work_order() {
             let optimized_period = match scheduled_period {
-                WhereIsWorkOrder::Strategic(optimized_period) => optimized_period,
-                // CRUCIAL: Objective should be based on Tactical solution
-                WhereIsWorkOrder::Tactical(period) => period,
+                WhereIsWorkOrder::Weekly(optimized_period) => optimized_period,
+                // CRUCIAL: Objective should be based on Project solution
+                WhereIsWorkOrder::Project(period) => period,
 
                 WhereIsWorkOrder::NotScheduled => self
                     .parameters
@@ -407,7 +407,7 @@ where
                 .parameters
                 .strategic_work_order_parameters
                 .get(work_order_number)
-                .expect("StrategicParameter should always be available for the StrategicSolution")
+                .expect("WeeklyParameter should always be available for the WeeklySolution")
                 .latest_period;
 
             let non_zero_period_difference = calculate_period_difference(
@@ -433,7 +433,7 @@ where
 
     fn determine_clustering(
         &mut self,
-        strategic_objective_value: &mut StrategicObjectiveValue,
+        strategic_objective_value: &mut WeeklyObjectiveValue,
     ) -> anyhow::Result<()>
     {
         for period in &self.parameters.strategic_periods {
@@ -444,14 +444,14 @@ where
                 .iter()
                 .filter_map(|(won, where_is_period)| {
                     match where_is_period {
-                        WhereIsWorkOrder::Strategic(opt_per) => {
+                        WhereIsWorkOrder::Weekly(opt_per) => {
                             if opt_per == period {
                                 Some(won)
                             } else {
                                 None
                             }
                         }
-                        WhereIsWorkOrder::Tactical(opt_per) => {
+                        WhereIsWorkOrder::Project(opt_per) => {
                             if opt_per == period {
                                 Some(won)
                             } else {
@@ -484,7 +484,7 @@ where
                         .with_context(|| {
                             format!(
                                 "Missing: {} between {:?} and {:?}",
-                                std::any::type_name::<StrategicClustering>(),
+                                std::any::type_name::<WeeklyClustering>(),
                                 scheduled_work_orders_by_period[i],
                                 scheduled_work_orders_by_period[j]
                             )
@@ -503,7 +503,7 @@ where
     // Calculate resource penalty based on total exceeded hours
     fn determine_resource_penalty(
         &mut self,
-        strategic_objective_value: &mut StrategicObjectiveValue,
+        strategic_objective_value: &mut WeeklyObjectiveValue,
     )
     {
         for (resource, periods) in &self.parameters.strategic_capacity.0 {
@@ -577,13 +577,13 @@ where
         Ok(())
     }
 
-    fn determine_percent_scheduled(&self, new_objective_value: &mut StrategicObjectiveValue) -> Result<()>{
+    fn determine_percent_scheduled(&self, new_objective_value: &mut WeeklyObjectiveValue) -> Result<()>{
 
             let total_work_orders = self.parameters.strategic_work_order_parameters.len() as u64;
             let scheduled_work_orders  = self.solution.strategic_scheduled_work_orders.iter().filter(|(_, v)| {
                 match v {
-                    WhereIsWorkOrder::Strategic(_period) => true,
-                    WhereIsWorkOrder::Tactical(_) => false,
+                    WhereIsWorkOrder::Weekly(_period) => true,
+                    WhereIsWorkOrder::Project(_) => false,
                     WhereIsWorkOrder::NotScheduled => false,
                 }
             }).count() as u64;
@@ -598,7 +598,7 @@ where
 pub enum ForcedWorkOrder
 {
     Locked(WorkOrderNumber),
-    FromTactical((WorkOrderNumber, Period)),
+    FromProject((WorkOrderNumber, Period)),
 }
 
 impl ForcedWorkOrder
@@ -607,7 +607,7 @@ impl ForcedWorkOrder
     {
         match self {
             ForcedWorkOrder::Locked(work_order_number) => work_order_number,
-            ForcedWorkOrder::FromTactical((work_order_number, _)) => work_order_number,
+            ForcedWorkOrder::FromProject((work_order_number, _)) => work_order_number,
         }
     }
 }
@@ -620,8 +620,8 @@ pub enum ScheduleWorkOrder
     Unschedule,
 }
 
-// TODO: Move this trait to TacticalSolution interface (defines "Metavariables" from the paper)
-pub trait StrategicUtils
+// TODO: Move this trait to ProjectSolution interface (defines "Metavariables" from the paper)
+pub trait WeeklyUtils
 {
     fn schedule_strategic_work_order(
         &mut self,
@@ -636,11 +636,11 @@ pub trait StrategicUtils
 
     fn is_scheduled(&self, work_order_number: &WorkOrderNumber) -> bool;
 
-    /// This function updates the StrategicResources based on the a provided
+    /// This function updates the WeeklyResources based on the a provided
     /// loading.
     fn update_loadings(
         &mut self,
-        strategic_resources: StrategicResources,
+        strategic_resources: WeeklyResources,
         load_operation: LoadOperation,
     );
 
@@ -649,10 +649,10 @@ pub trait StrategicUtils
         work_load: HashMap<Skill, Work>,
         period: &Period,
         schedule: ScheduleWorkOrder,
-    ) -> Result<Option<StrategicResources>>;
+    ) -> Result<Option<WeeklyResources>>;
 }
 // TODO: Use binary heap instead
-impl<Ss> StrategicUtils for StrategicAlgorithm<Ss>
+impl<Ss> WeeklyUtils for WeeklyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
@@ -728,7 +728,7 @@ where
 
         ensure!(
             previous_period.as_ref().unwrap().not_scheduled(),
-            "Previous period: {:#?}\nNew period: {:#?}\nStrategicParameter: {:#?}\nfile: {}\nline: {}",
+            "Previous period: {:#?}\nNew period: {:#?}\nWeeklyParameter: {:#?}\nfile: {}\nline: {}",
             &previous_period,
             period,
             strategic_parameter,
@@ -775,8 +775,8 @@ where
                 .parameters
                 .get_locked_in_period(work_order_number)
                 .clone(),
-            // If Tactical scheduled the work order, Strategic should not reschedule it
-            ForcedWorkOrder::FromTactical((_, period)) => period.clone(),
+            // If Project scheduled the work order, Weekly should not reschedule it
+            ForcedWorkOrder::FromProject((_, period)) => period.clone(),
         };
 
         // TODO: Move update loadings logic to SchedulingEnvironment
@@ -821,10 +821,10 @@ where
             .strategic_forced()
     }
 
-    /// Updates StrategicResources based on the provided loading
+    /// Updates WeeklyResources based on the provided loading
     fn update_loadings(
         &mut self,
-        strategic_resources: StrategicResources,
+        strategic_resources: WeeklyResources,
         load_operation: LoadOperation,
     )
     {
@@ -889,11 +889,11 @@ where
         work_load: HashMap<Skill, Work>,
         period: &Period,
         schedule: ScheduleWorkOrder,
-    ) -> Result<Option<StrategicResources>>
+    ) -> Result<Option<WeeklyResources>>
     {
         let mut rng = rand::rng();
         let mut best_total_excess = Work::from(-999999999.0);
-        let mut best_work_order_resource_loadings = StrategicResources::default();
+        let mut best_work_order_resource_loadings = WeeklyResources::default();
 
         let strategic_capacity_resources = self
             .parameters
@@ -1063,7 +1063,7 @@ where
                                 period,
                                 &strategic_resources_loading_vec,
                                 &mut work_load_permutation,
-                            ).with_context(||format!("Error in resource calculation\n{period:#?}\nStrategic loadings: {strategic_loading_resources:#?}\nStrategic capacities: {strategic_capacity_resources:#?}\nWork load: {work_load:?}"))?;
+                            ).with_context(||format!("Error in resource calculation\n{period:#?}\nWeekly loadings: {strategic_loading_resources:#?}\nWeekly capacities: {strategic_capacity_resources:#?}\nWork load: {work_load:?}"))?;
 
                         store_strategic_resources_options.push(strategic_resources_option.clone());
 
@@ -1112,7 +1112,7 @@ where
                                     &best_work_order_resource_loadings
                                         .0
                                         .get(period)
-                                        .with_context(|| format!("{:#?}\nnot found in\n{}\n{}\n{}", period, std::any::type_name::<StrategicResources>(), file!(), line!()))?
+                                        .with_context(|| format!("{:#?}\nnot found in\n{}\n{}\n{}", period, std::any::type_name::<WeeklyResources>(), file!(), line!()))?
                                         .values()
                                         .flat_map(|ele| ele.skill_hours.keys())
                                         .collect::<HashSet<&Skill>>()
@@ -1206,8 +1206,8 @@ where
                 bail!(
                     "Unscheduling work order should always be possible\n\
                     {period:#?}\n\
-                    Strategic loadings: {:#?}\n\
-                    Strategic capacities: {:#?}\n\
+                    Weekly loadings: {:#?}\n\
+                    Weekly capacities: {:#?}\n\
                     Work load: {:#?}\n\
                     Stored strategic resources options: {:#?}\n\
                     Unsuccessful work_load_permutations: {:#?}",
@@ -1247,7 +1247,7 @@ fn combined_loadings(
 
 fn assert_work_load_equal_to_strategic_resource(
     period: &Period,
-    strategic_resource_loadings: &StrategicResources,
+    strategic_resource_loadings: &WeeklyResources,
     work_load: &HashMap<Skill, Work>,
     load_operation: LoadOperation,
 ) -> Result<()>
@@ -1272,7 +1272,7 @@ fn assert_work_load_equal_to_strategic_resource(
     ensure!(
         value,
         format!(
-            "Aggregate Work:\nStrategicResources: {:#?}\nwork_load: {:#?}\n\n{:#?} {:#?}\nfile: {}\nline: {}",
+            "Aggregate Work:\nWeeklyResources: {:#?}\nwork_load: {:#?}\n\n{:#?} {:#?}\nfile: {}\nline: {}",
             aggregate_strategic_resource,
             aggregate_work_load,
             work_load,
@@ -1288,9 +1288,9 @@ fn determine_unschedule_work_resource_loadings(
     period: &Period,
     loading_resources: &[OperationalResource],
     work_load_permutation: &mut [(Skill, Work)],
-) -> Result<Option<StrategicResources>>
+) -> Result<Option<WeeklyResources>>
 {
-    let mut strategic_resources = StrategicResources::default();
+    let mut strategic_resources = WeeklyResources::default();
     let mut loading_resources_cloned = loading_resources.to_vec();
     for (resources, work) in work_load_permutation.iter_mut() {
         debug_assert!(loading_resources_cloned
@@ -1374,12 +1374,12 @@ fn determine_unschedule_work_resource_loadings(
 fn determine_forced_work_order_resource_loadings(
     period: &Period,
     best_total_excess: &mut Work,
-    best_work_order_resource_loadings: &mut StrategicResources,
+    best_work_order_resource_loadings: &mut WeeklyResources,
     technician_permutation: &mut [OperationalResource],
     work_load_permutation: &mut [(Skill, Work)],
-) -> Result<Option<StrategicResources>>
+) -> Result<Option<WeeklyResources>>
 {
-    let mut work_order_resource_loadings = StrategicResources::default();
+    let mut work_order_resource_loadings = WeeklyResources::default();
     // TODO: Use Vec to handle multiple technicians
     for (resources, work) in work_load_permutation.iter_mut() {
         let mut qualified_technicians = technician_permutation
@@ -1469,9 +1469,9 @@ fn determine_normal_work_order_resource_loadings(
     period: &Period,
     technician_permutation: &mut [OperationalResource],
     work_load_permutation: &mut Vec<(Skill, Work)>,
-) -> Result<Option<StrategicResources>>
+) -> Result<Option<WeeklyResources>>
 {
-    let mut work_order_resource_loadings = StrategicResources::default();
+    let mut work_order_resource_loadings = WeeklyResources::default();
     // Encode state in ensure!() macros to improve error handling and debugging
     let total_work_load = work_load_permutation
         .iter()
@@ -1674,20 +1674,20 @@ pub fn calculate_period_difference(scheduled_period: &Period, latest_period: &Pe
     std::cmp::max(days / 7, 0) as i64
 }
 
-impl<Ss> StrategicAlgorithm<Ss>
+impl<Ss> WeeklyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
     // ISSUE #000 - Pending implementation
     pub fn update_resources_state(
         &mut self,
-        _strategic_resources_request: StrategicRequestResource,
-    ) -> Result<StrategicResponseResources>
+        _strategic_resources_request: WeeklyRequestResource,
+    ) -> Result<WeeklyResponseResources>
     {
         // TODO: Implement resource state update logic
         // match strategic_resources_request {
 
-        //     StrategicRequestResource::GetLoadings {
+        //     WeeklyRequestResource::GetLoadings {
         //         periods_end: _,
         //         select_resources: _,
         //     } => {
@@ -1695,10 +1695,10 @@ where
 
         //         let strategic_response_resources =
         //
-        // StrategicResponseResources::LoadingAndCapacities(loading.clone());
+        // WeeklyResponseResources::LoadingAndCapacities(loading.clone());
         //         Ok(strategic_response_resources)
         //     }
-        //     StrategicRequestResource::GetCapacities {
+        //     WeeklyRequestResource::GetCapacities {
         //         periods_end: _,
         //         select_resources: _,
         //     } => {
@@ -1706,10 +1706,10 @@ where
 
         //         let strategic_response_resources =
         //
-        // StrategicResponseResources::LoadingAndCapacities(capacities.clone());
+        // WeeklyResponseResources::LoadingAndCapacities(capacities.clone());
         //         Ok(strategic_response_resources)
         //     }
-        //     StrategicRequestResource::GetPercentageLoadings {
+        //     WeeklyRequestResource::GetPercentageLoadings {
         //         periods_end: _,
         //         resources: _,
         //     } => {
@@ -1718,7 +1718,7 @@ where
 
         //         Algorithm::assert_that_capacity_is_respected(loadings, capacities)
         //             .context("Loadings exceed the capacities")?;
-        //         Ok(StrategicResponseResources::Percentage(
+        //         Ok(WeeklyResponseResources::Percentage(
         //             capacities.clone(),
         //             loadings.clone(),
         //         ))
@@ -1730,11 +1730,11 @@ where
     #[instrument(level = "info", skip_all)]
     pub fn update_scheduling_state(
         &mut self,
-        strategic_scheduling_request: StrategicRequestScheduling,
-    ) -> Result<StrategicResponseScheduling>
+        strategic_scheduling_request: WeeklyRequestScheduling,
+    ) -> Result<WeeklyResponseScheduling>
     {
         match strategic_scheduling_request {
-            StrategicRequestScheduling::Schedule(schedule_work_order) => {
+            WeeklyRequestScheduling::Schedule(schedule_work_order) => {
                 let period = self
                     .parameters
                     .strategic_periods
@@ -1764,12 +1764,12 @@ where
                     number_of_work_orders += 1;
                 }
 
-                Ok(StrategicResponseScheduling::new(
+                Ok(WeeklyResponseScheduling::new(
                     number_of_work_orders,
                     period,
                 ))
             }
-            StrategicRequestScheduling::ExcludeFromPeriod(_exclude_from_period) => {
+            WeeklyRequestScheduling::ExcludeFromPeriod(_exclude_from_period) => {
                 todo!(
                     "We should never hit this point. All logic mutating the `Parameters` have
                     moved on the `StateLink` handler`"
@@ -1785,7 +1785,7 @@ where
             .set_work_order_to_unschedule(work_order_number)
             .context("WorkOrder unschedule should never be called on a not scheduled WorkOrder")?;
 
-        if let WhereIsWorkOrder::Strategic(unschedule_from_period) = unschedule_from_period {
+        if let WhereIsWorkOrder::Weekly(unschedule_from_period) = unschedule_from_period {
             let strategic_parameter = self
                 .parameters
                 .strategic_work_order_parameters
@@ -1797,7 +1797,7 @@ where
             let strategic_resources = self
                 .determine_best_permutation(work_load, &unschedule_from_period, ScheduleWorkOrder::Unschedule)
                 .with_context(|| format!("{:#?}\n{:#?}\nfor {:?}\nfile: {}\nline: {}", strategic_parameter, unschedule_from_period, ScheduleWorkOrder::Unschedule, file!(), line!()))?
-                .context("Determining the StrategicResources associated with a unscheduling operation should always be possible")?;
+                .context("Determining the WeeklyResources associated with a unscheduling operation should always be possible")?;
 
             strategic_resources.assert_well_shaped_resources()?;
             self.update_loadings(strategic_resources, LoadOperation::Sub);
@@ -1814,7 +1814,7 @@ where
                 .strategic_work_order_parameters
                 .get(work_order_number)
                 .expect(
-                    "The StrategicParameter should always be available for the StrategicSolution",
+                    "The WeeklyParameter should always be available for the WeeklySolution",
                 );
 
             if strategic_parameter.locked_in_period.strategic_forced() {
@@ -1837,21 +1837,21 @@ where
 }
 
 impl<Ss>
-    From<Algorithm<StrategicSolution, StrategicParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>>
-    for StrategicAlgorithm<Ss>
+    From<Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>>
+    for WeeklyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
     fn from(
         value: Algorithm<
-            StrategicSolution,
-            StrategicParameters,
+            WeeklySolution,
+            WeeklyParameters,
             PriorityQueue<WorkOrderNumber, i64>,
             Ss,
         >,
     ) -> Self
     {
-        StrategicAlgorithm(value)
+        WeeklyAlgorithm(value)
     }
 }
 
@@ -1966,7 +1966,7 @@ mod tests
                 .into_iter()
                 .collect();
 
-        let mut strategic_resources = StrategicResources::new(strategic_resources_inner);
+        let mut strategic_resources = WeeklyResources::new(strategic_resources_inner);
 
         strategic_resources.update_load(
             &period,
@@ -2023,7 +2023,7 @@ mod tests
                 .into_iter()
                 .collect();
 
-        let mut strategic_resources = StrategicResources::new(strategic_resources_inner);
+        let mut strategic_resources = WeeklyResources::new(strategic_resources_inner);
 
         strategic_resources.update_load(
             &period,
@@ -2087,7 +2087,7 @@ mod tests
                 .into_iter()
                 .collect();
 
-        let mut strategic_resources = StrategicResources::new(strategic_resources_inner);
+        let mut strategic_resources = WeeklyResources::new(strategic_resources_inner);
 
         strategic_resources.update_load(
             &period,
@@ -2241,7 +2241,7 @@ mod tests
             HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
         );
 
-        let mut strategic_resource = StrategicResources::default();
+        let mut strategic_resource = WeeklyResources::default();
         strategic_resource.insert_operational_resource(period.clone(), operational_resource_1);
         strategic_resource.insert_operational_resource(period.clone(), operational_resource_2);
 
@@ -2272,7 +2272,7 @@ mod tests
             (Skill::MtnScaf, Work::from(30.0)),
         ];
 
-        let mut best_strategic_resource = StrategicResources::default();
+        let mut best_strategic_resource = WeeklyResources::default();
         let mut best_total_excess = Work::from(-9999999.0);
 
         let strategic_resources = determine_forced_work_order_resource_loadings(
@@ -2302,7 +2302,7 @@ mod tests
             Work::from(50.0),
             HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
         );
-        let mut strategic_resources = StrategicResources::default();
+        let mut strategic_resources = WeeklyResources::default();
 
         strategic_resources.insert_operational_resource(period.clone(), operational_resource_1);
         strategic_resources.insert_operational_resource(period.clone(), operational_resource_2);
@@ -2334,7 +2334,7 @@ mod tests
             (Skill::MtnScaf, Work::from(20.0)),
         ];
 
-        let mut best_strategic_resource = StrategicResources::default();
+        let mut best_strategic_resource = WeeklyResources::default();
         let mut best_total_excess = Work::from(-9999999.0);
 
         let strategic_resources_option = determine_forced_work_order_resource_loadings(
@@ -2357,7 +2357,7 @@ mod tests
             Work::from(20.0),
             HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
         );
-        let mut strategic_resources = StrategicResources::default();
+        let mut strategic_resources = WeeklyResources::default();
 
         strategic_resources.insert_operational_resource(period.clone(), operational_resource_1);
         strategic_resources.insert_operational_resource(period.clone(), operational_resource_2);
@@ -2390,7 +2390,7 @@ mod tests
             (Skill::VenMech, Work::from(20.0)),
         ];
 
-        let mut best_strategic_resource = StrategicResources::default();
+        let mut best_strategic_resource = WeeklyResources::default();
         let mut best_total_excess = Work::from(-9999999.0);
 
         let strategic_resources_option = determine_forced_work_order_resource_loadings(
@@ -2417,7 +2417,7 @@ mod tests
         let operational_resource_3 =
             OperationalResource::new("VEN-MECH_dummy", Work::from(20.0), HashSet::from([Skill::VenMech]));
 
-        let mut strategic_resources = StrategicResources::default();
+        let mut strategic_resources = WeeklyResources::default();
 
         strategic_resources.insert_operational_resource(period.clone(), operational_resource_1);
         strategic_resources.insert_operational_resource(period.clone(), operational_resource_2);
@@ -2468,7 +2468,7 @@ mod tests
             Work::from(-20.0),
             HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
         );
-        let mut strategic_resources_manual = StrategicResources::default();
+        let mut strategic_resources_manual = WeeklyResources::default();
 
         strategic_resources_manual
             .insert_operational_resource(period.clone(), operational_resource_1);
@@ -2535,7 +2535,7 @@ mod tests
         // Work::from(-20.0), vec![Resources::MtnMech, Resources::MtnElec]); let
         // operational_resource_2 = OperationalResource::new("OP_TEST_1",
         // Work::from(-20.0), vec![Resources::MtnScaf, Resources::MtnElec]); let
-        // mut strategic_resources = StrategicResources::default();
+        // mut strategic_resources = WeeklyResources::default();
 
         // strategic_resources.insert_operatensureonal_resource(period.clone(),
         // operational_resource_1); strategic_resources.
@@ -2575,7 +2575,7 @@ mod tests
         work_load_3.insert(Skill::MtnElec, Work::from(30.0));
         work_load_3.insert(Skill::Prodtech, Work::from(30.0));
 
-        let mut strategic_resources = StrategicResources::default();
+        let mut strategic_resources = WeeklyResources::default();
 
         let operational_resource_0 = OperationalResource::new(
             "OP_TEST_0",
@@ -2595,11 +2595,11 @@ mod tests
         // simply delete the let scheduling_environment =
         // Arc::new(Mutex::new(SchedulingEnvironment::default()));
 
-        // let id = Id::new("Strategic", vec![], vec![Asset::Unknown]);
+        // let id = Id::new("Weekly", vec![], vec![Asset::Unknown]);
 
-        // let mut strategic_parameters = StrategicParameters::new(
+        // let mut strategic_parameters = WeeklyParameters::new(
         //     &id,
-        //     StrategicOptions::default(),
+        //     WeeklyOptions::default(),
         //     &scheduling_environment.lock().unwrap(),
         // )?;
 
@@ -2646,15 +2646,15 @@ mod tests
         // let scheduling_environment =
         // Arc::new(Mutex::new(SchedulingEnvironment::default()));
 
-        // let id = Id::new("Strategic", vec![], vec![Asset::Unknown]);
+        // let id = Id::new("Weekly", vec![], vec![Asset::Unknown]);
 
-        // let strategic_parameters = StrategicParameters::new(
+        // let strategic_parameters = WeeklyParameters::new(
         //     &id,
-        //     StrategicOptions::default(),
+        //     WeeklyOptions::default(),
         //     &scheduling_environment.lock().unwrap(),
         // )?;
 
-        // let strategic_solution = StrategicSolution::new(&strategic_parameters);
+        // let strategic_solution = WeeklySolution::new(&strategic_parameters);
 
         // Actor::builder().agent_id(&id).
         // scheduling_environment(scheduling_environment).algorithm(|con|con.id(&id).
@@ -2708,7 +2708,7 @@ mod tests
 
         // let rng = StdRng::from_seed(seed);
 
-        // let strategic_options = StrategicOptions {
+        // let strategic_options = WeeklyOptions {
         //     number_of_removed_work_order: 2,
         //     rng,
         //     urgency_weight: 1,
@@ -2798,7 +2798,7 @@ mod tests
     {
         let _work_order_number = WorkOrderNumber(2100000001);
         let periods = [Period::from_str("2026-W41-42").unwrap()];
-        let mut strategic_resources = StrategicResources::default();
+        let mut strategic_resources = WeeklyResources::default();
 
         let operational_resource_0 = OperationalResource::new(
             "OP_TEST_0",
@@ -2811,11 +2811,11 @@ mod tests
         // let scheduling_environment =
         // Arc::new(Mutex::new(SchedulingEnvironment::default()));
 
-        // let id = Id::new("Strategic", vec![], vec![Asset::Unknown]);
+        // let id = Id::new("Weekly", vec![], vec![Asset::Unknown]);
 
-        // let mut strategic_parameters = StrategicParameters::new(
+        // let mut strategic_parameters = WeeklyParameters::new(
         //     &id,
-        //     StrategicOptions::default(),
+        //     WeeklyOptions::default(),
         //     &scheduling_environment.lock().unwrap(),
         // )?;
 
@@ -2831,7 +2831,7 @@ mod tests
         //     .strategic_work_order_parameters
         //     .insert(work_order_number, strategic_parameter);
 
-        // let tactical_solution_builder = TacticalSolutionBuilder::new();
+        // let tactical_solution_builder = ProjectSolutionBuilder::new();
 
         // let mut tactical_days = HashMap::new();
         // tactical_days.insert(work_order_number, WhereIsWorkOrder::NotScheduled);
@@ -2850,7 +2850,7 @@ mod tests
         // let arc_swap_shared_solution =
         //     ArcSwapSharedSolution(ArcSwap::from_pointee(shared_solution));
 
-        // let mut strategic_solution = StrategicSolution::new(&strategic_parameters);
+        // let mut strategic_solution = WeeklySolution::new(&strategic_parameters);
 
         // strategic_solution
         //     .strategic_scheduled_work_orders

@@ -195,8 +195,8 @@ use rust_xlsxwriter::IntoExcelData;
 //     room: String,
 // }
 
-// Create an excel dump of the current SchedulingEnvironment, StrategicAlgorithm,
-// and TacticalAlgorithm state. The file is saved to EXCEL_DUMP_DIRECTORY
+// Create an excel dump of the current SchedulingEnvironment, WeeklyAlgorithm,
+// and ProjectAlgorithm state. The file is saved to EXCEL_DUMP_DIRECTORY
 // pub fn create_excel_dump<Ss>(
 //     asset: Asset,
 //     work_orders: WorkOrders,
@@ -221,11 +221,11 @@ use rust_xlsxwriter::IntoExcelData;
 
 //         let strategic_schedule = match strategic_period {
 //             Some(opt_period) => match opt_period {
-//                 WhereIsWorkOrder::Strategic(period) =>
+//                 WhereIsWorkOrder::Weekly(period) =>
 // ReasonForNotScheduling::Scheduled(period.clone()),
-// WhereIsWorkOrder::Tactical(period) =>
+// WhereIsWorkOrder::Project(period) =>
 // ReasonForNotScheduling::Scheduled(period.clone()),
-// WhereIsWorkOrder::NotScheduled => ReasonForNotScheduling::Unknown("Strategic
+// WhereIsWorkOrder::NotScheduled => ReasonForNotScheduling::Unknown("Weekly
 // Algorithm could not schedule the Work Order. If this is a mistake please not
 // down why, and send a message to
 // christian-brunbjerg.jespersen@external.totalenergies.com".to_string()),

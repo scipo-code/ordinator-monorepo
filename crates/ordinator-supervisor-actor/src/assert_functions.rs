@@ -4,19 +4,19 @@ use std::fmt::Debug;
 use anyhow::bail;
 use anyhow::Result;
 use ordinator_actor_core::Actor;
-use ordinator_orchestrator_actor_traits::StrategicInterface;
+use ordinator_orchestrator_actor_traits::WeeklyInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use tracing::event;
 use tracing::Level;
 
-use crate::algorithm::supervisor_solution::SupervisorSolution;
-use crate::algorithm::SupervisorAlgorithm;
-use crate::messages::SupervisorRequestMessage;
-use crate::messages::SupervisorResponseMessage;
+use crate::algorithm::supervisor_solution::DailySolution;
+use crate::algorithm::DailyAlgorithm;
+use crate::messages::DailyRequestMessage;
+use crate::messages::DailyResponseMessage;
 
 #[allow(dead_code)]
-pub trait SupervisorAssertions
+pub trait DailyAssertions
 {
     fn test_symmetric_difference_between_tactical_operations_and_operational_state_machine(
         &self,
@@ -26,11 +26,11 @@ pub trait SupervisorAssertions
     ) -> Result<()>;
 }
 
-impl<Ss> SupervisorAssertions
-    for Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>
+impl<Ss> DailyAssertions
+    for Actor<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>
 where
-    Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
-    SupervisorResponseMessage: Debug,
+    Ss: SystemSolutions<Daily = DailySolution> + Debug,
+    DailyResponseMessage: Debug,
 {
     fn test_symmetric_difference_between_tactical_operations_and_operational_state_machine(
         &self,

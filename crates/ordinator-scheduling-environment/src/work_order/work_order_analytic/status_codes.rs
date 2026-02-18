@@ -475,7 +475,7 @@ impl SystemStatusCodesBuilder
 }
 
 #[derive(Args, Clone, Serialize, Deserialize, Debug)]
-pub struct StrategicUserStatusCodes
+pub struct WeeklyUserStatusCodes
 {
     /// Provide the work order number for the work order that you want to
     /// change.

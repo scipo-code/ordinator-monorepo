@@ -83,13 +83,13 @@ where
 
 pub trait ActorSpecification: Send + Sync + Debug
 {
-    fn strategic_options(&self) -> &StrategicOptions;
+    fn strategic_options(&self) -> &WeeklyOptions;
 
-    fn strategic(&self) -> &InputStrategic;
+    fn strategic(&self) -> &InputWeekly;
 
-    fn tactical(&self) -> &InputTactical;
+    fn tactical(&self) -> &InputProject;
 
-    fn supervisor(&self) -> &Vec<InputSupervisor>;
+    fn supervisor(&self) -> &Vec<InputDaily>;
 
     fn operational(&self) -> &HashMap<IdString, InputOperational>;
 
@@ -112,9 +112,9 @@ pub type IdString = String;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ActorSpecifications
 {
-    pub strategic: InputStrategic,
-    pub tactical: InputTactical,
-    pub supervisors: Vec<InputSupervisor>,
+    pub strategic: InputWeekly,
+    pub tactical: InputProject,
+    pub supervisors: Vec<InputDaily>,
     pub operational: HashMap<IdString, InputOperational>,
     // TODO: Consider using relational database structure instead of HashMap
 }
@@ -126,22 +126,22 @@ impl ActorSpecification for ActorSpecifications
         &self.operational
     }
 
-    fn strategic_options(&self) -> &StrategicOptions
+    fn strategic_options(&self) -> &WeeklyOptions
     {
         &self.strategic.strategic_options
     }
 
-    fn supervisor(&self) -> &Vec<InputSupervisor>
+    fn supervisor(&self) -> &Vec<InputDaily>
     {
         &self.supervisors
     }
 
-    fn tactical(&self) -> &InputTactical
+    fn tactical(&self) -> &InputProject
     {
         &self.tactical
     }
 
-    fn strategic(&self) -> &InputStrategic
+    fn strategic(&self) -> &InputWeekly
     {
         &self.strategic
     }
@@ -231,9 +231,9 @@ pub struct TimeInput
 
 pub struct ActorSpecificationBuilder
 {
-    strategic: Option<InputStrategic>,
-    tactical: Option<InputTactical>,
-    supervisors: Option<Vec<InputSupervisor>>,
+    strategic: Option<InputWeekly>,
+    tactical: Option<InputProject>,
+    supervisors: Option<Vec<InputDaily>>,
     operational: Option<HashMap<IdString, InputOperational>>,
 }
 
@@ -251,9 +251,9 @@ impl ActorSpecificationBuilder
 
     pub fn strategic<F>(mut self, f: F) -> Self
     where
-        F: FnOnce(InputStrategicBuilder) -> InputStrategicBuilder,
+        F: FnOnce(InputWeeklyBuilder) -> InputWeeklyBuilder,
     {
-        let strategic_builder = InputStrategic::builder();
+        let strategic_builder = InputWeekly::builder();
         let strategic_builder = f(strategic_builder);
         self.strategic = Some(strategic_builder.build());
         self
@@ -261,9 +261,9 @@ impl ActorSpecificationBuilder
 
     pub fn tactical<F>(mut self, f: F) -> Self
     where
-        F: FnOnce(InputTacticalBuilder) -> InputTacticalBuilder,
+        F: FnOnce(InputProjectBuilder) -> InputProjectBuilder,
     {
-        let tactical_builder = InputTactical::builder();
+        let tactical_builder = InputProject::builder();
         let tactical_builder = f(tactical_builder);
         self.tactical = Some(tactical_builder.build());
         self
@@ -271,9 +271,9 @@ impl ActorSpecificationBuilder
 
     pub fn supervisors<F>(mut self, f: F) -> Self
     where
-        F: FnOnce(SupervisorsBuilder) -> SupervisorsBuilder,
+        F: FnOnce(DailysBuilder) -> DailysBuilder,
     {
-        let supervisors_builder = SupervisorsBuilder::new();
+        let supervisors_builder = DailysBuilder::new();
         let supervisors_builder = f(supervisors_builder);
         self.supervisors = Some(supervisors_builder.build());
         self
@@ -294,10 +294,10 @@ impl ActorSpecificationBuilder
         Ok(ActorSpecifications {
             strategic: self
                 .strategic
-                .ok_or_else(|| anyhow::anyhow!("Strategic configuration is required"))?,
+                .ok_or_else(|| anyhow::anyhow!("Weekly configuration is required"))?,
             tactical: self
                 .tactical
-                .ok_or_else(|| anyhow::anyhow!("Tactical configuration is required"))?,
+                .ok_or_else(|| anyhow::anyhow!("Project configuration is required"))?,
             supervisors: self.supervisors.unwrap_or_default(),
             operational: self.operational.unwrap_or_default(),
         })
@@ -306,27 +306,27 @@ impl ActorSpecificationBuilder
 
 // TODO: Move work_order_parameters.json configuration here
 #[derive(Eq, PartialEq, Serialize, Deserialize, Debug)]
-pub struct InputStrategic
+pub struct InputWeekly
 {
     pub id: IdString,
     pub number_of_strategic_periods: usize,
-    pub strategic_options: StrategicOptions,
+    pub strategic_options: WeeklyOptions,
 }
 
 #[derive(Eq, PartialEq, Serialize, Deserialize, Debug)]
-pub struct InputTactical
+pub struct InputProject
 {
     pub id: IdString,
     pub number_of_tactical_days: usize,
-    pub tactical_options: TacticalOptions,
+    pub tactical_options: ProjectOptions,
 }
 
 #[derive(Eq, Hash, PartialEq, Serialize, Deserialize, Debug)]
-pub struct InputSupervisor
+pub struct InputDaily
 {
     pub id: IdString,
     pub number_of_supervisor_periods: u64,
-    pub supervisor_options: SupervisorOptions,
+    pub supervisor_options: DailyOptions,
 }
 
 // TODO: Load IDs directly from configuration
@@ -373,11 +373,11 @@ impl InputOperational
 }
 /// Loads strategic configurations for use by agents
 ///
-/// TODO: Resolve duplication between StrategicOptions and database representation
+/// TODO: Resolve duplication between WeeklyOptions and database representation
 /// TODO: Address StdRng configuration and custom deserialization
 /// TODO: Reduce coupling between Actor and Orchestrator
 #[derive(Clone, Eq, PartialEq, Serialize, Deserialize, Debug)]
-pub struct StrategicOptions
+pub struct WeeklyOptions
 {
     pub number_of_removed_work_orders: usize,
     pub urgency_weight: usize,
@@ -388,7 +388,7 @@ pub struct StrategicOptions
 
 // TODO: Move RNG configuration outside of ordinator-scheduling-environment
 #[derive(Eq, Hash, PartialEq, Serialize, Deserialize, Debug, Clone)]
-pub struct TacticalOptions
+pub struct ProjectOptions
 {
     pub number_of_removed_work_orders: usize,
     pub urgency: usize,
@@ -396,7 +396,7 @@ pub struct TacticalOptions
 }
 
 #[derive(Eq, Hash, PartialEq, Serialize, Deserialize, Debug, Clone)]
-pub struct SupervisorOptions
+pub struct DailyOptions
 {
     pub number_of_unassigned_work_orders: usize,
 }
@@ -407,14 +407,14 @@ pub struct OperationalOptions
     pub number_of_removed_activities: usize,
 }
 
-pub struct InputStrategicBuilder
+pub struct InputWeeklyBuilder
 {
     id: Option<IdString>,
     number_of_strategic_periods: Option<usize>,
-    strategic_options: Option<StrategicOptions>,
+    strategic_options: Option<WeeklyOptions>,
 }
 
-impl InputStrategicBuilder
+impl InputWeeklyBuilder
 {
     pub fn new() -> Self
     {
@@ -439,17 +439,17 @@ impl InputStrategicBuilder
 
     pub fn strategic_options<F>(mut self, f: F) -> Self
     where
-        F: FnOnce(StrategicOptionsBuilder) -> StrategicOptionsBuilder,
+        F: FnOnce(WeeklyOptionsBuilder) -> WeeklyOptionsBuilder,
     {
-        let options_builder = StrategicOptionsBuilder::new();
+        let options_builder = WeeklyOptionsBuilder::new();
         let options_builder = f(options_builder);
         self.strategic_options = Some(options_builder.build());
         self
     }
 
-    pub fn build(self) -> InputStrategic
+    pub fn build(self) -> InputWeekly
     {
-        InputStrategic {
+        InputWeekly {
             id: self.id.expect("id is required"),
             number_of_strategic_periods: self
                 .number_of_strategic_periods
@@ -461,22 +461,22 @@ impl InputStrategicBuilder
     }
 }
 
-impl InputStrategic
+impl InputWeekly
 {
-    pub fn builder() -> InputStrategicBuilder
+    pub fn builder() -> InputWeeklyBuilder
     {
-        InputStrategicBuilder::new()
+        InputWeeklyBuilder::new()
     }
 }
 
-pub struct InputTacticalBuilder
+pub struct InputProjectBuilder
 {
     id: Option<IdString>,
     number_of_tactical_days: Option<usize>,
-    tactical_options: Option<TacticalOptions>,
+    tactical_options: Option<ProjectOptions>,
 }
 
-impl InputTacticalBuilder
+impl InputProjectBuilder
 {
     pub fn new() -> Self
     {
@@ -501,17 +501,17 @@ impl InputTacticalBuilder
 
     pub fn tactical_options<F>(mut self, f: F) -> Self
     where
-        F: FnOnce(TacticalOptionsBuilder) -> TacticalOptionsBuilder,
+        F: FnOnce(ProjectOptionsBuilder) -> ProjectOptionsBuilder,
     {
-        let options_builder = TacticalOptionsBuilder::new();
+        let options_builder = ProjectOptionsBuilder::new();
         let options_builder = f(options_builder);
         self.tactical_options = Some(options_builder.build());
         self
     }
 
-    pub fn build(self) -> InputTactical
+    pub fn build(self) -> InputProject
     {
-        InputTactical {
+        InputProject {
             id: self.id.expect("id is required"),
             number_of_tactical_days: self
                 .number_of_tactical_days
@@ -521,20 +521,20 @@ impl InputTacticalBuilder
     }
 }
 
-impl InputTactical
+impl InputProject
 {
-    pub fn builder() -> InputTacticalBuilder
+    pub fn builder() -> InputProjectBuilder
     {
-        InputTacticalBuilder::new()
+        InputProjectBuilder::new()
     }
 }
 
-pub struct SupervisorsBuilder
+pub struct DailysBuilder
 {
-    supervisors: Vec<InputSupervisor>,
+    supervisors: Vec<InputDaily>,
 }
 
-impl SupervisorsBuilder
+impl DailysBuilder
 {
     pub fn new() -> Self
     {
@@ -545,28 +545,28 @@ impl SupervisorsBuilder
 
     pub fn supervisor<F>(mut self, f: F) -> Self
     where
-        F: FnOnce(InputSupervisorBuilder) -> InputSupervisorBuilder,
+        F: FnOnce(InputDailyBuilder) -> InputDailyBuilder,
     {
-        let supervisor_builder = InputSupervisorBuilder::new();
+        let supervisor_builder = InputDailyBuilder::new();
         let supervisor_builder = f(supervisor_builder);
         self.supervisors.push(supervisor_builder.build());
         self
     }
 
-    pub fn build(self) -> Vec<InputSupervisor>
+    pub fn build(self) -> Vec<InputDaily>
     {
         self.supervisors
     }
 }
 
-pub struct InputSupervisorBuilder
+pub struct InputDailyBuilder
 {
     id: Option<IdString>,
     number_of_supervisor_periods: Option<u64>,
-    supervisor_options: Option<SupervisorOptions>,
+    supervisor_options: Option<DailyOptions>,
 }
 
-impl Default for InputSupervisorBuilder
+impl Default for InputDailyBuilder
 {
     fn default() -> Self
     {
@@ -574,7 +574,7 @@ impl Default for InputSupervisorBuilder
     }
 }
 
-impl InputSupervisorBuilder
+impl InputDailyBuilder
 {
     pub fn new() -> Self
     {
@@ -599,17 +599,17 @@ impl InputSupervisorBuilder
 
     pub fn supervisor_options<F>(mut self, f: F) -> Self
     where
-        F: FnOnce(SupervisorOptionsBuilder) -> SupervisorOptionsBuilder,
+        F: FnOnce(DailyOptionsBuilder) -> DailyOptionsBuilder,
     {
-        let options_builder = SupervisorOptionsBuilder::new();
+        let options_builder = DailyOptionsBuilder::new();
         let options_builder = f(options_builder);
         self.supervisor_options = Some(options_builder.build());
         self
     }
 
-    pub fn build(self) -> InputSupervisor
+    pub fn build(self) -> InputDaily
     {
-        InputSupervisor {
+        InputDaily {
             id: self.id.expect("id is required"),
             number_of_supervisor_periods: self
                 .number_of_supervisor_periods
@@ -713,7 +713,7 @@ impl InputOperationalBuilder
     }
 }
 
-pub struct StrategicOptionsBuilder
+pub struct WeeklyOptionsBuilder
 {
     number_of_removed_work_orders: Option<usize>,
     urgency_weight: Option<usize>,
@@ -721,7 +721,7 @@ pub struct StrategicOptionsBuilder
     clustering_weight: Option<usize>,
 }
 
-impl StrategicOptionsBuilder
+impl WeeklyOptionsBuilder
 {
     pub fn new() -> Self
     {
@@ -757,9 +757,9 @@ impl StrategicOptionsBuilder
         self
     }
 
-    pub fn build(self) -> StrategicOptions
+    pub fn build(self) -> WeeklyOptions
     {
-        StrategicOptions {
+        WeeklyOptions {
             number_of_removed_work_orders: self
                 .number_of_removed_work_orders
                 .expect("number_of_removed_work_orders is required"),
@@ -774,14 +774,14 @@ impl StrategicOptionsBuilder
     }
 }
 
-pub struct TacticalOptionsBuilder
+pub struct ProjectOptionsBuilder
 {
     number_of_removed_work_orders: Option<usize>,
     urgency: Option<usize>,
     resource_penalty: Option<usize>,
 }
 
-impl TacticalOptionsBuilder
+impl ProjectOptionsBuilder
 {
     pub fn new() -> Self
     {
@@ -810,9 +810,9 @@ impl TacticalOptionsBuilder
         self
     }
 
-    pub fn build(self) -> TacticalOptions
+    pub fn build(self) -> ProjectOptions
     {
-        TacticalOptions {
+        ProjectOptions {
             number_of_removed_work_orders: self
                 .number_of_removed_work_orders
                 .expect("number_of_removed_work_orders is required"),
@@ -822,12 +822,12 @@ impl TacticalOptionsBuilder
     }
 }
 
-pub struct SupervisorOptionsBuilder
+pub struct DailyOptionsBuilder
 {
     number_of_unassigned_work_orders: Option<usize>,
 }
 
-impl SupervisorOptionsBuilder
+impl DailyOptionsBuilder
 {
     pub fn new() -> Self
     {
@@ -842,9 +842,9 @@ impl SupervisorOptionsBuilder
         self
     }
 
-    pub fn build(self) -> SupervisorOptions
+    pub fn build(self) -> DailyOptions
     {
-        SupervisorOptions {
+        DailyOptions {
             number_of_unassigned_work_orders: self
                 .number_of_unassigned_work_orders
                 .expect("number_of_unassigned_work_orders is required"),
@@ -991,22 +991,22 @@ mod tests
 
         impl ActorSpecification for TestActorSpecification
         {
-            fn strategic_options(&self) -> &super::StrategicOptions
+            fn strategic_options(&self) -> &super::WeeklyOptions
             {
                 todo!()
             }
 
-            fn strategic(&self) -> &super::InputStrategic
+            fn strategic(&self) -> &super::InputWeekly
             {
                 todo!()
             }
 
-            fn tactical(&self) -> &super::InputTactical
+            fn tactical(&self) -> &super::InputProject
             {
                 todo!()
             }
 
-            fn supervisor(&self) -> &Vec<super::InputSupervisor>
+            fn supervisor(&self) -> &Vec<super::InputDaily>
             {
                 todo!()
             }

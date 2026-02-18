@@ -87,9 +87,9 @@ impl<RequestMessage, Res> Communication<RequestMessage, Res>
 #[derive(PartialEq, Eq, Clone)]
 pub struct SystemSolution<S, T, U, V>
 where
-    S: StrategicInterface + Solution,
-    T: TacticalInterface + Solution,
-    U: SupervisorInterface + Solution,
+    S: WeeklyInterface + Solution,
+    T: ProjectInterface + Solution,
+    U: DailyInterface + Solution,
     V: OperationalInterface + Solution,
 {
     pub strategic: Option<SolutionState<S>>,
@@ -102,9 +102,9 @@ where
 // be trait-based.
 impl<S, T, U, V> std::fmt::Debug for SystemSolution<S, T, U, V>
 where
-    S: StrategicInterface + Solution,
-    T: TacticalInterface + Solution,
-    U: SupervisorInterface + Solution,
+    S: WeeklyInterface + Solution,
+    T: ProjectInterface + Solution,
+    U: DailyInterface + Solution,
     V: OperationalInterface + Solution,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
@@ -113,9 +113,9 @@ where
             let number_of_operational_actors = self.operational.len().to_string();
             write!(
                 f,
-                "StrategicSolution:   {}\n\
-                TacticalSolution:     {}\n\
-                SupervisorSolution:   {}\n\
+                "WeeklySolution:   {}\n\
+                ProjectSolution:     {}\n\
+                DailySolution:   {}\n\
                 OperationalSolutions: {}",
                 if self.strategic.is_some() {
                     "present".green()
@@ -146,27 +146,27 @@ where
 
 pub trait SystemSolutions: Clone + Sized
 {
-    type Strategic: StrategicInterface;
-    type Tactical: TacticalInterface;
-    type Supervisor: SupervisorInterface;
+    type Weekly: WeeklyInterface;
+    type Project: ProjectInterface;
+    type Daily: DailyInterface;
     type Operational: OperationalInterface + Solution;
 
     fn new() -> Self;
-    fn strategic(&self) -> Result<&Self::Strategic>;
+    fn strategic(&self) -> Result<&Self::Weekly>;
 
-    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Strategic>)
+    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Weekly>)
     where
-        Self::Strategic: Solution;
-    fn tactical_actor_solution(&self) -> Result<&Self::Tactical>;
+        Self::Weekly: Solution;
+    fn tactical_actor_solution(&self) -> Result<&Self::Project>;
 
-    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Tactical>)
+    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Project>)
     where
-        Self::Tactical: Solution;
-    fn supervisor_actor_solutions(&self) -> Result<&Self::Supervisor>;
+        Self::Project: Solution;
+    fn supervisor_actor_solutions(&self) -> Result<&Self::Daily>;
 
-    fn supervisor_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Supervisor>)
+    fn supervisor_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Daily>)
     where
-        Self::Supervisor: Solution;
+        Self::Daily: Solution;
     fn operational_actor_solutions(&self, id: &ActorCompositeId) -> Result<&Self::Operational>;
 
     fn all_operational(&self) -> HashSet<ActorCompositeId>;
@@ -183,15 +183,15 @@ pub trait SystemSolutions: Clone + Sized
 #[allow(dead_code, unused_variables)]
 impl<S, T, U, V> SystemSolutions for SystemSolution<S, T, U, V>
 where
-    S: StrategicInterface + Solution,
-    T: TacticalInterface + Solution,
-    U: SupervisorInterface + Solution,
+    S: WeeklyInterface + Solution,
+    T: ProjectInterface + Solution,
+    U: DailyInterface + Solution,
     V: OperationalInterface + Solution,
 {
     type Operational = V;
-    type Strategic = S;
-    type Supervisor = U;
-    type Tactical = T;
+    type Weekly = S;
+    type Daily = U;
+    type Project = T;
 
     fn new() -> Self
     {
@@ -203,30 +203,30 @@ where
         }
     }
 
-    fn strategic(&self) -> Result<&Self::Strategic>
+    fn strategic(&self) -> Result<&Self::Weekly>
     {
         Ok(&self
             .strategic
             .as_ref()
-            .with_context(|| "StrategicActor SystemSolution not found")?
+            .with_context(|| "WeeklyActor SystemSolution not found")?
             .inner)
     }
 
-    fn tactical_actor_solution(&self) -> Result<&Self::Tactical>
+    fn tactical_actor_solution(&self) -> Result<&Self::Project>
     {
         Ok(&self
             .tactical
             .as_ref()
-            .with_context(|| "TacticalActor SystemSolution not found")?
+            .with_context(|| "ProjectActor SystemSolution not found")?
             .inner)
     }
 
-    fn supervisor_actor_solutions(&self) -> Result<&Self::Supervisor>
+    fn supervisor_actor_solutions(&self) -> Result<&Self::Daily>
     {
         Ok(&self
             .supervisor
             .as_ref()
-            .with_context(|| "SupervisorActor SystemSolution not found")?
+            .with_context(|| "DailyActor SystemSolution not found")?
             .inner)
     }
 
@@ -249,23 +249,23 @@ where
         self.operational.insert(id.clone(), solution);
     }
 
-    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Strategic>)
+    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Weekly>)
     where
-        Self::Strategic: Solution,
+        Self::Weekly: Solution,
     {
         self.strategic = Some(solution);
     }
 
-    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Tactical>)
+    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Project>)
     where
-        Self::Tactical: Solution,
+        Self::Project: Solution,
     {
         self.tactical = Some(solution);
     }
 
-    fn supervisor_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Supervisor>)
+    fn supervisor_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Daily>)
     where
-        Self::Supervisor: Solution,
+        Self::Daily: Solution,
     {
         self.supervisor = Some(solution);
     }
@@ -392,8 +392,8 @@ pub trait CommandHandler<Req, Res>
     fn handle_request_message(&mut self, request_message: Req) -> Result<Res>;
 }
 
-// TODO: Create a common solution interface for all levels (Strategic, Tactical, Supervisor, Operational)
-pub trait StrategicInterface
+// TODO: Create a common solution interface for all levels (Weekly, Project, Daily, Operational)
+pub trait WeeklyInterface
 where
     Self: Clone + std::fmt::Debug + Eq + PartialEq,
 {
@@ -407,7 +407,7 @@ where
     fn all_scheduled_tasks(&self) -> HashMap<WorkOrderNumber, Period>;
 }
 
-pub trait TacticalInterface
+pub trait ProjectInterface
 where
     Self: Clone + std::fmt::Debug + Eq + PartialEq,
 {
@@ -432,8 +432,8 @@ where
 #[derive(PartialEq, Eq, Debug, Default, Clone, Serialize)]
 pub enum WhereIsWorkOrder<T>
 {
-    Strategic(Period),
-    Tactical(T),
+    Weekly(Period),
+    Project(T),
     #[default]
     NotScheduled,
 }
@@ -441,7 +441,7 @@ impl<T> WhereIsWorkOrder<T>
 {
     pub fn is_tactical(&self) -> bool
     {
-        matches!(self, WhereIsWorkOrder::Tactical(_))
+        matches!(self, WhereIsWorkOrder::Project(_))
     }
 
     pub fn not_scheduled(&self) -> bool
@@ -451,7 +451,7 @@ impl<T> WhereIsWorkOrder<T>
 
     pub fn strategic_forced(&self) -> bool
     {
-        matches!(self, WhereIsWorkOrder::Strategic(_))
+        matches!(self, WhereIsWorkOrder::Weekly(_))
     }
 
     pub fn is_strategic_or_tactical(&self) -> bool
@@ -472,7 +472,7 @@ where
     // }
 }
 
-pub trait SupervisorInterface
+pub trait DailyInterface
 where
     Self: Clone + std::fmt::Debug + Eq + PartialEq,
 {
@@ -504,9 +504,9 @@ where
 
 /// The StateLink is a generic type that each type of Agent will implement.
 /// The generics mean:
-///     S: Strategic
-///     T: Tactical
-///     Su: Supervisor
+///     S: Weekly
+///     T: Project
+///     Su: Daily
 ///     O: Operational
 /// This means that each Agent in the system will need to implement how to
 /// understand messages from the other Agents in their own unique way.
@@ -525,7 +525,7 @@ pub enum StateLink
 #[derive(Debug, Clone)]
 pub enum ActorSpecific
 {
-    Strategic(Vec<WorkOrderNumber>),
+    Weekly(Vec<WorkOrderNumber>),
 }
 
 pub trait ActorFactory<Ss>

@@ -6,18 +6,18 @@ use serde::Deserialize;
 use serde::Serialize;
 
 #[derive(Serialize, Deserialize)]
-pub struct StrategicObjectiveValueResponse
+pub struct WeeklyObjectiveValueResponse
 {
     field_one: String,
 }
 
 #[derive(Debug, Serialize)]
-pub struct StrategicResponsePeriods
+pub struct WeeklyResponsePeriods
 {
     periods: Vec<Period>,
 }
 
-impl StrategicResponsePeriods
+impl WeeklyResponsePeriods
 {
     pub fn new(periods: Vec<Period>) -> Self
     {
@@ -25,26 +25,26 @@ impl StrategicResponsePeriods
     }
 }
 
-// TODO: Create a custom type for StrategicResourcesApi instead of exposing this low-level type
+// TODO: Create a custom type for WeeklyResourcesApi instead of exposing this low-level type
 #[derive(Debug, Serialize)]
-pub enum StrategicResponseResources
+pub enum WeeklyResponseResources
 {
     UpdatedResources(u32),
-    LoadingAndCapacities(StrategicResourcesApi),
-    Percentage(StrategicResourcesApi, StrategicResourcesApi),
+    LoadingAndCapacities(WeeklyResourcesApi),
+    Percentage(WeeklyResourcesApi, WeeklyResourcesApi),
 }
 
 #[derive(Debug, Serialize)]
-pub struct StrategicResourcesApi {}
+pub struct WeeklyResourcesApi {}
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct StrategicResponseScheduling
+pub struct WeeklyResponseScheduling
 {
     work_orders: usize,
     periods: Period,
 }
 
-impl StrategicResponseScheduling
+impl WeeklyResponseScheduling
 {
     pub fn new(number_of_work_orders_changed: usize, period: Period) -> Self
     {
@@ -56,11 +56,11 @@ impl StrategicResponseScheduling
 }
 use ordinator_scheduling_environment::Asset;
 
-use crate::algorithm::strategic_solution::StrategicSolution;
-use crate::StrategicActor;
+use crate::algorithm::strategic_solution::WeeklySolution;
+use crate::WeeklyActor;
 
 #[derive(Debug, Serialize)]
-pub struct StrategicResponseStatus
+pub struct WeeklyResponseStatus
 {
     pub asset: Asset,
     pub strategic_objective_value: usize,
@@ -68,11 +68,11 @@ pub struct StrategicResponseStatus
     pub number_of_periods: usize,
 }
 
-impl<Ss> From<&mut StrategicActor<Ss>> for StrategicResponseStatus
+impl<Ss> From<&mut WeeklyActor<Ss>> for WeeklyResponseStatus
 where
-    Ss: SystemSolutions<Strategic = StrategicSolution> + Debug,
+    Ss: SystemSolutions<Weekly = WeeklySolution> + Debug,
 {
-    fn from(value: &mut StrategicActor<Ss>) -> Self
+    fn from(value: &mut WeeklyActor<Ss>) -> Self
     {
         let strategic_parameters = &value.algorithm.parameters;
 
@@ -84,7 +84,7 @@ where
         let number_of_periods = value.algorithm.parameters.strategic_periods.len();
 
         // TODO: Consider creating a trait for objective value extraction instead of direct field access
-        StrategicResponseStatus {
+        WeeklyResponseStatus {
             number_of_strategic_work_orders,
             number_of_periods,
             asset: asset.clone(),

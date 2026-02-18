@@ -70,7 +70,7 @@ impl SystemConfigurations
         })))
     }
 
-    // TODO: Implement From<SystemConfiguration> for StrategicOptions
+    // TODO: Implement From<SystemConfiguration> for WeeklyOptions
 }
 
 // This should be a part of the creation of the `SchedulingEnvironment`

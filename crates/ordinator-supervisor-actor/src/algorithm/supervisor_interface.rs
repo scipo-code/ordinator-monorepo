@@ -2,13 +2,13 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
-use ordinator_orchestrator_actor_traits::SupervisorInterface;
+use ordinator_orchestrator_actor_traits::DailyInterface;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
-use super::supervisor_solution::SupervisorSolution;
+use super::supervisor_solution::DailySolution;
 
-impl SupervisorInterface for SupervisorSolution
+impl DailyInterface for DailySolution
 {
     fn delegates_for_agent(&self, operational_agent: &ActorCompositeId) -> HashMap<WorkOrderActivity, Delegate>
     {

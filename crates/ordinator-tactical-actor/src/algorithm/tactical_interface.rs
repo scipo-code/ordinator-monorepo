@@ -1,10 +1,10 @@
 use std::collections::BTreeMap;
 
 use chrono::NaiveDate;
-use ordinator_orchestrator_actor_traits::TacticalInterface;
+use ordinator_orchestrator_actor_traits::ProjectInterface;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled;
-use ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Strategic;
-use ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Tactical;
+use ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Weekly;
+use ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Project;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
@@ -12,9 +12,9 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 
-use super::tactical_solution::TacticalSolution;
+use super::tactical_solution::ProjectSolution;
 
-impl TacticalInterface for TacticalSolution
+impl ProjectInterface for ProjectSolution
 {
     fn start_and_finish_dates(
         &self,
@@ -23,8 +23,8 @@ impl TacticalInterface for TacticalSolution
     {
         let activities = self.tactical_work_orders.0.get(&work_order_activity.0)?;
         let scheduled_days = match &activities {
-            Strategic(_) => return None,
-            Tactical(value) => &value.0.get(&work_order_activity.1).unwrap().scheduled,
+            Weekly(_) => return None,
+            Project(value) => &value.0.get(&work_order_activity.1).unwrap().scheduled,
             NotScheduled => return None,
         };
 
@@ -42,8 +42,8 @@ impl TacticalInterface for TacticalSolution
     {
         match self.tactical_work_orders.0.get(_work_order_number) {
             Some(c) => match c {
-                Strategic(_) => None,
-                Tactical(wo) => {
+                Weekly(_) => None,
+                Project(wo) => {
                     let first_activity = wo.0.first_key_value();
                     let first_date = first_activity?.1.scheduled.first()?.0.date;
                     Some(WorkOrder::date_to_period(periods, &first_date))
@@ -70,8 +70,8 @@ impl TacticalInterface for TacticalSolution
             .iter()
             .clone()
             .map(|(won, whe_opt)| match whe_opt {
-                Strategic(_) => (won, None),
-                Tactical(value) => (won, Some(value)),
+                Weekly(_) => (won, None),
+                Project(value) => (won, Some(value)),
                 NotScheduled => (won, None),
             })
             .filter(|e| e.1.is_some())

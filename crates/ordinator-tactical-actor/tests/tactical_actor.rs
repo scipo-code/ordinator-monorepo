@@ -11,17 +11,17 @@
 // use ordinator_scheduling_environment::time_environment::period::Period;
 // use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 // use ordinator_scheduling_environment::work_order::operation::Work;
-// use ordinator_scheduling_environment::worker_environment::TacticalOptions;
+// use ordinator_scheduling_environment::worker_environment::ProjectOptions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 // use ordinator_scheduling_environment::worker_environment::resources::Resources;
 // use ordinator_tactical_actor::algorithm::tactical_parameters::OperationParameter;
-// use ordinator_tactical_actor::algorithm::tactical_parameters::TacticalParameter;
-// use ordinator_tactical_actor::algorithm::tactical_parameters::TacticalParameters;
-// use ordinator_tactical_actor::algorithm::tactical_resources::TacticalResources;
+// use ordinator_tactical_actor::algorithm::tactical_parameters::ProjectParameter;
+// use ordinator_tactical_actor::algorithm::tactical_parameters::ProjectParameters;
+// use ordinator_tactical_actor::algorithm::tactical_resources::ProjectResources;
 // use ordinator_tactical_actor::algorithm::tactical_solution::OperationSolution;
-// use ordinator_tactical_actor::algorithm::tactical_solution::TacticalScheduledOperations;
-// use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
+// use ordinator_tactical_actor::algorithm::tactical_solution::ProjectScheduledOperations;
+// use ordinator_tactical_actor::algorithm::tactical_solution::ProjectSolution;
 // use strum::IntoEnumIterator;
 
 // TODO: Add test with stubs for tactical actor construction
@@ -68,7 +68,7 @@ fn test_calculate_objective_value()
     // SystemConfigurations::read_all_configs().unwrap().load();
 
     // TODO: Move to integration testing with proper SharedSolution initialization
-    // let algorithm: TacticalAlgorithm = Algorithm::builder()
+    // let algorithm: ProjectAlgorithm = Algorithm::builder()
     //     .id(id)
     //     .parameters_and_solution(
     //         &system_configurations,
@@ -112,7 +112,7 @@ fn test_calculate_objective_value()
 
     // // We simply have to make
     // let optimized_tactical_work_order =
-    //     TacticalParameter::new(&work_order, operation_parameters);
+    //     ProjectParameter::new(&work_order, operation_parameters);
 
     // tactical_algorithm
     //     .parameters_mut()
@@ -143,12 +143,12 @@ fn test_schedule_1()
     // NOTE: Prioritize system operational stability over test implementation
     // let mut tactical_algorithm =
     // Algorithm::builder().new(     tactical_days(56),
-    //     TacticalResources::new_from_data(
+    //     ProjectResources::new_from_data(
     //         Resources::iter().collect(),
     //         tactical_days(56),
     //         Work::from(0.0),
     //     ),
-    //     TacticalResources::new_from_data(
+    //     ProjectResources::new_from_data(
     //         Resources::iter().collect(),
     //         tactical_days(56),
     //         Work::from(0.0),
@@ -175,7 +175,7 @@ fn test_schedule_1()
     // tactical_operation_parameters.insert(1, operation_parameter);
 
     // let tactical_work_order_parameter =
-    //     TacticalParameter::new(work_order,
+    //     ProjectParameter::new(work_order,
     // tactical_operation_parameters);
 
     // tactical_algorithm
@@ -184,7 +184,7 @@ fn test_schedule_1()
 
     // let activity_number = 0;
 
-    // let mut tactical_activities = TacticalScheduledOperations::default();
+    // let mut tactical_activities = ProjectScheduledOperations::default();
 
     // tactical_activities.0.insert(
     //     activity_number,
@@ -204,7 +204,7 @@ fn test_schedule_1()
     //     .0
     //     .insert(
     //         work_order_number,
-    //         WhereIsWorkOrder::Tactical(tactical_activities),
+    //         WhereIsWorkOrder::Project(tactical_activities),
     //     );
 
     // tactical_algorithm.schedule().unwrap();
@@ -234,21 +234,21 @@ fn test_schedule_2()
     // };
 
     // let id = Id::default();
-    // let options = TacticalOptions::default();
+    // let options = ProjectOptions::default();
     // TODO: Make SchedulingEnvironment testable with dependency injection
     // let scheduling_environment = SchedulingEnvironment::default();
-    // let tactical_parameters = TacticalParameters::new(&id, options,
+    // let tactical_parameters = ProjectParameters::new(&id, options,
     // &scheduling_environment)?; let tactical_solution =
-    // TacticalSolution::new(&tactical_parameters);
+    // ProjectSolution::new(&tactical_parameters);
     // TODO: Refactor file structure and establish clearer testing patterns
     // let mut tactical_algorithm = Algorithm::new(
     //     tactical_days(56),
-    //     TacticalResources::new_from_data(
+    //     ProjectResources::new_from_data(
     //         Resources::iter().collect(),
     //         tactical_days(56),
     //         Work::from(100.0),
     //     ),
-    //     TacticalResources::new_from_data(
+    //     ProjectResources::new_from_data(
     //         Resources::iter().collect(),
     //         tactical_days(56),
     //         Work::from(0.0),
@@ -256,7 +256,7 @@ fn test_schedule_2()
     //     SystemSolution::new(),
     // );
 
-    // let mut tactical_activities = TacticalScheduledOperations::default();
+    // let mut tactical_activities = ProjectScheduledOperations::default();
 
     // tactical_activities.0.insert(
     //     activity_number,
@@ -276,7 +276,7 @@ fn test_schedule_2()
     //     .0
     //     .insert(
     //         work_order_number,
-    //         WhereIsWorkOrder::Tactical(tactical_activities),
+    //         WhereIsWorkOrder::Project(tactical_activities),
     //     );
 
     // // Operation
@@ -296,7 +296,7 @@ fn test_schedule_2()
     // // 10,
     // // vec![],
     // // NaiveDate::from_ymd_opt(2024, 10, 10).unwrap(),
-    // let optimized_tactical_work_order = TacticalParameter::new(work_order,
+    // let optimized_tactical_work_order = ProjectParameter::new(work_order,
     // operation_parameters);
 
     // tactical_algorithm

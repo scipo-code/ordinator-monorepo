@@ -4,19 +4,19 @@ use ordinator_operational_actor::messages::OperationalRequestMessage;
 use ordinator_operational_actor::messages::OperationalResponseMessage;
 use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_strategic_actor::messages::StrategicRequestMessage;
-use ordinator_strategic_actor::messages::StrategicResponseMessage;
-use ordinator_supervisor_actor::messages::SupervisorRequestMessage;
-use ordinator_supervisor_actor::messages::SupervisorResponseMessage;
-use ordinator_tactical_actor::messages::TacticalRequestMessage;
-use ordinator_tactical_actor::messages::TacticalResponseMessage;
+use ordinator_strategic_actor::messages::WeeklyRequestMessage;
+use ordinator_strategic_actor::messages::WeeklyResponseMessage;
+use ordinator_supervisor_actor::messages::DailyRequestMessage;
+use ordinator_supervisor_actor::messages::DailyResponseMessage;
+use ordinator_tactical_actor::messages::ProjectRequestMessage;
+use ordinator_tactical_actor::messages::ProjectResponseMessage;
 
 pub struct ActorRegistry
 {
-    pub strategic_agent_sender: Communication<StrategicRequestMessage, StrategicResponseMessage>,
-    pub tactical_agent_sender: Communication<TacticalRequestMessage, TacticalResponseMessage>,
+    pub strategic_agent_sender: Communication<WeeklyRequestMessage, WeeklyResponseMessage>,
+    pub tactical_agent_sender: Communication<ProjectRequestMessage, ProjectResponseMessage>,
     pub supervisor_agent_senders:
-        HashMap<ActorCompositeId, Communication<SupervisorRequestMessage, SupervisorResponseMessage>>,
+        HashMap<ActorCompositeId, Communication<DailyRequestMessage, DailyResponseMessage>>,
     pub operational_agent_senders:
         HashMap<ActorCompositeId, Communication<OperationalRequestMessage, OperationalResponseMessage>>,
 }
@@ -38,19 +38,19 @@ impl ActorRegistry
     // type should be consistent across agents, possibly a `Status` type.
     // Note: Genericization may introduce complexity; consider design impact.
     // pub fn recv_all_agents_status(&self) -> Result<AgentStatus> {
-    //     let mut supervisor_statai: Vec<SupervisorResponseStatus> = vec![];
+    //     let mut supervisor_statai: Vec<DailyResponseStatus> = vec![];
     //     let mut operational_statai: Vec<OperationalResponseStatus> = vec![];
 
     //     let strategic = self.strategic_agent_sender.receiver.recv()??;
 
-    //     let strategic_status = if let StrategicResponseMessage::Status(strategic)
+    //     let strategic_status = if let WeeklyResponseMessage::Status(strategic)
     // = strategic {         strategic
     //     } else {
     //         panic!()
     //     };
 
     //     let tactical = self.tactical_agent_sender.receiver.recv()??;
-    //     let tactical_status = if let TacticalResponseMessage::Status(tactical) =
+    //     let tactical_status = if let ProjectResponseMessage::Status(tactical) =
     // tactical {         tactical
     //     } else {
     //         panic!()
@@ -58,7 +58,7 @@ impl ActorRegistry
 
     //     for receiver in self.supervisor_agent_senders.iter() {
     //         let supervisor = receiver.1.receiver.recv()??;
-    //         if let SupervisorResponseMessage::Status(supervisor) = supervisor {
+    //         if let DailyResponseMessage::Status(supervisor) = supervisor {
     //             supervisor_statai.push(supervisor);
     //         } else {
     //             panic!()

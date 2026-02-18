@@ -15,17 +15,17 @@ use ordinator_contracts::DateTimeDto;
 use ordinator_contracts::NaiveDateDto;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_contracts::WorkOrderNumberDto;
-use ordinator_contracts::supervisor::SupervisorAllAvailableTechnicians;
-use ordinator_contracts::supervisor::SupervisorMainTableDto;
-use ordinator_contracts::supervisor::SupervisorResourcesDto;
-use ordinator_contracts::supervisor::SupervisorResponseMessageDto;
+use ordinator_contracts::supervisor::DailyAllAvailableTechnicians;
+use ordinator_contracts::supervisor::DailyMainTableDto;
+use ordinator_contracts::supervisor::DailyResourcesDto;
+use ordinator_contracts::supervisor::DailyResponseMessageDto;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::Skill;
 use ordinator_orchestrator::StartError;
 use ordinator_orchestrator::StateLink;
-use ordinator_orchestrator::SupervisorRequestMessage;
-use ordinator_orchestrator::SupervisorStatusMessage::General;
+use ordinator_orchestrator::DailyRequestMessage;
+use ordinator_orchestrator::DailyStatusMessage::General;
 use ordinator_orchestrator::WorkOrderNumber;
 use serde::Deserialize;
 use serde::Serialize;
@@ -38,14 +38,14 @@ use crate::routes::api::AppError;
 #[debug_handler]
 #[utoipa::path(
     get,
-    tag = "Supervisor",
+    tag = "Daily",
     path = "/{asset}/{supervisor_id}",
     params (
         ("asset" = AssetNames, Path),
         ("supervisor_id" = String, Path),
     ),
     responses(
-        (status = 200, body = SupervisorResponseMessageDto),
+        (status = 200, body = DailyResponseMessageDto),
         (status = 404, body = AppError),
         (status = 500, body = AppError),
     )
@@ -53,7 +53,7 @@ use crate::routes::api::AppError;
 pub async fn status(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     Path((asset, supervisor_id)): Path<(AssetNames, String)>,
-) -> Result<Json<SupervisorResponseMessageDto>, AppError>
+) -> Result<Json<DailyResponseMessageDto>, AppError>
 {
     let asset = Asset::try_from(asset)
         .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
@@ -69,17 +69,17 @@ pub async fn status(
         .keys()
         .find(|e| e.0 == supervisor_id)
         .ok_or(AppError::Anyhow(
-            anyhow!("Supervisor Not found").to_string(),
+            anyhow!("Daily Not found").to_string(),
         ))?;
 
     let communication = supervisor_agent_senders
         .get(supervisor_id)
         .ok_or(AppError::Anyhow(
-            anyhow!("Supervisor not found").to_string(),
+            anyhow!("Daily not found").to_string(),
         ))?;
 
     communication
-        .from_agent(SupervisorRequestMessage::Status(General))
+        .from_agent(DailyRequestMessage::Status(General))
         .unwrap();
 
     Ok(Json(communication.from_actor().into()))
@@ -89,13 +89,13 @@ pub async fn status(
 #[utoipa::path(
     get,
     path = "/technician_availability/{asset}/{supervisor_id}",
-    tag = "Supervisor",
+    tag = "Daily",
     params (
         ("asset" = AssetNames, Path),
         ("supervisor_id" = String, Path),
     ),
     responses(
-        (status = 200, body = SupervisorAllAvailableTechnicians),
+        (status = 200, body = DailyAllAvailableTechnicians),
         (status = 404, body = AppError),
         (status = 500, body = AppError),
     )
@@ -104,11 +104,11 @@ pub async fn technician_availability(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     // TODO: Use `_supervisor_id` when additional filtering is needed
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
-) -> Result<Json<SupervisorAllAvailableTechnicians>, AppError>
+) -> Result<Json<DailyAllAvailableTechnicians>, AppError>
 {
     let asset = Asset::try_from(asset)
         .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
-    let supervisor_all_available_technicians: SupervisorAllAvailableTechnicians = orchestrator
+    let supervisor_all_available_technicians: DailyAllAvailableTechnicians = orchestrator
         .scheduling_environment
         .lock()
         .expect("Cannot lock SchedulingEnvironment")
@@ -127,13 +127,13 @@ pub async fn technician_availability(
 #[utoipa::path(
     get,
     path = "/all_technicians/{asset}/{supervisor_id}",
-    tag = "Supervisor",
+    tag = "Daily",
     params (
         ("asset" = AssetNames, Path),
         ("supervisor_id" = String, Path),
     ),
     responses(
-        (status = 200, body = SupervisorResourcesDto),
+        (status = 200, body = DailyResourcesDto),
         (status = 404, body = AppError),
         (status = 500, body = AppError),
     )
@@ -142,12 +142,12 @@ pub async fn all_technicians(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     // TODO: Use `_supervisor_id` when additional filtering is needed
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
-) -> Result<Json<SupervisorResourcesDto>, AppError>
+) -> Result<Json<DailyResourcesDto>, AppError>
 {
     let asset = Asset::try_from(asset)
         .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
 
-    let supervisor_resources: SupervisorResourcesDto = orchestrator
+    let supervisor_resources: DailyResourcesDto = orchestrator
         .system_solutions
         .lock()
         .expect("SystemSolution locks unavailable")
@@ -161,7 +161,7 @@ pub async fn all_technicians(
         .supervisor
         .as_ref()
         .ok_or(AppError::Anyhow(
-            "SupervisorSolution not available. Likely due to the Supervisor not being instantiated"
+            "DailySolution not available. Likely due to the Daily not being instantiated"
                 .to_string(),
         ))?
         .inner()
@@ -182,14 +182,14 @@ pub struct MainTableQueryParams
 #[utoipa::path(
     get,
     path = "/supervisor_main_table/{asset}/{supervisor_id}",
-    tag = "Supervisor",
+    tag = "Daily",
     params (
         ("asset" = AssetNames, Path),
         ("supervisor_id" = String, Path),
         MainTableQueryParams,
     ),
     responses(
-        (status = 200, body = SupervisorMainTableDto),
+        (status = 200, body = DailyMainTableDto),
         (status = 404, body = AppError),
         (status = 500, body = AppError),
     )
@@ -199,7 +199,7 @@ pub async fn supervisor_main_table(
     // TODO: Use `_supervisor_id` when additional filtering is needed
     Path((asset, _supervisor_id)): Path<(AssetNames, String)>,
     Query(query): Query<MainTableQueryParams>,
-) -> Result<Json<SupervisorMainTableDto>, AppError>
+) -> Result<Json<DailyMainTableDto>, AppError>
 {
     let asset = Asset::try_from(asset)
         .map_err(|e| AppError::Anyhow(e.to_string() + "Could not parse the Asset parameter"))?;
@@ -217,12 +217,12 @@ pub async fn supervisor_main_table(
         .load());
 
     let mut supervisor_main_table_dto =
-        SupervisorMainTableDto::try_from((work_orders, system_solution, time_environment))
+        DailyMainTableDto::try_from((work_orders, system_solution, time_environment))
             .with_context(|| {
-                format!("SupervisorMainTable could not be constructed for {_supervisor_id}")
+                format!("DailyMainTable could not be constructed for {_supervisor_id}")
             })
             .map_err(|e| {
-                AppError::Anyhow(e.to_string() + "could not create the SupervisorMainTableDto")
+                AppError::Anyhow(e.to_string() + "could not create the DailyMainTableDto")
             })?;
 
     let query_day = query.day;
@@ -253,7 +253,7 @@ pub struct WorkOrderActivityToTechnicianDto
 #[utoipa::path(
     patch,
     path = "/assign_to_technicians/{asset}/{supervisor_id}",
-    tag = "Supervisor",
+    tag = "Daily",
     description = "This endpoint is for assigning a technicians to a work order activity.",
     params (
         ("asset" = AssetNames, Path),
@@ -357,7 +357,7 @@ pub struct CreateTechnicianDto
 #[utoipa::path(
     post,
     path = "/add_technician/{asset}/{supervisor_id}",
-    tag = "Supervisor",
+    tag = "Daily",
     description = "This endpoint is for assigning a technicians to a work order activity.",
     params (
         ("asset" = AssetNames, Path),

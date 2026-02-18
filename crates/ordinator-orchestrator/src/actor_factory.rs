@@ -13,12 +13,12 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_strategic_actor::StrategicApi;
-use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
-use ordinator_supervisor_actor::SupervisorApi;
-use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
-use ordinator_tactical_actor::TacticalApi;
-use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
+use ordinator_strategic_actor::WeeklyApi;
+use ordinator_strategic_actor::algorithm::strategic_solution::WeeklySolution;
+use ordinator_supervisor_actor::DailyApi;
+use ordinator_supervisor_actor::algorithm::supervisor_solution::DailySolution;
+use ordinator_tactical_actor::ProjectApi;
+use ordinator_tactical_actor::algorithm::tactical_solution::ProjectSolution;
 
 use crate::Orchestrator;
 use crate::StartError;
@@ -32,9 +32,9 @@ type ActorFactoryDependencies<Ss> = (
 impl<Ss> Orchestrator<Ss>
 where
     Ss: SystemSolutions<
-            Strategic = StrategicSolution,
-            Tactical = TacticalSolution,
-            Supervisor = SupervisorSolution,
+            Weekly = WeeklySolution,
+            Project = ProjectSolution,
+            Daily = DailySolution,
             Operational = OperationalSolution,
         >
         + Send
@@ -69,7 +69,7 @@ where
         let build_dependencies = self.extract_factory_dependencies(id.asset())?;
 
         // TODO: Determine source for actor ID (database, API, etc.)
-        let communication = <StrategicApi as ActorFactory<Ss>>::construct_actor(
+        let communication = <WeeklyApi as ActorFactory<Ss>>::construct_actor(
             id.clone(),
             build_dependencies.0,
             build_dependencies.1,
@@ -77,7 +77,7 @@ where
             self.state_link_bus.lock().unwrap().add_rx(),
             self.error_sender.clone(),
         )
-        .with_context(|| format!("Could not create StrategicActor for Asset {}", id.asset()))?;
+        .with_context(|| format!("Could not create WeeklyActor for Asset {}", id.asset()))?;
 
         // TODO: Extract registry access pattern into a helper method
         self.actor_registries
@@ -95,7 +95,7 @@ where
         let build_dependencies = self.extract_factory_dependencies(id.asset())?;
 
         // TODO: Determine source for actor ID
-        let communication = <TacticalApi as ActorFactory<Ss>>::construct_actor(
+        let communication = <ProjectApi as ActorFactory<Ss>>::construct_actor(
             id.clone(),
             build_dependencies.0,
             build_dependencies.1,
@@ -103,7 +103,7 @@ where
             self.state_link_bus.lock().unwrap().add_rx(),
             self.error_sender.clone(),
         )
-        .with_context(|| format!("Could not create TacticalActor for Asset {}", id.asset()))?;
+        .with_context(|| format!("Could not create ProjectActor for Asset {}", id.asset()))?;
 
         self.actor_registries
             .lock()
@@ -120,7 +120,7 @@ where
         // TODO: Insert entry into the `SchedulingEnvironment`
         let build_dependencies = self.extract_factory_dependencies(id.asset())?;
 
-        let communication = <SupervisorApi as ActorFactory<Ss>>::construct_actor(
+        let communication = <DailyApi as ActorFactory<Ss>>::construct_actor(
             id.clone(),
             build_dependencies.0,
             build_dependencies.1,

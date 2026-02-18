@@ -10,24 +10,24 @@ use strum::IntoEnumIterator;
 use tracing::Level;
 use tracing::event;
 
-use crate::StrategicActor;
-use crate::algorithm::strategic_resources::StrategicResources;
-use crate::algorithm::strategic_solution::StrategicSolution;
+use crate::WeeklyActor;
+use crate::algorithm::strategic_resources::WeeklyResources;
+use crate::algorithm::strategic_solution::WeeklySolution;
 
 #[allow(dead_code)]
-pub trait StrategicAssertions
+pub trait WeeklyAssertions
 {
     fn assert_aggregated_load(&self) -> Result<()>;
     fn assert_excluded_periods(&self) -> Result<()>;
 }
 
-impl<Ss> StrategicAssertions for StrategicActor<Ss>
+impl<Ss> WeeklyAssertions for WeeklyActor<Ss>
 where
-    Ss: SystemSolutions<Strategic = StrategicSolution> + std::fmt::Debug,
+    Ss: SystemSolutions<Weekly = WeeklySolution> + std::fmt::Debug,
 {
     fn assert_aggregated_load(&self) -> Result<()>
     {
-        let mut aggregated_strategic_load = StrategicResources::new(HashMap::new());
+        let mut aggregated_strategic_load = WeeklyResources::new(HashMap::new());
         for period in &self.0.algorithm.parameters.strategic_periods {
             for (work_order_number, strategic_solution) in self
                 .0
@@ -120,8 +120,8 @@ where
     }
 }
 
-// impl TestAlgorithm for StrategicAgent {
-//     type InfeasibleCases = StrategicInfeasibleCases;
+// impl TestAlgorithm for WeeklyAgent {
+//     type InfeasibleCases = WeeklyInfeasibleCases;
 
 //     fn determine_algorithm_state(&self) ->
 // AlgorithmState<Self::InfeasibleCases> {         let scheduling_environment =

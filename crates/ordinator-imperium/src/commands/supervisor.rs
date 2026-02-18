@@ -3,29 +3,29 @@ use std::io::Read;
 use clap::Args;
 use clap::Subcommand;
 use reqwest::blocking::Client;
-use shared_types::agents::supervisor::requests::supervisor_scheduling_message::SupervisorSchedulingMessage;
-use shared_types::agents::supervisor::requests::supervisor_status_message::SupervisorStatusMessage;
-use shared_types::agents::supervisor::SupervisorRequest;
-use shared_types::agents::supervisor::SupervisorRequestMessage;
-use shared_types::agents::supervisor::SupervisorType;
+use shared_types::agents::supervisor::requests::supervisor_scheduling_message::DailySchedulingMessage;
+use shared_types::agents::supervisor::requests::supervisor_status_message::DailyStatusMessage;
+use shared_types::agents::supervisor::DailyRequest;
+use shared_types::agents::supervisor::DailyRequestMessage;
+use shared_types::agents::supervisor::DailyType;
 use shared_types::scheduling_environment::worker_environment::resources::Id;
 use shared_types::Asset;
 use shared_types::SystemMessages;
 
 #[derive(Subcommand, Debug)]
-pub enum SupervisorCommands
+pub enum DailyCommands
 {
-    /// Get the status of a SupervisorAgent
+    /// Get the status of a DailyAgent
     Status
     {
         asset: Asset,
-        supervisor: SupervisorType,
+        supervisor: DailyType,
     },
     /// Get the commands for manually scheduling a work order activity
     Scheduling
     {
         asset: Asset,
-        supervisor_type: SupervisorType,
+        supervisor_type: DailyType,
         #[clap(subcommand)]
         scheduling_commands: SchedulingCommands,
     },
@@ -46,26 +46,26 @@ pub struct Assign
     id_operational: String,
 }
 
-impl SupervisorCommands
+impl DailyCommands
 {
     pub fn execute(&self, client: &Client) -> SystemMessages
     {
         match self {
-            SupervisorCommands::Status { asset, supervisor } => {
-                let supervisor_status_message = SupervisorStatusMessage::General;
+            DailyCommands::Status { asset, supervisor } => {
+                let supervisor_status_message = DailyStatusMessage::General;
 
                 let supervisor_request_message =
-                    SupervisorRequestMessage::Status(supervisor_status_message);
+                    DailyRequestMessage::Status(supervisor_status_message);
 
-                let supervisor_request = SupervisorRequest {
+                let supervisor_request = DailyRequest {
                     asset: asset.clone(),
                     supervisor: supervisor.clone(),
                     supervisor_request_message,
                 };
 
-                SystemMessages::Supervisor(supervisor_request)
+                SystemMessages::Daily(supervisor_request)
             }
-            SupervisorCommands::Scheduling {
+            DailyCommands::Scheduling {
                 asset,
                 supervisor_type,
                 scheduling_commands,
@@ -73,21 +73,21 @@ impl SupervisorCommands
                 SchedulingCommands::Schedule(assign) => {
                     let id_operational = get_id_operational(client, assign.id_operational.clone());
 
-                    let supervisor_scheduling_message = SupervisorSchedulingMessage::new(
+                    let supervisor_scheduling_message = DailySchedulingMessage::new(
                         (assign.work_order_number.into(), assign.activity_number),
                         id_operational,
                     );
 
                     let supervisor_request_message =
-                        SupervisorRequestMessage::Scheduling(supervisor_scheduling_message);
+                        DailyRequestMessage::Scheduling(supervisor_scheduling_message);
 
-                    let supervisor_request = SupervisorRequest {
+                    let supervisor_request = DailyRequest {
                         asset: asset.clone(),
                         supervisor: supervisor_type.clone(),
                         supervisor_request_message,
                     };
 
-                    SystemMessages::Supervisor(supervisor_request)
+                    SystemMessages::Daily(supervisor_request)
                 }
             },
         }

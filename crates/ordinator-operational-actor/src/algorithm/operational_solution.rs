@@ -227,7 +227,7 @@ impl OperationalSolution
         _activity_relation: ActivityRelation,
     ) -> Option<WorkOrderActivity>
     {
-        // TODO: Move precedence relation validation to OperationalParameters to align with Tactical actor
+        // TODO: Move precedence relation validation to OperationalParameters to align with Project actor
         // Ensure work_order_activity start time is greater than previous activity finish time
         //
         for (

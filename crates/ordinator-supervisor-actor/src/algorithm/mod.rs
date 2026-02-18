@@ -20,7 +20,7 @@ use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
-use ordinator_orchestrator_actor_traits::StrategicInterface;
+use ordinator_orchestrator_actor_traits::WeeklyInterface;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
@@ -28,21 +28,21 @@ use ordinator_scheduling_environment::Percent;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::SupervisorOptions;
+use ordinator_scheduling_environment::worker_environment::DailyOptions;
 use rand::rng;
 use rand::seq::IndexedRandom;
-use supervisor_parameters::SupervisorParameters;
-use supervisor_solution::SupervisorSolution;
+use supervisor_parameters::DailyParameters;
+use supervisor_solution::DailySolution;
 #[allow(unused_imports)]
 use tracing::Level;
 #[allow(unused_imports)]
 use tracing::event;
 
-pub struct SupervisorAlgorithm<Ss>(Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>)
+pub struct DailyAlgorithm<Ss>(Algorithm<DailySolution, DailyParameters, (), Ss>)
 where
     Ss: SystemSolutions;
 
-impl<Ss> SupervisorAlgorithm<Ss>
+impl<Ss> DailyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
@@ -57,7 +57,7 @@ where
     }
 }
 
-impl<Ss: SystemSolutions + std::fmt::Debug> std::fmt::Debug for SupervisorAlgorithm<Ss>
+impl<Ss: SystemSolutions + std::fmt::Debug> std::fmt::Debug for DailyAlgorithm<Ss>
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
@@ -66,13 +66,13 @@ impl<Ss: SystemSolutions + std::fmt::Debug> std::fmt::Debug for SupervisorAlgori
             .0
             .loaded_system_solution
             .strategic()
-            .expect("The StrategicSolution should be present")
+            .expect("The WeeklySolution should be present")
             .supervisor_tasks(supervisor_periods);
 
         write!(
             f,
             "{:#?}\n\
-            Strategic scheduled work orders in each period:\n\
+            Weekly scheduled work orders in each period:\n\
             \tFirst : {}\n\
             \tSecond: {}\n\
             \tThird : {}",
@@ -93,16 +93,16 @@ impl<Ss: SystemSolutions + std::fmt::Debug> std::fmt::Debug for SupervisorAlgori
     }
 }
 
-impl<Ss> ActorBasedLargeNeighborhoodSearch for SupervisorAlgorithm<Ss>
+impl<Ss> ActorBasedLargeNeighborhoodSearch for DailyAlgorithm<Ss>
 where
-    Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>:
-        AbLNSUtils<SolutionType = SupervisorSolution>,
-    SupervisorSolution: Solution,
-    SupervisorParameters: Parameters,
-    Ss: SystemSolutions<Supervisor = SupervisorSolution>,
+    Algorithm<DailySolution, DailyParameters, (), Ss>:
+        AbLNSUtils<SolutionType = DailySolution>,
+    DailySolution: Solution,
+    DailyParameters: Parameters,
+    Ss: SystemSolutions<Daily = DailySolution>,
 {
-    type Algorithm = Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>;
-    type Options = SupervisorOptions;
+    type Algorithm = Algorithm<DailySolution, DailyParameters, (), Ss>;
+    type Options = DailyOptions;
 
     fn make_atomic_pointer_swap(&mut self)
     {
@@ -158,11 +158,11 @@ where
                     .map(|e| e.0)
                     .collect::<HashSet<_>>()
                     .len(),
-            "{} Strategic workorders in supervisor interval\n\
-            {} Supervisor workorders in supervisor interval\n\
-            {} activities in the Supervisor Solution\n\
-            {} `WorkOrder`s in the Supervisor parameters\n\
-            {} `Activity`s in the SupervisorParameters\n\
+            "{} Weekly workorders in supervisor interval\n\
+            {} Daily workorders in supervisor interval\n\
+            {} activities in the Daily Solution\n\
+            {} `WorkOrder`s in the Daily parameters\n\
+            {} `Activity`s in the DailyParameters\n\
             Location: {}",
             self.loaded_system_solution
                 .strategic()
@@ -192,7 +192,7 @@ where
                 .supervisor_work_orders
                 .get(&work_order_activity.0)
                 .and_then(|activities| activities.get(&work_order_activity.1))
-                .expect("The SupervisorParameter should always be available")
+                .expect("The DailyParameter should always be available")
                 .number_of_people;
 
             let operational_status_by_work_order_activity =
@@ -248,7 +248,7 @@ where
                     event!(target: "debug", Level::DEBUG, work_order_activity = ?work_order_activity, technician = ?actor_id, "assigning `work_order_activity` to technician");
                     event!(target: "developer", Level::DEBUG, delegate_status = ?temporary_technician_delegate, solution_delegate = ?technician_delegate, work_order_activity = ?work_order_activity);
 
-                    // Solution comes from the `Supervisor`.
+                    // Solution comes from the `Daily`.
 
                     ensure!(matches!(temporary_technician_delegate, Delegate::Assess));
                     technician_delegate
@@ -357,20 +357,20 @@ where
         for (work_order_number, _) in incoming_activities {
             let activity_number = work_order_parameters
                 .get(work_order_number)
-                .context("Missing WorkOrder Parameter in Supervisor")?
+                .context("Missing WorkOrder Parameter in Daily")?
                 .keys()
                 .cloned();
 
-            // Note: Strategic and supervisor states may differ; work is added if feasible
+            // Note: Weekly and supervisor states may differ; work is added if feasible
             for activity_number in activity_number {
                 for operational_id in &all_operational_actors {
                     let supervisor_parameter = self
                         .parameters
                         .supervisor_work_orders
                         .get(work_order_number)
-                        .context("Missing WorkOrder Parameter in Supervisor")?
+                        .context("Missing WorkOrder Parameter in Daily")?
                         .get(&activity_number)
-                        .context("Missing Activity Parameter in Supervisor")?;
+                        .context("Missing Activity Parameter in Daily")?;
 
                     let supervisor_parameter_resource = &supervisor_parameter.resource;
 
@@ -415,8 +415,8 @@ where
                     .union(&non_incorporated_work_orders)
                     .cloned()
                     .collect(),
-            "Strategic activities: {:#?}\n\
-             Supervisor solution: {:#?}\n\
+            "Weekly activities: {:#?}\n\
+             Daily solution: {:#?}\n\
              difference between strategic / supervisor: {:#?}\n\
              difference between supervisor / strategic: {:#?}",
             strategic_activities,
@@ -462,11 +462,11 @@ fn is_assigned_part_of_all(
         .iter()
         .all(|(wo, ac)| all_woas.contains(&(*wo, *ac)))
 }
-impl<Ss> Deref for SupervisorAlgorithm<Ss>
+impl<Ss> Deref for DailyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    type Target = Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>;
+    type Target = Algorithm<DailySolution, DailyParameters, (), Ss>;
 
     fn deref(&self) -> &Self::Target
     {
@@ -474,7 +474,7 @@ where
     }
 }
 
-impl<Ss> DerefMut for SupervisorAlgorithm<Ss>
+impl<Ss> DerefMut for DailyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
@@ -483,13 +483,13 @@ where
         &mut self.0
     }
 }
-impl<Ss> From<Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>>
-    for SupervisorAlgorithm<Ss>
+impl<Ss> From<Algorithm<DailySolution, DailyParameters, (), Ss>>
+    for DailyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    fn from(value: Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>) -> Self
+    fn from(value: Algorithm<DailySolution, DailyParameters, (), Ss>) -> Self
     {
-        SupervisorAlgorithm(value)
+        DailyAlgorithm(value)
     }
 }

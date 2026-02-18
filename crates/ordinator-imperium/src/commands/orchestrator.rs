@@ -24,9 +24,9 @@ pub enum OrchestratorCommands
     SchedulingEnvironment(SchedulingEnvironmentCommands),
     /// Status of the agents
     AgentStatus,
-    /// Access the Supervisor agent factory
+    /// Access the Daily agent factory
     #[clap(subcommand)]
-    SupervisorAgent(SupervisorAgentCommands),
+    DailyAgent(DailyAgentCommands),
     /// Access the Operational agent factory
     #[clap(subcommand)]
     OperationalAgent(OperationalAgentCommands),
@@ -83,9 +83,9 @@ pub enum TimeEnvironmentCommands
 pub enum AgentCommands {}
 
 #[derive(Subcommand, Debug)]
-pub enum SupervisorAgentCommands
+pub enum DailyAgentCommands
 {
-    /// Create a new SupervisorAgent
+    /// Create a new DailyAgent
     Create
     {
         asset: Asset,
@@ -95,7 +95,7 @@ pub enum SupervisorAgentCommands
         number_of_supervisor_periods: u64,
     },
 
-    /// Delete a SupervisorAgent
+    /// Delete a DailyAgent
     Delete
     {
         asset: Asset, id_supervisor: String
@@ -158,10 +158,10 @@ impl OrchestratorCommands
                 let agent_status = OrchestratorRequest::AgentStatusRequest;
                 SystemMessages::Orchestrator(agent_status)
             }
-            OrchestratorCommands::SupervisorAgent(supervisor_agent_command) => {
+            OrchestratorCommands::DailyAgent(supervisor_agent_command) => {
                 match supervisor_agent_command {
                     // FIXME: This implementation needs to be reworked
-                    SupervisorAgentCommands::Create {
+                    DailyAgentCommands::Create {
                         asset,
                         shift: _,
                         resource,
@@ -172,18 +172,18 @@ impl OrchestratorCommands
                             Some(resource) => vec![resource],
                             None => vec![],
                         };
-                        let create_supervisor_agent = OrchestratorRequest::CreateSupervisorAgent(
+                        let create_supervisor_agent = OrchestratorRequest::CreateDailyAgent(
                             asset.clone(),
                             number_of_supervisor_periods,
                             Id::new(&supervisor_id, resource, vec![asset]),
                         );
                         SystemMessages::Orchestrator(create_supervisor_agent)
                     }
-                    SupervisorAgentCommands::Delete {
+                    DailyAgentCommands::Delete {
                         asset,
                         id_supervisor,
                     } => {
-                        let delete_supervisor_agent = OrchestratorRequest::DeleteSupervisorAgent(
+                        let delete_supervisor_agent = OrchestratorRequest::DeleteDailyAgent(
                             asset.clone(),
                             id_supervisor.clone(),
                         );
@@ -225,7 +225,7 @@ impl OrchestratorCommands
                 let contents = std::fs::read_to_string(resource_toml).unwrap();
                 let system_agents: ActorSpecifications = toml::from_str(&contents).unwrap();
 
-                // FIXME: Rework to initialize Strategic, Tactical, and Operational agents through WorkerEnvironment
+                // FIXME: Rework to initialize Weekly, Project, and Operational agents through WorkerEnvironment
 
                 SystemMessages::Orchestrator(OrchestratorRequest::InitializeSystemAgentsFromFile(
                     asset,
@@ -243,7 +243,7 @@ pub fn strategic_periods(client: &Client) -> Vec<Period>
     let system_message = SystemMessages::Orchestrator(orchestrator_request);
 
     let strategic_periods_string =
-        crate::send_http(client, system_message).expect("Could not receive the StrategicResources");
+        crate::send_http(client, system_message).expect("Could not receive the WeeklyResources");
 
     let strategic_periods: HashMap<String, HashMap<String, Vec<Period>>> =
         serde_json::from_str(&strategic_periods_string).unwrap();

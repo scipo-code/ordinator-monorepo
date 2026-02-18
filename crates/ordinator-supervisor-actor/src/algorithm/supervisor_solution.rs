@@ -18,22 +18,22 @@ use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
-use super::supervisor_parameters::SupervisorParameters;
+use super::supervisor_parameters::DailyParameters;
 
-pub type SupervisorObjectiveValue = Percent;
+pub type DailyObjectiveValue = Percent;
 
 #[derive(PartialEq, Eq, Clone)]
-pub struct SupervisorSolution
+pub struct DailySolution
 {
-    pub(crate) objective_value: SupervisorObjectiveValue,
+    pub(crate) objective_value: DailyObjectiveValue,
     pub(crate) operational_state_machine: HashMap<(ActorCompositeId, WorkOrderActivity), Delegate>,
 }
 
-impl std::fmt::Debug for SupervisorSolution
+impl std::fmt::Debug for DailySolution
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
-        f.debug_struct("SupervisorSolution")
+        f.debug_struct("DailySolution")
             .field("objective_value", &self.objective_value)
             .field(
                 "operational_state_machine_technicians",
@@ -57,7 +57,7 @@ impl std::fmt::Debug for SupervisorSolution
     }
 }
 
-impl SupervisorSolution
+impl DailySolution
 {
     pub fn new_from_parts(
         operational_state_machine: HashMap<(ActorCompositeId, WorkOrderActivity), Delegate>,
@@ -70,14 +70,14 @@ impl SupervisorSolution
     }
 }
 
-// impl std::fmt::Debug for SupervisorSolution
+// impl std::fmt::Debug for DailySolution
 // {
 //     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 //     {
 //         if f.alternate() {
 //             write!(
 //                 f,
-//                 "SupervisorSolution \
+//                 "DailySolution \
 //                 {{\n\
 //                 \tobjective_value: {:#?}\n\
 //                 \toperational_state_machine: {}\n\
@@ -90,10 +90,10 @@ impl SupervisorSolution
 //     }
 // }
 
-impl Solution for SupervisorSolution
+impl Solution for DailySolution
 {
-    type Objective = SupervisorObjectiveValue;
-    type Parameters = SupervisorParameters;
+    type Objective = DailyObjectiveValue;
+    type Parameters = DailyParameters;
 
     fn from_parameters(_parameters: &Self::Parameters) -> Result<Self>
     {
@@ -114,9 +114,9 @@ impl Solution for SupervisorSolution
     }
 }
 
-impl<Ss> SwapSolution<Ss> for SupervisorSolution
+impl<Ss> SwapSolution<Ss> for DailySolution
 where
-    Ss: SystemSolutions<Supervisor = SupervisorSolution>,
+    Ss: SystemSolutions<Daily = DailySolution>,
 {
     fn swap(id: &ActorCompositeId, solution: SolutionState<Self>, system_solution: &mut Ss)
     {
@@ -125,7 +125,7 @@ where
 }
 /// Represents solution state for an iterative combinatorial auction system
 /// that tracks the operational status of all agents and work order activities
-impl SupervisorSolution
+impl DailySolution
 {
     pub fn all_technicians(&self) -> BTreeSet<ActorCompositeId>
     {

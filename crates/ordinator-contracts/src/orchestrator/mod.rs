@@ -34,7 +34,7 @@ pub enum OrchestratorResponse
 pub enum WorkOrdersStatus
 {
     Single(WorkOrderResponse),
-    SingleSolution(StrategicApiSolution),
+    SingleSolution(WeeklyApiSolution),
     Multiple(HashMap<WorkOrderNumber, WorkOrderResponse>),
 }
 
@@ -54,14 +54,14 @@ pub struct WorkOrderResponse
 #[derive(Serialize)]
 pub struct ApiSolution
 {
-    pub strategic: String,   // TODO: Replace with ApiStrategic type
-    pub tactical: String,    // TODO: Replace with ApiTactical type
-    pub supervisor: String,  // TODO: Replace with HashMap<Id, ApiSupervisor>
+    pub strategic: String,   // TODO: Replace with ApiWeekly type
+    pub tactical: String,    // TODO: Replace with ApiProject type
+    pub supervisor: String,  // TODO: Replace with HashMap<Id, ApiDaily>
     pub operational: String, // TODO: Replace with HashMap<Id, ApiOperational>
 }
 
 #[derive(Serialize)]
-pub struct StrategicApiSolution
+pub struct WeeklyApiSolution
 {
     pub solution: Option<Period>,
     pub locked_in_period: Option<Period>,
@@ -70,21 +70,21 @@ pub struct StrategicApiSolution
 
 #[derive(Serialize)]
 #[allow(dead_code)]
-struct ApiStrategic
+struct ApiWeekly
 {
     solution_data: String,
 }
 
 #[derive(Serialize)]
 #[allow(dead_code)]
-struct ApiTactical
+struct ApiProject
 {
     solution_data: String,
 }
 
 #[derive(Serialize)]
 #[allow(dead_code)]
-struct ApiSupervisor
+struct ApiDaily
 {
     solution_data: String,
 }

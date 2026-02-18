@@ -16,12 +16,12 @@ use serde::Serialize;
 use super::DayIndex;
 
 #[derive(Eq, PartialEq, Default, Serialize, Deserialize, Clone)]
-pub struct TacticalResources
+pub struct ProjectResources
 {
     pub resources: HashMap<Skill, Days>,
 }
 
-impl std::fmt::Debug for TacticalResources
+impl std::fmt::Debug for ProjectResources
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
@@ -49,21 +49,21 @@ impl std::fmt::Debug for TacticalResources
             write!(
                 f,
                 "{}",
-                format!("TacticalResources: \nDays: {number_of_days}\nTechnicians: {resources}")
+                format!("ProjectResources: \nDays: {number_of_days}\nTechnicians: {resources}")
                     .bright_blue()
             )
         } else {
-            f.debug_struct("TacticalResources")
+            f.debug_struct("ProjectResources")
                 .field("resources", &self.resources)
                 .finish()
         }
     }
 }
-impl TacticalResources
+impl ProjectResources
 {
     pub fn new(resources: HashMap<Skill, Days>) -> Self
     {
-        TacticalResources { resources }
+        ProjectResources { resources }
     }
 
     pub fn get_resource(&self, resource: &Skill, day: DayIndex) -> Result<&Work>
@@ -97,7 +97,7 @@ impl TacticalResources
             })
             .collect::<HashMap<_, _>>();
 
-        TacticalResources::new(resource_capacity)
+        ProjectResources::new(resource_capacity)
     }
 
     pub fn update_resources(&mut self, resources: Self)
@@ -135,7 +135,7 @@ impl TacticalResources
     }
 }
 
-impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for TacticalResources
+impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for ProjectResources
 {
     fn from(value: (&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)) -> Self
     {
@@ -163,7 +163,7 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for Ta
         {
             for (i, _) in value.0.time_environment.days.iter().enumerate() {
                 let resource_periods = tactical_resources_inner
-                    // FIXME: Logic error when comparing with StrategicAgent
+                    // FIXME: Logic error when comparing with WeeklyAgent
                     .entry(
                         operational_configuration_all
                             .1
@@ -193,6 +193,6 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for Ta
                 );
             }
         }
-        TacticalResources::new(tactical_resources_inner)
+        ProjectResources::new(tactical_resources_inner)
     }
 }

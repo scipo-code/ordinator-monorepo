@@ -27,7 +27,7 @@ use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
-use ordinator_orchestrator_actor_traits::StrategicInterface;
+use ordinator_orchestrator_actor_traits::WeeklyInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::time_environment::day::Day;
@@ -36,30 +36,30 @@ use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
-use ordinator_scheduling_environment::worker_environment::TacticalOptions;
+use ordinator_scheduling_environment::worker_environment::ProjectOptions;
 use ordinator_scheduling_environment::Percent;
 use priority_queue::PriorityQueue;
 use rand::rng;
 use rand::seq::IndexedRandom;
-use tactical_solution::TacticalObjectiveValue;
-use tactical_solution::TacticalScheduledOperations;
-use tactical_solution::TacticalSolution;
+use tactical_solution::ProjectObjectiveValue;
+use tactical_solution::ProjectScheduledOperations;
+use tactical_solution::ProjectSolution;
 use tracing::event;
 use tracing::warn;
 use tracing::Level;
 
-use self::assert_functions::TacticalAssertions;
-use self::tactical_parameters::TacticalParameters;
+use self::assert_functions::ProjectAssertions;
+use self::tactical_parameters::ProjectParameters;
 use self::tactical_solution::OperationSolution;
 
 // If using a single crate, call this directly
 #[derive(Debug)]
-pub struct TacticalAlgorithm<Ss>(
-    Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>,
+pub struct ProjectAlgorithm<Ss>(
+    Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>,
 )
 where
-    TacticalSolution: Solution,
-    TacticalParameters: Parameters,
+    ProjectSolution: Solution,
+    ProjectParameters: Parameters,
     Ss: SystemSolutions;
 
 // TODO [ ] 2025-07-02
@@ -74,18 +74,18 @@ where
 // I think that we should delete all these, and turn the nested hashmaps into
 // Vec<Vec<Work>> instead. That would be a much better solution.
 // TODO [ ]
-// Delete all the getters and turn the TacticalResources into a array based
+// Delete all the getters and turn the ProjectResources into a array based
 // representation.
 // TODO [ ]
 // You have to make this thing work.
 type DayIndex = usize;
-impl<Ss> TacticalAlgorithm<Ss>
+impl<Ss> ProjectAlgorithm<Ss>
 where
-    TacticalSolution: Solution,
-    TacticalParameters: Parameters,
-    Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
-        AbLNSUtils<SolutionType = TacticalSolution>,
-    Ss: SystemSolutions<Tactical = TacticalSolution>,
+    ProjectSolution: Solution,
+    ProjectParameters: Parameters,
+    Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
+        AbLNSUtils<SolutionType = ProjectSolution>,
+    Ss: SystemSolutions<Project = ProjectSolution>,
 {
     pub fn capacity(&self, resource: &Skill, day: DayIndex) -> Result<&Work>
     {
@@ -98,7 +98,7 @@ where
             .days[day])
     }
 
-    fn determine_aggregate_excess(&self, tactical_objective_value: &mut TacticalObjectiveValue)
+    fn determine_aggregate_excess(&self, tactical_objective_value: &mut ProjectObjectiveValue)
     {
         let mut objective_value_from_excess = 0;
         for (resources, days) in self.parameters.tactical_capacity.resources.iter() {
@@ -129,7 +129,7 @@ where
         tactical_objective_value.resource_penalty.1 = objective_value_from_excess;
     }
 
-    fn determine_tardiness(&mut self, tactical_objective_value: &mut TacticalObjectiveValue)
+    fn determine_tardiness(&mut self, tactical_objective_value: &mut ProjectObjectiveValue)
     {
         let mut objective_value_from_tardiness = 0;
         for (work_order_number, _solution) in self
@@ -156,8 +156,8 @@ where
                 .and_then(|period| period.scheduled_task(work_order_number))
                 .map(|where_is_work_order| {
                     match where_is_work_order {
-                        WhereIsWorkOrder::Strategic(period) => period.start_datetime().date_naive(),
-                        WhereIsWorkOrder::Tactical(period) => period.start_datetime().date_naive(),
+                        WhereIsWorkOrder::Weekly(period) => period.start_datetime().date_naive(),
+                        WhereIsWorkOrder::Project(period) => period.start_datetime().date_naive(),
                         // ISSUE #000 TODO [ ] 2025-07-22 fix the tactical objective
                         WhereIsWorkOrder::NotScheduled => {
                             tactical_parameter.earliest_allowed_start_date
@@ -238,16 +238,16 @@ where
         forced_operations: Vec<WorkOrderNumber>,
     ) -> Result<()>
     where
-        Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
-            AbLNSUtils<SolutionType = TacticalSolution>,
-        Ss: SystemSolutions<Tactical = TacticalSolution>,
+        Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
+            AbLNSUtils<SolutionType = ProjectSolution>,
+        Ss: SystemSolutions<Project = ProjectSolution>,
     {
         for work_order_number in forced_operations {
             let parameters = self
                 .parameters
                 .tactical_work_orders
                 .get(&work_order_number)
-                .context("WorkOrder not present in TacticalActor")?;
+                .context("WorkOrder not present in ProjectActor")?;
 
             // TODO: Create a generic forced scheduling concept for reuse
             let start_days = parameters
@@ -275,7 +275,7 @@ where
 
     fn determine_percent_scheduled(
         &self,
-        tactical_objective_value: &mut TacticalObjectiveValue,
+        tactical_objective_value: &mut ProjectObjectiveValue,
     ) -> Result<()>
     {
         let tactical_scheduled = self
@@ -284,8 +284,8 @@ where
             .0
             .iter()
             .filter(|(_k, v)| match v {
-                WhereIsWorkOrder::Strategic(_period) => false,
-                WhereIsWorkOrder::Tactical(_) => true,
+                WhereIsWorkOrder::Weekly(_period) => false,
+                WhereIsWorkOrder::Project(_) => true,
                 WhereIsWorkOrder::NotScheduled => false,
             })
             .count();
@@ -434,17 +434,17 @@ fn sub_one_day(current_day: &mut Option<Day>) -> Option<()>
     Some(())
 }
 
-impl<Ss> ActorBasedLargeNeighborhoodSearch for TacticalAlgorithm<Ss>
+impl<Ss> ActorBasedLargeNeighborhoodSearch for ProjectAlgorithm<Ss>
 where
-    Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
-        AbLNSUtils<SolutionType = TacticalSolution>,
-    TacticalSolution: Solution,
-    TacticalParameters: Parameters,
-    Ss: SystemSolutions<Tactical = TacticalSolution>,
+    Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
+        AbLNSUtils<SolutionType = ProjectSolution>,
+    ProjectSolution: Solution,
+    ProjectParameters: Parameters,
+    Ss: SystemSolutions<Project = ProjectSolution>,
 {
     type Algorithm =
-        Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>;
-    type Options = TacticalOptions;
+        Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>;
+    type Options = ProjectOptions;
 
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
@@ -475,7 +475,7 @@ where
     {
         let options = &self.parameters.tactical_options;
 
-        let mut tactical_objective_value = TacticalObjectiveValue::new(options);
+        let mut tactical_objective_value = ProjectObjectiveValue::new(options);
 
         self.determine_tardiness(&mut tactical_objective_value);
 
@@ -525,7 +525,7 @@ where
                 .parameters
                 .tactical_work_orders
                 .get(work_order_number)
-                .expect("TacticalParameter should ALWAYS be available for a TacticalSolution")
+                .expect("ProjectParameter should ALWAYS be available for a ProjectSolution")
                 .clone();
 
             // All the work orders that does not have a solution gets pushed to the queue.
@@ -582,7 +582,7 @@ where
                         .get(&current_work_order_number)
                         .unwrap()
                 }
-                LoopState::ReleaseFromTactical => {
+                LoopState::ReleaseFromProject => {
                     self.solution
                         .tactical_work_orders
                         .0
@@ -605,7 +605,7 @@ where
                 }
             };
 
-            let mut operation_solutions = TacticalScheduledOperations::default();
+            let mut operation_solutions = ProjectScheduledOperations::default();
 
             let allowed_starting_days = self
                 .parameters
@@ -615,7 +615,7 @@ where
                 .nth(start_day_index);
 
             let Some(start_day) = allowed_starting_days else {
-                loop_state = LoopState::ReleaseFromTactical;
+                loop_state = LoopState::ReleaseFromProject;
                 continue 'back_to_loop_state_handle;
             };
 
@@ -635,7 +635,7 @@ where
                 let current_day_peek = match current_day.peek() {
                     Some(day) => day,
                     None => {
-                        loop_state = LoopState::ReleaseFromTactical;
+                        loop_state = LoopState::ReleaseFromProject;
                         continue 'back_to_loop_state_handle;
                     }
                 };
@@ -694,7 +694,7 @@ where
                     });
 
                 if operation_parameters.work_remaining != calculated_tactical_work {
-                    loop_state = LoopState::ReleaseFromTactical;
+                    loop_state = LoopState::ReleaseFromProject;
                     continue 'back_to_loop_state_handle;
                 }
 
@@ -751,7 +751,7 @@ where
         );
 
         // Log work order count for debugging
-        event!(target: "developer", Level::INFO, number_of_work_orders_in_tactical_solution = self.solution.tactical_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Tactical(_))).count());
+        event!(target: "developer", Level::INFO, number_of_work_orders_in_tactical_solution = self.solution.tactical_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Project(_))).count());
         for work_order_number in random_work_order_numbers {
             self.unschedule_specific_work_order(*work_order_number)
                 .with_context(|| {
@@ -763,7 +763,7 @@ where
                     )
                 })?;
         }
-        event!(target: "developer", Level::INFO, number_of_work_orders_in_tactical_solution = self.solution.tactical_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Tactical(_))).count());
+        event!(target: "developer", Level::INFO, number_of_work_orders_in_tactical_solution = self.solution.tactical_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Project(_))).count());
         Ok(())
     }
 
@@ -800,21 +800,21 @@ enum LoopState
 {
     Unscheduled,
     Scheduled,
-    ReleaseFromTactical,
+    ReleaseFromProject,
 }
-impl<Ss> Deref for TacticalAlgorithm<Ss>
+impl<Ss> Deref for ProjectAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
     type Target =
-        Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>;
+        Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>;
 
     fn deref(&self) -> &Self::Target
     {
         &self.0
     }
 }
-impl<Ss> DerefMut for TacticalAlgorithm<Ss>
+impl<Ss> DerefMut for ProjectAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
@@ -824,15 +824,15 @@ where
     }
 }
 
-impl<Ss> TacticalAlgorithm<Ss>
+impl<Ss> ProjectAlgorithm<Ss>
 where
-    TacticalSolution: Solution,
-    TacticalParameters: Parameters,
+    ProjectSolution: Solution,
+    ProjectParameters: Parameters,
     Ss: SystemSolutions,
 {
     fn update_loadings(
         &mut self,
-        operation_solutions: &TacticalScheduledOperations,
+        operation_solutions: &ProjectScheduledOperations,
         load_operation: LoadOperation,
     ) -> Result<()>
     {
@@ -871,11 +871,11 @@ where
             .tactical_work_orders
             .0
             .insert(work_order_number, WhereIsWorkOrder::NotScheduled)
-            .context("This means that the TacticalAlgorithm has been initialized wrong")?;
+            .context("This means that the ProjectAlgorithm has been initialized wrong")?;
 
         match previous_solution {
-            WhereIsWorkOrder::Strategic(_) => Ok(()),
-            WhereIsWorkOrder::Tactical(operation_solutions) => {
+            WhereIsWorkOrder::Weekly(_) => Ok(()),
+            WhereIsWorkOrder::Project(operation_solutions) => {
                 self.update_loadings(&operation_solutions.clone(), LoadOperation::Sub)
             }
             WhereIsWorkOrder::NotScheduled => Ok(()),
@@ -935,21 +935,21 @@ enum OperationDifference
     DiffDay,
 }
 impl<Ss>
-    From<Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>>
-    for TacticalAlgorithm<Ss>
+    From<Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>>
+    for ProjectAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
     fn from(
         value: Algorithm<
-            TacticalSolution,
-            TacticalParameters,
+            ProjectSolution,
+            ProjectParameters,
             PriorityQueue<WorkOrderNumber, u64>,
             Ss,
         >,
     ) -> Self
     {
-        TacticalAlgorithm(value)
+        ProjectAlgorithm(value)
     }
 }
 

@@ -8,15 +8,15 @@ use std::ops::DerefMut;
 use std::sync::Arc;
 use std::sync::Mutex;
 
-use algorithm::StrategicAlgorithm;
-use algorithm::strategic_parameters::StrategicParameters;
-use algorithm::strategic_solution::StrategicSolution;
+use algorithm::WeeklyAlgorithm;
+use algorithm::strategic_parameters::WeeklyParameters;
+use algorithm::strategic_solution::WeeklySolution;
 use anyhow::Result;
 use arc_swap::ArcSwap;
 use bus::BusReader;
 use flume::Sender;
-use messages::StrategicRequestMessage;
-use messages::StrategicResponseMessage;
+use messages::WeeklyRequestMessage;
+use messages::WeeklyResponseMessage;
 use ordinator_actor_core::Actor;
 use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
@@ -31,21 +31,21 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use priority_queue::PriorityQueue;
 
-pub struct StrategicActor<Ss: Debug>(
-    Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>,
+pub struct WeeklyActor<Ss: Debug>(
+    Actor<WeeklyRequestMessage, WeeklyResponseMessage, WeeklyAlgorithm<Ss>>,
 )
 where
-    Ss: SystemSolutions<Strategic = StrategicSolution>,
-    Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>:
-        CommandHandler<StrategicRequestMessage, StrategicResponseMessage>;
+    Ss: SystemSolutions<Weekly = WeeklySolution>,
+    Actor<WeeklyRequestMessage, WeeklyResponseMessage, WeeklyAlgorithm<Ss>>:
+        CommandHandler<WeeklyRequestMessage, WeeklyResponseMessage>;
 
-impl<Ss> Deref for StrategicActor<Ss>
+impl<Ss> Deref for WeeklyActor<Ss>
 where
-    Ss: SystemSolutions<Strategic = StrategicSolution> + Debug,
-    Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>:
-        CommandHandler<StrategicRequestMessage, StrategicResponseMessage>,
+    Ss: SystemSolutions<Weekly = WeeklySolution> + Debug,
+    Actor<WeeklyRequestMessage, WeeklyResponseMessage, WeeklyAlgorithm<Ss>>:
+        CommandHandler<WeeklyRequestMessage, WeeklyResponseMessage>,
 {
-    type Target = Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>;
+    type Target = Actor<WeeklyRequestMessage, WeeklyResponseMessage, WeeklyAlgorithm<Ss>>;
 
     fn deref(&self) -> &Self::Target
     {
@@ -53,11 +53,11 @@ where
     }
 }
 
-impl<Ss> DerefMut for StrategicActor<Ss>
+impl<Ss> DerefMut for WeeklyActor<Ss>
 where
-    Ss: SystemSolutions<Strategic = StrategicSolution> + Debug,
-    Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>:
-        CommandHandler<StrategicRequestMessage, StrategicResponseMessage>,
+    Ss: SystemSolutions<Weekly = WeeklySolution> + Debug,
+    Actor<WeeklyRequestMessage, WeeklyResponseMessage, WeeklyAlgorithm<Ss>>:
+        CommandHandler<WeeklyRequestMessage, WeeklyResponseMessage>,
 {
     fn deref_mut(&mut self) -> &mut Self::Target
     {
@@ -65,14 +65,14 @@ where
     }
 }
 
-pub struct StrategicApi {}
-impl<Ss> ActorFactory<Ss> for StrategicApi
+pub struct WeeklyApi {}
+impl<Ss> ActorFactory<Ss> for WeeklyApi
 where
-    Ss: SystemSolutions<Strategic = StrategicSolution> + Send + Sync + 'static + Debug,
-    Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>:
-        CommandHandler<StrategicRequestMessage, StrategicResponseMessage>,
+    Ss: SystemSolutions<Weekly = WeeklySolution> + Send + Sync + 'static + Debug,
+    Actor<WeeklyRequestMessage, WeeklyResponseMessage, WeeklyAlgorithm<Ss>>:
+        CommandHandler<WeeklyRequestMessage, WeeklyResponseMessage>,
 {
-    type Communication = Communication<StrategicRequestMessage, StrategicResponseMessage>;
+    type Communication = Communication<WeeklyRequestMessage, WeeklyResponseMessage>;
 
     fn construct_actor(
         id: ActorCompositeId,
@@ -83,20 +83,20 @@ where
         error_channel: Sender<anyhow::Error>,
     ) -> Result<<Self as ActorFactory<Ss>>::Communication>
     where
-        Ss: SystemSolutions<Strategic = StrategicSolution> + Send + Sync + 'static,
-        StrategicAlgorithm<Ss>: ActorBasedLargeNeighborhoodSearch
+        Ss: SystemSolutions<Weekly = WeeklySolution> + Send + Sync + 'static,
+        WeeklyAlgorithm<Ss>: ActorBasedLargeNeighborhoodSearch
             + Send
             + Sync
             + From<
                 Algorithm<
-                    StrategicSolution,
-                    StrategicParameters,
+                    WeeklySolution,
+                    WeeklyParameters,
                     PriorityQueue<WorkOrderNumber, i64>,
                     Ss,
                 >,
             >,
     {
-        Actor::<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>::builder(
+        Actor::<WeeklyRequestMessage, WeeklyResponseMessage, WeeklyAlgorithm<Ss>>::builder(
         )
         .agent_id(id.clone())
         .scheduling_environment(Arc::clone(&scheduling_environment_guard))

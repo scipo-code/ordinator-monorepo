@@ -4,13 +4,13 @@ use serde::Deserialize;
 use serde::Serialize;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct SupervisorSchedulingMessage
+pub struct DailySchedulingMessage
 {
     pub work_order_activity: WorkOrderActivity,
     pub id_operational: ActorCompositeId,
 }
 
-impl SupervisorSchedulingMessage
+impl DailySchedulingMessage
 {
     pub fn new(work_order_activity: WorkOrderActivity, id_operational: ActorCompositeId) -> Self
     {
@@ -22,11 +22,11 @@ impl SupervisorSchedulingMessage
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub enum SupervisorStatusMessage
+pub enum DailyStatusMessage
 {
     General,
 }
-pub enum SupervisorRequestScheduling {}
-pub enum SupervisorRequestResource {}
-pub enum SupervisorTimeRequest {}
-pub enum SupervisorSchedulingEnvironmentCommands {}
+pub enum DailyRequestScheduling {}
+pub enum DailyRequestResource {}
+pub enum DailyTimeRequest {}
+pub enum DailySchedulingEnvironmentCommands {}

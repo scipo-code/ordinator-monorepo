@@ -3,17 +3,17 @@ use serde::Deserialize;
 use serde::Serialize;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct TacticalResponseScheduling {}
+pub struct ProjectResponseScheduling {}
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct TacticalResponseStatus
+pub struct ProjectResponseStatus
 {
     objective: u64,
     time_horizon: Vec<Day>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct TacticalResponseTime {}
+pub struct ProjectResponseTime {}
 
 #[derive(Debug, Serialize)]
-pub struct TacticalResponseUpdate {}
+pub struct ProjectResponseUpdate {}

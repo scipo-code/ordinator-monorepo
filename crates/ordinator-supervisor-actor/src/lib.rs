@@ -7,17 +7,17 @@ use std::ops::DerefMut;
 use std::sync::Arc;
 use std::sync::Mutex;
 
-use algorithm::supervisor_parameters::SupervisorParameters;
-use algorithm::supervisor_solution::SupervisorSolution;
-use algorithm::SupervisorAlgorithm;
+use algorithm::supervisor_parameters::DailyParameters;
+use algorithm::supervisor_solution::DailySolution;
+use algorithm::DailyAlgorithm;
 use anyhow::Result;
 use arc_swap::ArcSwap;
 #[allow(unused_imports)]
-use assert_functions::SupervisorAssertions;
+use assert_functions::DailyAssertions;
 use bus::BusReader;
 use flume::Sender;
-use messages::SupervisorRequestMessage;
-use messages::SupervisorResponseMessage;
+use messages::DailyRequestMessage;
+use messages::DailyResponseMessage;
 use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::Actor;
@@ -30,22 +30,22 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 
-pub struct SupervisorActor<Ss: Debug>(
-    Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>,
+pub struct DailyActor<Ss: Debug>(
+    Actor<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>,
 )
 where
-    Ss: SystemSolutions<Supervisor = SupervisorSolution>,
-    Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>:
-        CommandHandler<SupervisorRequestMessage, SupervisorResponseMessage>;
+    Ss: SystemSolutions<Daily = DailySolution>,
+    Actor<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>:
+        CommandHandler<DailyRequestMessage, DailyResponseMessage>;
 
-impl<Ss> Deref for SupervisorActor<Ss>
+impl<Ss> Deref for DailyActor<Ss>
 where
-    Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
-    Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>:
-        CommandHandler<SupervisorRequestMessage, SupervisorResponseMessage>,
+    Ss: SystemSolutions<Daily = DailySolution> + Debug,
+    Actor<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>:
+        CommandHandler<DailyRequestMessage, DailyResponseMessage>,
 {
     type Target =
-        Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>;
+        Actor<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>;
 
     fn deref(&self) -> &Self::Target
     {
@@ -53,11 +53,11 @@ where
     }
 }
 
-impl<Ss> DerefMut for SupervisorActor<Ss>
+impl<Ss> DerefMut for DailyActor<Ss>
 where
-    Ss: SystemSolutions<Supervisor = SupervisorSolution> + Debug,
-    Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>:
-        CommandHandler<SupervisorRequestMessage, SupervisorResponseMessage>,
+    Ss: SystemSolutions<Daily = DailySolution> + Debug,
+    Actor<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>:
+        CommandHandler<DailyRequestMessage, DailyResponseMessage>,
 {
     fn deref_mut(&mut self) -> &mut Self::Target
     {
@@ -65,20 +65,20 @@ where
     }
 }
 
-pub struct SupervisorApi {}
+pub struct DailyApi {}
 
 // Note: This implementation binds Ss type parameters to the impl block.
-impl<Ss> ActorFactory<Ss> for SupervisorApi
+impl<Ss> ActorFactory<Ss> for DailyApi
 where
-    Ss: SystemSolutions<Supervisor = SupervisorSolution> + Send + Sync + 'static + Debug,
-    SupervisorAlgorithm<Ss>: ActorBasedLargeNeighborhoodSearch
+    Ss: SystemSolutions<Daily = DailySolution> + Send + Sync + 'static + Debug,
+    DailyAlgorithm<Ss>: ActorBasedLargeNeighborhoodSearch
         + Send
         + Sync
-        + From<Algorithm<SupervisorSolution, SupervisorParameters, (), Ss>>,
-    Actor<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>:
-        CommandHandler<SupervisorRequestMessage, SupervisorResponseMessage>,
+        + From<Algorithm<DailySolution, DailyParameters, (), Ss>>,
+    Actor<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>:
+        CommandHandler<DailyRequestMessage, DailyResponseMessage>,
 {
-    type Communication = Communication<SupervisorRequestMessage, SupervisorResponseMessage>;
+    type Communication = Communication<DailyRequestMessage, DailyResponseMessage>;
 
     fn construct_actor(
         id: ActorCompositeId,
@@ -89,9 +89,9 @@ where
         error_channel: Sender<anyhow::Error>,
     ) -> Result<Self::Communication>
     where
-        Ss: SystemSolutions<Supervisor = SupervisorSolution> + Send + Sync + 'static,
+        Ss: SystemSolutions<Daily = DailySolution> + Send + Sync + 'static,
     {
-        Actor::<SupervisorRequestMessage, SupervisorResponseMessage, SupervisorAlgorithm<Ss>>::builder()
+        Actor::<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>::builder()
         .agent_id(id.clone())
         .scheduling_environment(Arc::clone(&scheduling_environment_guard))
         .algorithm(|ab| {

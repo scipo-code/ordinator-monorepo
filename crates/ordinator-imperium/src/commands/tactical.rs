@@ -2,12 +2,12 @@ use std::collections::HashMap;
 
 use clap::Subcommand;
 use reqwest::blocking::Client;
-use shared_types::agents::tactical::requests::tactical_resources_message::TacticalResourceRequest;
-use shared_types::agents::tactical::requests::tactical_status_message::TacticalStatusMessage;
+use shared_types::agents::tactical::requests::tactical_resources_message::ProjectResourceRequest;
+use shared_types::agents::tactical::requests::tactical_status_message::ProjectStatusMessage;
 use shared_types::agents::tactical::Days;
-use shared_types::agents::tactical::TacticalRequest;
-use shared_types::agents::tactical::TacticalRequestMessage;
-use shared_types::agents::tactical::TacticalResources;
+use shared_types::agents::tactical::ProjectRequest;
+use shared_types::agents::tactical::ProjectRequestMessage;
+use shared_types::agents::tactical::ProjectResources;
 use shared_types::scheduling_environment::time_environment::day::Day;
 use shared_types::scheduling_environment::work_order::operation::Work;
 use shared_types::scheduling_environment::worker_environment::resources::Resources;
@@ -18,7 +18,7 @@ use shared_types::SystemMessages;
 use super::orchestrator;
 
 #[derive(Subcommand, Debug)]
-pub enum TacticalCommands
+pub enum ProjectCommands
 {
     /// Get the status of the tactical agent
     Status
@@ -38,23 +38,23 @@ pub enum TacticalCommands
     Days,
 }
 
-impl TacticalCommands
+impl ProjectCommands
 {
     pub fn execute(&self, client: &Client) -> shared_types::SystemMessages
     {
         match self {
-            TacticalCommands::Status { asset } => {
-                let tactical_request = TacticalRequest {
+            ProjectCommands::Status { asset } => {
+                let tactical_request = ProjectRequest {
                     asset: asset.clone(),
-                    tactical_request_message: TacticalRequestMessage::Status(
-                        TacticalStatusMessage::General,
+                    tactical_request_message: ProjectRequestMessage::Status(
+                        ProjectStatusMessage::General,
                     ),
                 };
 
-                SystemMessages::Tactical(tactical_request)
+                SystemMessages::Project(tactical_request)
             }
 
-            TacticalCommands::Resources {
+            ProjectCommands::Resources {
                 asset,
                 resource_commands,
             } => match resource_commands {
@@ -62,79 +62,79 @@ impl TacticalCommands
                     days_end,
                     select_resources,
                 } => {
-                    let tactical_resources_message = TacticalResourceRequest::GetCapacities {
+                    let tactical_resources_message = ProjectResourceRequest::GetCapacities {
                         days_end: days_end.to_string(),
                         select_resources: select_resources.clone(),
                     };
 
                     let tactical_request_request =
-                        TacticalRequestMessage::Resources(tactical_resources_message);
+                        ProjectRequestMessage::Resources(tactical_resources_message);
 
-                    let tactical_request = TacticalRequest {
+                    let tactical_request = ProjectRequest {
                         asset: asset.clone(),
                         tactical_request_message: tactical_request_request,
                     };
 
-                    SystemMessages::Tactical(tactical_request)
+                    SystemMessages::Project(tactical_request)
                 }
                 ResourceCommands::Loading {
                     days_end,
                     select_resources,
                 } => {
-                    let tactical_resources_message = TacticalResourceRequest::GetLoadings {
+                    let tactical_resources_message = ProjectResourceRequest::GetLoadings {
                         days_end: days_end.to_string(),
                         select_resources: select_resources.clone(),
                     };
 
                     let tactical_request_message =
-                        TacticalRequestMessage::Resources(tactical_resources_message);
+                        ProjectRequestMessage::Resources(tactical_resources_message);
 
-                    let tactical_request = TacticalRequest {
+                    let tactical_request = ProjectRequest {
                         asset: asset.clone(),
                         tactical_request_message,
                     };
 
-                    SystemMessages::Tactical(tactical_request)
+                    SystemMessages::Project(tactical_request)
                 }
                 ResourceCommands::PercentageLoading {
                     days_end,
                     select_resources,
                 } => {
                     let tactical_resources_message =
-                        TacticalResourceRequest::GetPercentageLoadings {
+                        ProjectResourceRequest::GetPercentageLoadings {
                             days_end: days_end.to_string(),
                             resources: select_resources.clone(),
                         };
 
                     let tactical_request_message =
-                        TacticalRequestMessage::Resources(tactical_resources_message);
+                        ProjectRequestMessage::Resources(tactical_resources_message);
 
-                    let tactical_request = TacticalRequest {
+                    let tactical_request = ProjectRequest {
                         asset: asset.clone(),
                         tactical_request_message,
                     };
-                    SystemMessages::Tactical(tactical_request)
+                    SystemMessages::Project(tactical_request)
                 }
                 ResourceCommands::LoadCapacityFile { toml_path } => {
                     let resources = generate_manual_resources(client, toml_path.clone());
 
                     let tactical_resources = resources;
                     let tactical_resources_message =
-                        TacticalResourceRequest::new_set_resources(tactical_resources);
+                        ProjectResourceRequest::new_set_resources(tactical_resources);
 
                     let tactical_request_message =
-                        TacticalRequestMessage::Resources(tactical_resources_message);
-                    let tactical_request = TacticalRequest {
+                        ProjectRequestMessage::Resources(tactical_resources_message);
+                    let tactical_request = ProjectRequest {
                         asset: asset.clone(),
                         tactical_request_message,
                     };
-                    SystemMessages::Tactical(tactical_request)
+                    SystemMessages::Project(tactical_request)
                 }
             },
-            TacticalCommands::Scheduling => {
+            ProjectCommands::Scheduling => {
                 todo!()
             }
-            TacticalCommands::Days => {
+            ProjectCommands::Days => {
                 todo!()
             }
         }
@@ -167,7 +167,7 @@ pub enum ResourceCommands
 }
 
 /// Generates manual resources for the tactical agent from a TOML configuration file.
-fn generate_manual_resources(client: &Client, toml_path: String) -> TacticalResources
+fn generate_manual_resources(client: &Client, toml_path: String) -> ProjectResources
 {
     let days: Vec<Day> = orchestrator::tactical_days(client);
     let contents = std::fs::read_to_string(toml_path).unwrap();
@@ -196,5 +196,5 @@ fn generate_manual_resources(client: &Client, toml_path: String) -> TacticalReso
             }) += Work::from(operational_agent.hours_per_day * gradual_reduction(i))
         }
     }
-    TacticalResources::new(resources_hash_map)
+    ProjectResources::new(resources_hash_map)
 }

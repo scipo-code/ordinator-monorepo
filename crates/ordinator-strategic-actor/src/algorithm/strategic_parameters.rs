@@ -14,35 +14,35 @@ use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::ClusteringWeights;
 use ordinator_scheduling_environment::work_order::ForcedWorkOrder;
-use ordinator_scheduling_environment::work_order::TacticalForceType;
+use ordinator_scheduling_environment::work_order::ProjectForceType;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrderPolicies;
 use ordinator_scheduling_environment::work_order::WorkOrders;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::StrategicOptions;
+use ordinator_scheduling_environment::worker_environment::WeeklyOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Serialize;
 use tracing::info;
 
-use super::StrategicResources;
+use super::WeeklyResources;
 
 #[derive(Debug)]
-pub struct StrategicParameters
+pub struct WeeklyParameters
 {
     pub strategic_work_order_parameters: HashMap<WorkOrderNumber, WorkOrderParameter>,
-    pub strategic_capacity: StrategicResources,
-    pub strategic_clustering: StrategicClustering,
+    pub strategic_capacity: WeeklyResources,
+    pub strategic_clustering: WeeklyClustering,
     pub period_locks: HashSet<Period>,
 
     // TODO #04 #00 #01: Create PeriodState enum that changes based on SystemClock
     pub strategic_periods: Vec<Period>,
-    pub strategic_options: StrategicOptions,
+    pub strategic_options: WeeklyOptions,
 }
 
 // TODO: Consider implementing a builder pattern for Parameters
-impl Parameters for StrategicParameters
+impl Parameters for WeeklyParameters
 {
     type Key = WorkOrderNumber;
 
@@ -98,7 +98,7 @@ impl Parameters for StrategicParameters
             })
             .collect::<Result<HashMap<WorkOrderNumber, WorkOrderParameter>>>()?;
 
-        let strategic_clustering = StrategicClustering::calculate_clustering_values(
+        let strategic_clustering = WeeklyClustering::calculate_clustering_values(
             asset,
             work_orders,
             &scheduling_environment
@@ -106,8 +106,8 @@ impl Parameters for StrategicParameters
                 .clustering_weights,
         )?;
 
-        // TODO: Decouple SchedulingEnvironment from StrategicResources
-        let strategic_capacity = StrategicResources::from((scheduling_environment, id));
+        // TODO: Decouple SchedulingEnvironment from WeeklyResources
+        let strategic_capacity = WeeklyResources::from((scheduling_environment, id));
 
         Ok(Self {
             strategic_work_order_parameters,
@@ -134,12 +134,12 @@ impl Parameters for StrategicParameters
 pub type ClusteringValue = i64;
 
 #[derive(Debug, PartialEq, Clone)]
-pub struct StrategicClustering
+pub struct WeeklyClustering
 {
     pub inner: HashMap<(WorkOrderNumber, WorkOrderNumber), ClusteringValue>,
 }
 
-/// WARNING: Consider adding a generic parameter to support multiple StrategicParameter handling approaches
+/// WARNING: Consider adding a generic parameter to support multiple WeeklyParameter handling approaches
 #[derive(Debug, PartialEq, Clone, Serialize)]
 pub struct WorkOrderParameter
 {
@@ -148,7 +148,7 @@ pub struct WorkOrderParameter
     pub latest_period: Period,
 
     pub weight: i64,
-    // Weight derived from StrategicOptions
+    // Weight derived from WeeklyOptions
     pub work_load: HashMap<Skill, Work>,
 }
 
@@ -162,19 +162,19 @@ pub struct WorkOrderParameterBuilder
     pub excluded_periods: HashSet<Period>,
     pub latest_period: Option<Period>,
     pub weight: Option<u64>,
-    // Weight derived from StrategicOptions
+    // Weight derived from WeeklyOptions
     pub work_load: HashMap<Skill, Work>,
 }
 
 // TODO: Use this for testing the scheduling program
-// enum StrategicParameterStates {
+// enum WeeklyParameterStates {
 //     Scheduled,
 //     BasicStart,
 //     VendorWithUnloadingPoint,
 //     FMCMainWorkCenter,
 // }
 
-impl StrategicParameters
+impl WeeklyParameters
 {
     pub fn get_locked_in_period<'a>(&'a self, work_order_number: &'a WorkOrderNumber)
     -> &'a Period
@@ -182,12 +182,12 @@ impl StrategicParameters
         let option_period = match self.strategic_work_order_parameters.get(work_order_number) {
             Some(strategic_parameter) => &strategic_parameter.locked_in_period,
             None => {
-                panic!("Work order number {work_order_number:?} not found in StrategicParameters")
+                panic!("Work order number {work_order_number:?} not found in WeeklyParameters")
             }
         };
         match option_period {
-            WhereIsWorkOrder::Strategic(period) => period,
-            WhereIsWorkOrder::Tactical(_) => panic!("This should not happen"),
+            WhereIsWorkOrder::Weekly(period) => period,
+            WhereIsWorkOrder::Project(_) => panic!("This should not happen"),
             WhereIsWorkOrder::NotScheduled => panic!(
                 "Work order number {work_order_number:?} does not have a locked in period, but it is being called by the optimized_work_orders.schedule_forced_work_order",
             ),
@@ -210,7 +210,7 @@ impl StrategicParameters
                 work_order_number
             ),
         };
-        optimized_work_order.locked_in_period = WhereIsWorkOrder::Strategic(period);
+        optimized_work_order.locked_in_period = WhereIsWorkOrder::Weekly(period);
         Ok(())
     }
 }
@@ -235,21 +235,21 @@ impl WorkOrderParameterBuilder
         info!(target: "developer", forced_work_order = ?forced_work_order);
         match forced_work_order {
             ForcedWorkOrder::Period(period) => {
-                self.locked_in_period = WhereIsWorkOrder::Strategic(period.0);
+                self.locked_in_period = WhereIsWorkOrder::Weekly(period.0);
                 self.excluded_periods = period.1;
             }
-            // Give tactical control via WhereIsWorkOrder::Tactical when forced to days
+            // Give tactical control via WhereIsWorkOrder::Project when forced to days
             ForcedWorkOrder::Days(days) => {
                 match &days {
-                    TacticalForceType::OnlyStartDay(day) => {
+                    ProjectForceType::OnlyStartDay(day) => {
                         let period = periods
                             .iter()
                             .find(|per| per.contains_date(day.date))
                             .context("day should always be contained in the period")?
                             .clone();
-                        self.locked_in_period = WhereIsWorkOrder::Tactical(period);
+                        self.locked_in_period = WhereIsWorkOrder::Project(period);
                     }
-                    TacticalForceType::IndividualActivities(_items, _hash_sets) => todo!(),
+                    ProjectForceType::IndividualActivities(_items, _hash_sets) => todo!(),
                 }
                 // Collect excluded periods where all days are excluded
                 let excluded_periods = periods
@@ -286,7 +286,7 @@ impl WorkOrderParameterBuilder
 
     pub fn build(self) -> WorkOrderParameter
     {
-        if let WhereIsWorkOrder::Strategic(ref locked_in_period) = self.locked_in_period {
+        if let WhereIsWorkOrder::Weekly(ref locked_in_period) = self.locked_in_period {
             assert!(!self.excluded_periods.contains(locked_in_period));
         }
 
@@ -295,10 +295,10 @@ impl WorkOrderParameterBuilder
             excluded_periods: self.excluded_periods,
             latest_period: self
                 .latest_period
-                .expect("There should always be a latest period on a StrategicWorkOrder"),
+                .expect("There should always be a latest period on a WeeklyWorkOrder"),
             weight: self
                 .weight
-                .expect("There should always a weight on a StrategicWorkOrder")
+                .expect("There should always a weight on a WeeklyWorkOrder")
                 as i64,
             work_load: self.work_load,
         }
@@ -319,7 +319,7 @@ impl WorkOrderParameter
     }
 }
 
-impl StrategicClustering
+impl WeeklyClustering
 {
     pub fn calculate_clustering_values(
         asset: &Asset,
@@ -374,7 +374,7 @@ impl StrategicClustering
                 clustering_similarity.insert((**wo_num1, **wo_num2), similarity as i64);
             }
         }
-        Ok(StrategicClustering {
+        Ok(WeeklyClustering {
             inner: clustering_similarity,
         })
     }

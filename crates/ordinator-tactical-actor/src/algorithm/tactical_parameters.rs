@@ -22,23 +22,23 @@ use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Operation;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
-use ordinator_scheduling_environment::worker_environment::TacticalOptions;
+use ordinator_scheduling_environment::worker_environment::ProjectOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Serialize;
 
-use super::tactical_resources::TacticalResources;
+use super::tactical_resources::ProjectResources;
 
 #[derive(Debug)]
-pub struct TacticalParameters
+pub struct ProjectParameters
 {
-    pub tactical_work_orders: HashMap<WorkOrderNumber, TacticalParameter>,
+    pub tactical_work_orders: HashMap<WorkOrderNumber, ProjectParameter>,
     pub tactical_days: Vec<Day>,
-    pub tactical_capacity: TacticalResources,
-    pub tactical_options: TacticalOptions,
+    pub tactical_capacity: ProjectResources,
+    pub tactical_options: ProjectOptions,
 }
 
-impl Parameters for TacticalParameters
+impl Parameters for ProjectParameters
 {
     type Key = WorkOrderNumber;
 
@@ -69,9 +69,9 @@ impl Parameters for TacticalParameters
             .filter(|(_, wo)| wo.released_for_scheduling());
 
         let assignments = &scheduling_environment.assignments.assignment_for_tactical();
-        let tactical_capacity = TacticalResources::from((scheduling_environment, id));
+        let tactical_capacity = ProjectResources::from((scheduling_environment, id));
 
-        let tactical_work_orders: HashMap<WorkOrderNumber, TacticalParameter> = work_orders
+        let tactical_work_orders: HashMap<WorkOrderNumber, ProjectParameter> = work_orders
             .map(|(won, wo)| {
                 let start_days_for_activities: HashMap<Option<ActivityNumber>, AnyAssignment> =
                     assignments
@@ -85,7 +85,7 @@ impl Parameters for TacticalParameters
                     create_tactical_parameter(wo, start_days_for_activities, work_order_policies)?,
                 ))
             })
-            .collect::<Result<HashMap<WorkOrderNumber, TacticalParameter>>>()?;
+            .collect::<Result<HashMap<WorkOrderNumber, ProjectParameter>>>()?;
 
         let tactical_days = scheduling_environment.time_environment.days[0..min(
             actor_specification.tactical().number_of_tactical_days,
@@ -115,7 +115,7 @@ pub fn create_tactical_parameter(
     work_order: &WorkOrder,
     start_days_for_activities: HashMap<Option<ActivityNumber>, AnyAssignment>,
     work_order_configuration: &WorkOrderPolicies,
-) -> Result<TacticalParameter>
+) -> Result<ProjectParameter>
 {
     let mut operation_parameters = BTreeMap::new();
     for activity_number in &work_order.activity_numbers() {
@@ -134,11 +134,11 @@ pub fn create_tactical_parameter(
         operation_parameters.insert(*activity_number, operation_parameter);
     }
 
-    TacticalParameter::new(work_order, work_order_configuration, operation_parameters)
+    ProjectParameter::new(work_order, work_order_configuration, operation_parameters)
 }
 
 #[derive(Debug, Clone, Serialize)]
-pub struct TacticalParameter
+pub struct ProjectParameter
 {
     pub tactical_operation_parameters: BTreeMap<ActivityNumber, OperationParameter>,
     // TODO: ISSUE #300 Implement forced_schedule_* in the tactical actor
@@ -148,7 +148,7 @@ pub struct TacticalParameter
     pub earliest_allowed_start_date: NaiveDate,
 }
 
-impl TacticalParameter
+impl ProjectParameter
 {
     pub fn new(
         work_order: &WorkOrder,

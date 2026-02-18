@@ -30,10 +30,10 @@ use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
 use ordinator_orchestrator_actor_traits::OperationalInterface;
 use ordinator_orchestrator_actor_traits::Solution;
-use ordinator_orchestrator_actor_traits::StrategicInterface;
-use ordinator_orchestrator_actor_traits::SupervisorInterface;
+use ordinator_orchestrator_actor_traits::WeeklyInterface;
+use ordinator_orchestrator_actor_traits::DailyInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_orchestrator_actor_traits::TacticalInterface;
+use ordinator_orchestrator_actor_traits::ProjectInterface;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
 use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
@@ -251,7 +251,7 @@ where
             .supervisor_actor_solutions()
             .with_context(|| {
                 format!(
-                    "SupervisorSolution not available to the OperationalActor:\n{}",
+                    "DailySolution not available to the OperationalActor:\n{}",
                     self.id
                 )
             })?
@@ -266,7 +266,7 @@ where
                 !supervisor_work_order_activities_for_technician
                     .get(woa)
                     .unwrap_or({
-                        // NOTE: WorkOrders may exist in OperationalActor but not in SupervisorActor
+                        // NOTE: WorkOrders may exist in OperationalActor but not in DailyActor
                         &Delegate::Assign
                     })
                     .is_drop()
@@ -486,7 +486,7 @@ where
         let work_order_activities = &self
             .loaded_system_solution
             .supervisor_actor_solutions()
-            .with_context(|| "SupervisorSolution is not initialized for the OperationalActor")?
+            .with_context(|| "DailySolution is not initialized for the OperationalActor")?
             .delegated_tasks(&self.id);
 
         for work_order_activity in work_order_activities {
@@ -995,15 +995,15 @@ where
                     .context("DateTime created wrong. This really should never happen")?
                     .and_utc(),
             ),
-            // Note: StrategicActor period depends on current time; ensure correct SystemClock
-            (Some(WhereIsWorkOrder::Strategic(period)), _) => {
+            // Note: WeeklyActor period depends on current time; ensure correct SystemClock
+            (Some(WhereIsWorkOrder::Weekly(period)), _) => {
                 (*period.start_datetime(), *period.finish_datetime())
             }
             (Some(WhereIsWorkOrder::NotScheduled), _) => (
                 self.parameters.availability.start_datetime(),
                 self.parameters.availability.finish_datetime(),
             ),
-            (Some(WhereIsWorkOrder::Tactical(_t)), None) => {
+            (Some(WhereIsWorkOrder::Project(_t)), None) => {
                 (
                     self.parameters.availability.start_datetime(),
                     self.parameters.availability.finish_datetime(),
@@ -1012,15 +1012,15 @@ where
                * This kind of code should be made with `AppError`. You should have a centralized
                * error strategy aimed at making quick iterations on the scheduling
                * logic. _ => bail!(
-               *     "This means that there is no state in either the Tactical or the Strategic
+               *     "This means that there is no state in either the Project or the Weekly
                * agent. This should not be possible as the \     OperationalActor
                * gets its state from either of those. An exception is if the the
-               * WorkOrder has left the StrategicActor or \     the TacticalActor,
+               * WorkOrder has left the WeeklyActor or \     the ProjectActor,
                * and the supervisor still have the WorkOrderActivity in his
-               * state.\nSupervisorActor state: \     \nIs WorkOrder {:#?} present
-               * in StrategicActor: {:?} \     \nIs WorkOrder {:#?} present in
-               * TacticalActor : {:?} \     \nIs WorkOrderActivity {:?} present in
-               * SupervisorActor: {:?} \     \n{}:{}",
+               * state.\nDailyActor state: \     \nIs WorkOrder {:#?} present
+               * in WeeklyActor: {:?} \     \nIs WorkOrder {:#?} present in
+               * ProjectActor : {:?} \     \nIs WorkOrderActivity {:?} present in
+               * DailyActor: {:?} \     \n{}:{}",
                *     work_order_activity.0,
                *     self.loaded_shared_solution
                *         .strategic()

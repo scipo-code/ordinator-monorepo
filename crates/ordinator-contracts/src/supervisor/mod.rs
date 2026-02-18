@@ -12,9 +12,9 @@ use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::worker_environment::IdString;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
-use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
-use ordinator_supervisor_actor::messages::SupervisorResponseMessage;
-use ordinator_supervisor_actor::messages::responses::SupervisorResponseStatus;
+use ordinator_supervisor_actor::algorithm::supervisor_solution::DailySolution;
+use ordinator_supervisor_actor::messages::DailyResponseMessage;
+use ordinator_supervisor_actor::messages::responses::DailyResponseStatus;
 use serde::Serialize;
 use ts_rs::TS;
 use utoipa::ToSchema;
@@ -28,7 +28,7 @@ use crate::WorkOrderActivityDto;
 use crate::WorkOrderNumberDto;
 
 #[derive(ToSchema, Serialize)]
-pub struct SupervisorResourcesDto
+pub struct DailyResourcesDto
 {
     all_technicians: BTreeSet<IdDto>,
     assigned_activities: BTreeMap<IdStringDto, WorkOrderActivityDto>,
@@ -36,7 +36,7 @@ pub struct SupervisorResourcesDto
 
 #[derive(ToSchema, Serialize, Debug, TS)]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
-pub struct SupervisorMainTableDto
+pub struct DailyMainTableDto
 {
     pub days: BTreeMap<NaiveDateDto, DaySubtable>,
 }
@@ -46,7 +46,7 @@ pub struct SupervisorMainTableDto
 pub struct DaySubtable
 {
     // Activities grouped by work center, with each technician appearing once per center
-    work_order_activities_per_work_center: HashMap<String, Vec<WorkOrderSupervisorRow>>,
+    work_order_activities_per_work_center: HashMap<String, Vec<WorkOrderDailyRow>>,
 }
 
 type Area = Option<String>;
@@ -55,7 +55,7 @@ type Description = String;
 type Icc = Option<String>;
 #[derive(Debug, ToSchema, Serialize, TS)]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
-pub struct WorkOrderSupervisorRow
+pub struct WorkOrderDailyRow
 {
     id: IdStringDto,
     area: Area,
@@ -71,7 +71,7 @@ pub struct WorkOrderSupervisorRow
     percentage_complete: Percentage,
 }
 
-impl From<(&WorkOrder, ActivityNumber, IdStringDto)> for WorkOrderSupervisorRow
+impl From<(&WorkOrder, ActivityNumber, IdStringDto)> for WorkOrderDailyRow
 {
     fn from(value: (&WorkOrder, ActivityNumber, IdStringDto)) -> Self
     {
@@ -112,7 +112,7 @@ impl From<(&WorkOrder, ActivityNumber, IdStringDto)> for WorkOrderSupervisorRow
 pub struct Percentage(f64);
 
 // TODO: Consider using a trait to avoid per-SystemSolution From implementations
-impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for SupervisorMainTableDto
+impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for DailyMainTableDto
 {
     type Error = anyhow::Error;
 
@@ -132,7 +132,7 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
         for day in value.2.frozen_days() {
             let mut work_order_activities_per_work_center: HashMap<
                 String,
-                Vec<WorkOrderSupervisorRow>,
+                Vec<WorkOrderDailyRow>,
             > = HashMap::default();
 
             for (id, work_order_activity) in assigned_activities {
@@ -144,7 +144,7 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
                     operation_solution.operational_assignments_by_day(work_order_activity, &day);
 
                 if let Some(_operational_assignment) = operational_assignments_by_day {
-                    let work_order_supervisor_row = WorkOrderSupervisorRow::from((
+                    let work_order_supervisor_row = WorkOrderDailyRow::from((
                         value
                             .0
                             .inner
@@ -177,11 +177,11 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for Supervis
     }
 }
 
-// TODO: Implement remaining SupervisorResponseMessage variants
+// TODO: Implement remaining DailyResponseMessage variants
 #[derive(Serialize, ToSchema)]
-pub enum SupervisorResponseMessageDto
+pub enum DailyResponseMessageDto
 {
-    Status(SupervisorResponseStatusDto),
+    Status(DailyResponseStatusDto),
     Scheduling,
     Resources,
     Time,
@@ -190,15 +190,15 @@ pub enum SupervisorResponseMessageDto
 // Status information derived from supervisor response
 #[derive(Serialize, ToSchema, TS)]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
-pub struct SupervisorResponseStatusDto
+pub struct DailyResponseStatusDto
 {
     pub delegated_work_order_activities: usize,
     pub objective: u64,
 }
 
-impl From<SupervisorResponseStatus> for SupervisorResponseStatusDto
+impl From<DailyResponseStatus> for DailyResponseStatusDto
 {
-    fn from(value: SupervisorResponseStatus) -> Self
+    fn from(value: DailyResponseStatus) -> Self
     {
         Self {
             delegated_work_order_activities: value.delegated_work_order_activities,
@@ -206,30 +206,30 @@ impl From<SupervisorResponseStatus> for SupervisorResponseStatusDto
         }
     }
 }
-impl From<SupervisorResponseMessage> for SupervisorResponseMessageDto
+impl From<DailyResponseMessage> for DailyResponseMessageDto
 {
-    fn from(value: SupervisorResponseMessage) -> Self
+    fn from(value: DailyResponseMessage) -> Self
     {
         match value {
-            SupervisorResponseMessage::StateLink => todo!(),
-            SupervisorResponseMessage::Status(supervisor_response_status) => {
+            DailyResponseMessage::StateLink => todo!(),
+            DailyResponseMessage::Status(supervisor_response_status) => {
                 Self::Status(supervisor_response_status.into())
             }
-            SupervisorResponseMessage::Scheduling(_supervisor_response_scheduling) => todo!(),
-            SupervisorResponseMessage::Resources(_supervisor_response_resources) => todo!(),
-            SupervisorResponseMessage::Time(_supervisor_response_time) => todo!(),
+            DailyResponseMessage::Scheduling(_supervisor_response_scheduling) => todo!(),
+            DailyResponseMessage::Resources(_supervisor_response_resources) => todo!(),
+            DailyResponseMessage::Time(_supervisor_response_time) => todo!(),
         }
     }
 }
 
 // Can be derived uniquely from SystemSolution
-impl From<SupervisorSolution> for SupervisorResourcesDto
+impl From<DailySolution> for DailyResourcesDto
 {
-    fn from(value: SupervisorSolution) -> Self
+    fn from(value: DailySolution) -> Self
     {
         let all_technicians = value.all_technicians();
         let assigned_activities = value.assigned_activities();
-        SupervisorResourcesDto {
+        DailyResourcesDto {
             assigned_activities: assigned_activities
                 .into_iter()
                 .map(|e| (IdStringDto::from(e.0), WorkOrderActivityDto::from(e.1)))
@@ -251,12 +251,12 @@ pub struct TechnicianAvailability
 
 #[derive(ToSchema, Serialize, Debug, TS)]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
-pub struct SupervisorAllAvailableTechnicians
+pub struct DailyAllAvailableTechnicians
 {
     all_technicians: Vec<TechnicianAvailability>,
 }
 impl From<BTreeMap<IdString, (BTreeSet<Availability>, HashSet<Skill>)>>
-    for SupervisorAllAvailableTechnicians
+    for DailyAllAvailableTechnicians
 {
     fn from(
         value: BTreeMap<String, (std::collections::BTreeSet<Availability>, HashSet<Skill>)>,

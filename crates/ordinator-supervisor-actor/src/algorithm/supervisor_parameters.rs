@@ -11,20 +11,20 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
-use ordinator_scheduling_environment::worker_environment::SupervisorOptions;
+use ordinator_scheduling_environment::worker_environment::DailyOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 
-pub struct SupervisorParameters
+pub struct DailyParameters
 {
     pub supervisor_work_orders:
-        HashMap<WorkOrderNumber, HashMap<ActivityNumber, SupervisorParameter>>,
+        HashMap<WorkOrderNumber, HashMap<ActivityNumber, DailyParameter>>,
     pub supervisor_periods: Vec<Period>,
-    pub options: SupervisorOptions,
+    pub options: DailyOptions,
 }
 
 // TODO: Add assertions on vector elements
-impl std::fmt::Debug for SupervisorParameters
+impl std::fmt::Debug for DailyParameters
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
@@ -32,7 +32,7 @@ impl std::fmt::Debug for SupervisorParameters
             write!(
                 f,
                 "Number of WorkOrderActivities: {}\n\
-                Supervisor periods: {:#?}",
+                Daily periods: {:#?}",
                 self.supervisor_work_orders.len(),
                 self.supervisor_periods,
             )
@@ -42,7 +42,7 @@ impl std::fmt::Debug for SupervisorParameters
     }
 }
 
-impl Parameters for SupervisorParameters
+impl Parameters for DailyParameters
 {
     type Key = WorkOrderActivity;
 
@@ -63,7 +63,7 @@ impl Parameters for SupervisorParameters
             .supervisor()
             .iter()
             .find(|e| e.id == *id.0)
-            .with_context(|| format!("Missing an Supervisor entry for {id}"))?;
+            .with_context(|| format!("Missing an Daily entry for {id}"))?;
 
         let options = input_supervisor
             .supervisor_options
@@ -73,7 +73,7 @@ impl Parameters for SupervisorParameters
             .time_environment
             .periods
             .get(0..input_supervisor.number_of_supervisor_periods as usize)
-            .with_context(||format!("There are not enough periods in the TimeEnvironment to initialize the Supervisor\nNumber of supervisor periods: {}", input_supervisor.number_of_supervisor_periods))?;
+            .with_context(||format!("There are not enough periods in the TimeEnvironment to initialize the Daily\nNumber of supervisor periods: {}", input_supervisor.number_of_supervisor_periods))?;
 
         for (work_order_number, work_order) in scheduling_environment
             .work_orders
@@ -87,7 +87,7 @@ impl Parameters for SupervisorParameters
                 let number = work_order.number_of_people(activity_number)?;
                 let work = work_order.operation_work_remaining(activity_number)?;
 
-                let supervisor_parameter = SupervisorParameter::new(resource, number, work);
+                let supervisor_parameter = DailyParameter::new(resource, number, work);
 
                 inner_map.insert(activity_number, supervisor_parameter);
             }
@@ -115,18 +115,18 @@ impl Parameters for SupervisorParameters
 }
 
 #[allow(dead_code)]
-impl SupervisorParameters
+impl DailyParameters
 {
     pub(crate) fn supervisor_parameter(
         &self,
         work_order_activity: &WorkOrderActivity,
-    ) -> Result<&SupervisorParameter>
+    ) -> Result<&DailyParameter>
     {
         let supervisor_parameter = self.supervisor_work_orders
             .get(&work_order_activity.0)
-            .context(format!("WorkOrderNumber: {:?} was not part of the SupervisorParameters", work_order_activity.0))?
+            .context(format!("WorkOrderNumber: {:?} was not part of the DailyParameters", work_order_activity.0))?
             .get(&work_order_activity.1)
-            .context(format!("WorkOrderNumber: {:?} with ActivityNumber: {:?} was not part of the SupervisorParameters", work_order_activity.0, work_order_activity.1))?;
+            .context(format!("WorkOrderNumber: {:?} with ActivityNumber: {:?} was not part of the DailyParameters", work_order_activity.0, work_order_activity.1))?;
 
         Ok(supervisor_parameter)
     }
@@ -135,7 +135,7 @@ impl SupervisorParameters
     pub(crate) fn insert_supervisor_parameter(
         &mut self,
         work_order_activity: &WorkOrderActivity,
-        supervisor_parameter: SupervisorParameter,
+        supervisor_parameter: DailyParameter,
     )
     {
         self.supervisor_work_orders
@@ -146,14 +146,14 @@ impl SupervisorParameters
 }
 
 #[derive(Debug, Clone)]
-pub struct SupervisorParameter
+pub struct DailyParameter
 {
     pub resource: Skill,
     pub number_of_people: NumberOfPeople,
     pub work_remaining: Work,
 }
 
-impl SupervisorParameter
+impl DailyParameter
 {
     pub fn new(resource: Skill, number: NumberOfPeople, work_remaining: Work) -> Self
     {

@@ -5,7 +5,7 @@ use serde::Serialize;
 
 // HTTP GET and POST endpoints for resource management
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub enum TacticalResourceRequest
+pub enum ProjectResourceRequest
 {
     GetLoadings
     {
@@ -25,7 +25,7 @@ pub enum TacticalResourceRequest
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub enum TacticalSchedulingRequest
+pub enum ProjectSchedulingRequest
 {
     Schedule(ScheduleChange),
     ScheduleMultiple(Vec<ScheduleChange>),
@@ -33,20 +33,20 @@ pub enum TacticalSchedulingRequest
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub enum TacticalStatusMessage
+pub enum ProjectStatusMessage
 {
     General,
     Day(String),
 }
 #[derive(Debug, Serialize, Deserialize, Clone)]
 
-pub enum TacticalTimeRequest
+pub enum ProjectTimeRequest
 {
     Days,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct TacticalUpdateRequest {}
+pub struct ProjectUpdateRequest {}
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ScheduleChange
 {
@@ -70,6 +70,6 @@ impl ScheduleChange
     }
 }
 
-pub enum TacticalRequestScheduling {}
-pub enum TacticalRequestResource {}
-pub enum TacticalSchedulingEnvironmentCommands {}
+pub enum ProjectRequestScheduling {}
+pub enum ProjectRequestResource {}
+pub enum ProjectSchedulingEnvironmentCommands {}

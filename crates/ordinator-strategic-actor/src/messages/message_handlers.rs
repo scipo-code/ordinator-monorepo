@@ -13,40 +13,40 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 use tracing::Level;
 use tracing::event;
 
-use super::StrategicRequestMessage;
-use super::StrategicResponseMessage;
-use super::StrategicSchedulingEnvironmentCommands;
-use super::StrategicStatusMessage;
-use crate::algorithm::StrategicAlgorithm;
+use super::WeeklyRequestMessage;
+use super::WeeklyResponseMessage;
+use super::WeeklySchedulingEnvironmentCommands;
+use super::WeeklyStatusMessage;
+use crate::algorithm::WeeklyAlgorithm;
 use crate::algorithm::strategic_parameters::WorkOrderParameter;
-use crate::algorithm::strategic_resources::StrategicResources;
-use crate::algorithm::strategic_solution::StrategicSolution;
-use crate::messages::StrategicRequestScheduling;
-use crate::messages::StrategicResponseScheduling;
+use crate::algorithm::strategic_resources::WeeklyResources;
+use crate::algorithm::strategic_solution::WeeklySolution;
+use crate::messages::WeeklyRequestScheduling;
+use crate::messages::WeeklyResponseScheduling;
 
 // TODO: Refactor type system to resolve blanket implementation conflicts with Orphan Rule.
 // The LNS blanket implementation on inner types conflicts with actor-level implementations.
-impl<Ss> CommandHandler<StrategicRequestMessage, StrategicResponseMessage>
-    for Actor<StrategicRequestMessage, StrategicResponseMessage, StrategicAlgorithm<Ss>>
+impl<Ss> CommandHandler<WeeklyRequestMessage, WeeklyResponseMessage>
+    for Actor<WeeklyRequestMessage, WeeklyResponseMessage, WeeklyAlgorithm<Ss>>
 where
-    Ss: SystemSolutions<Strategic = StrategicSolution> + Debug,
+    Ss: SystemSolutions<Weekly = WeeklySolution> + Debug,
 {
     fn handle_request_message(
         &mut self,
-        strategic_request_message: StrategicRequestMessage,
-    ) -> Result<StrategicResponseMessage>
+        strategic_request_message: WeeklyRequestMessage,
+    ) -> Result<WeeklyResponseMessage>
     {
         let strategic_response = match strategic_request_message {
             ordinator_actor_core::RequestMessage::Status(strategic_status_message) => {
                 match strategic_status_message {
-                    StrategicStatusMessage::General => {
+                    WeeklyStatusMessage::General => {
                         // TODO: Implement general status message handling
                         Err(anyhow::anyhow!(
                             "Implement this. And please, do it correctly and thoughtfully the first time"
                         ))
                     }
                     // Consider moving period creation to the Orchestrator
-                    StrategicStatusMessage::Period(period) => {
+                    WeeklyStatusMessage::Period(period) => {
                         if !self
                             .algorithm
                             .parameters
@@ -100,7 +100,7 @@ where
                         bail!("The endpoints are being refactored")
                     }
                     // Use `From` implementations for work order conversion
-                    StrategicStatusMessage::WorkOrder(_work_order_number) => {
+                    WeeklyStatusMessage::WorkOrder(_work_order_number) => {
                         // TODO [ ]
                         // Make a `From` implementation.
                         // let strategic_solution_for_specific_work_order = self
@@ -126,7 +126,7 @@ where
                         // let locked_in_period = &strategic_parameter.locked_in_period;
                         // let excluded_from_period = &strategic_parameter.excluded_periods;
 
-                        // let strategic_api_solution = StrategicApiSolution {
+                        // let strategic_api_solution = WeeklyApiSolution {
                         //     solution: strategic_solution_for_specific_work_order.clone(),
                         //     locked_in_period: locked_in_period.clone(),
                         //     excluded_from_period: excluded_from_period.clone(),
@@ -136,7 +136,7 @@ where
                         //     WorkOrdersStatus::SingleSolution(strategic_api_solution);
 
                         // let strategic_response_message =
-                        //     StrategicResponseMessage::WorkOrder(work_orders_in_period);
+                        //     WeeklyResponseMessage::WorkOrder(work_orders_in_period);
 
                         // Ok(strategic_response_message)
                         todo!()
@@ -144,13 +144,13 @@ where
                 }
             }
             ordinator_actor_core::RequestMessage::Scheduling(scheduling_message) => {
-                let scheduling_output: StrategicResponseScheduling = self
+                let scheduling_output: WeeklyResponseScheduling = self
                     .algorithm
                     .update_scheduling_state(scheduling_message)
                     .with_context(|| {
                         format!(
                             "{} was not Resolved",
-                            type_name::<StrategicRequestScheduling>()
+                            type_name::<WeeklyRequestScheduling>()
                                 .split("::")
                                 .last()
                                 .unwrap()
@@ -160,14 +160,14 @@ where
 
                 self.algorithm.calculate_objective_value()?;
                 event!(target: "research", Level::INFO, strategic_objective_value = ?self.algorithm.solution.objective_value());
-                Ok(StrategicResponseMessage::Scheduling(scheduling_output))
+                Ok(WeeklyResponseMessage::Scheduling(scheduling_output))
             }
             ordinator_actor_core::RequestMessage::Resource(resources_message) => {
                 let resources_output = self.algorithm.update_resources_state(resources_message);
 
                 self.algorithm.calculate_objective_value()?;
                 event!(target: "research", Level::INFO, strategic_objective_value = ?self.algorithm.solution.objective_value());
-                Ok(StrategicResponseMessage::Resources(
+                Ok(WeeklyResponseMessage::Resources(
                     resources_output.unwrap(),
                 ))
             }
@@ -192,8 +192,8 @@ where
                 // // created through the
                 // self.algorithm.parameters.strategic_periods = periods.to_vec();
                 // let strategic_response_periods =
-                // StrategicResponsePeriods::new(periods.clone());
-                // Ok(StrategicResponseMessage::Periods(
+                // WeeklyResponsePeriods::new(periods.clone());
+                // Ok(WeeklyResponseMessage::Periods(
                 //     strategic_response_periods,
                 // ))
                 todo!()
@@ -202,9 +202,9 @@ where
                 strategic_scheduling_environment_commands,
             ) => match strategic_scheduling_environment_commands {
                 // TODO: Move user status handling to Orchestrator. This handler should only read
-                // SchedulingEnvironment and update StrategicParameters, delegating business logic
+                // SchedulingEnvironment and update WeeklyParameters, delegating business logic
                 // elsewhere through DTO-based approaches.
-                StrategicSchedulingEnvironmentCommands::UserStatus(
+                WeeklySchedulingEnvironmentCommands::UserStatus(
                     _strategic_user_status_codes,
                 ) => {
                     // let scheduling_environment_lock =
@@ -224,7 +224,7 @@ where
                     //         })?;
 
                     //     // This should ideally be encapsulated into the a method on the WorkOrder
-                    //     // that accepts a StrategicUserStatusCodes
+                    //     // that accepts a WeeklyUserStatusCodes
                     //     let user_status_codes =
                     //         &mut work_order.work_order_analytic.user_status_codes;
 
@@ -324,7 +324,7 @@ where
                     //     )
                     //     .context("Could not notify Orchestrator")?;
 
-                    Ok(StrategicResponseMessage::Success)
+                    Ok(WeeklyResponseMessage::Success)
                 }
             },
             ordinator_actor_core::RequestMessage::Update => todo!(),
@@ -334,7 +334,7 @@ where
         strategic_response
     }
 
-    fn handle_state_link(&mut self, msg: StateLink) -> Result<StrategicResponseMessage>
+    fn handle_state_link(&mut self, msg: StateLink) -> Result<WeeklyResponseMessage>
     {
         match msg {
             StateLink::WorkOrders(changed_work_orders) => {
@@ -373,21 +373,21 @@ where
                         .insert(work_order_number, strategic_parameter);
                 }
 
-                Ok(StrategicResponseMessage::StateLink)
+                Ok(WeeklyResponseMessage::StateLink)
             }
             StateLink::WorkerEnvironment => {
                 let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
                 let strategic_resources =
-                    StrategicResources::from((&scheduling_environment_guard, &self.actor_id));
+                    WeeklyResources::from((&scheduling_environment_guard, &self.actor_id));
                 drop(scheduling_environment_guard);
 
                 self.algorithm
                     .parameters
                     .strategic_capacity
                     .update_resource_capacities(strategic_resources)
-                    .expect("Could not update the StrategicResources");
+                    .expect("Could not update the WeeklyResources");
 
-                Ok(StrategicResponseMessage::StateLink)
+                Ok(WeeklyResponseMessage::StateLink)
             }
             StateLink::TimeEnvironment => todo!(),
         }

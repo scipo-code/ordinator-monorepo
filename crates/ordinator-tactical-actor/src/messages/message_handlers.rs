@@ -9,46 +9,46 @@ use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::assignments::AnyAssignment;
 
-use super::TacticalRequestMessage;
-use super::TacticalResponseMessage;
-use crate::algorithm::TacticalAlgorithm;
-use crate::algorithm::tactical_parameters::TacticalParameters;
+use super::ProjectRequestMessage;
+use super::ProjectResponseMessage;
+use crate::algorithm::ProjectAlgorithm;
+use crate::algorithm::tactical_parameters::ProjectParameters;
 use crate::algorithm::tactical_parameters::create_tactical_parameter;
-use crate::algorithm::tactical_resources::TacticalResources;
-use crate::algorithm::tactical_solution::TacticalSolution;
+use crate::algorithm::tactical_resources::ProjectResources;
+use crate::algorithm::tactical_solution::ProjectSolution;
 
-// TODO: Refactor to use TacticalAgent design instead of current implementation
-impl<Ss: Debug> CommandHandler<TacticalRequestMessage, TacticalResponseMessage>
-    for Actor<TacticalRequestMessage, TacticalResponseMessage, TacticalAlgorithm<Ss>>
+// TODO: Refactor to use ProjectAgent design instead of current implementation
+impl<Ss: Debug> CommandHandler<ProjectRequestMessage, ProjectResponseMessage>
+    for Actor<ProjectRequestMessage, ProjectResponseMessage, ProjectAlgorithm<Ss>>
 where
-    Ss: SystemSolutions<Tactical = TacticalSolution>,
+    Ss: SystemSolutions<Project = ProjectSolution>,
 {
     fn handle_request_message(
         &mut self,
-        tactical_request: TacticalRequestMessage,
-    ) -> Result<TacticalResponseMessage>
+        tactical_request: ProjectRequestMessage,
+    ) -> Result<ProjectResponseMessage>
     {
         match tactical_request {
-            TacticalRequestMessage::Status(_tactical_status_message) => {
+            ProjectRequestMessage::Status(_tactical_status_message) => {
                 // let status_message = self.status().unwrap();
-                // Ok(TacticalResponseMessage::Status(status_message))
+                // Ok(ProjectResponseMessage::Status(status_message))
                 todo!()
             }
-            TacticalRequestMessage::Scheduling(_tactical_scheduling_message) => {
+            ProjectRequestMessage::Scheduling(_tactical_scheduling_message) => {
                 todo!()
             }
-            TacticalRequestMessage::Resource(_tactical_resources_message) => {
+            ProjectRequestMessage::Resource(_tactical_resources_message) => {
                 // let resource_response = self
                 //     .update_resources_state(tactical_resources_message)
                 //     .unwrap();
-                Ok(TacticalResponseMessage::FreeStringResponse(
+                Ok(ProjectResponseMessage::FreeStringResponse(
                     "Implement the Update code here.".to_string(),
                 ))
             }
-            TacticalRequestMessage::Time(_tactical_time_message) => {
+            ProjectRequestMessage::Time(_tactical_time_message) => {
                 todo!()
             }
-            TacticalRequestMessage::Update => {
+            ProjectRequestMessage::Update => {
                 todo!()
                 // let locked_scheduling_environment =
                 // &self.scheduling_environment.lock().unwrap();
@@ -56,12 +56,12 @@ where
 
                 // self.algorithm
                 //     .create_tactical_parameters(locked_scheduling_environment, asset);
-                // Ok(TacticalResponseMessage::Update)
+                // Ok(ProjectResponseMessage::Update)
             }
         }
     }
 
-    fn handle_state_link(&mut self, state_link: StateLink) -> Result<TacticalResponseMessage>
+    fn handle_state_link(&mut self, state_link: StateLink) -> Result<ProjectResponseMessage>
     {
         match state_link {
             StateLink::WorkOrders(modified_work_orders) => {
@@ -84,7 +84,7 @@ where
                         format!(
                             "{:?} should always be present in {}",
                             work_order_number,
-                            std::any::type_name::<TacticalParameters>()
+                            std::any::type_name::<ProjectParameters>()
                         )
                     })?;
 
@@ -111,7 +111,7 @@ where
 
                     // TODO: Ensure solution state remains consistent with parameter updates.
                     // StateLink should only update parameters, not solution directly.
-                    // The Strategic actor does not touch solution, maintain this invariant.
+                    // The Weekly actor does not touch solution, maintain this invariant.
                     self.algorithm
                         .unschedule_specific_work_order(work_order_number)
                         .with_context(|| {
@@ -120,16 +120,16 @@ where
                             )
                         })?;
                 }
-                Ok(TacticalResponseMessage::FreeStringResponse(
+                Ok(ProjectResponseMessage::FreeStringResponse(
                     "Updated StateLink::WorkOrders".to_string(),
                 ))
             }
             StateLink::WorkerEnvironment => {
                 let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 
-                // Convert reference to TacticalResources without consuming the value
+                // Convert reference to ProjectResources without consuming the value
                 let tactical_resources =
-                    TacticalResources::from((&scheduling_environment_guard, &self.actor_id));
+                    ProjectResources::from((&scheduling_environment_guard, &self.actor_id));
                 drop(scheduling_environment_guard);
 
                 self.algorithm
@@ -138,7 +138,7 @@ where
                     .update_resources(tactical_resources);
 
                 // TODO: Return JSON response instead of string
-                Ok(TacticalResponseMessage::FreeStringResponse(
+                Ok(ProjectResponseMessage::FreeStringResponse(
                     "Updated StateLink::WorkerEnvironment".to_string(),
                 ))
             }
@@ -150,15 +150,15 @@ where
     }
 }
 
-// impl<Ss> TacticalActor<TacticalRequestMessage, TacticalResponseMessage,
-// TacticalAlgorithm<Ss>> {
+// impl<Ss> ProjectActor<ProjectRequestMessage, ProjectResponseMessage,
+// ProjectAlgorithm<Ss>> {
 //     fn update_resources_state(
 //         &mut self,
-//         resource_message: TacticalResourceRequest,
-//     ) -> Result<TacticalResourceResponse>
+//         resource_message: ProjectResourceRequest,
+//     ) -> Result<ProjectResourceResponse>
 //     {
 //         match resource_message {
-// TacticalResourceRequest::SetResources(resources) => {
+// ProjectResourceRequest::SetResources(resources) => {
 //     // The resources should be initialized together with the Agent itself
 //     let mut count = 0;
 //     for (resource, days) in resources.resources {
@@ -182,29 +182,29 @@ where
 //             *self.algorithm.capacity_mut(&resource, &day) = capacity;
 //         }
 //     }
-//     Ok(TacticalResourceResponse::UpdatedResources(count))
-// TacticalResourceRequest::GetLoadings {
+//     Ok(ProjectResourceResponse::UpdatedResources(count))
+// ProjectResourceRequest::GetLoadings {
 //     days_end: _,
 //     select_resources: _,
 // } => {
 //     let loadings = self.algorithm.solution.tactical_loadings.clone();
 
 //     let tactical_response_resources =
-// TacticalResourceResponse::Loading(loadings);
+// ProjectResourceResponse::Loading(loadings);
 //     Ok(tactical_response_resources)
 // }
-// TacticalResourceRequest::GetCapacities {
+// ProjectResourceRequest::GetCapacities {
 //     days_end: _,
 //     select_resources: _,
 // } => {
 //     let capacities = self.algorithm.parameters.tactical_capacity.clone();
 
 //     let tactical_response_resources =
-// TacticalResourceResponse::Capacity(capacities);
+// ProjectResourceResponse::Capacity(capacities);
 
 //     Ok(tactical_response_resources)
 // }
-// TacticalResourceRequest::GetPercentageLoadings {
+// ProjectResourceRequest::GetPercentageLoadings {
 //     days_end: _,
 //     resources: _,
 // } => {
@@ -212,7 +212,7 @@ where
 //     let loadings = &self.algorithm.solution.tactical_loadings;
 
 //     let tactical_response_resources =
-//         TacticalResourceResponse::Percentage((capacities.clone(),
+//         ProjectResourceResponse::Percentage((capacities.clone(),
 // loadings.clone()));     Ok(tactical_response_resources)
 // }
 //             _ => todo!(),

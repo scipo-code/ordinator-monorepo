@@ -20,7 +20,7 @@ use ordinator_contracts::scheduler::WorkOrderSingleRowSimpleDto;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::StateLink;
-use ordinator_orchestrator::StrategicInterface;
+use ordinator_orchestrator::WeeklyInterface;
 use ordinator_orchestrator::SystemSolutions;
 use ordinator_orchestrator::WorkOrderNumber;
 use serde::Deserialize;
@@ -168,7 +168,7 @@ where
     let strategic_periods = strategic_periods
         .strategic()
         .map_err(|_| {
-            AppError::Anyhow(format!("No StrategicSolution exists for Asset: {}", &asset))
+            AppError::Anyhow(format!("No WeeklySolution exists for Asset: {}", &asset))
         })?
         .all_scheduled_tasks();
 

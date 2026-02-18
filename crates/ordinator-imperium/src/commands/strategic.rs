@@ -2,20 +2,20 @@ use std::str::FromStr;
 
 use clap::Args;
 use clap::Subcommand;
-use shared_types::agents::strategic::requests::strategic_request_resources_message::StrategicRequestResource;
+use shared_types::agents::strategic::requests::strategic_request_resources_message::WeeklyRequestResource;
 use shared_types::agents::strategic::requests::strategic_request_scheduling_message::ScheduleChange;
-use shared_types::agents::strategic::requests::strategic_request_scheduling_message::StrategicRequestScheduling;
-use shared_types::agents::strategic::requests::strategic_request_status_message::StrategicStatusMessage;
-use shared_types::agents::strategic::StrategicRequest;
-use shared_types::agents::strategic::StrategicRequestMessage;
-use shared_types::agents::strategic::StrategicSchedulingEnvironmentCommands;
+use shared_types::agents::strategic::requests::strategic_request_scheduling_message::WeeklyRequestScheduling;
+use shared_types::agents::strategic::requests::strategic_request_status_message::WeeklyStatusMessage;
+use shared_types::agents::strategic::WeeklyRequest;
+use shared_types::agents::strategic::WeeklyRequestMessage;
+use shared_types::agents::strategic::WeeklySchedulingEnvironmentCommands;
 use shared_types::scheduling_environment::work_order::WorkOrderNumber;
 use shared_types::scheduling_environment::worker_environment::resources::Resources;
 use shared_types::Asset;
 use shared_types::SystemMessages;
 
 #[derive(Subcommand, Debug)]
-pub enum StrategicCommands
+pub enum WeeklyCommands
 {
     /// Overview of the strategic agent
     Status
@@ -40,12 +40,12 @@ pub enum StrategicCommands
     },
 
     /// Access the Scheduling Environment with the options that the
-    /// StrategicAgent can change
-    StrategicSchedulingEnvironmentCommands
+    /// WeeklyAgent can change
+    WeeklySchedulingEnvironmentCommands
     {
         asset: Asset,
         #[clap(subcommand)]
-        strategic_scheduling_environment_commands: StrategicSchedulingEnvironmentCommands,
+        strategic_scheduling_environment_commands: WeeklySchedulingEnvironmentCommands,
     },
 }
 
@@ -118,93 +118,93 @@ pub struct WorkOrderSchedule
     pub period: String,
 }
 
-impl StrategicCommands
+impl WeeklyCommands
 {
     pub fn execute(self) -> SystemMessages
     {
         match self {
-            StrategicCommands::Status {
+            WeeklyCommands::Status {
                 asset,
                 status_commands,
             } => match status_commands {
                 Some(StatusCommands::WorkOrder { work_order_number }) => {
                     let strategic_status_message =
-                        StrategicStatusMessage::WorkOrder(WorkOrderNumber(work_order_number));
+                        WeeklyStatusMessage::WorkOrder(WorkOrderNumber(work_order_number));
 
-                    let strategic_request = StrategicRequest {
+                    let strategic_request = WeeklyRequest {
                         asset,
-                        strategic_request_message: StrategicRequestMessage::Status(
+                        strategic_request_message: WeeklyRequestMessage::Status(
                             strategic_status_message,
                         ),
                     };
 
-                    SystemMessages::Strategic(strategic_request)
+                    SystemMessages::Weekly(strategic_request)
                 }
                 Some(StatusCommands::WorkOrders { period }) => {
                     let strategic_status_message =
-                        StrategicStatusMessage::new_period(period.to_string());
+                        WeeklyStatusMessage::new_period(period.to_string());
 
-                    let strategic_request = StrategicRequest {
+                    let strategic_request = WeeklyRequest {
                         asset,
-                        strategic_request_message: StrategicRequestMessage::Status(
+                        strategic_request_message: WeeklyRequestMessage::Status(
                             strategic_status_message,
                         ),
                     };
 
-                    SystemMessages::Strategic(strategic_request)
+                    SystemMessages::Weekly(strategic_request)
                 }
                 None => {
-                    let strategic_status_message: StrategicStatusMessage =
-                        StrategicStatusMessage::General;
+                    let strategic_status_message: WeeklyStatusMessage =
+                        WeeklyStatusMessage::General;
 
                     let strategic_request_message =
-                        StrategicRequestMessage::Status(strategic_status_message);
+                        WeeklyRequestMessage::Status(strategic_status_message);
 
-                    let strategic_request = StrategicRequest {
+                    let strategic_request = WeeklyRequest {
                         asset: asset.clone(),
                         strategic_request_message,
                     };
 
-                    SystemMessages::Strategic(strategic_request)
+                    SystemMessages::Weekly(strategic_request)
                 }
             },
-            StrategicCommands::Scheduling {
+            WeeklyCommands::Scheduling {
                 asset,
                 scheduling_commands: subcommand,
             } => match subcommand {
                 SchedulingCommands::Schedule(schedule) => {
-                    let strategic_scheduling_message: StrategicRequestScheduling =
-                        StrategicRequestScheduling::Schedule(schedule);
+                    let strategic_scheduling_message: WeeklyRequestScheduling =
+                        WeeklyRequestScheduling::Schedule(schedule);
 
                     let strategic_request_message =
-                        StrategicRequestMessage::Scheduling(strategic_scheduling_message);
+                        WeeklyRequestMessage::Scheduling(strategic_scheduling_message);
 
-                    let strategic_request = StrategicRequest {
+                    let strategic_request = WeeklyRequest {
                         asset: asset.clone(),
                         strategic_request_message,
                     };
 
-                    SystemMessages::Strategic(strategic_request)
+                    SystemMessages::Weekly(strategic_request)
                 }
                 SchedulingCommands::PeriodLock { period: _ } => {
                     todo!()
                 }
                 SchedulingCommands::Exclude(schedule_change) => {
-                    let strategic_scheduling_message: StrategicRequestScheduling =
-                        StrategicRequestScheduling::ExcludeFromPeriod(schedule_change);
+                    let strategic_scheduling_message: WeeklyRequestScheduling =
+                        WeeklyRequestScheduling::ExcludeFromPeriod(schedule_change);
 
                     let strategic_request_message =
-                        StrategicRequestMessage::Scheduling(strategic_scheduling_message);
+                        WeeklyRequestMessage::Scheduling(strategic_scheduling_message);
 
-                    let strategic_request = StrategicRequest {
+                    let strategic_request = WeeklyRequest {
                         asset: asset.clone(),
                         strategic_request_message,
                     };
 
-                    SystemMessages::Strategic(strategic_request)
+                    SystemMessages::Weekly(strategic_request)
                 }
             },
-            StrategicCommands::Resources {
+            WeeklyCommands::Resources {
                 asset,
                 resource_commands: subcommand,
             } => match subcommand {
@@ -223,20 +223,20 @@ impl StrategicCommands
                         None => None,
                     };
 
-                    let strategic_resources_message = StrategicRequestResource::GetLoadings {
+                    let strategic_resources_message = WeeklyRequestResource::GetLoadings {
                         periods_end: periods_end.to_string(),
                         select_resources: resources,
                     };
 
                     let strategic_request_message =
-                        StrategicRequestMessage::Resources(strategic_resources_message);
+                        WeeklyRequestMessage::Resources(strategic_resources_message);
 
-                    let strategic_request = StrategicRequest {
+                    let strategic_request = WeeklyRequest {
                         asset: asset.clone(),
                         strategic_request_message,
                     };
 
-                    SystemMessages::Strategic(strategic_request)
+                    SystemMessages::Weekly(strategic_request)
                 }
                 ResourceCommands::Capacity {
                     periods_end,
@@ -253,20 +253,20 @@ impl StrategicCommands
                         None => None,
                     };
 
-                    let strategic_resources_message = StrategicRequestResource::GetCapacities {
+                    let strategic_resources_message = WeeklyRequestResource::GetCapacities {
                         periods_end: periods_end.to_string(),
                         select_resources: resources,
                     };
 
                     let strategic_request_message =
-                        StrategicRequestMessage::Resources(strategic_resources_message);
+                        WeeklyRequestMessage::Resources(strategic_resources_message);
 
-                    let strategic_request = StrategicRequest {
+                    let strategic_request = WeeklyRequest {
                         asset: asset.clone(),
                         strategic_request_message,
                     };
 
-                    SystemMessages::Strategic(strategic_request)
+                    SystemMessages::Weekly(strategic_request)
                 }
 
                 ResourceCommands::PercentageLoading {
@@ -285,20 +285,20 @@ impl StrategicCommands
                     };
 
                     let strategic_resources_message =
-                        StrategicRequestResource::GetPercentageLoadings {
+                        WeeklyRequestResource::GetPercentageLoadings {
                             periods_end: periods_end.to_string(),
                             resources,
                         };
 
                     let strategic_request_message =
-                        StrategicRequestMessage::Resources(strategic_resources_message);
+                        WeeklyRequestMessage::Resources(strategic_resources_message);
 
-                    let strategic_request = StrategicRequest {
+                    let strategic_request = WeeklyRequest {
                         asset: asset.clone(),
                         strategic_request_message,
                     };
 
-                    SystemMessages::Strategic(strategic_request)
+                    SystemMessages::Weekly(strategic_request)
                 }
                 ResourceCommands::SetCapacity {
                     resource: _,
@@ -308,19 +308,19 @@ impl StrategicCommands
                     todo!()
                 }
             },
-            StrategicCommands::StrategicSchedulingEnvironmentCommands {
+            WeeklyCommands::WeeklySchedulingEnvironmentCommands {
                 asset,
                 strategic_scheduling_environment_commands,
             } => {
-                let strategic_request_message = StrategicRequestMessage::SchedulingEnvironment(
+                let strategic_request_message = WeeklyRequestMessage::SchedulingEnvironment(
                     strategic_scheduling_environment_commands,
                 );
 
-                let strategic_request = StrategicRequest {
+                let strategic_request = WeeklyRequest {
                     asset,
                     strategic_request_message,
                 };
-                SystemMessages::Strategic(strategic_request)
+                SystemMessages::Weekly(strategic_request)
             }
         }
     }

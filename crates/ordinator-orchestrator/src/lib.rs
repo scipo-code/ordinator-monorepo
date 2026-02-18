@@ -29,10 +29,10 @@ pub use ordinator_operational_actor::messages::requests::OperationalStatusReques
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::Communication;
 pub use ordinator_orchestrator_actor_traits::StateLink;
-pub use ordinator_orchestrator_actor_traits::StrategicInterface;
+pub use ordinator_orchestrator_actor_traits::WeeklyInterface;
 pub use ordinator_orchestrator_actor_traits::SystemSolutions;
 // TODO [ ] 2025-07-02 add the other `<Actor>Interface`s here
-pub use ordinator_orchestrator_actor_traits::TacticalInterface;
+pub use ordinator_orchestrator_actor_traits::ProjectInterface;
 // TODO END
 pub use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
@@ -43,21 +43,21 @@ pub use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 pub use ordinator_scheduling_environment::worker_environment::availability::Availability;
 pub use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 pub use ordinator_scheduling_environment::worker_environment::resources::Skill;
-use ordinator_strategic_actor::StrategicApi;
-use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
-pub use ordinator_strategic_actor::messages::StrategicRequestMessage;
-pub use ordinator_strategic_actor::messages::StrategicResponseMessage;
-use ordinator_supervisor_actor::SupervisorApi;
-use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
-pub use ordinator_supervisor_actor::messages::SupervisorRequestMessage;
-pub use ordinator_supervisor_actor::messages::SupervisorResponseMessage;
-pub use ordinator_supervisor_actor::messages::requests::SupervisorStatusMessage;
-pub use ordinator_supervisor_actor::messages::responses::SupervisorResponseStatus;
-use ordinator_tactical_actor::TacticalApi;
-use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
-pub use ordinator_tactical_actor::messages::TacticalRequestMessage;
-pub use ordinator_tactical_actor::messages::TacticalResponseMessage;
-pub use ordinator_tactical_actor::messages::requests::TacticalStatusMessage;
+use ordinator_strategic_actor::WeeklyApi;
+use ordinator_strategic_actor::algorithm::strategic_solution::WeeklySolution;
+pub use ordinator_strategic_actor::messages::WeeklyRequestMessage;
+pub use ordinator_strategic_actor::messages::WeeklyResponseMessage;
+use ordinator_supervisor_actor::DailyApi;
+use ordinator_supervisor_actor::algorithm::supervisor_solution::DailySolution;
+pub use ordinator_supervisor_actor::messages::DailyRequestMessage;
+pub use ordinator_supervisor_actor::messages::DailyResponseMessage;
+pub use ordinator_supervisor_actor::messages::requests::DailyStatusMessage;
+pub use ordinator_supervisor_actor::messages::responses::DailyResponseStatus;
+use ordinator_tactical_actor::ProjectApi;
+use ordinator_tactical_actor::algorithm::tactical_solution::ProjectSolution;
+pub use ordinator_tactical_actor::messages::ProjectRequestMessage;
+pub use ordinator_tactical_actor::messages::ProjectResponseMessage;
+pub use ordinator_tactical_actor::messages::requests::ProjectStatusMessage;
 // use ordinator_total_data_processing::excel_dumps::create_excel_dump;
 use serde::Deserialize;
 use serde::Serialize;
@@ -93,8 +93,8 @@ pub enum OrchestratorRequest
     GetDays,
     AgentStatusRequest,
     // InitializeSystemAgentsFromFile(Asset, ActorSpecifications),
-    CreateSupervisorAgent(Asset, u64, ActorCompositeId),
-    DeleteSupervisorAgent(Asset, String),
+    CreateDailyAgent(Asset, u64, ActorCompositeId),
+    DeleteDailyAgent(Asset, String),
 
     // This should be an API handle not simply
     // CreateOperationalAgent(Asset, Id, f64, OperationalConfiguration),
@@ -112,9 +112,9 @@ pub enum StartError
 impl<Ss> Orchestrator<Ss>
 where
     Ss: SystemSolutions<
-            Strategic = StrategicSolution,
-            Tactical = TacticalSolution,
-            Supervisor = SupervisorSolution,
+            Weekly = WeeklySolution,
+            Project = ProjectSolution,
+            Daily = DailySolution,
             Operational = OperationalSolution,
         > + Send
         + Sync,
@@ -208,7 +208,7 @@ where
                 let tactical_days = OrchestratorResponse::Days(days);
                 Ok(tactical_days)
             }
-            OrchestratorRequest::CreateSupervisorAgent(
+            OrchestratorRequest::CreateDailyAgent(
                 _asset,
                 _number_of_supervisor_periods,
                 _id_string,
@@ -216,7 +216,7 @@ where
                 // TODO: Implement supervisor agent creation
                 Ok(OrchestratorResponse::Todo)
             }
-            OrchestratorRequest::DeleteSupervisorAgent(asset, id_string) => {
+            OrchestratorRequest::DeleteDailyAgent(asset, id_string) => {
                 let id = self
                     .actor_registries
                     .lock()
@@ -233,7 +233,7 @@ where
                     .supervisor_agent_senders
                     .remove(&id);
 
-                let response_string = format!("Supervisor agent deleted with id {id}");
+                let response_string = format!("Daily agent deleted with id {id}");
                 let orchestrator_response = OrchestratorResponse::RequestStatus(response_string);
                 Ok(orchestrator_response)
             }
@@ -309,11 +309,11 @@ where
 impl ActorRegistry
 {
     fn new(
-        strategic_agent_addr: Communication<StrategicRequestMessage, StrategicResponseMessage>,
-        tactical_agent_addr: Communication<TacticalRequestMessage, TacticalResponseMessage>,
+        strategic_agent_addr: Communication<WeeklyRequestMessage, WeeklyResponseMessage>,
+        tactical_agent_addr: Communication<ProjectRequestMessage, ProjectResponseMessage>,
         supervisor_agent_addrs: HashMap<
             ActorCompositeId,
-            Communication<SupervisorRequestMessage, SupervisorResponseMessage>,
+            Communication<DailyRequestMessage, DailyResponseMessage>,
         >,
         operational_actor_communication: HashMap<
             ActorCompositeId,
@@ -332,7 +332,7 @@ impl ActorRegistry
     pub fn add_supervisor_agent(
         &mut self,
         id: ActorCompositeId,
-        communication: Communication<SupervisorRequestMessage, SupervisorResponseMessage>,
+        communication: Communication<DailyRequestMessage, DailyResponseMessage>,
     )
     {
         self.supervisor_agent_senders.insert(id, communication);
@@ -373,9 +373,9 @@ pub enum Environment
 impl<Ss> Orchestrator<Ss>
 where
     Ss: SystemSolutions<
-            Strategic = StrategicSolution,
-            Tactical = TacticalSolution,
-            Supervisor = SupervisorSolution,
+            Weekly = WeeklySolution,
+            Project = ProjectSolution,
+            Daily = DailySolution,
             Operational = OperationalSolution,
         >
         + Send
@@ -442,14 +442,14 @@ where
                         .unwrap()
                         .date
                         .and_hms_opt(0, 0, 0)
-                        .context("Could not make a DateTime in Availability for TacticalActor")?
+                        .context("Could not make a DateTime in Availability for ProjectActor")?
                         .and_utc(),
                     days.get(input_tactical.number_of_tactical_days - 1)
                         .or_else(|| days.last())
                         .unwrap()
                         .date
                         .and_hms_opt(0, 0, 0)
-                        .context("Could not make a DateTime in Availability for TacticalActor")?
+                        .context("Could not make a DateTime in Availability for ProjectActor")?
                         .and_utc(),
                     vec![asset.clone()],
                 )?,
@@ -503,7 +503,7 @@ where
             (strategic_id, tactical_id, supervisor_ids, operationals)
         };
 
-        let strategic_communication = StrategicApi::construct_actor(
+        let strategic_communication = WeeklyApi::construct_actor(
             strategic_id.clone(),
             dependencies.0.clone(),
             dependencies.1.clone(),
@@ -513,7 +513,7 @@ where
         )
         .with_context(|| format!("Could not construct StartegicActor {strategic_id}"))?;
 
-        let tactical_communication = TacticalApi::construct_actor(
+        let tactical_communication = ProjectApi::construct_actor(
             tactical_id.clone(),
             dependencies.0.clone(),
             dependencies.1.clone(),
@@ -525,7 +525,7 @@ where
 
         let mut supervisor_communications = HashMap::default();
         for supervisor_id in supervisors {
-            let supervisor_communication = SupervisorApi::construct_actor(
+            let supervisor_communication = DailyApi::construct_actor(
                 supervisor_id.clone(),
                 dependencies.0.clone(),
                 dependencies.1.clone(),
@@ -782,9 +782,9 @@ impl OrchestratorBuilder<StepBuild>
     pub fn build<Ss>(self) -> OrchestratorBuildOutput<Ss>
     where
         Ss: SystemSolutions<
-                Strategic = StrategicSolution,
-                Tactical = TacticalSolution,
-                Supervisor = SupervisorSolution,
+                Weekly = WeeklySolution,
+                Project = ProjectSolution,
+                Daily = DailySolution,
                 Operational = OperationalSolution,
             >
             + Send

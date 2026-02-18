@@ -85,7 +85,7 @@ impl SavedAssignment
                 )
             }
             ForcedWorkOrder::Days(tactical_force_type) => match tactical_force_type {
-                work_order::TacticalForceType::OnlyStartDay(day) => {
+                work_order::ProjectForceType::OnlyStartDay(day) => {
                     let technicians = id.iter().map(|e| (e.clone(), None)).collect::<HashSet<_>>();
                     Assignment::new(
                         work_order_number,
@@ -95,7 +95,7 @@ impl SavedAssignment
                         technicians,
                     )
                 }
-                work_order::TacticalForceType::IndividualActivities(_vec, _vec1) => todo!(),
+                work_order::ProjectForceType::IndividualActivities(_vec, _vec1) => todo!(),
             },
             ForcedWorkOrder::Technician(technician_include, _technician_exclude) => {
                 let date_time_option = technician_include.interval.as_ref().map(|day| day.0);
@@ -146,7 +146,7 @@ impl SavedAssignment
                 )
             }
             ForcedWorkOrder::Days(tactical_force_type) => match tactical_force_type {
-                work_order::TacticalForceType::OnlyStartDay(work_order_day) => {
+                work_order::ProjectForceType::OnlyStartDay(work_order_day) => {
                     ensure!(
                         *work_order_day == day,
                         "WorkOrder is scheduled for day {:#?}, assigning basic start for {:#?} is not allowed",
@@ -161,7 +161,7 @@ impl SavedAssignment
                         HashSet::new(),
                     )
                 }
-                work_order::TacticalForceType::IndividualActivities(_vec, _vec1) => todo!(),
+                work_order::ProjectForceType::IndividualActivities(_vec, _vec1) => todo!(),
             },
             // TODO: Handle plural technicians.
             ForcedWorkOrder::Technician(technician_include, _technician_exclude) => {

@@ -3,47 +3,47 @@ pub mod requests;
 pub mod responses;
 
 use ordinator_actor_core::RequestMessage;
-use requests::TacticalRequestResource;
-use requests::TacticalRequestScheduling;
-use requests::TacticalSchedulingEnvironmentCommands;
-use requests::TacticalStatusMessage;
-use requests::TacticalTimeRequest;
-use responses::TacticalResponseScheduling;
-use responses::TacticalResponseStatus;
-use responses::TacticalResponseTime;
+use requests::ProjectRequestResource;
+use requests::ProjectRequestScheduling;
+use requests::ProjectSchedulingEnvironmentCommands;
+use requests::ProjectStatusMessage;
+use requests::ProjectTimeRequest;
+use responses::ProjectResponseScheduling;
+use responses::ProjectResponseStatus;
+use responses::ProjectResponseTime;
 use serde::Serialize;
 
-pub type TacticalRequestMessage = RequestMessage<
-    TacticalStatusMessage,
-    TacticalRequestScheduling,
-    TacticalRequestResource,
-    TacticalTimeRequest,
-    TacticalSchedulingEnvironmentCommands,
+pub type ProjectRequestMessage = RequestMessage<
+    ProjectStatusMessage,
+    ProjectRequestScheduling,
+    ProjectRequestResource,
+    ProjectTimeRequest,
+    ProjectSchedulingEnvironmentCommands,
 >;
 
 #[derive(Debug, Serialize)]
-pub enum TacticalResponseMessage
+pub enum ProjectResponseMessage
 {
     FreeStringResponse(String),
-    Status(TacticalResponseStatus),
-    Scheduling(TacticalResponseScheduling),
-    // Resources(TacticalResourceResponse),
-    Time(TacticalResponseTime),
+    Status(ProjectResponseStatus),
+    Scheduling(ProjectResponseScheduling),
+    // Resources(ProjectResourceResponse),
+    Time(ProjectResponseTime),
     Update,
 }
 
 // TODO: Consider reintroducing this code at a later stage; the idea is sound.
 // #[derive(Debug, Clone, Serialize)]
-// pub struct TacticalInfeasibleCases {
+// pub struct ProjectInfeasibleCases {
 //     pub aggregated_load: ConstraintState<String>,
 //     pub earliest_start_day: ConstraintState<String>,
 //     pub all_scheduled: ConstraintState<String>,
 //     pub respect_period_id: ConstraintState<String>,
 // }
 
-// impl Default for TacticalInfeasibleCases {
+// impl Default for ProjectInfeasibleCases {
 //     fn default() -> Self {
-//         TacticalInfeasibleCases {
+//         ProjectInfeasibleCases {
 //             aggregated_load:
 // ConstraintState::Infeasible("Infeasible".to_owned()),
 // earliest_start_day: ConstraintState::Infeasible("Infeasible".to_owned()),

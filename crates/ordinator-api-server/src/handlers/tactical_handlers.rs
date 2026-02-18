@@ -17,9 +17,9 @@ use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
 use ordinator_orchestrator::StateLink;
 use ordinator_orchestrator::SystemSolutions;
-use ordinator_orchestrator::TacticalInterface;
-use ordinator_orchestrator::TacticalRequestMessage;
-use ordinator_orchestrator::TacticalStatusMessage;
+use ordinator_orchestrator::ProjectInterface;
+use ordinator_orchestrator::ProjectRequestMessage;
+use ordinator_orchestrator::ProjectStatusMessage;
 use ordinator_orchestrator::WorkOrderNumber;
 use serde::Serialize;
 use tracing::info;
@@ -45,7 +45,7 @@ where
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let message = TacticalRequestMessage::Status(TacticalStatusMessage::General);
+    let message = ProjectRequestMessage::Status(ProjectStatusMessage::General);
 
     let hash_map = orchestrator.actor_registries.lock().unwrap();
     let actor_registry_for_asset = &hash_map
@@ -68,14 +68,14 @@ where
 // #[debug_handler]
 // #[utoipa::path(
 //     get,
-//     tag = "Supervisor",
+//     tag = "Daily",
 //     path = "/{asset}/{supervisor_id}",
 //     params (
 //         ("asset" = AssetNames, Path),
 //         ("supervisor_id" = String, Path),
 //     ),
 //     responses(
-//         (status = 200, body = SupervisorResponseMessageDto),
+//         (status = 200, body = DailyResponseMessageDto),
 //         (status = 404, body = AppError),
 //         (status = 500, body = AppError),
 //     )
@@ -107,7 +107,7 @@ where
         .map_err(|e| AppError::Anyhow(e.to_string()))?
         .load()
         .tactical_actor_solution()
-        .map_err(|_| AppError::Anyhow(format!("No TacticalSolution exists for Asset: {}", &asset)))?
+        .map_err(|_| AppError::Anyhow(format!("No ProjectSolution exists for Asset: {}", &asset)))?
         .all_scheduled_tasks();
 
     Ok(Json(tactical_days).into_response())
@@ -231,7 +231,7 @@ where
         .map_err(|e| AppError::Anyhow(e.to_string()))?
         .load()
         .tactical_actor_solution()
-        .map_err(|_| AppError::Anyhow(format!("No TacticalSolution exists for Asset: {}", &asset)))?
+        .map_err(|_| AppError::Anyhow(format!("No ProjectSolution exists for Asset: {}", &asset)))?
         .tactical_loadings();
 
     let days = orchestrator

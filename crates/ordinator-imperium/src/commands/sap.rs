@@ -9,11 +9,11 @@ pub enum SapCommands
 
     /// Push the 4M+ (strategic) optimized data to SAP (requires user
     /// authorization)
-    PushStrategicToSap,
+    PushWeeklyToSap,
 
     /// Push the 5W (tactical) optimized data to SAP (requires user
     /// authorization)
-    PushTacticalToSap,
+    PushProjectToSap,
 
     /// Access the 2WF (operational) optimized data (requires user authorization)
     Operational,
@@ -28,10 +28,10 @@ impl SapCommands
                 // TODO: Implement SAP extraction with proper authorization handling
                 SystemMessages::Sap
             }
-            SapCommands::PushStrategicToSap => {
+            SapCommands::PushWeeklyToSap => {
                 todo!()
             }
-            SapCommands::PushTacticalToSap => {
+            SapCommands::PushProjectToSap => {
                 todo!()
             }
             SapCommands::Operational => {

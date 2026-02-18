@@ -53,7 +53,7 @@ pub async fn tactical_solution_status(
         .load()
         .tactical
         .as_ref()
-        .context("TacticalSolution not present in SystemSolution")
+        .context("ProjectSolution not present in SystemSolution")
         .map_err(|e| AppError::Anyhow(format!("{e:?}")))?
         .stagnation_and_version();
 
@@ -94,7 +94,7 @@ pub async fn strategic_solution_status(
         .load()
         .strategic
         .as_ref()
-        .context("TacticalSolution not present in SystemSolution")
+        .context("ProjectSolution not present in SystemSolution")
         .map_err(|e| AppError::Anyhow(format!("{e:?}")))?
         .stagnation_and_version();
 
@@ -135,7 +135,7 @@ pub async fn supervisor_solution_status(
         .load()
         .supervisor
         .as_ref()
-        .context("TacticalSolution not present in SystemSolution")
+        .context("ProjectSolution not present in SystemSolution")
         .map_err(|e| AppError::Anyhow(format!("{e:?}")))?
         .stagnation_and_version();
 

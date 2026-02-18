@@ -9,19 +9,19 @@ use serde::Serialize;
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(tag = "scheduler_message_type")]
-pub struct StrategicTimeRequest
+pub struct WeeklyTimeRequest
 {
     pub periods: Vec<i32>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct StrategicPeriodsMessage
+pub struct WeeklyPeriodsMessage
 {
     pub period_lock: HashMap<String, bool>,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-pub enum StrategicRequestResource
+pub enum WeeklyRequestResource
 {
     // SetResources {
     //     resources: Vec<Resources>,
@@ -47,13 +47,13 @@ pub enum StrategicRequestResource
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(tag = "scheduling_message_type")]
-pub enum StrategicRequestScheduling
+pub enum WeeklyRequestScheduling
 {
     Schedule(ScheduleChange),
     ExcludeFromPeriod(ScheduleChange),
 }
 
-impl StrategicRequestScheduling
+impl WeeklyRequestScheduling
 {
     pub fn new_single_work_order(
         work_order_number: Vec<WorkOrderNumber>,
@@ -91,14 +91,14 @@ impl ScheduleChange
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-pub enum StrategicStatusMessage
+pub enum WeeklyStatusMessage
 {
     General,
     Period(String),
     WorkOrder(WorkOrderNumber),
 }
 
-impl StrategicStatusMessage
+impl WeeklyStatusMessage
 {
     pub fn new_period(period: String) -> Self
     {
@@ -106,14 +106,14 @@ impl StrategicStatusMessage
     }
 }
 
-impl Display for StrategicStatusMessage
+impl Display for WeeklyStatusMessage
 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result
     {
         match self {
-            StrategicStatusMessage::General => write!(f, "general"),
-            StrategicStatusMessage::Period(period) => write!(f, "period: {period}",),
-            StrategicStatusMessage::WorkOrder(work_order_number) => {
+            WeeklyStatusMessage::General => write!(f, "general"),
+            WeeklyStatusMessage::Period(period) => write!(f, "period: {period}",),
+            WeeklyStatusMessage::WorkOrder(work_order_number) => {
                 write!(f, "{work_order_number:?}",)
             }
         }

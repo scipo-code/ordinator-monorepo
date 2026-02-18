@@ -9,9 +9,9 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::MaterialStatus;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_strategic_actor::algorithm::strategic_solution::StrategicSolution;
-use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
-use ordinator_tactical_actor::algorithm::tactical_solution::TacticalSolution;
+use ordinator_strategic_actor::algorithm::strategic_solution::WeeklySolution;
+use ordinator_supervisor_actor::algorithm::supervisor_solution::DailySolution;
+use ordinator_tactical_actor::algorithm::tactical_solution::ProjectSolution;
 use serde::Deserialize;
 use serde::Serialize;
 use strum::IntoEnumIterator;
@@ -150,7 +150,7 @@ impl TryFrom<DateTimeDto> for DateTime<Utc>
 }
 
 pub type TotalSystemSolution =
-    SystemSolution<StrategicSolution, TacticalSolution, SupervisorSolution, OperationalSolution>;
+    SystemSolution<WeeklySolution, ProjectSolution, DailySolution, OperationalSolution>;
 
 #[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, ToSchema, Serialize, TS)]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]

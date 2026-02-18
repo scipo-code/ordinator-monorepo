@@ -70,9 +70,9 @@ pub async fn api_scope(
 // TODO: Issue #131 - Replace the `SystemMessages` structure with routers instead
 // pub enum SystemMessages {
 //     Orchestrator(OrchestratorRequest),
-//     Strategic(StrategicRequest),
-//     Tactical(TacticalRequest),
-//     Supervisor(SupervisorRequest),
+//     Weekly(WeeklyRequest),
+//     Project(ProjectRequest),
+//     Daily(DailyRequest),
 //     Operational(OperationalRequest),
 //     Sap,
 // }
@@ -80,9 +80,9 @@ pub async fn api_scope(
 // #[derive(Serialize)]
 // pub enum SystemResponses {
 //     Orchestrator(OrchestratorResponse),
-//     Strategic(StrategicResponse),
-//     Tactical(TacticalResponse),
-//     Supervisor(SupervisorResponse),
+//     Weekly(WeeklyResponse),
+//     Project(ProjectResponse),
+//     Daily(DailyResponse),
 //     Operational(OperationalResponse),
 //     Export,
 //     Sap,

@@ -18,10 +18,10 @@ use ordinator_operational_actor::messages::OperationalRequestMessage;
 use ordinator_operational_actor::messages::OperationalResponseMessage;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::SolutionState;
-use ordinator_orchestrator_actor_traits::StrategicInterface;
-use ordinator_orchestrator_actor_traits::SupervisorInterface;
+use ordinator_orchestrator_actor_traits::WeeklyInterface;
+use ordinator_orchestrator_actor_traits::DailyInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_orchestrator_actor_traits::TacticalInterface;
+use ordinator_orchestrator_actor_traits::ProjectInterface;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
 use ordinator_scheduling_environment::Asset;
@@ -42,10 +42,10 @@ use ordinator_scheduling_environment::worker_environment::ActorSpecifications;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
-use ordinator_supervisor_actor::algorithm::supervisor_solution::SupervisorSolution;
+use ordinator_supervisor_actor::algorithm::supervisor_solution::DailySolution;
 
 #[derive(Clone, Debug)]
-struct TestSystemSolution<Zs: SupervisorInterface + Clone>
+struct TestSystemSolution<Zs: DailyInterface + Clone>
 {
     supervisor: Option<Zs>,
     operational: HashMap<ActorCompositeId, SolutionState<OperationalSolution>>,
@@ -53,8 +53,8 @@ struct TestSystemSolution<Zs: SupervisorInterface + Clone>
 
 // TODO: Refactor trait implementation - currently using dummy implementations
 #[derive(PartialEq, PartialOrd, Ord, Clone, Copy, Debug, Eq)]
-struct TestStrategic;
-impl StrategicInterface for TestStrategic
+struct TestWeekly;
+impl WeeklyInterface for TestWeekly
 {
     fn scheduled_task(
         &self,
@@ -76,9 +76,9 @@ impl StrategicInterface for TestStrategic
 }
 
 #[derive(PartialEq, PartialOrd, Ord, Clone, Copy, Debug, Eq)]
-struct TestTactical;
+struct TestProject;
 
-impl TacticalInterface for TestTactical
+impl ProjectInterface for TestProject
 {
     fn start_and_finish_dates(
         &self,
@@ -120,43 +120,43 @@ impl TacticalInterface for TestTactical
         todo!()
     }
 }
-impl SystemSolutions for TestSystemSolution<SupervisorSolution>
+impl SystemSolutions for TestSystemSolution<DailySolution>
 {
     type Operational = OperationalSolution;
-    type Strategic = TestStrategic;
-    type Supervisor = SupervisorSolution;
-    type Tactical = TestTactical;
+    type Weekly = TestWeekly;
+    type Daily = DailySolution;
+    type Project = TestProject;
 
     fn new() -> Self
     {
         todo!()
     }
 
-    fn strategic(&self) -> anyhow::Result<&Self::Strategic>
+    fn strategic(&self) -> anyhow::Result<&Self::Weekly>
     {
         todo!()
     }
 
-    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<TestStrategic>)
+    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<TestWeekly>)
     where
-        Self::Strategic: ordinator_orchestrator_actor_traits::Solution,
+        Self::Weekly: ordinator_orchestrator_actor_traits::Solution,
     {
         todo!()
     }
 
-    fn tactical_actor_solution(&self) -> anyhow::Result<&Self::Tactical>
+    fn tactical_actor_solution(&self) -> anyhow::Result<&Self::Project>
     {
         todo!()
     }
 
-    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<TestTactical>)
+    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<TestProject>)
     where
-        Self::Tactical: ordinator_orchestrator_actor_traits::Solution,
+        Self::Project: ordinator_orchestrator_actor_traits::Solution,
     {
         todo!()
     }
 
-    fn supervisor_actor_solutions(&self) -> anyhow::Result<&Self::Supervisor>
+    fn supervisor_actor_solutions(&self) -> anyhow::Result<&Self::Daily>
     {
         Ok(self.supervisor.as_ref().unwrap())
     }
@@ -164,9 +164,9 @@ impl SystemSolutions for TestSystemSolution<SupervisorSolution>
     fn supervisor_swap(
         &mut self,
         id: &ActorCompositeId,
-        solution: SolutionState<SupervisorSolution>,
+        solution: SolutionState<DailySolution>,
     ) where
-        Self::Supervisor: ordinator_orchestrator_actor_traits::Solution,
+        Self::Daily: ordinator_orchestrator_actor_traits::Solution,
     {
         todo!()
     }
@@ -195,7 +195,7 @@ impl SystemSolutions for TestSystemSolution<SupervisorSolution>
     }
 }
 
-impl Solution for TestTactical
+impl Solution for TestProject
 {
     type Objective = ();
     type Parameters = ();
@@ -210,7 +210,7 @@ impl Solution for TestTactical
         todo!()
     }
 }
-impl Solution for TestStrategic
+impl Solution for TestWeekly
 {
     type Objective = ();
     type Parameters = ();
@@ -230,7 +230,7 @@ impl Solution for TestStrategic
 #[ignore]
 fn start_operational_actor()
 {
-    // TODO: Build OperationalActor and SupervisorSolution using builder pattern instead of file-based configuration
+    // TODO: Build OperationalActor and DailySolution using builder pattern instead of file-based configuration
     let asset = Asset::Test;
     let asset_string = asset.to_string().to_lowercase();
 
@@ -410,7 +410,7 @@ fn start_operational_actor()
         Delegate::Assess,
     )]);
 
-    let supervisor = SupervisorSolution::new_from_parts(operational_state_machine);
+    let supervisor = DailySolution::new_from_parts(operational_state_machine);
     dbg!(&supervisor);
     // TODO: Implement builder for SystemSolution (2025-07-08)
     let (sender, receiver) = flume::unbounded();
@@ -420,7 +420,7 @@ fn start_operational_actor()
     let communication = Actor::<
         OperationalRequestMessage,
         OperationalResponseMessage,
-        OperationalAlgorithm<TestSystemSolution<SupervisorSolution>>,
+        OperationalAlgorithm<TestSystemSolution<DailySolution>>,
     >::builder()
     .agent_id(operational_id.clone())
     .scheduling_environment(Arc::clone(&scheduling_environment))

@@ -5,7 +5,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use tracing::event;
 use tracing::Level;
 
-use super::SupervisorSolution;
+use super::DailySolution;
 
 #[allow(dead_code)]
 pub trait OperationalStateMachineAssertions
@@ -16,7 +16,7 @@ pub trait OperationalStateMachineAssertions
     );
 }
 
-impl OperationalStateMachineAssertions for SupervisorSolution
+impl OperationalStateMachineAssertions for DailySolution
 {
     fn assert_that_unassigned_woas_are_valid(&self)
     {

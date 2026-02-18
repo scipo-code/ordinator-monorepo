@@ -5,7 +5,7 @@ use anyhow::Result;
 use colored::Colorize;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::SolutionState;
-use ordinator_orchestrator_actor_traits::StrategicInterface;
+use ordinator_orchestrator_actor_traits::WeeklyInterface;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
@@ -13,26 +13,26 @@ use ordinator_scheduling_environment::Percent;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::StrategicOptions;
+use ordinator_scheduling_environment::worker_environment::WeeklyOptions;
 use serde::Deserialize;
 use serde::Serialize;
 use valuable::Valuable;
 
-use super::strategic_parameters::StrategicParameters;
+use super::strategic_parameters::WeeklyParameters;
 use super::strategic_resources::OperationalResource;
-use super::strategic_resources::StrategicResources;
+use super::strategic_resources::WeeklyResources;
 
 // Solution fields should never be made `pub` to preserve business invariants,
 // which are critical in this system.
 #[derive(PartialEq, Eq, Clone)]
-pub struct StrategicSolution
+pub struct WeeklySolution
 {
-    objective_value: StrategicObjectiveValue,
+    objective_value: WeeklyObjectiveValue,
     pub(crate) strategic_scheduled_work_orders: HashMap<WorkOrderNumber, WhereIsWorkOrder<Period>>,
-    pub(crate) strategic_loadings: StrategicResources,
+    pub(crate) strategic_loadings: WeeklyResources,
 }
 
-impl StrategicSolution
+impl WeeklySolution
 {
     pub fn every_work_order(&self) -> &HashMap<WorkOrderNumber, WhereIsWorkOrder<Period>>
     {
@@ -55,16 +55,16 @@ impl StrategicSolution
     ) -> Option<WhereIsWorkOrder<Period>>
     {
         self.strategic_scheduled_work_orders
-            .insert(work_order_number, WhereIsWorkOrder::Strategic(period))
+            .insert(work_order_number, WhereIsWorkOrder::Weekly(period))
     }
 
-    pub fn objective_value(&self) -> &StrategicObjectiveValue
+    pub fn objective_value(&self) -> &WeeklyObjectiveValue
     {
         &self.objective_value
     }
 }
 
-impl StrategicInterface for StrategicSolution
+impl WeeklyInterface for WeeklySolution
 {
     // Note: Double `Option` pattern - consider refactoring for clarity
     fn scheduled_task(
@@ -85,8 +85,8 @@ impl StrategicInterface for StrategicSolution
             .into_iter()
             .filter_map(|(won, opt_str_per)| {
                 let period_option = match opt_str_per {
-                    WhereIsWorkOrder::Strategic(period) => Some(period),
-                    WhereIsWorkOrder::Tactical(period) => Some(period),
+                    WhereIsWorkOrder::Weekly(period) => Some(period),
+                    WhereIsWorkOrder::Project(period) => Some(period),
                     WhereIsWorkOrder::NotScheduled => None,
                 };
                 period_option
@@ -102,8 +102,8 @@ impl StrategicInterface for StrategicSolution
             .into_iter()
             .filter_map(|(won, where_is_work_order)| {
                 match where_is_work_order {
-                    WhereIsWorkOrder::Strategic(period) => Some(period),
-                    WhereIsWorkOrder::Tactical(period) => Some(period),
+                    WhereIsWorkOrder::Weekly(period) => Some(period),
+                    WhereIsWorkOrder::Project(period) => Some(period),
                     WhereIsWorkOrder::NotScheduled => None,
                 }
                 .map(|v| (won, v))
@@ -112,7 +112,7 @@ impl StrategicInterface for StrategicSolution
     }
 }
 
-impl Debug for StrategicSolution
+impl Debug for WeeklySolution
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
@@ -144,7 +144,7 @@ impl Debug for StrategicSolution
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone, Valuable)]
-pub struct StrategicObjectiveValue
+pub struct WeeklyObjectiveValue
 {
     pub objective_value: i64,
     pub urgency: (usize, i64),
@@ -153,9 +153,9 @@ pub struct StrategicObjectiveValue
     pub percent_scheduled: (usize, Percent),
 }
 
-impl StrategicObjectiveValue
+impl WeeklyObjectiveValue
 {
-    pub fn new(strategic_options: &StrategicOptions) -> Self
+    pub fn new(strategic_options: &WeeklyOptions) -> Self
     {
         Self {
             objective_value: i64::MAX,
@@ -174,10 +174,10 @@ impl StrategicObjectiveValue
             - self.clustering_value.0 as i64 * self.clustering_value.1;
     }
 }
-impl Solution for StrategicSolution
+impl Solution for WeeklySolution
 {
-    type Objective = StrategicObjectiveValue;
-    type Parameters = StrategicParameters;
+    type Objective = WeeklyObjectiveValue;
+    type Parameters = WeeklyParameters;
 
     fn from_parameters(parameters: &Self::Parameters) -> Result<Self>
     {
@@ -204,7 +204,7 @@ impl Solution for StrategicSolution
             })
             .collect::<HashMap<_, _>>();
 
-        let strategic_loadings = StrategicResources::new(strategic_loadings);
+        let strategic_loadings = WeeklyResources::new(strategic_loadings);
 
         let strategic_scheduled_work_orders = parameters
             .strategic_work_order_parameters
@@ -213,7 +213,7 @@ impl Solution for StrategicSolution
             .collect();
 
         // TODO: Consider whether strategic options should be passed through parameters or injected as dependencies
-        let strategic_objective_value = StrategicObjectiveValue::new(&parameters.strategic_options);
+        let strategic_objective_value = WeeklyObjectiveValue::new(&parameters.strategic_options);
         Ok(Self {
             objective_value: strategic_objective_value,
             strategic_scheduled_work_orders,
@@ -227,9 +227,9 @@ impl Solution for StrategicSolution
     }
 }
 
-impl<Ss> SwapSolution<Ss> for StrategicSolution
+impl<Ss> SwapSolution<Ss> for WeeklySolution
 where
-    Ss: SystemSolutions<Strategic = StrategicSolution>,
+    Ss: SystemSolutions<Weekly = WeeklySolution>,
 {
     fn swap(
         id: &ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId,

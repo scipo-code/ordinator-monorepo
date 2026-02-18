@@ -16,11 +16,11 @@ use shared_types::Asset;
 use shared_types::SystemMessages;
 use status::StatusCommands;
 use status::WorkOrders;
-use strategic::StrategicCommands;
-use tactical::TacticalCommands;
+use strategic::WeeklyCommands;
+use tactical::ProjectCommands;
 
 use self::operational::OperationalCommands;
-use self::supervisor::SupervisorCommands;
+use self::supervisor::DailyCommands;
 use crate::Cli;
 
 /// Imperium: The command line interface to access the Ordinator scheduling
@@ -41,22 +41,22 @@ pub enum Commands
         orchestrator_commands: OrchestratorCommands,
     },
     /// Access the strategic agent
-    Strategic
+    Weekly
     {
         #[clap(subcommand)]
-        strategic_commands: StrategicCommands,
+        strategic_commands: WeeklyCommands,
     },
     /// Access the tactical agent
-    Tactical
+    Project
     {
         #[clap(subcommand)]
-        tactical_commands: TacticalCommands,
+        tactical_commands: ProjectCommands,
     },
     /// Access the supervisor agents
-    Supervisor
+    Daily
     {
         #[clap(subcommand)]
-        supervisor_commands: SupervisorCommands,
+        supervisor_commands: DailyCommands,
     },
     /// Access the operational agents
     Operational
@@ -120,11 +120,11 @@ pub fn handle_command(cli: Cli, client: &Client) -> SystemMessages
             orchestrator_commands,
         } => orchestrator_commands.execute(),
 
-        Commands::Strategic { strategic_commands } => strategic_commands.execute(),
+        Commands::Weekly { strategic_commands } => strategic_commands.execute(),
 
-        Commands::Tactical { tactical_commands } => tactical_commands.execute(client),
+        Commands::Project { tactical_commands } => tactical_commands.execute(client),
 
-        Commands::Supervisor {
+        Commands::Daily {
             supervisor_commands,
         } => supervisor_commands.execute(client),
         Commands::Operational {

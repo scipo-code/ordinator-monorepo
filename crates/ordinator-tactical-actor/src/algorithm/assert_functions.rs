@@ -19,14 +19,14 @@ use tracing::Level;
 use tracing::event;
 
 use super::Algorithm;
-use super::tactical_parameters::TacticalParameters;
-use super::tactical_solution::TacticalSolution;
-use super::tactical_solution::TacticalWhereIsWorkOrder;
+use super::tactical_parameters::ProjectParameters;
+use super::tactical_solution::ProjectSolution;
+use super::tactical_solution::ProjectWhereIsWorkOrder;
 
 type TotalExcessHours = Work;
 
 #[allow(dead_code)]
-pub trait TacticalAssertions
+pub trait ProjectAssertions
 {
     fn assert_that_loading_matches_scheduled(&self) -> Result<()>;
 
@@ -35,8 +35,8 @@ pub trait TacticalAssertions
     fn assert_that_total_loading_is_equal_to_total_scheduled(&self) -> Result<TotalExcessHours>;
 }
 
-impl<Ss> TacticalAssertions
-    for Algorithm<TacticalSolution, TacticalParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>
+impl<Ss> ProjectAssertions
+    for Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>
 where
     Ss: SystemSolutions,
 {
@@ -146,12 +146,12 @@ where
                 .expect("Parameters should always cover the Solution")
                 .tactical_operation_parameters;
 
-            if let WhereIsWorkOrder::Tactical(wo) = work_order_solution.1 {
-                // TODO: Tactical should continue searching when unable to fit an operation, not stop
+            if let WhereIsWorkOrder::Project(wo) = work_order_solution.1 {
+                // TODO: Project should continue searching when unable to fit an operation, not stop
                 for (activity_number, operation_parameter) in work_order_work.iter() {
                     let work_remaining = operation_parameter.work_remaining;
 
-                    let operation_solution_work = wo.0.get(activity_number).context("Every activity of a work order should be present in a Tactical solution work order")?
+                    let operation_solution_work = wo.0.get(activity_number).context("Every activity of a work order should be present in a Project solution work order")?
                         .scheduled
                         .iter()
                         .fold(Work::from(0.0), |acc, e| acc + e.1);
@@ -171,7 +171,7 @@ where
         ensure!(
             loadings_work.round() == scheduled_work.round(),
             format!(
-                "Tactical Loadings does not match Tactical scheduled work\nScheduled work: {scheduled_work}\nLoadings work: {loadings_work}"
+                "Project Loadings does not match Project scheduled work\nScheduled work: {scheduled_work}\nLoadings work: {loadings_work}"
             )
         );
         Ok(scheduled_work)
@@ -242,7 +242,7 @@ where
 //                 if !self.tactical_periods.contains(&scheduled_period) {
 //                     error!(work_order_number = ?_work_order_number,
 // scheduled_period = ?scheduled_period, tactical_periods =
-// ?self.tactical_periods, "Tactical period does not contain the scheduled
+// ?self.tactical_periods, "Project period does not contain the scheduled
 // period of the tactical work order");                     return
 // ConstraintState::Infeasible(format!(                         "{:?} has a
 // wrong scheduled period {}",                         _work_order_number,

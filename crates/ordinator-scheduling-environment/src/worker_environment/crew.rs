@@ -18,7 +18,7 @@ pub struct AgentEnvironment
 {
     // TODO: Rename these fields; their names do not reflect their purpose.
     pub operational: HashMap<ActorCompositeId, OperationalConfigurationAll>,
-    pub supervisor: HashMap<ActorCompositeId, SupervisorConfigurationAll>,
+    pub supervisor: HashMap<ActorCompositeId, DailyConfigurationAll>,
 }
 
 // WARN: This struct should not be cloneable in production code.
@@ -157,14 +157,14 @@ impl OperationalConfiguration
 
 // TODO: Define required fields for supervisor configuration.
 #[derive(Default, Serialize, Deserialize, Debug, Clone)]
-pub struct SupervisorConfigurationAll
+pub struct DailyConfigurationAll
 {
     pub id: ActorCompositeId,
     // FIX: This information exists in multiple locations; consolidate to single source.
     number_of_supervisor_periods: u64,
 }
 
-impl SupervisorConfigurationAll
+impl DailyConfigurationAll
 {
     pub fn new(id: ActorCompositeId, number_of_supervisor_periods: u64) -> Self
     {

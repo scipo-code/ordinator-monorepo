@@ -19,7 +19,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
-use ordinator_scheduling_environment::worker_environment::TacticalOptions;
+use ordinator_scheduling_environment::worker_environment::ProjectOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Deserialize;
@@ -28,11 +28,11 @@ use tracing::Level;
 use tracing::event;
 use valuable::Valuable;
 
-use super::tactical_parameters::TacticalParameters;
-use super::tactical_resources::TacticalResources;
+use super::tactical_parameters::ProjectParameters;
+use super::tactical_resources::ProjectResources;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize, Clone, Valuable)]
-pub struct TacticalObjectiveValue
+pub struct ProjectObjectiveValue
 {
     pub objective_value: u64,
     pub urgency: (usize, u64),
@@ -41,9 +41,9 @@ pub struct TacticalObjectiveValue
 }
 
 /// Represents a tactical objective value with multiple optimization criteria (assumes minimization)
-impl TacticalObjectiveValue
+impl ProjectObjectiveValue
 {
-    pub fn new(tactical_options: &TacticalOptions) -> Self
+    pub fn new(tactical_options: &ProjectOptions) -> Self
     {
         Self {
             objective_value: u64::MAX,
@@ -61,14 +61,14 @@ impl TacticalObjectiveValue
 }
 
 #[derive(PartialEq, Eq, Clone)]
-pub struct TacticalSolution
+pub struct ProjectSolution
 {
-    pub(crate) objective_value: TacticalObjectiveValue,
-    pub(crate) tactical_work_orders: TacticalScheduledWorkOrders,
-    pub(crate) tactical_loadings: TacticalResources,
+    pub(crate) objective_value: ProjectObjectiveValue,
+    pub(crate) tactical_work_orders: ProjectScheduledWorkOrders,
+    pub(crate) tactical_loadings: ProjectResources,
 }
 
-impl std::fmt::Debug for TacticalSolution
+impl std::fmt::Debug for ProjectSolution
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
@@ -85,7 +85,7 @@ impl std::fmt::Debug for TacticalSolution
                 .bright_blue()
             )
         } else {
-            f.debug_struct("TacticalSolution")
+            f.debug_struct("ProjectSolution")
                 .field("objective_value", &self.objective_value)
                 .field("tactical_work_orders", &self.tactical_work_orders)
                 .field("tactical_loadings", &self.tactical_loadings)
@@ -94,10 +94,10 @@ impl std::fmt::Debug for TacticalSolution
     }
 }
 
-impl Solution for TacticalSolution
+impl Solution for ProjectSolution
 {
-    type Objective = TacticalObjectiveValue;
-    type Parameters = TacticalParameters;
+    type Objective = ProjectObjectiveValue;
+    type Parameters = ProjectParameters;
 
     fn from_parameters(parameters: &Self::Parameters) -> Result<Self>
     {
@@ -120,9 +120,9 @@ impl Solution for TacticalSolution
             .collect();
 
         Ok(Self {
-            objective_value: TacticalObjectiveValue::new(&parameters.tactical_options),
-            tactical_work_orders: TacticalScheduledWorkOrders(tactical_scheduled_work_orders_inner),
-            tactical_loadings: TacticalResources::new(tactical_loadings_inner),
+            objective_value: ProjectObjectiveValue::new(&parameters.tactical_options),
+            tactical_work_orders: ProjectScheduledWorkOrders(tactical_scheduled_work_orders_inner),
+            tactical_loadings: ProjectResources::new(tactical_loadings_inner),
         })
     }
 
@@ -132,9 +132,9 @@ impl Solution for TacticalSolution
     }
 }
 
-impl<Ss> SwapSolution<Ss> for TacticalSolution
+impl<Ss> SwapSolution<Ss> for ProjectSolution
 where
-    Ss: SystemSolutions<Tactical = TacticalSolution>,
+    Ss: SystemSolutions<Project = ProjectSolution>,
 {
     fn swap(id: &ActorCompositeId, solution: SolutionState<Self>, system_solution: &mut Ss)
     {
@@ -142,7 +142,7 @@ where
     }
 }
 
-impl TacticalSolution
+impl ProjectSolution
 {
     pub fn tactical_scheduled_days(
         &self,
@@ -174,43 +174,43 @@ impl TacticalSolution
     pub fn tactical_insert_work_order(
         &mut self,
         work_order_number: WorkOrderNumber,
-        tactical_scheduled_operations: TacticalScheduledOperations,
+        tactical_scheduled_operations: ProjectScheduledOperations,
     )
     {
         self.tactical_work_orders.0.insert(
             work_order_number,
-            WhereIsWorkOrder::Tactical(tactical_scheduled_operations),
+            WhereIsWorkOrder::Project(tactical_scheduled_operations),
         );
     }
 }
 
 #[derive(PartialEq, Eq, Debug, Default, Clone)]
-pub struct TacticalScheduledWorkOrders(
-    pub HashMap<WorkOrderNumber, WhereIsWorkOrder<TacticalScheduledOperations>>,
+pub struct ProjectScheduledWorkOrders(
+    pub HashMap<WorkOrderNumber, WhereIsWorkOrder<ProjectScheduledOperations>>,
 );
 
-pub trait TacticalWhereIsWorkOrder
+pub trait ProjectWhereIsWorkOrder
 {
     fn is_tactical(&self) -> bool;
 
-    fn tactical_operations(&self) -> Result<&TacticalScheduledOperations>;
+    fn tactical_operations(&self) -> Result<&ProjectScheduledOperations>;
 }
-impl TacticalWhereIsWorkOrder for WhereIsWorkOrder<TacticalScheduledOperations>
+impl ProjectWhereIsWorkOrder for WhereIsWorkOrder<ProjectScheduledOperations>
 {
     fn is_tactical(&self) -> bool
     {
-        matches!(self, WhereIsWorkOrder::Tactical(_))
+        matches!(self, WhereIsWorkOrder::Project(_))
     }
 
-    fn tactical_operations(&self) -> Result<&TacticalScheduledOperations>
+    fn tactical_operations(&self) -> Result<&ProjectScheduledOperations>
     {
         match self {
-            WhereIsWorkOrder::Strategic(_) => bail!(
+            WhereIsWorkOrder::Weekly(_) => bail!(
                 "A call to extract the {} was made but received {}",
-                std::any::type_name::<TacticalScheduledOperations>(),
+                std::any::type_name::<ProjectScheduledOperations>(),
                 std::any::type_name_of_val(self),
             ),
-            WhereIsWorkOrder::Tactical(tactical_scheduled_operations) => {
+            WhereIsWorkOrder::Project(tactical_scheduled_operations) => {
                 Ok(tactical_scheduled_operations)
             }
             WhereIsWorkOrder::NotScheduled => bail!(
@@ -220,7 +220,7 @@ impl TacticalWhereIsWorkOrder for WhereIsWorkOrder<TacticalScheduledOperations>
     }
 }
 
-impl TacticalScheduledWorkOrders
+impl ProjectScheduledWorkOrders
 {
     pub fn scheduled_work_orders(&self) -> usize
     {
@@ -232,9 +232,9 @@ impl TacticalScheduledWorkOrders
 }
 
 #[derive(PartialEq, Eq, Debug, Default, Clone)]
-pub struct TacticalScheduledOperations(pub BTreeMap<ActivityNumber, OperationSolution>);
+pub struct ProjectScheduledOperations(pub BTreeMap<ActivityNumber, OperationSolution>);
 
-impl TacticalScheduledOperations
+impl ProjectScheduledOperations
 {
     pub fn insert_operation_solution(
         &mut self,
@@ -246,7 +246,7 @@ impl TacticalScheduledOperations
     }
 }
 
-impl Display for TacticalScheduledOperations
+impl Display for ProjectScheduledOperations
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
@@ -263,23 +263,23 @@ impl Display for TacticalScheduledOperations
 }
 
 #[allow(dead_code)]
-pub struct TacticalSolutionBuilder(TacticalSolution);
+pub struct ProjectSolutionBuilder(ProjectSolution);
 
 #[allow(dead_code)]
-impl TacticalSolutionBuilder
+impl ProjectSolutionBuilder
 {
     pub fn with_tactical_days(
         mut self,
-        tactical_days: HashMap<WorkOrderNumber, WhereIsWorkOrder<TacticalScheduledOperations>>,
+        tactical_days: HashMap<WorkOrderNumber, WhereIsWorkOrder<ProjectScheduledOperations>>,
     ) -> Self
     {
         self.0.tactical_work_orders.0 = tactical_days;
         self
     }
 
-    pub fn build(self) -> TacticalSolution
+    pub fn build(self) -> ProjectSolution
     {
-        TacticalSolution {
+        ProjectSolution {
             objective_value: self.0.objective_value,
             tactical_work_orders: self.0.tactical_work_orders,
             tactical_loadings: self.0.tactical_loadings,

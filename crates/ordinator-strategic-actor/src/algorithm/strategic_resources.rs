@@ -18,9 +18,9 @@ use serde::Serialize;
 
 // TODO: Move OperationalResource to shared types rather than deserializing
 #[derive(Default, Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
-pub struct StrategicResources(pub HashMap<Period, HashMap<OperationalId, OperationalResource>>);
+pub struct WeeklyResources(pub HashMap<Period, HashMap<OperationalId, OperationalResource>>);
 
-impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for StrategicResources
+impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for WeeklyResources
 {
     fn from(value: (&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)) -> Self
     {
@@ -87,7 +87,7 @@ impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for S
             strategic_resources_inner.insert(period.clone(), operational_resource_map);
         }
 
-        StrategicResources::new(strategic_resources_inner)
+        WeeklyResources::new(strategic_resources_inner)
     }
 }
 
@@ -114,7 +114,7 @@ impl OperationalResource
     }
 }
 
-impl StrategicResources
+impl WeeklyResources
 {
     pub fn assert_well_shaped_resources(&self) -> Result<()>
     {
@@ -128,7 +128,7 @@ impl StrategicResources
                         .values()
                         .all(|wor| *wor == total_hours),
                     format!(
-                        "StrategicResources are not well shaped: {:#?}",
+                        "WeeklyResources are not well shaped: {:#?}",
                         operational_resource.1
                     )
                 )
@@ -153,7 +153,7 @@ impl StrategicResources
     }
 }
 
-impl StrategicResources
+impl WeeklyResources
 {
     pub fn new(resources: HashMap<Period, HashMap<OperationalId, OperationalResource>>) -> Self
     {
@@ -296,7 +296,7 @@ impl StrategicResources
                 format!(
                     "{} not found is {:?}",
                     period,
-                    std::any::type_name::<StrategicResources>()
+                    std::any::type_name::<WeeklyResources>()
                 )
             })?
             // TODO: Verify aggregation logic handles edge cases correctly

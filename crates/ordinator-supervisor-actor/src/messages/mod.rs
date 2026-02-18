@@ -3,28 +3,28 @@ pub mod requests;
 pub mod responses;
 
 use ordinator_actor_core::RequestMessage;
-use requests::SupervisorRequestResource;
-use requests::SupervisorRequestScheduling;
-use requests::SupervisorSchedulingEnvironmentCommands;
-use requests::SupervisorStatusMessage;
-use requests::SupervisorTimeRequest;
-use responses::SupervisorResponseResources;
-use responses::SupervisorResponseScheduling;
-use responses::SupervisorResponseStatus;
-use responses::SupervisorResponseTime;
+use requests::DailyRequestResource;
+use requests::DailyRequestScheduling;
+use requests::DailySchedulingEnvironmentCommands;
+use requests::DailyStatusMessage;
+use requests::DailyTimeRequest;
+use responses::DailyResponseResources;
+use responses::DailyResponseScheduling;
+use responses::DailyResponseStatus;
+use responses::DailyResponseTime;
 use serde::Deserialize;
 use serde::Serialize;
 
-pub type SupervisorRequestMessage = RequestMessage<
-    SupervisorStatusMessage,
-    SupervisorRequestScheduling,
-    SupervisorRequestResource,
-    SupervisorTimeRequest,
-    SupervisorSchedulingEnvironmentCommands,
+pub type DailyRequestMessage = RequestMessage<
+    DailyStatusMessage,
+    DailyRequestScheduling,
+    DailyRequestResource,
+    DailyTimeRequest,
+    DailySchedulingEnvironmentCommands,
 >;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub enum SupervisorType
+pub enum DailyType
 {
     Main,
     Other,
@@ -32,19 +32,19 @@ pub enum SupervisorType
 
 // Implement `From` trait instead of implementing this directly
 #[derive(Debug, Serialize)]
-pub enum SupervisorResponseMessage
+pub enum DailyResponseMessage
 {
     StateLink,
-    Status(SupervisorResponseStatus),
-    Scheduling(SupervisorResponseScheduling),
-    Resources(SupervisorResponseResources),
-    Time(SupervisorResponseTime),
-    // Test(AlgorithmState<SupervisorInfeasibleCases>),
+    Status(DailyResponseStatus),
+    Scheduling(DailyResponseScheduling),
+    Resources(DailyResponseResources),
+    Time(DailyResponseTime),
+    // Test(AlgorithmState<DailyInfeasibleCases>),
 }
 
-impl SupervisorResponseMessage
+impl DailyResponseMessage
 {
-    pub fn status(self) -> SupervisorResponseStatus
+    pub fn status(self) -> DailyResponseStatus
     {
         match self {
             Self::Status(supervisor_response_status) => supervisor_response_status,
@@ -54,11 +54,11 @@ impl SupervisorResponseMessage
 }
 
 // #[derive(Serialize)]
-// pub struct SupervisorInfeasibleCases {
+// pub struct DailyInfeasibleCases {
 //     pub respect_main_work_center: ConstraintState<String>,
 // }
 
-// impl Default for SupervisorInfeasibleCases {
+// impl Default for DailyInfeasibleCases {
 //     fn default() -> Self {
 //         Self {
 //             respect_main_work_center:
