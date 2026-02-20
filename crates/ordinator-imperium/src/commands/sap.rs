@@ -7,7 +7,7 @@ pub enum SapCommands
     /// Extract scheduling relevant data from SAP (requires user authorization)
     ExtractFromSap,
 
-    /// Push the 4M+ (strategic) optimized data to SAP (requires user
+    /// Push the 4M+ (weekly) optimized data to SAP (requires user
     /// authorization)
     PushWeeklyToSap,
 

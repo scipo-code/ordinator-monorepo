@@ -3,7 +3,7 @@ resolver = "2"
 members = [
     "crates/ordinator-actor-core",
     "crates/ordinator-operational-actor",
-    "crates/ordinator-strategic-actor",
+    "crates/ordinator-weekly-actor",
     "crates/ordinator-supervisor-actor",
     "crates/ordinator-project-actor",
 

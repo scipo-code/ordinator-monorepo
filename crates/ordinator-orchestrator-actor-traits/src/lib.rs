@@ -92,7 +92,7 @@ where
     U: DailyInterface + Solution,
     V: OperationalInterface + Solution,
 {
-    pub strategic: Option<SolutionState<S>>,
+    pub weekly: Option<SolutionState<S>>,
     pub project: Option<SolutionState<T>>,
     pub supervisor: Option<SolutionState<U>>,
     pub operational: HashMap<ActorCompositeId, SolutionState<V>>,
@@ -117,7 +117,7 @@ where
                 ProjectSolution:     {}\n\
                 DailySolution:   {}\n\
                 OperationalSolutions: {}",
-                if self.strategic.is_some() {
+                if self.weekly.is_some() {
                     "present".green()
                 } else {
                     "absent".red()
@@ -152,9 +152,9 @@ pub trait SystemSolutions: Clone + Sized
     type Operational: OperationalInterface + Solution;
 
     fn new() -> Self;
-    fn strategic(&self) -> Result<&Self::Weekly>;
+    fn weekly(&self) -> Result<&Self::Weekly>;
 
-    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Weekly>)
+    fn weekly_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Weekly>)
     where
         Self::Weekly: Solution;
     fn project_actor_solution(&self) -> Result<&Self::Project>;
@@ -196,17 +196,17 @@ where
     fn new() -> Self
     {
         Self {
-            strategic: None,
+            weekly: None,
             project: None,
             supervisor: None,
             operational: HashMap::default(),
         }
     }
 
-    fn strategic(&self) -> Result<&Self::Weekly>
+    fn weekly(&self) -> Result<&Self::Weekly>
     {
         Ok(&self
-            .strategic
+            .weekly
             .as_ref()
             .with_context(|| "WeeklyActor SystemSolution not found")?
             .inner)
@@ -249,11 +249,11 @@ where
         self.operational.insert(id.clone(), solution);
     }
 
-    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Weekly>)
+    fn weekly_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Weekly>)
     where
         Self::Weekly: Solution,
     {
-        self.strategic = Some(solution);
+        self.weekly = Some(solution);
     }
 
     fn project_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Project>)
@@ -449,14 +449,14 @@ impl<T> WhereIsWorkOrder<T>
         matches!(self, WhereIsWorkOrder::NotScheduled)
     }
 
-    pub fn strategic_forced(&self) -> bool
+    pub fn weekly_forced(&self) -> bool
     {
         matches!(self, WhereIsWorkOrder::Weekly(_))
     }
 
-    pub fn is_strategic_or_project(&self) -> bool
+    pub fn is_weekly_or_project(&self) -> bool
     {
-        self.is_project() || self.strategic_forced()
+        self.is_project() || self.weekly_forced()
     }
 }
 

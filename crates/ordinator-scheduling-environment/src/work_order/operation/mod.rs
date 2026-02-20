@@ -382,9 +382,9 @@ impl Work
         Ok(work_vec)
     }
 
-    pub fn equal(&self, aggregate_strategic_resource: Work) -> bool
+    pub fn equal(&self, aggregate_weekly_resource: Work) -> bool
     {
-        self.0.round_dp(5) == aggregate_strategic_resource.0.round_dp(5)
+        self.0.round_dp(5) == aggregate_weekly_resource.0.round_dp(5)
     }
 }
 

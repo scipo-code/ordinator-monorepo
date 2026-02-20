@@ -83,9 +83,9 @@ where
 
 pub trait ActorSpecification: Send + Sync + Debug
 {
-    fn strategic_options(&self) -> &WeeklyOptions;
+    fn weekly_options(&self) -> &WeeklyOptions;
 
-    fn strategic(&self) -> &InputWeekly;
+    fn weekly(&self) -> &InputWeekly;
 
     fn project(&self) -> &InputProject;
 
@@ -112,7 +112,7 @@ pub type IdString = String;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ActorSpecifications
 {
-    pub strategic: InputWeekly,
+    pub weekly: InputWeekly,
     pub project: InputProject,
     pub supervisors: Vec<InputDaily>,
     pub operational: HashMap<IdString, InputOperational>,
@@ -126,9 +126,9 @@ impl ActorSpecification for ActorSpecifications
         &self.operational
     }
 
-    fn strategic_options(&self) -> &WeeklyOptions
+    fn weekly_options(&self) -> &WeeklyOptions
     {
-        &self.strategic.strategic_options
+        &self.weekly.weekly_options
     }
 
     fn supervisor(&self) -> &Vec<InputDaily>
@@ -141,9 +141,9 @@ impl ActorSpecification for ActorSpecifications
         &self.project
     }
 
-    fn strategic(&self) -> &InputWeekly
+    fn weekly(&self) -> &InputWeekly
     {
-        &self.strategic
+        &self.weekly
     }
 
     fn technician_availability(
@@ -231,7 +231,7 @@ pub struct TimeInput
 
 pub struct ActorSpecificationBuilder
 {
-    strategic: Option<InputWeekly>,
+    weekly: Option<InputWeekly>,
     project: Option<InputProject>,
     supervisors: Option<Vec<InputDaily>>,
     operational: Option<HashMap<IdString, InputOperational>>,
@@ -242,20 +242,20 @@ impl ActorSpecificationBuilder
     pub fn new() -> Self
     {
         Self {
-            strategic: None,
+            weekly: None,
             project: None,
             supervisors: None,
             operational: None,
         }
     }
 
-    pub fn strategic<F>(mut self, f: F) -> Self
+    pub fn weekly<F>(mut self, f: F) -> Self
     where
         F: FnOnce(InputWeeklyBuilder) -> InputWeeklyBuilder,
     {
-        let strategic_builder = InputWeekly::builder();
-        let strategic_builder = f(strategic_builder);
-        self.strategic = Some(strategic_builder.build());
+        let weekly_builder = InputWeekly::builder();
+        let weekly_builder = f(weekly_builder);
+        self.weekly = Some(weekly_builder.build());
         self
     }
 
@@ -292,8 +292,8 @@ impl ActorSpecificationBuilder
     pub fn build(self) -> Result<ActorSpecifications>
     {
         Ok(ActorSpecifications {
-            strategic: self
-                .strategic
+            weekly: self
+                .weekly
                 .ok_or_else(|| anyhow::anyhow!("Weekly configuration is required"))?,
             project: self
                 .project
@@ -309,8 +309,8 @@ impl ActorSpecificationBuilder
 pub struct InputWeekly
 {
     pub id: IdString,
-    pub number_of_strategic_periods: usize,
-    pub strategic_options: WeeklyOptions,
+    pub number_of_weekly_periods: usize,
+    pub weekly_options: WeeklyOptions,
 }
 
 #[derive(Eq, PartialEq, Serialize, Deserialize, Debug)]
@@ -371,7 +371,7 @@ impl InputOperational
         }
     }
 }
-/// Loads strategic configurations for use by agents
+/// Loads weekly configurations for use by agents
 ///
 /// TODO: Resolve duplication between WeeklyOptions and database representation
 /// TODO: Address StdRng configuration and custom deserialization
@@ -410,8 +410,8 @@ pub struct OperationalOptions
 pub struct InputWeeklyBuilder
 {
     id: Option<IdString>,
-    number_of_strategic_periods: Option<usize>,
-    strategic_options: Option<WeeklyOptions>,
+    number_of_weekly_periods: Option<usize>,
+    weekly_options: Option<WeeklyOptions>,
 }
 
 impl InputWeeklyBuilder
@@ -420,8 +420,8 @@ impl InputWeeklyBuilder
     {
         Self {
             id: None,
-            number_of_strategic_periods: None,
-            strategic_options: None,
+            number_of_weekly_periods: None,
+            weekly_options: None,
         }
     }
 
@@ -431,19 +431,19 @@ impl InputWeeklyBuilder
         self
     }
 
-    pub fn number_of_strategic_periods(mut self, periods: usize) -> Self
+    pub fn number_of_weekly_periods(mut self, periods: usize) -> Self
     {
-        self.number_of_strategic_periods = Some(periods);
+        self.number_of_weekly_periods = Some(periods);
         self
     }
 
-    pub fn strategic_options<F>(mut self, f: F) -> Self
+    pub fn weekly_options<F>(mut self, f: F) -> Self
     where
         F: FnOnce(WeeklyOptionsBuilder) -> WeeklyOptionsBuilder,
     {
         let options_builder = WeeklyOptionsBuilder::new();
         let options_builder = f(options_builder);
-        self.strategic_options = Some(options_builder.build());
+        self.weekly_options = Some(options_builder.build());
         self
     }
 
@@ -451,12 +451,12 @@ impl InputWeeklyBuilder
     {
         InputWeekly {
             id: self.id.expect("id is required"),
-            number_of_strategic_periods: self
-                .number_of_strategic_periods
-                .expect("number_of_strategic_periods is required"),
-            strategic_options: self
-                .strategic_options
-                .expect("strategic_options is required"),
+            number_of_weekly_periods: self
+                .number_of_weekly_periods
+                .expect("number_of_weekly_periods is required"),
+            weekly_options: self
+                .weekly_options
+                .expect("weekly_options is required"),
         }
     }
 }
@@ -937,11 +937,11 @@ mod tests
     fn test_actor_specification_builder()
     {
         let actor_spec = ActorSpecifications::builder()
-            .strategic(|builder| {
+            .weekly(|builder| {
                 builder
-                    .id("strategic-001")
-                    .number_of_strategic_periods(5)
-                    .strategic_options(|options| {
+                    .id("weekly-001")
+                    .number_of_weekly_periods(5)
+                    .weekly_options(|options| {
                         options
                             .number_of_removed_work_orders(10)
                             .urgency_weight(3)
@@ -970,8 +970,8 @@ mod tests
             .build()
             .expect("Failed to build ActorSpecifications");
 
-        assert_eq!(actor_spec.strategic.id, "strategic-001");
-        assert_eq!(actor_spec.strategic.number_of_strategic_periods, 5);
+        assert_eq!(actor_spec.weekly.id, "weekly-001");
+        assert_eq!(actor_spec.weekly.number_of_weekly_periods, 5);
         assert_eq!(actor_spec.project.id, "project-001");
         assert_eq!(actor_spec.project.number_of_project_days, 7);
         assert_eq!(actor_spec.supervisors.len(), 1);
@@ -991,12 +991,12 @@ mod tests
 
         impl ActorSpecification for TestActorSpecification
         {
-            fn strategic_options(&self) -> &super::WeeklyOptions
+            fn weekly_options(&self) -> &super::WeeklyOptions
             {
                 todo!()
             }
 
-            fn strategic(&self) -> &super::InputWeekly
+            fn weekly(&self) -> &super::InputWeekly
             {
                 todo!()
             }

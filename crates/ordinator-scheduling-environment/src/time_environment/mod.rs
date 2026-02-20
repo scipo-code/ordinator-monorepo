@@ -188,9 +188,9 @@ pub fn create_time_environment(
     };
 
     let days = days(time_input.number_of_days);
-    let strategic_periods: Vec<Period> =
+    let weekly_periods: Vec<Period> =
         create_periods(current_time, time_input.number_of_periods, &days);
-    TimeEnvironment::new(strategic_periods, days)
+    TimeEnvironment::new(weekly_periods, days)
 }
 fn create_periods(current_time: DateTime<Utc>, number_of_periods: u64, days: &[Day])
 -> Vec<Period>

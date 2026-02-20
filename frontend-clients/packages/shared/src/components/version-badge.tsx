@@ -8,7 +8,7 @@ const StagnationStatus: Record<string, {background: string}> = {
 }
 
 export enum Actors {
-  strategic,
+  weekly,
   project,
   supervisor,
 }

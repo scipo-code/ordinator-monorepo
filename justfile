@@ -66,7 +66,7 @@ list-all-work-orders:
     let work_order_state = imperium status work-orders work-order-state df normal | from json
     $work_order_state | get Orchestrator | get WorkOrderStatus | get Multiple | columns | hx
 
-# call-create-all-plot-for-ablns: call-strategic-inclusion-script call-strategic-exclusion-script call-strategic-resources-addition-script call-strategic-resources-subtraction-script call-strategic-work-order-value-script
+# call-create-all-plot-for-ablns: call-weekly-inclusion-script call-weekly-exclusion-script call-weekly-resources-addition-script call-weekly-resources-subtraction-script call-weekly-work-order-value-script
 #     echo "All 5 simulation scripts have been called"
 
 profile-thread TID DURATION:
@@ -106,23 +106,23 @@ profile-thread TID DURATION:
     firefox "$SVG"
 
 
-# call-strategic-inclusion-script:
+# call-weekly-inclusion-script:
 #     #!/usr/bin/env nu
-#     nu imperium/scripts/strategic/simulate_scheduling_inclusion.nu
+#     nu imperium/scripts/weekly/simulate_scheduling_inclusion.nu
 
-# call-strategic-exclusion-script:
+# call-weekly-exclusion-script:
 #     #!/usr/bin/env nu
-#     nu imperium/scripts/strategic/simulate_scheduling_exclusion.nu 
+#     nu imperium/scripts/weekly/simulate_scheduling_exclusion.nu 
 
-# call-strategic-resources-addition-script:
+# call-weekly-resources-addition-script:
 #     #!/usr/bin/env nu
-#     nu imperium/scripts/strategic/simulate_resources_addition.nu
+#     nu imperium/scripts/weekly/simulate_resources_addition.nu
 
-# call-strategic-resources-subtraction-script:
+# call-weekly-resources-subtraction-script:
 #     #!/usr/bin/env nu
-#     nu imperium/scripts/strategic/simulate_resources_subtraction.nu
+#     nu imperium/scripts/weekly/simulate_resources_subtraction.nu
 
-# call-strategic-work-order-value-script:
+# call-weekly-work-order-value-script:
 #     #!/usr/bin/env nu
-#     nu imperium/scripts/strategic/simulate_weight_update.nu
+#     nu imperium/scripts/weekly/simulate_weight_update.nu
 

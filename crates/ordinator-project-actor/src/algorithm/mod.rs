@@ -145,14 +145,14 @@ where
                 .get(work_order_number)
                 .unwrap();
 
-            let strategic_period = &self
+            let weekly_period = &self
                 .loaded_system_solution
                 // TODO: Consider returning an Option instead of using ok()
-                .strategic()
+                .weekly()
                 .ok();
 
-            // Determine period start date from strategic actor, which handles tardiness calculation
-            let period_start_date: NaiveDate = strategic_period
+            // Determine period start date from weekly actor, which handles tardiness calculation
+            let period_start_date: NaiveDate = weekly_period
                 .and_then(|period| period.scheduled_task(work_order_number))
                 .map(|where_is_work_order| {
                     match where_is_work_order {

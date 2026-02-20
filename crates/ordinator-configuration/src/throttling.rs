@@ -4,7 +4,7 @@ use serde::Serialize;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Throttling
 {
-    pub strategic_throttling: u64,
+    pub weekly_throttling: u64,
     pub project_throttling: u64,
     pub supervisor_throttling: u64,
     pub operational_throttling: u64,

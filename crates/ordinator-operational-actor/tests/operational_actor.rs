@@ -31,7 +31,7 @@
 
 //     operational_algorithm.load_shared_solution();
 
-//     let mut strategic_updated_shared_solution =
+//     let mut weekly_updated_shared_solution =
 //         (**operational_algorithm.loaded_shared_solution).clone();
 
 //     // Here you can simply access what it is that you need? Is that not a
@@ -40,9 +40,9 @@
 // have done here. I     // you lose the ability to simply insert things as you
 // like into the     // other actors and that could hamper you ability to test
 // edge cases...     // No that is actually a good thing.
-//     strategic_updated_shared_solution
-//         .strategic
-//         .strategic_scheduled_work_orders
+//     weekly_updated_shared_solution
+//         .weekly
+//         .weekly_scheduled_work_orders
 //         .insert(
 //             WorkOrderNumber(0),
 //             Some(Period::from_str("2024-W41-42").unwrap()),
@@ -51,7 +51,7 @@
 //     operational_algorithm
 //         .arc_swap_shared_solution
 //         .0
-//         .store(Arc::new(strategic_updated_shared_solution));
+//         .store(Arc::new(weekly_updated_shared_solution));
 
 //     operational_algorithm.load_shared_solution();
 //     let mut project_updated_shared_solution =

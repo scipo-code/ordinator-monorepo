@@ -156,28 +156,28 @@ where
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let strategic_periods = orchestrator
+    let weekly_periods = orchestrator
         .system_solutions
         .lock()
         .unwrap_or_else(|_| panic!("Could not lock the SystemSolution for Asset: {}", &asset));
-    let strategic_periods = strategic_periods
+    let weekly_periods = weekly_periods
         .get(&asset)
         .with_context(|| format!("SystemSolution for Asset: {} does not exist", &asset))
         .map_err(|e| AppError::Anyhow(e.to_string()))?
         .load();
-    let strategic_periods = strategic_periods
-        .strategic()
+    let weekly_periods = weekly_periods
+        .weekly()
         .map_err(|_| {
             AppError::Anyhow(format!("No WeeklySolution exists for Asset: {}", &asset))
         })?
         .all_scheduled_tasks();
 
-    let strategic_periods: Vec<_> = strategic_periods
+    let weekly_periods: Vec<_> = weekly_periods
         .iter()
         .map(|f| (WorkOrderNumberDto(f.0.0), PeriodDto(f.1.period_string())))
         .collect();
 
-    Ok(Json(strategic_periods).into_response())
+    Ok(Json(weekly_periods).into_response())
 }
 
 // pub async fn scheduling_status_for_workorder<Ss>(

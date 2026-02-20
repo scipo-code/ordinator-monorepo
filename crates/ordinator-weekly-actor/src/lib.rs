@@ -9,8 +9,8 @@ use std::sync::Arc;
 use std::sync::Mutex;
 
 use algorithm::WeeklyAlgorithm;
-use algorithm::strategic_parameters::WeeklyParameters;
-use algorithm::strategic_solution::WeeklySolution;
+use algorithm::weekly_parameters::WeeklyParameters;
+use algorithm::weekly_solution::WeeklySolution;
 use anyhow::Result;
 use arc_swap::ArcSwap;
 use bus::BusReader;

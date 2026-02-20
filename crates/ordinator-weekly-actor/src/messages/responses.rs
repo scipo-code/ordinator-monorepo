@@ -56,15 +56,15 @@ impl WeeklyResponseScheduling
 }
 use ordinator_scheduling_environment::Asset;
 
-use crate::algorithm::strategic_solution::WeeklySolution;
+use crate::algorithm::weekly_solution::WeeklySolution;
 use crate::WeeklyActor;
 
 #[derive(Debug, Serialize)]
 pub struct WeeklyResponseStatus
 {
     pub asset: Asset,
-    pub strategic_objective_value: usize,
-    pub number_of_strategic_work_orders: usize,
+    pub weekly_objective_value: usize,
+    pub number_of_weekly_work_orders: usize,
     pub number_of_periods: usize,
 }
 
@@ -74,21 +74,21 @@ where
 {
     fn from(value: &mut WeeklyActor<Ss>) -> Self
     {
-        let strategic_parameters = &value.algorithm.parameters;
+        let weekly_parameters = &value.algorithm.parameters;
 
-        let number_of_strategic_work_orders =
-            strategic_parameters.strategic_work_order_parameters.len();
+        let number_of_weekly_work_orders =
+            weekly_parameters.weekly_work_order_parameters.len();
 
         let asset = value.actor_id.asset();
 
-        let number_of_periods = value.algorithm.parameters.strategic_periods.len();
+        let number_of_periods = value.algorithm.parameters.weekly_periods.len();
 
         // TODO: Consider creating a trait for objective value extraction instead of direct field access
         WeeklyResponseStatus {
-            number_of_strategic_work_orders,
+            number_of_weekly_work_orders,
             number_of_periods,
             asset: asset.clone(),
-            strategic_objective_value: value.algorithm.solution.objective_value().objective_value
+            weekly_objective_value: value.algorithm.solution.objective_value().objective_value
                 as usize,
         }
     }

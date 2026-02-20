@@ -50,7 +50,7 @@ fn test_calculate_objective_value()
         .unwrap()
         .build();
 
-    // TODO: Add SystemConfigurations::strategic_options() method
+    // TODO: Add SystemConfigurations::weekly_options() method
     // TODO: Pass system configuration to Orchestrator and Agents
     // TODO: Add extraction methods to SystemConfiguration
 

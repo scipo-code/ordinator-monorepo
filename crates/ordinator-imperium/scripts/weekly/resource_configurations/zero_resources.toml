@@ -1,10 +1,10 @@
-[strategic]
-id = "strategic"
+[weekly]
+id = "weekly"
 asset = "Df"
-strategic_options.number_of_removed_work_orders = 25
-strategic_options.urgency_weight = 1
-strategic_options.resource_penalty_weight = 1000000
-strategic_options.clustering_weight = 1000
+weekly_options.number_of_removed_work_orders = 25
+weekly_options.urgency_weight = 1
+weekly_options.resource_penalty_weight = 1000000
+weekly_options.clustering_weight = 1000
 
 [project]
 id = "project"

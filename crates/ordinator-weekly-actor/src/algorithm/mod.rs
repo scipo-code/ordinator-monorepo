@@ -1,7 +1,7 @@
 pub mod assert_functions;
-pub mod strategic_parameters;
-pub mod strategic_resources;
-pub mod strategic_solution;
+pub mod weekly_parameters;
+pub mod weekly_resources;
+pub mod weekly_solution;
 
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -36,12 +36,12 @@ use priority_queue::PriorityQueue;
 use rand::distr::weighted::Weight;
 use rand::prelude::SliceRandom;
 use rand::seq::IndexedRandom;
-use strategic_parameters::WeeklyClustering;
-use strategic_parameters::WeeklyParameters;
-use strategic_resources::OperationalResource;
-use strategic_resources::WeeklyResources;
-use strategic_solution::WeeklyObjectiveValue;
-use strategic_solution::WeeklySolution;
+use weekly_parameters::WeeklyClustering;
+use weekly_parameters::WeeklyParameters;
+use weekly_resources::OperationalResource;
+use weekly_resources::WeeklyResources;
+use weekly_solution::WeeklyObjectiveValue;
+use weekly_solution::WeeklySolution;
 use strum::IntoEnumIterator;
 use tracing::instrument;
 
@@ -103,16 +103,16 @@ where
     {
 
         let mut state_change = true;
-        let periods = self.parameters.strategic_periods.clone();
+        let periods = self.parameters.weekly_periods.clone();
         // Weekly loops over all parameters
-        for (work_order_number, strategic_parameter) in self
+        for (work_order_number, weekly_parameter) in self
             .parameters
-            .strategic_work_order_parameters
+            .weekly_work_order_parameters
             .clone()
             .iter()
 
         {
-            // Project model takes precedence over the strategic
+            // Project model takes precedence over the weekly
             let project_scheduled_period = self
                 .loaded_system_solution
                 .project_actor_solution()
@@ -121,9 +121,9 @@ where
                     project_solution.project_period(work_order_number, &periods)
                 });
 
-            let strategic_scheduled_period = self
+            let weekly_scheduled_period = self
                 .solution
-                .strategic_scheduled_work_orders
+                .weekly_scheduled_work_orders
                 .get_mut(work_order_number)
                 .with_context(|| {
                     format!("{work_order_number:?}\nis not found in the WeeklyAlgorithm")
@@ -132,13 +132,13 @@ where
             // If the [`ProjectAlgorithm`] have the [`WorkOrder`] the [`Weekly`]
             // should respect this, but not schedule it and use resources.
             if let Some(project_period) = project_scheduled_period {
-                if *strategic_scheduled_period != WhereIsWorkOrder::Project(project_period.clone()) {
+                if *weekly_scheduled_period != WhereIsWorkOrder::Project(project_period.clone()) {
                     state_change = true
                 };
-                *strategic_scheduled_period = WhereIsWorkOrder::Project(project_period.clone())
+                *weekly_scheduled_period = WhereIsWorkOrder::Project(project_period.clone())
             }
 
-            if strategic_parameter.locked_in_period == strategic_scheduled_period.clone() {
+            if weekly_parameter.locked_in_period == weekly_scheduled_period.clone() {
                 continue;
             } 
             state_change = true;
@@ -156,8 +156,8 @@ where
         // TODO: Optimize by using Cow or selectively cloning only needed fields
         self.arc_swap_shared_solution.rcu(|old| {
             let mut shared_solution = (**old).clone();
-            // Swap the strategic solution in shared state
-            shared_solution.strategic_swap(&self.id, self.solution.clone());
+            // Swap the weekly solution in shared state
+            shared_solution.weekly_swap(&self.id, self.solution.clone());
             Arc::new(shared_solution)
         });
     }
@@ -171,10 +171,10 @@ where
     >
     {
         let mut new_objective_value =
-            WeeklyObjectiveValue::new(&self.parameters.strategic_options);
+            WeeklyObjectiveValue::new(&self.parameters.weekly_options);
 
         self.determine_urgency(&mut new_objective_value)
-            .context("could not determine strategic urgency")?;
+            .context("could not determine weekly urgency")?;
 
         self.determine_resource_penalty(&mut new_objective_value);
 
@@ -200,7 +200,7 @@ where
 
         // TODO: Refactor to separate schedule and shared_state_update concerns
         while !self.solution_intermediate.is_empty() {
-            for period in self.parameters.strategic_periods.clone() {
+            for period in self.parameters.weekly_periods.clone() {
                 let (work_order_number, weight) = match self.solution_intermediate.pop() {
                     Some((work_order_number, weight)) => (work_order_number, weight),
 
@@ -211,13 +211,13 @@ where
 
                 // TODO: Review overloaded logic here
                 let inf_work_order_number = self
-                    .schedule_strategic_work_order(work_order_number, &period)
+                    .schedule_weekly_work_order(work_order_number, &period)
                     .with_context(|| {
                         format!("{work_order_number:?} could not be scheduled normally")
                     })?;
 
                 if let Some(work_order_number) = inf_work_order_number {
-                    if &period != self.parameters.strategic_periods.last().unwrap() {
+                    if &period != self.parameters.weekly_periods.last().unwrap() {
                         self.solution_intermediate.push(work_order_number, weight);
                     }
                 } else {
@@ -232,14 +232,14 @@ where
     fn unschedule(&mut self) -> Result<()>
     {
         let mut rng = rand::rng();
-        let strategic_work_orders = self.solution.every_work_order();
+        let weekly_work_orders = self.solution.every_work_order();
 
-        let strategic_parameters = &self.parameters.strategic_work_order_parameters;
+        let weekly_parameters = &self.parameters.weekly_work_order_parameters;
 
-        let mut filtered_keys: Vec<_> = strategic_work_orders
+        let mut filtered_keys: Vec<_> = weekly_work_orders
             .iter()
             .filter(|(won, _)| {
-                strategic_parameters
+                weekly_parameters
                     .get(won)
                     .unwrap()
                     .locked_in_period
@@ -254,7 +254,7 @@ where
             .choose_multiple(
                 &mut rng,
                 self.parameters
-                    .strategic_options
+                    .weekly_options
                     .number_of_removed_work_orders,
             )
             .collect::<Vec<_>>()
@@ -271,7 +271,7 @@ where
 
             let weight = self
                 .parameters
-                .strategic_work_order_parameters
+                .weekly_work_order_parameters
                 .get(work_order_number)
                 .context("Parameters should always be available")?
                 .weight;
@@ -294,16 +294,16 @@ where
         // TODO: Derive WeeklyParameter::locked_in_period from SchedulingEnvironment
         let forced_work_orders: Vec<_> = self
             .parameters
-            .strategic_work_order_parameters
+            .weekly_work_order_parameters
             .iter()
-            .filter(|e|e.1.locked_in_period.strategic_forced())
+            .filter(|e|e.1.locked_in_period.weekly_forced())
             .map(|e|{
                 // TODO: Remove ForcedWorkOrder if unnecessary
                 ForcedWorkOrder::Locked(*e.0)
             }).collect();
 
         for forced_work_order_numbers in &forced_work_orders {
-            self.schedule_forced_strategic_work_order(forced_work_order_numbers)
+            self.schedule_forced_weekly_work_order(forced_work_order_numbers)
                 .with_context(|| {
                     format!("{forced_work_order_numbers:#?} could not be force scheduled")
                 })?;
@@ -313,7 +313,7 @@ where
     }
 
     fn throttling(&self, throttling: &ordinator_configuration::throttling::Throttling) -> u64 {
-        throttling.strategic_throttling
+        throttling.weekly_throttling
     }
 }
 
@@ -323,17 +323,17 @@ where
 {
     // pub fn swap_scheduled_work_orders(&mut self, rng: &mut impl rand::Rng) {
     //         let scheduled_work_orders: Vec<_> = self
-    //             .strategic_solution
-    //             .strategic_periods
+    //             .weekly_solution
+    //             .weekly_periods
     //             .keys()
     //             .cloned()
     //             .collect();
     //         let randomly_chosen = scheduled_work_orders.choose_multiple(rng,
     // 2).collect::<Vec<_>>();         unsafe {
     //             let scheduled_work_order_1 =
-    // self.solution.strategic_periods.get_mut(randomly_chosen[0]).unwrap() as *mut
+    // self.solution.weekly_periods.get_mut(randomly_chosen[0]).unwrap() as *mut
     // Option<Period>;             let scheduled_work_order_2 =
-    // self.solution.strategic_periods.get_mut(randomly_chosen[1]).unwrap() as *mut
+    // self.solution.weekly_periods.get_mut(randomly_chosen[1]).unwrap() as *mut
     // Option<Period>;             std::ptr::swap(scheduled_work_order_1,
     // scheduled_work_order_2);             // You cannot do this anymore
     // either. What is the best remedy for this?
@@ -348,18 +348,18 @@ where
     //         }
     // }
 
-    fn strategic_capacity_by_resource(&self, resource: &Skill, period: &Period)
+    fn weekly_capacity_by_resource(&self, resource: &Skill, period: &Period)
         -> Result<Work>
     {
         self.parameters
-            .strategic_capacity
+            .weekly_capacity
             .aggregated_capacity_by_period_and_resource(period, resource)
     }
 
-    fn strategic_loading_by_resource(&self, resource: &Skill, period: &Period) -> Result<Work>
+    fn weekly_loading_by_resource(&self, resource: &Skill, period: &Period) -> Result<Work>
     {
         self.solution
-            .strategic_loadings
+            .weekly_loadings
             .aggregated_capacity_by_period_and_resource(period, resource)
     }
 
@@ -368,12 +368,12 @@ where
     {
         let mut utilization_by_period = Vec::new();
 
-        for (index, period) in self.parameters.strategic_periods.iter().enumerate() {
+        for (index, period) in self.parameters.weekly_periods.iter().enumerate() {
             let mut intermediate_loading: f64 = 0.0;
             let mut intermediate_capacity: f64 = 0.0;
             for resource in Skill::iter() {
-                let loading = self.strategic_loading_by_resource(&resource, period)?;
-                let capacity = self.strategic_capacity_by_resource(&resource, period)?;
+                let loading = self.weekly_loading_by_resource(&resource, period)?;
+                let capacity = self.weekly_capacity_by_resource(&resource, period)?;
 
                 intermediate_loading += loading.to_f64();
                 intermediate_capacity += capacity.to_f64();
@@ -387,7 +387,7 @@ where
 
     fn determine_urgency(
         &mut self,
-        strategic_objective_value: &mut WeeklyObjectiveValue,
+        weekly_objective_value: &mut WeeklyObjectiveValue,
     ) -> Result<()>
     {
         for (work_order_number, scheduled_period) in self.solution.every_work_order() {
@@ -398,14 +398,14 @@ where
 
                 WhereIsWorkOrder::NotScheduled => self
                     .parameters
-                    .strategic_periods
+                    .weekly_periods
                     .last()
                     .context("There should always be a last .parameters.eriod")?,
             };
 
             let work_order_latest_allowed_finish_period = &self
                 .parameters
-                .strategic_work_order_parameters
+                .weekly_work_order_parameters
                 .get(work_order_number)
                 .expect("WeeklyParameter should always be available for the WeeklySolution")
                 .latest_period;
@@ -417,26 +417,26 @@ where
 
             let work_order_value = self
                 .parameters
-                .strategic_work_order_parameters
+                .weekly_work_order_parameters
                 .get(work_order_number)
                 .unwrap()
                 .weight;
 
             let period_penalty = non_zero_period_difference * work_order_value;
 
-            strategic_objective_value.urgency.1.checked_add_assign(&period_penalty)
+            weekly_objective_value.urgency.1.checked_add_assign(&period_penalty)
                 .ok()
-                .with_context(|| format!("Overflow on the strategic urgency.\nperiod penalty: {period_penalty}\nperiod difference: {non_zero_period_difference}\nwork_order_value: {work_order_value}"))?;
+                .with_context(|| format!("Overflow on the weekly urgency.\nperiod penalty: {period_penalty}\nperiod difference: {non_zero_period_difference}\nwork_order_value: {work_order_value}"))?;
         }
         Ok(())
     }
 
     fn determine_clustering(
         &mut self,
-        strategic_objective_value: &mut WeeklyObjectiveValue,
+        weekly_objective_value: &mut WeeklyObjectiveValue,
     ) -> anyhow::Result<()>
     {
-        for period in &self.parameters.strategic_periods {
+        for period in &self.parameters.weekly_periods {
             // Precompute scheduled work orders for the current period
             let scheduled_work_orders_by_period: Vec<_> = self
                 .solution
@@ -464,7 +464,7 @@ where
                 .collect();
 
             // Cache references to clustering inner map
-            let clustering_inner = &self.parameters.strategic_clustering.inner;
+            let clustering_inner = &self.parameters.weekly_clustering.inner;
 
             for i in 0..scheduled_work_orders_by_period.len() {
                 for j in (i + 1)..scheduled_work_orders_by_period.len() {
@@ -492,7 +492,7 @@ where
                         .context("clustering_value not available. Did you disable it to increase startup times? That is the most likely scenario")?;
 
                     // Increment the clustering value in the objective
-                    strategic_objective_value.clustering_value.1 +=
+                    weekly_objective_value.clustering_value.1 +=
                         *clustering_value_for_work_order_pair;
                 }
             }
@@ -503,14 +503,14 @@ where
     // Calculate resource penalty based on total exceeded hours
     fn determine_resource_penalty(
         &mut self,
-        strategic_objective_value: &mut WeeklyObjectiveValue,
+        weekly_objective_value: &mut WeeklyObjectiveValue,
     )
     {
-        for (resource, periods) in &self.parameters.strategic_capacity.0 {
+        for (resource, periods) in &self.parameters.weekly_capacity.0 {
             let capacity: f64 = periods.iter().map(|ele| ele.1.total_hours.to_f64()).sum();
             let loading: f64 = self
                 .solution
-                .strategic_loadings
+                .weekly_loadings
                 .0
                 .get(resource)
                 .unwrap()
@@ -519,7 +519,7 @@ where
                 .sum();
 
             if loading - capacity > 0.0 {
-                strategic_objective_value.resource_penalty.1 += (loading - capacity) as i64
+                weekly_objective_value.resource_penalty.1 += (loading - capacity) as i64
             }
         }
     }
@@ -532,27 +532,27 @@ where
     {
         let work_order_parameter = self
             .parameters
-            .strategic_work_order_parameters
+            .weekly_work_order_parameters
             .get(&work_order_number)
             .unwrap();
         let work_load = &work_order_parameter.work_load;
         let locked_in_period = &work_order_parameter.locked_in_period;
-        let strategic_loadings = self
+        let weekly_loadings = self
             .solution
-            .strategic_loadings
+            .weekly_loadings
             .clone()
             .0
             .get(period)
             .unwrap()
             .clone();
-        let strategic_capacity = self
+        let weekly_capacity = self
             .parameters
-            .strategic_capacity
+            .weekly_capacity
             .0
             .get(period)
             .unwrap()
             .clone();
-        ensure!(combined_loadings(work_load, &strategic_loadings).iter().all(|(res, work)| work >= work_load.get(res).unwrap()), "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
+        ensure!(combined_loadings(work_load, &weekly_loadings).iter().all(|(res, work)| work >= work_load.get(res).unwrap()), "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
             possible errors:\n\
             * Rounding error\n\
             * Calculation error\n\
@@ -565,9 +565,9 @@ where
             period: {:#?}\n\
             length of priority queue: {:#?}\n\
             Location: {}",
-            combined_loadings(work_load, &strategic_loadings),
+            combined_loadings(work_load, &weekly_loadings),
             work_load.clone().into_values().sum::<Work>(),
-            combined_loadings(work_load, &strategic_capacity),
+            combined_loadings(work_load, &weekly_capacity),
             work_load,
             locked_in_period,
             period,
@@ -579,8 +579,8 @@ where
 
     fn determine_percent_scheduled(&self, new_objective_value: &mut WeeklyObjectiveValue) -> Result<()>{
 
-            let total_work_orders = self.parameters.strategic_work_order_parameters.len() as u64;
-            let scheduled_work_orders  = self.solution.strategic_scheduled_work_orders.iter().filter(|(_, v)| {
+            let total_work_orders = self.parameters.weekly_work_order_parameters.len() as u64;
+            let scheduled_work_orders  = self.solution.weekly_scheduled_work_orders.iter().filter(|(_, v)| {
                 match v {
                     WhereIsWorkOrder::Weekly(_period) => true,
                     WhereIsWorkOrder::Project(_) => false,
@@ -623,13 +623,13 @@ pub enum ScheduleWorkOrder
 // TODO: Move this trait to ProjectSolution interface (defines "Metavariables" from the paper)
 pub trait WeeklyUtils
 {
-    fn schedule_strategic_work_order(
+    fn schedule_weekly_work_order(
         &mut self,
         work_order_number: WorkOrderNumber,
         period: &Period,
     ) -> Result<Option<WorkOrderNumber>>;
 
-    fn schedule_forced_strategic_work_order(
+    fn schedule_forced_weekly_work_order(
         &mut self,
         force_schedule_work_order: &ForcedWorkOrder,
     ) -> Result<()>;
@@ -640,7 +640,7 @@ pub trait WeeklyUtils
     /// loading.
     fn update_loadings(
         &mut self,
-        strategic_resources: WeeklyResources,
+        weekly_resources: WeeklyResources,
         load_operation: LoadOperation,
     );
 
@@ -658,26 +658,26 @@ where
 {
     // TODO: Rely on interface instead. This function should determine period for project work order's first day
 
-    fn schedule_strategic_work_order(
+    fn schedule_weekly_work_order(
         &mut self,
         work_order_number: WorkOrderNumber,
         period: &Period,
     ) -> Result<Option<WorkOrderNumber>>
     {
-        let strategic_parameter = self
+        let weekly_parameter = self
             .parameters
-            .strategic_work_order_parameters
+            .weekly_work_order_parameters
             .get(&work_order_number)
             .unwrap()
             .clone();
 
-        let work_load: &HashMap<_, _> = &strategic_parameter
+        let work_load: &HashMap<_, _> = &weekly_parameter
             .work_load
             .iter()
             .map(|e| (*e.0, e.1.round()))
             .collect();
 
-        if strategic_parameter.excluded_periods.contains(period) {
+        if weekly_parameter.excluded_periods.contains(period) {
             return Ok(Some(work_order_number));
         }
 
@@ -724,14 +724,14 @@ where
 
         let previous_period = self
             .solution
-            .set_work_order_to_strategic(work_order_number, period.clone());
+            .set_work_order_to_weekly(work_order_number, period.clone());
 
         ensure!(
             previous_period.as_ref().unwrap().not_scheduled(),
             "Previous period: {:#?}\nNew period: {:#?}\nWeeklyParameter: {:#?}\nfile: {}\nline: {}",
             &previous_period,
             period,
-            strategic_parameter,
+            weekly_parameter,
             file!(),
             line!()
         );
@@ -752,7 +752,7 @@ where
     }
 
     // Ensures forced work orders are scheduled in correct order using template trait pattern
-    fn schedule_forced_strategic_work_order(
+    fn schedule_forced_weekly_work_order(
         &mut self,
         force_schedule_work_order: &ForcedWorkOrder,
     ) -> Result<()>
@@ -785,7 +785,7 @@ where
 
         self.solution
             // TODO: Move this interface to higher system level
-            .set_work_order_to_strategic(*work_order_number, locked_in_period.clone())
+            .set_work_order_to_weekly(*work_order_number, locked_in_period.clone())
             .with_context(|| {
                 format!(
                     "Could not fully update {:#?} in {}",
@@ -795,20 +795,20 @@ where
 
         let work_load = self
             .parameters
-            .strategic_work_order_parameters
+            .weekly_work_order_parameters
             .get(force_schedule_work_order.work_order_number())
             .unwrap()
             .work_load
             .clone();
 
-        let strategic_resources = self
+        let weekly_resources = self
             .determine_best_permutation(work_load, &locked_in_period, ScheduleWorkOrder::Forced)
             .with_context(|| format!("{:?}\ncould not be\n{:#?}", force_schedule_work_order, ScheduleWorkOrder::Forced))?
             .expect("It should always be possible to determine a resource permutation for a forced work order");
 
-        strategic_resources.assert_well_shaped_resources()?;
+        weekly_resources.assert_well_shaped_resources()?;
 
-        self.update_loadings(strategic_resources, LoadOperation::Add);
+        self.update_loadings(weekly_resources, LoadOperation::Add);
         Ok(())
     }
 
@@ -818,18 +818,18 @@ where
             .every_work_order()
             .get(work_order_number)
             .expect("This should always be initialized")
-            .strategic_forced()
+            .weekly_forced()
     }
 
     /// Updates WeeklyResources based on the provided loading
     fn update_loadings(
         &mut self,
-        strategic_resources: WeeklyResources,
+        weekly_resources: WeeklyResources,
         load_operation: LoadOperation,
     )
     {
         // TODO: Refactor to handle changes correctly without permutation loop 
-        for (period, operational_resources) in strategic_resources.0 {
+        for (period, operational_resources) in weekly_resources.0 {
             for (operational_id, operational_resource_loading) in operational_resources {
                 assert!(operational_resource_loading.skill_hours.iter().all(|e| e.1 == &operational_resource_loading.total_hours),
                 "Each skill_hours should always be equal to the value of the total_hours\noperational_resource: {:#?}\n{}", operational_resource_loading, std::panic::Location::caller());
@@ -837,7 +837,7 @@ where
                     LoadOperation::Add => {
                         self
                             .solution
-                            .strategic_loadings
+                            .weekly_loadings
                             .0
                             .get_mut(&period)
                             .expect("All Periods should be initialized at this point")
@@ -857,18 +857,18 @@ where
 
                     }
                     LoadOperation::Sub => {
-                        let strategic_loading = self
+                        let weekly_loading = self
                             .solution
-                            .strategic_loadings
+                            .weekly_loadings
                             .0
                             .get_mut(&period)
                             .expect("All Periods should be initialized at this point")
                             .get_mut(&operational_id)
                             .unwrap();
 
-                            strategic_loading.total_hours -= operational_resource_loading.total_hours;
+                            weekly_loading.total_hours -= operational_resource_loading.total_hours;
                             for (skill, hours) in &operational_resource_loading.skill_hours {
-                                strategic_loading
+                                weekly_loading
                                     .skill_hours
                                     .entry(*skill)
                                     .and_modify(|wor| *wor -= hours)
@@ -895,16 +895,16 @@ where
         let mut best_total_excess = Work::from(-999999999.0);
         let mut best_work_order_resource_loadings = WeeklyResources::default();
 
-        let strategic_capacity_resources = self
+        let weekly_capacity_resources = self
             .parameters
-            .strategic_capacity
+            .weekly_capacity
             .0
             .get(period)
             .context("There should always be a dummy resource that can soak excess")?;
 
         if matches!(schedule, ScheduleWorkOrder::Normal)
             && !work_load.keys().collect::<HashSet<&Skill>>().is_subset(
-                &strategic_capacity_resources
+                &weekly_capacity_resources
                     .values()
                     .flat_map(|ele| ele.skill_hours.keys())
                     .collect::<HashSet<&Skill>>(),
@@ -913,9 +913,9 @@ where
             return Ok(None);
         }
 
-        let strategic_loading_resources: HashMap<String, OperationalResource> = self
+        let weekly_loading_resources: HashMap<String, OperationalResource> = self
             .solution
-            .strategic_loadings
+            .weekly_loadings
             .0
             .get(period)
             .cloned()
@@ -923,25 +923,25 @@ where
 
         // Difference between capacity and loading: positive means capacity available, negative means overloaded
         let difference_resources = determine_difference_resources(
-            strategic_capacity_resources,
-            &strategic_loading_resources,
+            weekly_capacity_resources,
+            &weekly_loading_resources,
         );
 
         for operational_resource in difference_resources.values() {
                 ensure!(operational_resource.skill_hours.iter().all(|e| e.1 == &operational_resource.total_hours),
                 "Each skill_hours should always be equal to the value of the total_hours\noperational_resource: {:#?}\n{}", operational_resource, std::panic::Location::caller());
         }
-        for operational_resource in strategic_capacity_resources.values() {
+        for operational_resource in weekly_capacity_resources.values() {
                 ensure!(operational_resource.skill_hours.iter().all(|e| e.1 == &operational_resource.total_hours),
                 "Each skill_hours should always be equal to the value of the total_hours\noperational_resource: {:#?}\n{}", operational_resource, std::panic::Location::caller());
         }
-        for operational_resource in strategic_loading_resources.values() {
+        for operational_resource in weekly_loading_resources.values() {
                 ensure!(operational_resource.skill_hours.iter().all(|e| e.1 == &operational_resource.total_hours),
                 "Each skill_hours should always be equal to the value of the total_hours\noperational_resource: {:#?}\nScheduleWorkOrder: {:?}\n{}", operational_resource, schedule, std::panic::Location::caller());
         }
         // Try 10 different technician permutations
         let mut error_for_unschedule = HashSet::new();
-        let mut store_strategic_resources_options = vec![];
+        let mut store_weekly_resources_options = vec![];
         for _ in 0..10 {
             let mut technician_permutation = difference_resources
                 .clone()
@@ -956,7 +956,7 @@ where
                 work_load_permutation.shuffle(&mut rng);
 
                 error_for_unschedule.insert(work_load_permutation.clone());
-                let strategic_resource_loadings_option = match schedule {
+                let weekly_resource_loadings_option = match schedule {
                     ScheduleWorkOrder::Normal => determine_normal_work_order_resource_loadings(
                         period,
                         &mut technician_permutation,
@@ -967,7 +967,7 @@ where
                             .to_string()
                     })?,
                     ScheduleWorkOrder::Forced => {
-                        let strategic_resource_loadings_option =
+                        let weekly_resource_loadings_option =
                             determine_forced_work_order_resource_loadings(
                                 period,
                                 &mut best_total_excess,
@@ -979,7 +979,7 @@ where
                                 "incorrectly determine forced work order loadings\n{period}",
                             )?;
 
-                        assert_work_load_equal_to_strategic_resource(
+                        assert_work_load_equal_to_weekly_resource(
                             period,
                             &best_work_order_resource_loadings,
                             &work_load,
@@ -987,29 +987,29 @@ where
                         )
                         .with_context(|| format!("file: {}\nline: {}", file!(), line!()))?;
 
-                        if let Some(ref strategic_resource_loading) =
-                            strategic_resource_loadings_option
+                        if let Some(ref weekly_resource_loading) =
+                            weekly_resource_loadings_option
                         {
-                            assert_work_load_equal_to_strategic_resource(
+                            assert_work_load_equal_to_weekly_resource(
                                 period,
-                                strategic_resource_loading,
+                                weekly_resource_loading,
                                 &work_load,
                                 LoadOperation::Add,
                             )
                             .with_context(|| format!("file: {}\nline: {}", file!(), line!()))?;
                         }
 
-                        strategic_resource_loadings_option
+                        weekly_resource_loadings_option
                     }
 
                     // TODO: Handle rounding issues
                     ScheduleWorkOrder::Unschedule => {
                         // TODO: Remake combined_loadings to handle individual resources
                         // TODO: Fix the rounding issue
-                        // Ensure strategic_loading is higher than work_load after each schedule operation
+                        // Ensure weekly_loading is higher than work_load after each schedule operation
 
 
-                        combined_loadings(&work_load, &strategic_loading_resources)
+                        combined_loadings(&work_load, &weekly_loading_resources)
                             .iter()
                             .try_for_each(|(res, work)| {
                                 let allowed = 
@@ -1025,7 +1025,7 @@ where
                                     combined_work_load: {:#?}\n\
                                     work_load: {:#?}\n\
                                     Location: {}",
-                                    combined_loadings(&work_load, &strategic_loading_resources),
+                                    combined_loadings(&work_load, &weekly_loading_resources),
                                     work_load.clone().into_values().sum::<Work>(),
                                     work_load,
                                     Location::caller(),
@@ -1040,7 +1040,7 @@ where
                             .map(|(i, v)| (v.id, i))
                             .collect();
 
-                        let strategic_resources_loading_vec: Vec<_> = strategic_loading_resources
+                        let weekly_resources_loading_vec: Vec<_> = weekly_loading_resources
                             .clone()
                             .into_iter()
                             .sorted_by_key(|ele| order_map.get(&ele.0))
@@ -1058,38 +1058,38 @@ where
                         //
                         // The main issue with this is that the code will have to trade state for
                         // computation.
-                        let strategic_resources_option =
+                        let weekly_resources_option =
                             determine_unschedule_work_resource_loadings(
                                 period,
-                                &strategic_resources_loading_vec,
+                                &weekly_resources_loading_vec,
                                 &mut work_load_permutation,
-                            ).with_context(||format!("Error in resource calculation\n{period:#?}\nWeekly loadings: {strategic_loading_resources:#?}\nWeekly capacities: {strategic_capacity_resources:#?}\nWork load: {work_load:?}"))?;
+                            ).with_context(||format!("Error in resource calculation\n{period:#?}\nWeekly loadings: {weekly_loading_resources:#?}\nWeekly capacities: {weekly_capacity_resources:#?}\nWork load: {work_load:?}"))?;
 
-                        store_strategic_resources_options.push(strategic_resources_option.clone());
+                        store_weekly_resources_options.push(weekly_resources_option.clone());
 
-                        if let Some(ref strategic_resources) = strategic_resources_option {
-                            assert_work_load_equal_to_strategic_resource(
+                        if let Some(ref weekly_resources) = weekly_resources_option {
+                            assert_work_load_equal_to_weekly_resource(
                                 period,
-                                strategic_resources,
+                                weekly_resources,
                                 &work_load,
                                 LoadOperation::Sub,
                             )
                             .with_context(|| {
                                 format!(
-                                    "strategic_resources_loading: {:#?}\nfile: {}\nline: {}",
-                                    &strategic_loading_resources,
+                                    "weekly_resources_loading: {:#?}\nfile: {}\nline: {}",
+                                    &weekly_loading_resources,
                                     file!(),
                                     line!()
                                 )
                             })?;
                         }
-                        strategic_resources_option
+                        weekly_resources_option
                     }
                 };
 
                 // If None, resource constraints not met; try next work_load_permutation
-                let strategic_resource_loadings = match strategic_resource_loadings_option {
-                    Some(strategic_resource_loadings) => strategic_resource_loadings,
+                let weekly_resource_loadings = match weekly_resource_loadings_option {
+                    Some(weekly_resource_loadings) => weekly_resource_loadings,
                     None => continue,
                 };
 
@@ -1099,7 +1099,7 @@ where
                             .iter()
                             .all(|(_, wor)| wor == &Work::from(0.0))
                         {
-                            return Ok(Some(strategic_resource_loadings));
+                            return Ok(Some(weekly_resource_loadings));
                         }
                     }
                     ScheduleWorkOrder::Forced => {
@@ -1132,7 +1132,7 @@ where
                     }
                     // Unscheduling is always possible
                     ScheduleWorkOrder::Unschedule => {
-                        ensure!(combined_loadings(&work_load, &strategic_loading_resources).iter().all(|(res, work)| work >= work_load.get(res).unwrap()), "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
+                        ensure!(combined_loadings(&work_load, &weekly_loading_resources).iter().all(|(res, work)| work >= work_load.get(res).unwrap()), "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
                             possible errors:\n\
                             * Rounding error\n\
                             * Calculation error\n\
@@ -1141,14 +1141,14 @@ where
                             combined_work_load: {:#?}\n\
                             work_load: {:#?}\n\
                             Location: {}",
-                            combined_loadings(&work_load, &strategic_loading_resources),
+                            combined_loadings(&work_load, &weekly_loading_resources),
                             work_load.clone().into_values().sum::<Work>(),
                             work_load,
                             Location::caller(),
                         );
-                        assert_work_load_equal_to_strategic_resource(
+                        assert_work_load_equal_to_weekly_resource(
                             period,
-                            &strategic_resource_loadings,
+                            &weekly_resource_loadings,
                             &work_load,
                             LoadOperation::Sub,
                         )
@@ -1158,7 +1158,7 @@ where
                             .iter()
                             .all(|res_wor| res_wor.1 == Work::from(0.0))
                         {
-                            return Ok(Some(strategic_resource_loadings));
+                            return Ok(Some(weekly_resource_loadings));
                         }
                     }
                 }
@@ -1171,7 +1171,7 @@ where
             ScheduleWorkOrder::Unschedule => {
                 // Verify resource constraints before returning
 
-                ensure!(combined_loadings(&work_load, &strategic_loading_resources).iter().all(|(res, work)| work >= work_load.get(res).unwrap()), "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
+                ensure!(combined_loadings(&work_load, &weekly_loading_resources).iter().all(|(res, work)| work >= work_load.get(res).unwrap()), "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
                     possible errors:\n\
                     * Rounding error\n\
                     * Calculation error\n\
@@ -1180,12 +1180,12 @@ where
                     combined_work_load: {:#?}\n\
                     work_load: {:#?}\n\
                     Location: {}",
-                    combined_loadings(&work_load, &strategic_loading_resources),
+                    combined_loadings(&work_load, &weekly_loading_resources),
                     work_load.clone().into_values().sum::<Work>(),
                     work_load,
                     Location::caller(),
                 );
-                let filtered_strategic_loading_resources: Vec<_> = strategic_loading_resources
+                let filtered_weekly_loading_resources: Vec<_> = weekly_loading_resources
                     .iter()
                     .filter(|e| {
                         work_load
@@ -1194,7 +1194,7 @@ where
                     })
                     .collect();
 
-                let filtered_strategic_capacity_resources: Vec<_> = strategic_capacity_resources
+                let filtered_weekly_capacity_resources: Vec<_> = weekly_capacity_resources
                     .iter()
                     .filter(|e| {
                         work_load
@@ -1209,12 +1209,12 @@ where
                     Weekly loadings: {:#?}\n\
                     Weekly capacities: {:#?}\n\
                     Work load: {:#?}\n\
-                    Stored strategic resources options: {:#?}\n\
+                    Stored weekly resources options: {:#?}\n\
                     Unsuccessful work_load_permutations: {:#?}",
-                    filtered_strategic_loading_resources,
-                    filtered_strategic_capacity_resources,
+                    filtered_weekly_loading_resources,
+                    filtered_weekly_capacity_resources,
                     work_load,
-                    store_strategic_resources_options,
+                    store_weekly_resources_options,
                     error_for_unschedule
                 )
             }
@@ -1225,34 +1225,34 @@ where
 /// Combines skill-based loadings for a work order
 fn combined_loadings(
     work_load: &HashMap<Skill, Work>,
-    strategic_loading_resources: &HashMap<String, OperationalResource>,
+    weekly_loading_resources: &HashMap<String, OperationalResource>,
 ) -> HashMap<Skill, Work>
 {
     // HashMap of skill to total work for matching skills
-    let mut strategic_loading: HashMap<Skill, Work, _> = HashMap::default();
-    for resource in strategic_loading_resources.iter().filter(|(_, res)| {
+    let mut weekly_loading: HashMap<Skill, Work, _> = HashMap::default();
+    for resource in weekly_loading_resources.iter().filter(|(_, res)| {
         work_load
             .keys()
             .any(|res_work_load| res.skill_hours.contains_key(res_work_load))
     }) {
         for skill in resource.1.skill_hours.keys() {
-            strategic_loading
+            weekly_loading
                 .entry(*skill)
                 .and_modify(|e| *e += resource.1.total_hours)
                 .or_insert(resource.1.total_hours);
         }
     }
-    strategic_loading
+    weekly_loading
 }
 
-fn assert_work_load_equal_to_strategic_resource(
+fn assert_work_load_equal_to_weekly_resource(
     period: &Period,
-    strategic_resource_loadings: &WeeklyResources,
+    weekly_resource_loadings: &WeeklyResources,
     work_load: &HashMap<Skill, Work>,
     load_operation: LoadOperation,
 ) -> Result<()>
 {
-    let aggregate_strategic_resource = strategic_resource_loadings
+    let aggregate_weekly_resource = weekly_resource_loadings
             .0
             .get(period)
             .with_context(|| format!("{:#?}\nnot present. This probably means that nothing was {:#?}\nfile: {}\nline: {}", period, ScheduleWorkOrder::Unschedule, file!(), line!()))?
@@ -1267,16 +1267,16 @@ fn assert_work_load_equal_to_strategic_resource(
                 LoadOperation::Sub => acc - *wor,
             });
 
-    let value = aggregate_work_load.equal(aggregate_strategic_resource);
+    let value = aggregate_work_load.equal(aggregate_weekly_resource);
 
     ensure!(
         value,
         format!(
             "Aggregate Work:\nWeeklyResources: {:#?}\nwork_load: {:#?}\n\n{:#?} {:#?}\nfile: {}\nline: {}",
-            aggregate_strategic_resource,
+            aggregate_weekly_resource,
             aggregate_work_load,
             work_load,
-            strategic_resource_loadings,
+            weekly_resource_loadings,
             file!(),
             line!()
         )
@@ -1290,7 +1290,7 @@ fn determine_unschedule_work_resource_loadings(
     work_load_permutation: &mut [(Skill, Work)],
 ) -> Result<Option<WeeklyResources>>
 {
-    let mut strategic_resources = WeeklyResources::default();
+    let mut weekly_resources = WeeklyResources::default();
     let mut loading_resources_cloned = loading_resources.to_vec();
     for (resources, work) in work_load_permutation.iter_mut() {
         debug_assert!(loading_resources_cloned
@@ -1321,7 +1321,7 @@ fn determine_unschedule_work_resource_loadings(
                     .iter_mut()
                     .for_each(|ele| *ele.1 -= *work);
 
-                strategic_resources.update_load(
+                weekly_resources.update_load(
                     period,
                     *resources,
                     *work,
@@ -1336,7 +1336,7 @@ fn determine_unschedule_work_resource_loadings(
                 break;
             } else {
                 *work -= operational_resource.total_hours;
-                strategic_resources.update_load(
+                weekly_resources.update_load(
                     period,
                     *resources,
                     operational_resource.total_hours,
@@ -1357,12 +1357,12 @@ fn determine_unschedule_work_resource_loadings(
         }
     }
 
-    // Return the strategic resources if all work_load is assigned
+    // Return the weekly resources if all work_load is assigned
     if work_load_permutation
         .iter()
         .all(|ele| ele.1 == Work::from(0.0))
     {
-        Ok(Some(strategic_resources))
+        Ok(Some(weekly_resources))
     } else {
         Ok(None)
     }
@@ -1681,40 +1681,40 @@ where
     // ISSUE #000 - Pending implementation
     pub fn update_resources_state(
         &mut self,
-        _strategic_resources_request: WeeklyRequestResource,
+        _weekly_resources_request: WeeklyRequestResource,
     ) -> Result<WeeklyResponseResources>
     {
         // TODO: Implement resource state update logic
-        // match strategic_resources_request {
+        // match weekly_resources_request {
 
         //     WeeklyRequestResource::GetLoadings {
         //         periods_end: _,
         //         select_resources: _,
         //     } => {
-        //         let loading = &self.solution.strategic_loadings;
+        //         let loading = &self.solution.weekly_loadings;
 
-        //         let strategic_response_resources =
+        //         let weekly_response_resources =
         //
         // WeeklyResponseResources::LoadingAndCapacities(loading.clone());
-        //         Ok(strategic_response_resources)
+        //         Ok(weekly_response_resources)
         //     }
         //     WeeklyRequestResource::GetCapacities {
         //         periods_end: _,
         //         select_resources: _,
         //     } => {
-        //         let capacities = &self.parameters.strategic_capacity;
+        //         let capacities = &self.parameters.weekly_capacity;
 
-        //         let strategic_response_resources =
+        //         let weekly_response_resources =
         //
         // WeeklyResponseResources::LoadingAndCapacities(capacities.clone());
-        //         Ok(strategic_response_resources)
+        //         Ok(weekly_response_resources)
         //     }
         //     WeeklyRequestResource::GetPercentageLoadings {
         //         periods_end: _,
         //         resources: _,
         //     } => {
-        //         let capacities = &self.parameters.strategic_capacity;
-        //         let loadings = &self.solution.strategic_loadings;
+        //         let capacities = &self.parameters.weekly_capacity;
+        //         let loadings = &self.solution.weekly_loadings;
 
         //         Algorithm::assert_that_capacity_is_respected(loadings, capacities)
         //             .context("Loadings exceed the capacities")?;
@@ -1730,14 +1730,14 @@ where
     #[instrument(level = "info", skip_all)]
     pub fn update_scheduling_state(
         &mut self,
-        strategic_scheduling_request: WeeklyRequestScheduling,
+        weekly_scheduling_request: WeeklyRequestScheduling,
     ) -> Result<WeeklyResponseScheduling>
     {
-        match strategic_scheduling_request {
+        match weekly_scheduling_request {
             WeeklyRequestScheduling::Schedule(schedule_work_order) => {
                 let period = self
                     .parameters
-                    .strategic_periods
+                    .weekly_periods
                     .iter()
                     .find(|period| period.period_string() == schedule_work_order.period_string())
                     .cloned()
@@ -1750,13 +1750,13 @@ where
 
                 let mut number_of_work_orders = 0;
                 for work_order_number in schedule_work_order.work_order_number {
-                    let strategic_parameter = self
+                    let weekly_parameter = self
                         .parameters
-                        .strategic_work_order_parameters
+                        .weekly_work_order_parameters
                         .get_mut(&work_order_number)
                         .unwrap();
-                    if strategic_parameter.excluded_periods.contains(&period) {
-                        strategic_parameter.excluded_periods.remove(&period);
+                    if weekly_parameter.excluded_periods.contains(&period) {
+                        weekly_parameter.excluded_periods.remove(&period);
                     }
                     self.parameters
                         .set_locked_in_period(work_order_number, period.clone())
@@ -1786,21 +1786,21 @@ where
             .context("WorkOrder unschedule should never be called on a not scheduled WorkOrder")?;
 
         if let WhereIsWorkOrder::Weekly(unschedule_from_period) = unschedule_from_period {
-            let strategic_parameter = self
+            let weekly_parameter = self
                 .parameters
-                .strategic_work_order_parameters
+                .weekly_work_order_parameters
                 .get(&work_order_number)
                 .unwrap();
 
-            let work_load = strategic_parameter.work_load.clone();
+            let work_load = weekly_parameter.work_load.clone();
 
-            let strategic_resources = self
+            let weekly_resources = self
                 .determine_best_permutation(work_load, &unschedule_from_period, ScheduleWorkOrder::Unschedule)
-                .with_context(|| format!("{:#?}\n{:#?}\nfor {:?}\nfile: {}\nline: {}", strategic_parameter, unschedule_from_period, ScheduleWorkOrder::Unschedule, file!(), line!()))?
+                .with_context(|| format!("{:#?}\n{:#?}\nfor {:?}\nfile: {}\nline: {}", weekly_parameter, unschedule_from_period, ScheduleWorkOrder::Unschedule, file!(), line!()))?
                 .context("Determining the WeeklyResources associated with a unscheduling operation should always be possible")?;
 
-            strategic_resources.assert_well_shaped_resources()?;
-            self.update_loadings(strategic_resources, LoadOperation::Sub);
+            weekly_resources.assert_well_shaped_resources()?;
+            self.update_loadings(weekly_resources, LoadOperation::Sub);
         }
         Ok(())
     }
@@ -1809,15 +1809,15 @@ where
     pub fn populate_priority_queue(&mut self)
     {
         for work_order_number in self.solution.every_work_order().clone().keys() {
-            let strategic_parameter = self
+            let weekly_parameter = self
                 .parameters
-                .strategic_work_order_parameters
+                .weekly_work_order_parameters
                 .get(work_order_number)
                 .expect(
                     "The WeeklyParameter should always be available for the WeeklySolution",
                 );
 
-            if strategic_parameter.locked_in_period.strategic_forced() {
+            if weekly_parameter.locked_in_period.weekly_forced() {
                 continue;
             }
 
@@ -1828,9 +1828,9 @@ where
                 .unwrap()
                 .not_scheduled()
             {
-                let strategic_work_order_weight = strategic_parameter.weight;
+                let weekly_work_order_weight = weekly_parameter.weight;
                 self.solution_intermediate
-                    .push(*work_order_number, strategic_work_order_weight);
+                    .push(*work_order_number, weekly_work_order_weight);
             }
         }
     }
@@ -1863,7 +1863,7 @@ mod tests
 
     use rand::rngs::StdRng;
     use rand::SeedableRng;
-    use strategic_parameters::WorkOrderParameter;
+    use weekly_parameters::WorkOrderParameter;
 
     use super::*;
 
@@ -1961,14 +1961,14 @@ mod tests
                 .into_iter()
                 .collect();
 
-        let strategic_resources_inner: HashMap<Period, HashMap<String, OperationalResource>> =
+        let weekly_resources_inner: HashMap<Period, HashMap<String, OperationalResource>> =
             vec![(period.clone(), operational_resources_by_period)]
                 .into_iter()
                 .collect();
 
-        let mut strategic_resources = WeeklyResources::new(strategic_resources_inner);
+        let mut weekly_resources = WeeklyResources::new(weekly_resources_inner);
 
-        strategic_resources.update_load(
+        weekly_resources.update_load(
             &period,
             resource,
             load,
@@ -1977,7 +1977,7 @@ mod tests
         );
 
         assert_eq!(
-            strategic_resources
+            weekly_resources
                 .0
                 .get(&period)
                 .unwrap()
@@ -1986,7 +1986,7 @@ mod tests
                 .total_hours,
             Work::from(130.0)
         );
-        assert!(strategic_resources
+        assert!(weekly_resources
             .0
             .get(&period)
             .unwrap()
@@ -2018,14 +2018,14 @@ mod tests
                 .into_iter()
                 .collect();
 
-        let strategic_resources_inner: HashMap<Period, HashMap<String, OperationalResource>> =
+        let weekly_resources_inner: HashMap<Period, HashMap<String, OperationalResource>> =
             vec![(period.clone(), operational_resources_by_period)]
                 .into_iter()
                 .collect();
 
-        let mut strategic_resources = WeeklyResources::new(strategic_resources_inner);
+        let mut weekly_resources = WeeklyResources::new(weekly_resources_inner);
 
-        strategic_resources.update_load(
+        weekly_resources.update_load(
             &period,
             resource,
             load,
@@ -2034,7 +2034,7 @@ mod tests
         );
 
         assert_eq!(
-            strategic_resources
+            weekly_resources
                 .0
                 .get(&period)
                 .unwrap()
@@ -2043,7 +2043,7 @@ mod tests
                 .total_hours,
             Work::from(130.0)
         );
-        assert!(strategic_resources
+        assert!(weekly_resources
             .0
             .get(&period)
             .unwrap()
@@ -2052,7 +2052,7 @@ mod tests
             .skill_hours
             .values()
             .all(|wor| *wor == Work::from(130.0)));
-        assert!(strategic_resources
+        assert!(weekly_resources
             .0
             .get(&period)
             .unwrap()
@@ -2082,14 +2082,14 @@ mod tests
                 .into_iter()
                 .collect();
 
-        let strategic_resources_inner: HashMap<Period, HashMap<String, OperationalResource>> =
+        let weekly_resources_inner: HashMap<Period, HashMap<String, OperationalResource>> =
             vec![(period.clone(), operational_resources_by_period)]
                 .into_iter()
                 .collect();
 
-        let mut strategic_resources = WeeklyResources::new(strategic_resources_inner);
+        let mut weekly_resources = WeeklyResources::new(weekly_resources_inner);
 
-        strategic_resources.update_load(
+        weekly_resources.update_load(
             &period,
             resource,
             load,
@@ -2098,7 +2098,7 @@ mod tests
         );
 
         assert_eq!(
-            strategic_resources
+            weekly_resources
                 .0
                 .get(&period)
                 .unwrap()
@@ -2107,7 +2107,7 @@ mod tests
                 .total_hours,
             Work::from(70.0)
         );
-        assert!(strategic_resources
+        assert!(weekly_resources
             .0
             .get(&period)
             .unwrap()
@@ -2116,7 +2116,7 @@ mod tests
             .skill_hours
             .values()
             .all(|wor| *wor == Work::from(70.0)));
-        assert!(strategic_resources
+        assert!(weekly_resources
             .0
             .get(&period)
             .unwrap()
@@ -2152,14 +2152,14 @@ mod tests
         ];
 
         // Ahh you should use your tests
-        let strategic_resource_option = super::determine_normal_work_order_resource_loadings(
+        let weekly_resource_option = super::determine_normal_work_order_resource_loadings(
             &period,
             &mut technician_permutation,
             &mut work_load_permutation,
         )
         .unwrap();
 
-        assert!(strategic_resource_option.is_none());
+        assert!(weekly_resource_option.is_none());
     }
     #[test]
     fn test_determine_normal_work_order_resource_loadings_1() -> Result<()>
@@ -2186,14 +2186,14 @@ mod tests
         ];
 
         // Ahh you should use your tests
-        let strategic_resource_option = super::determine_normal_work_order_resource_loadings(
+        let weekly_resource_option = super::determine_normal_work_order_resource_loadings(
             &period,
             &mut technician_permutation,
             &mut work_load_permutation,
         )
         .context("Test failed")?;
 
-        assert!(strategic_resource_option.is_none());
+        assert!(weekly_resource_option.is_none());
         Ok(())
     }
 
@@ -2221,14 +2221,14 @@ mod tests
             (Skill::MtnScaf, Work::from(20.0)),
         ];
 
-        let strategic_resource_option = super::determine_normal_work_order_resource_loadings(
+        let weekly_resource_option = super::determine_normal_work_order_resource_loadings(
             &period,
             &mut technician_permutation,
             &mut work_load_permutation,
         )
         .unwrap();
 
-        assert!(strategic_resource_option.is_some());
+        assert!(weekly_resource_option.is_some());
 
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
@@ -2241,11 +2241,11 @@ mod tests
             HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
         );
 
-        let mut strategic_resource = WeeklyResources::default();
-        strategic_resource.insert_operational_resource(period.clone(), operational_resource_1);
-        strategic_resource.insert_operational_resource(period.clone(), operational_resource_2);
+        let mut weekly_resource = WeeklyResources::default();
+        weekly_resource.insert_operational_resource(period.clone(), operational_resource_1);
+        weekly_resource.insert_operational_resource(period.clone(), operational_resource_2);
 
-        assert_eq!(strategic_resource, strategic_resource_option.unwrap());
+        assert_eq!(weekly_resource, weekly_resource_option.unwrap());
     }
 
     #[test]
@@ -2272,13 +2272,13 @@ mod tests
             (Skill::MtnScaf, Work::from(30.0)),
         ];
 
-        let mut best_strategic_resource = WeeklyResources::default();
+        let mut best_weekly_resource = WeeklyResources::default();
         let mut best_total_excess = Work::from(-9999999.0);
 
-        let strategic_resources = determine_forced_work_order_resource_loadings(
+        let weekly_resources = determine_forced_work_order_resource_loadings(
             &period,
             &mut best_total_excess,
-            &mut best_strategic_resource,
+            &mut best_weekly_resource,
             &mut technician_permutation,
             &mut work_load_permutation,
         )
@@ -2290,7 +2290,7 @@ mod tests
         })
         .unwrap();
 
-        assert!(strategic_resources.is_none());
+        assert!(weekly_resources.is_none());
 
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
@@ -2302,12 +2302,12 @@ mod tests
             Work::from(50.0),
             HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
         );
-        let mut strategic_resources = WeeklyResources::default();
+        let mut weekly_resources = WeeklyResources::default();
 
-        strategic_resources.insert_operational_resource(period.clone(), operational_resource_1);
-        strategic_resources.insert_operational_resource(period.clone(), operational_resource_2);
+        weekly_resources.insert_operational_resource(period.clone(), operational_resource_1);
+        weekly_resources.insert_operational_resource(period.clone(), operational_resource_2);
 
-        assert_eq!(strategic_resources, best_strategic_resource);
+        assert_eq!(weekly_resources, best_weekly_resource);
     }
 
     #[test]
@@ -2334,19 +2334,19 @@ mod tests
             (Skill::MtnScaf, Work::from(20.0)),
         ];
 
-        let mut best_strategic_resource = WeeklyResources::default();
+        let mut best_weekly_resource = WeeklyResources::default();
         let mut best_total_excess = Work::from(-9999999.0);
 
-        let strategic_resources_option = determine_forced_work_order_resource_loadings(
+        let weekly_resources_option = determine_forced_work_order_resource_loadings(
             &period,
             &mut best_total_excess,
-            &mut best_strategic_resource,
+            &mut best_weekly_resource,
             &mut technician_permutation,
             &mut work_load_permutation,
         )
         .unwrap();
 
-        assert!(strategic_resources_option.is_some());
+        assert!(weekly_resources_option.is_some());
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
             Work::from(40.0),
@@ -2357,12 +2357,12 @@ mod tests
             Work::from(20.0),
             HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
         );
-        let mut strategic_resources = WeeklyResources::default();
+        let mut weekly_resources = WeeklyResources::default();
 
-        strategic_resources.insert_operational_resource(period.clone(), operational_resource_1);
-        strategic_resources.insert_operational_resource(period.clone(), operational_resource_2);
+        weekly_resources.insert_operational_resource(period.clone(), operational_resource_1);
+        weekly_resources.insert_operational_resource(period.clone(), operational_resource_2);
 
-        assert_eq!(strategic_resources, strategic_resources_option.unwrap());
+        assert_eq!(weekly_resources, weekly_resources_option.unwrap());
     }
 
     #[test]
@@ -2390,19 +2390,19 @@ mod tests
             (Skill::VenMech, Work::from(20.0)),
         ];
 
-        let mut best_strategic_resource = WeeklyResources::default();
+        let mut best_weekly_resource = WeeklyResources::default();
         let mut best_total_excess = Work::from(-9999999.0);
 
-        let strategic_resources_option = determine_forced_work_order_resource_loadings(
+        let weekly_resources_option = determine_forced_work_order_resource_loadings(
             &period,
             &mut best_total_excess,
-            &mut best_strategic_resource,
+            &mut best_weekly_resource,
             &mut technician_permutation,
             &mut work_load_permutation,
         )
         .unwrap();
 
-        assert!(strategic_resources_option.is_some());
+        assert!(weekly_resources_option.is_some());
         // Is this the right way of doing things? I do not think that it is...
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
@@ -2417,13 +2417,13 @@ mod tests
         let operational_resource_3 =
             OperationalResource::new("VEN-MECH_dummy", Work::from(20.0), HashSet::from([Skill::VenMech]));
 
-        let mut strategic_resources = WeeklyResources::default();
+        let mut weekly_resources = WeeklyResources::default();
 
-        strategic_resources.insert_operational_resource(period.clone(), operational_resource_1);
-        strategic_resources.insert_operational_resource(period.clone(), operational_resource_2);
-        strategic_resources.insert_operational_resource(period.clone(), operational_resource_3);
+        weekly_resources.insert_operational_resource(period.clone(), operational_resource_1);
+        weekly_resources.insert_operational_resource(period.clone(), operational_resource_2);
+        weekly_resources.insert_operational_resource(period.clone(), operational_resource_3);
 
-        assert_eq!(strategic_resources, strategic_resources_option.unwrap());
+        assert_eq!(weekly_resources, weekly_resources_option.unwrap());
     }
 
     #[test]
@@ -2449,14 +2449,14 @@ mod tests
             ),
         ];
 
-        let strategic_resources_option_calculated = determine_unschedule_work_resource_loadings(
+        let weekly_resources_option_calculated = determine_unschedule_work_resource_loadings(
             &period,
             &loading_resources,
             &mut work_load_permutation,
         )
         .unwrap();
 
-        assert!(strategic_resources_option_calculated.is_some());
+        assert!(weekly_resources_option_calculated.is_some());
 
         let operational_resource_1 = OperationalResource::new(
             "OP_TEST_0",
@@ -2468,16 +2468,16 @@ mod tests
             Work::from(-20.0),
             HashSet::from([Skill::MtnScaf, Skill::MtnElec]),
         );
-        let mut strategic_resources_manual = WeeklyResources::default();
+        let mut weekly_resources_manual = WeeklyResources::default();
 
-        strategic_resources_manual
+        weekly_resources_manual
             .insert_operational_resource(period.clone(), operational_resource_1);
-        strategic_resources_manual
+        weekly_resources_manual
             .insert_operational_resource(period.clone(), operational_resource_2);
 
         assert_eq!(
-            strategic_resources_manual,
-            strategic_resources_option_calculated.unwrap()
+            weekly_resources_manual,
+            weekly_resources_option_calculated.unwrap()
         );
     }
 
@@ -2515,33 +2515,33 @@ mod tests
         // is a much better approach for dealing with this. And then we reuse
         // the structure that we already have. QUESTION:
         // Can you combine the .permutation() with random access.
-        let strategic_resources_option = determine_unschedule_work_resource_loadings(
+        let weekly_resources_option = determine_unschedule_work_resource_loadings(
             &period,
             &loading_resources,
             &mut work_load_permutation.clone(),
         )
         .unwrap();
 
-        super::assert_work_load_equal_to_strategic_resource(
+        super::assert_work_load_equal_to_weekly_resource(
             &period,
-            strategic_resources_option.as_ref().unwrap(),
+            weekly_resources_option.as_ref().unwrap(),
             &HashMap::from(work_load_permutation),
             LoadOperation::Sub,
         )?;
 
-        assert!(strategic_resources_option.is_some());
+        assert!(weekly_resources_option.is_some());
 
         // let operational_resource_1 = OperationalResource::new("OP_TEST_0",
         // Work::from(-20.0), vec![Resources::MtnMech, Resources::MtnElec]); let
         // operational_resource_2 = OperationalResource::new("OP_TEST_1",
         // Work::from(-20.0), vec![Resources::MtnScaf, Resources::MtnElec]); let
-        // mut strategic_resources = WeeklyResources::default();
+        // mut weekly_resources = WeeklyResources::default();
 
-        // strategic_resources.insert_operatensureonal_resource(period.clone(),
-        // operational_resource_1); strategic_resources.
+        // weekly_resources.insert_operatensureonal_resource(period.clone(),
+        // operational_resource_1); weekly_resources.
         // insert_operational_resource(period.clone(), operational_resource_2);
 
-        // assert_eq!(strategic_resources, strategic_resources_option.unwrap());
+        // assert_eq!(weekly_resources, weekly_resources_option.unwrap());
 
         //FIX MAKE A PROPTEST
         Ok(())
@@ -2575,7 +2575,7 @@ mod tests
         work_load_3.insert(Skill::MtnElec, Work::from(30.0));
         work_load_3.insert(Skill::Prodtech, Work::from(30.0));
 
-        let mut strategic_resources = WeeklyResources::default();
+        let mut weekly_resources = WeeklyResources::default();
 
         let operational_resource_0 = OperationalResource::new(
             "OP_TEST_0",
@@ -2588,8 +2588,8 @@ mod tests
             HashSet::from([Skill::MtnMech, Skill::MtnElec]),
         );
 
-        strategic_resources.insert_operational_resource(periods[0].clone(), operational_resource_0);
-        strategic_resources.insert_operational_resource(periods[1].clone(), operational_resource_1);
+        weekly_resources.insert_operational_resource(periods[0].clone(), operational_resource_0);
+        weekly_resources.insert_operational_resource(periods[1].clone(), operational_resource_1);
 
         // This way of making parameters needs to go away. Is the right call here to
         // simply delete the let scheduling_environment =
@@ -2597,13 +2597,13 @@ mod tests
 
         // let id = Id::new("Weekly", vec![], vec![Asset::Unknown]);
 
-        // let mut strategic_parameters = WeeklyParameters::new(
+        // let mut weekly_parameters = WeeklyParameters::new(
         //     &id,
         //     WeeklyOptions::default(),
         //     &scheduling_environment.lock().unwrap(),
         // )?;
 
-        // let strategic_parameter_1 = WorkOrderParameter::new(
+        // let weekly_parameter_1 = WorkOrderParameter::new(
         //     None,
         //     HashSet::new(),
         //     latest_period.clone(),
@@ -2611,7 +2611,7 @@ mod tests
         //     work_load_1,
         // );
 
-        // let strategic_parameter_2 = WorkOrderParameter::new(
+        // let weekly_parameter_2 = WorkOrderParameter::new(
         //     None,
         //     HashSet::new(),
         //     latest_period.clone(),
@@ -2619,7 +2619,7 @@ mod tests
         //     work_load_2,
         // );
 
-        // let strategic_parameter_3 = WorkOrderParameter::new(
+        // let weekly_parameter_3 = WorkOrderParameter::new(
         //     None,
         //     HashSet::new(),
         //     latest_period.clone(),
@@ -2631,53 +2631,53 @@ mod tests
         // let work_order_number_2 = WorkOrderNumber(2200000002);
         // let work_order_number_3 = WorkOrderNumber(2200000003);
 
-        // strategic_parameters
-        //     .strategic_work_order_parameters
-        //     .insert(work_order_number_1, strategic_parameter_1);
+        // weekly_parameters
+        //     .weekly_work_order_parameters
+        //     .insert(work_order_number_1, weekly_parameter_1);
 
-        // strategic_parameters
-        //     .strategic_work_order_parameters
-        //     .insert(work_order_number_2, strategic_parameter_2);
+        // weekly_parameters
+        //     .weekly_work_order_parameters
+        //     .insert(work_order_number_2, weekly_parameter_2);
 
-        // strategic_parameters
-        //     .strategic_work_order_parameters
-        //     .insert(work_order_number_3, strategic_parameter_3);
+        // weekly_parameters
+        //     .weekly_work_order_parameters
+        //     .insert(work_order_number_3, weekly_parameter_3);
 
         // let scheduling_environment =
         // Arc::new(Mutex::new(SchedulingEnvironment::default()));
 
         // let id = Id::new("Weekly", vec![], vec![Asset::Unknown]);
 
-        // let strategic_parameters = WeeklyParameters::new(
+        // let weekly_parameters = WeeklyParameters::new(
         //     &id,
         //     WeeklyOptions::default(),
         //     &scheduling_environment.lock().unwrap(),
         // )?;
 
-        // let strategic_solution = WeeklySolution::new(&strategic_parameters);
+        // let weekly_solution = WeeklySolution::new(&weekly_parameters);
 
         // Actor::builder().agent_id(&id).
         // scheduling_environment(scheduling_environment).algorithm(|con|con.id(&id).
         // parameters(options, scheduling_environment)).configurations();
 
-        // let mut strategic_algorithm = Algorithm::new(
+        // let mut weekly_algorithm = Algorithm::new(
         //     &Id::default(),
-        //     strategic_solution,
-        //     strategic_parameters,
+        //     weekly_solution,
+        //     weekly_parameters,
         //     ArcSwapSharedSolution::default().into(),
         // );
 
-        // strategic_algorithm
+        // weekly_algorithm
         //     .solution
-        //     .strategic_scheduled_work_orders
+        //     .weekly_scheduled_work_orders
         //     .insert(work_order_number_1, Some(periods[0].clone()));
-        // strategic_algorithm
+        // weekly_algorithm
         //     .solution
-        //     .strategic_scheduled_work_orders
+        //     .weekly_scheduled_work_orders
         //     .insert(work_order_number_2, Some(periods[1].clone()));
-        // strategic_algorithm
+        // weekly_algorithm
         //     .solution
-        //     .strategic_scheduled_work_orders
+        //     .weekly_scheduled_work_orders
         //     .insert(work_order_number_3, Some(periods[1].clone()));
 
         // let operational_resource_0 = OperationalResource::new("OP_TEST_0",
@@ -2692,13 +2692,13 @@ mod tests
         //         Resources::Prodtech,
         //     ]);
 
-        // strategic_algorithm
+        // weekly_algorithm
         //     .solution
-        //     .strategic_loadings
+        //     .weekly_loadings
         //     .insert_operational_resource(periods[0].clone(), operational_resource_0);
-        // strategic_algorithm
+        // weekly_algorithm
         //     .solution
-        //     .strategic_loadings
+        //     .weekly_loadings
         //     .insert_operational_resource(periods[1].clone(), operational_resource_1);
 
         // let seed: [u8; 32] = [
@@ -2708,7 +2708,7 @@ mod tests
 
         // let rng = StdRng::from_seed(seed);
 
-        // let strategic_options = WeeklyOptions {
+        // let weekly_options = WeeklyOptions {
         //     number_of_removed_work_order: 2,
         //     rng,
         //     urgency_weight: 1,
@@ -2718,34 +2718,34 @@ mod tests
         //     material_to_period: todo!(),
         // };
 
-        // strategic_algorithm.parameters.strategic_options = strategic_options;
+        // weekly_algorithm.parameters.weekly_options = weekly_options;
 
-        // strategic_algorithm.unschedule().expect(
+        // weekly_algorithm.unschedule().expect(
         //     "It should always be possible to unschedule random work orders in the
-        // strategic agent", );
+        // weekly agent", );
 
         // assert_eq!(
-        //     *strategic_algorithm
+        //     *weekly_algorithm
         //         .solution
-        //         .strategic_scheduled_work_orders
+        //         .weekly_scheduled_work_orders
         //         .get(&WorkOrderNumber(2200000001))
         //         .unwrap(),
         //     Some(Period::from_str("2023-W47-48").unwrap())
         // );
 
         // assert_eq!(
-        //     *strategic_algorithm
+        //     *weekly_algorithm
         //         .solution
-        //         .strategic_scheduled_work_orders
+        //         .weekly_scheduled_work_orders
         //         .get(&WorkOrderNumber(2200000002))
         //         .unwrap(),
         //     None
         // );
 
         // assert_eq!(
-        //     *strategic_algorithm
+        //     *weekly_algorithm
         //         .solution
-        //         .strategic_scheduled_work_orders
+        //         .weekly_scheduled_work_orders
         //         .get(&WorkOrderNumber(2200000003))
         //         .unwrap(),
         //     None
@@ -2798,7 +2798,7 @@ mod tests
     {
         let _work_order_number = WorkOrderNumber(2100000001);
         let periods = [Period::from_str("2026-W41-42").unwrap()];
-        let mut strategic_resources = WeeklyResources::default();
+        let mut weekly_resources = WeeklyResources::default();
 
         let operational_resource_0 = OperationalResource::new(
             "OP_TEST_0",
@@ -2806,20 +2806,20 @@ mod tests
             HashSet::from([Skill::MtnMech, Skill::MtnElec]),
         );
 
-        strategic_resources.insert_operational_resource(periods[0].clone(), operational_resource_0);
+        weekly_resources.insert_operational_resource(periods[0].clone(), operational_resource_0);
 
         // let scheduling_environment =
         // Arc::new(Mutex::new(SchedulingEnvironment::default()));
 
         // let id = Id::new("Weekly", vec![], vec![Asset::Unknown]);
 
-        // let mut strategic_parameters = WeeklyParameters::new(
+        // let mut weekly_parameters = WeeklyParameters::new(
         //     &id,
         //     WeeklyOptions::default(),
         //     &scheduling_environment.lock().unwrap(),
         // )?;
 
-        // let strategic_parameter = WorkOrderParameter::new(
+        // let weekly_parameter = WorkOrderParameter::new(
         //     None,
         //     HashSet::new(),
         //     periods[0].clone(),
@@ -2827,9 +2827,9 @@ mod tests
         //     HashMap::from([(Resources::MtnMech, Work::from(5.0))]),
         // );
 
-        // strategic_parameters
-        //     .strategic_work_order_parameters
-        //     .insert(work_order_number, strategic_parameter);
+        // weekly_parameters
+        //     .weekly_work_order_parameters
+        //     .insert(work_order_number, weekly_parameter);
 
         // let project_solution_builder = ProjectSolutionBuilder::new();
 
@@ -2850,16 +2850,16 @@ mod tests
         // let arc_swap_shared_solution =
         //     ArcSwapSharedSolution(ArcSwap::from_pointee(shared_solution));
 
-        // let mut strategic_solution = WeeklySolution::new(&strategic_parameters);
+        // let mut weekly_solution = WeeklySolution::new(&weekly_parameters);
 
-        // strategic_solution
-        //     .strategic_scheduled_work_orders
+        // weekly_solution
+        //     .weekly_scheduled_work_orders
         //     .insert(work_order_number, Some(periods[0].clone()));
 
-        // let mut strategic_algorithm = Algorithm::new(
+        // let mut weekly_algorithm = Algorithm::new(
         //     &Id::default(),
-        //     strategic_solution,
-        //     strategic_parameters,
+        //     weekly_solution,
+        //     weekly_parameters,
         //     arc_swap_shared_solution.into(),
         // );
 
@@ -2869,22 +2869,22 @@ mod tests
         //     Resources::Prodtech,
         // ]);
 
-        // strategic_algorithm
+        // weekly_algorithm
         //     .solution
-        //     .strategic_loadings
+        //     .weekly_loadings
         //     .insert_operational_resource(periods[0].clone(), operational_resource_0);
 
-        // strategic_algorithm
+        // weekly_algorithm
         //     .update_based_on_shared_solution()
         //     .unwrap();
 
-        // strategic_algorithm
+        // weekly_algorithm
         //     .unschedule_specific_work_order(work_order_number)
         //     .unwrap();
         // assert_eq!(
-        //     *strategic_algorithm
+        //     *weekly_algorithm
         //         .solution
-        //         .strategic_scheduled_work_orders
+        //         .weekly_scheduled_work_orders
         //         .get(&work_order_number)
         //         .unwrap(),
         //     None

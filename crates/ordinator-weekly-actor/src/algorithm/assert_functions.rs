@@ -15,16 +15,16 @@ use strum::IntoEnumIterator;
 use tracing::Level;
 use tracing::event;
 
-use super::strategic_parameters::WeeklyParameters;
-use super::strategic_resources::WeeklyResources;
-use super::strategic_solution::WeeklySolution;
+use super::weekly_parameters::WeeklyParameters;
+use super::weekly_resources::WeeklyResources;
+use super::weekly_solution::WeeklySolution;
 
 #[allow(dead_code)]
 pub trait WeeklyAssertions
 {
     fn assert_that_capacity_is_respected(
-        strategic_loading: &WeeklyResources,
-        strategic_capacity: &WeeklyResources,
+        weekly_loading: &WeeklyResources,
+        weekly_capacity: &WeeklyResources,
     ) -> Result<()>;
     fn assert_aggregated_load(&self) -> Result<()>;
     fn assert_excluded_periods(&self) -> Result<()>;
@@ -36,13 +36,13 @@ where
     Ss: SystemSolutions,
 {
     fn assert_that_capacity_is_respected(
-        strategic_loading: &WeeklyResources,
-        strategic_capacity: &WeeklyResources,
+        weekly_loading: &WeeklyResources,
+        weekly_capacity: &WeeklyResources,
     ) -> Result<()>
     {
-        for (period, operational_resources) in strategic_loading.0.iter() {
+        for (period, operational_resources) in weekly_loading.0.iter() {
             for (operational_id, work) in operational_resources.iter() {
-                let capacity = strategic_capacity
+                let capacity = weekly_capacity
                     .0
                     .get(period)
                     .unwrap()
@@ -56,7 +56,7 @@ where
                         period = ?operational_id,
                         capacity = ?capacity,
                         loading = ? work,
-                        "strategic_resources_exceeded"
+                        "weekly_resources_exceeded"
 
                     );
                     bail!("Capacity exceeded")
@@ -68,27 +68,27 @@ where
 
     fn assert_aggregated_load(&self) -> Result<()>
     {
-        let mut aggregated_strategic_load = HashMap::new();
-        for period in &self.parameters.strategic_periods {
-            for (work_order_number, strategic_solution) in self.solution.every_work_order().iter() {
-                let strategic_parameter = self
+        let mut aggregated_weekly_load = HashMap::new();
+        for period in &self.parameters.weekly_periods {
+            for (work_order_number, weekly_solution) in self.solution.every_work_order().iter() {
+                let weekly_parameter = self
                     .parameters
-                    .strategic_work_order_parameters
+                    .weekly_work_order_parameters
                     .get(work_order_number)
                     .unwrap();
 
                 // Weekly load aggregation is used to test internal WeeklySolution consistency.
                 // Do not include ProjectSolutions here.
-                if let WhereIsWorkOrder::Weekly(strategic_scheduled_period) = strategic_solution
-                    && strategic_scheduled_period == period
+                if let WhereIsWorkOrder::Weekly(weekly_scheduled_period) = weekly_solution
+                    && weekly_scheduled_period == period
                 {
-                    let work_load = &strategic_parameter.work_load;
+                    let work_load = &weekly_parameter.work_load;
                     for resource in Skill::iter() {
                         let load: Work =
                             work_load.get(&resource).cloned().unwrap_or(Work::from(0.0));
                         // Verify total hours; individual resource validation handled separately.
 
-                        match aggregated_strategic_load.entry((period, resource)) {
+                        match aggregated_weekly_load.entry((period, resource)) {
                             Entry::Occupied(mut occupied_entry) => {
                                 *occupied_entry.get_mut() += load;
                             }
@@ -102,10 +102,10 @@ where
         }
 
         // Verify aggregated total_hours match actual loadings.
-        for (resource, total_work) in aggregated_strategic_load {
+        for (resource, total_work) in aggregated_weekly_load {
             let loadings = self
                 .solution
-                .strategic_loadings
+                .weekly_loadings
                 .0
                 .get(resource.0)
                 .unwrap()
@@ -122,11 +122,11 @@ where
 
     fn assert_excluded_periods(&self) -> Result<()>
     {
-        for (work_order_number, strategic_parameter) in
-            &self.parameters.strategic_work_order_parameters
+        for (work_order_number, weekly_parameter) in
+            &self.parameters.weekly_work_order_parameters
         {
-            let excluded_periods = &strategic_parameter.excluded_periods;
-            let locked_in_period = &strategic_parameter.locked_in_period;
+            let excluded_periods = &weekly_parameter.excluded_periods;
+            let locked_in_period = &weekly_parameter.locked_in_period;
 
             let scheduled_period = self
                 .solution
@@ -134,7 +134,7 @@ where
                 .get(work_order_number)
                 .unwrap();
 
-            // Use [`WhereIsWorkOrder`] to validate strategic period constraints.
+            // Use [`WhereIsWorkOrder`] to validate weekly period constraints.
             if let WhereIsWorkOrder::Weekly(period) = scheduled_period {
                 ensure!(
                     !excluded_periods.contains(period),

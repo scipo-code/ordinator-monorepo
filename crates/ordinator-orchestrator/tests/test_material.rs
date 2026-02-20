@@ -48,7 +48,7 @@ async fn test_material_1() -> anyhow::Result<()>
         .get(&Asset::Test)
         .unwrap()
         .load()
-        .strategic
+        .weekly
         .as_ref()
         .unwrap()
         .every_work_order()

@@ -11,7 +11,7 @@ ordinator-total-data-processing = { path = "../ordinator-total-data-processing"}
 ordinator-configuration = { path = "../ordinator-configuration"}
 
 
-ordinator-strategic-actor = { path = "../ordinator-strategic-actor" }
+ordinator-weekly-actor = { path = "../ordinator-weekly-actor" }
 ordinator-project-actor = { path = "../ordinator-project-actor" }
 ordinator-supervisor-actor = { path = "../ordinator-supervisor-actor" }
 ordinator-operational-actor = { path = "../ordinator-operational-actor" }

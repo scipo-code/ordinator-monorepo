@@ -42,7 +42,7 @@ def update_excel_with_project_output(json_data, excel_file, work_order_col, acti
     # Save the updated DataFrame back to the Excel file
     df.to_excel(excel_file, index=False)
 
-def update_excel_with_strategic_output(json_data, excel_file, work_order_col):
+def update_excel_with_weekly_output(json_data, excel_file, work_order_col):
     
     # Load the Excel file
     df = pd.read_excel(excel_file)
@@ -93,7 +93,7 @@ def main():
     print(json_data)
     # Update the Excel file based on JSON data
     update_excel_with_project_output(json_data['project_agent_solution'], output_path, work_order_col, activity_col)
-    update_excel_with_strategic_output(json_data['strategic_agent_solution'], output_path, work_order_col)
+    update_excel_with_weekly_output(json_data['weekly_agent_solution'], output_path, work_order_col)
 
 if __name__ == "__main__":
     main()

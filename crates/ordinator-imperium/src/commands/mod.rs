@@ -4,7 +4,7 @@ pub mod operational;
 pub mod orchestrator;
 pub mod sap;
 pub mod status;
-pub mod strategic;
+pub mod weekly;
 pub mod supervisor;
 pub mod project;
 
@@ -16,7 +16,7 @@ use shared_types::Asset;
 use shared_types::SystemMessages;
 use status::StatusCommands;
 use status::WorkOrders;
-use strategic::WeeklyCommands;
+use weekly::WeeklyCommands;
 use project::ProjectCommands;
 
 use self::operational::OperationalCommands;
@@ -40,11 +40,11 @@ pub enum Commands
         #[clap(subcommand)]
         orchestrator_commands: OrchestratorCommands,
     },
-    /// Access the strategic agent
+    /// Access the weekly agent
     Weekly
     {
         #[clap(subcommand)]
-        strategic_commands: WeeklyCommands,
+        weekly_commands: WeeklyCommands,
     },
     /// Access the project agent
     Project
@@ -96,11 +96,11 @@ pub fn handle_command(cli: Cli, client: &Client) -> SystemMessages
                     work_order_number,
                     level_of_detail,
                 } => {
-                    let strategic_status_message = OrchestratorRequest::GetWorkOrderStatus(
+                    let weekly_status_message = OrchestratorRequest::GetWorkOrderStatus(
                         work_order_number.into(),
                         level_of_detail.clone(),
                     );
-                    SystemMessages::Orchestrator(strategic_status_message)
+                    SystemMessages::Orchestrator(weekly_status_message)
                 }
             },
             StatusCommands::Workers => {
@@ -120,7 +120,7 @@ pub fn handle_command(cli: Cli, client: &Client) -> SystemMessages
             orchestrator_commands,
         } => orchestrator_commands.execute(),
 
-        Commands::Weekly { strategic_commands } => strategic_commands.execute(),
+        Commands::Weekly { weekly_commands } => weekly_commands.execute(),
 
         Commands::Project { project_commands } => project_commands.execute(client),
 

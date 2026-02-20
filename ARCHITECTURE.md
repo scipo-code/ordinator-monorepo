@@ -9,7 +9,7 @@ where **function**, **design decisions**, and **developer** information can be f
 
 - [crates/ordinator-actors](crates/ordinator-actors/)
     - [crates/ordinator-actors](crates/ordinator-actors/ordinator-actor-core)
-    - [crates/ordinator-actors](crates/ordinator-actors/ordinator-strategic-actor)
+    - [crates/ordinator-actors](crates/ordinator-actors/ordinator-weekly-actor)
     - [crates/ordinator-actors](crates/ordinator-actors/ordinator-project-actor)
     - [crates/ordinator-actors](crates/ordinator-actors/ordinator-supervisor-actor)
     - [crates/ordinator-actors](crates/ordinator-actors/ordinator-operational-actor)

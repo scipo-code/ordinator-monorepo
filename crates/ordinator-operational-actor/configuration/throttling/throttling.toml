@@ -1,6 +1,6 @@
 # Throttling in milliseconds (ms)
 
-strategic_throttling   = 500
+weekly_throttling   = 500
 project_throttling    = 500
 supervisor_throttling  = 500
 operational_throttling = 500

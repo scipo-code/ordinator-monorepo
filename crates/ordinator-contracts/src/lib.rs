@@ -9,7 +9,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::work_order_analytic::status_codes::MaterialStatus;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_strategic_actor::algorithm::strategic_solution::WeeklySolution;
+use ordinator_weekly_actor::algorithm::weekly_solution::WeeklySolution;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::DailySolution;
 use ordinator_project_actor::algorithm::project_solution::ProjectSolution;
 use serde::Deserialize;

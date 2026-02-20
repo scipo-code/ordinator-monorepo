@@ -342,7 +342,7 @@ impl fmt::Display for SchedulingEnvironment
             "The Scheduling Environment is currently comprised of
         \n  number of work orders: {}
         \n  number of worker entries: {}
-        \n  number of strategic periods: {},
+        \n  number of weekly periods: {},
         \n  number of project days: {}",
             self.work_orders.inner.len(),
             workers,

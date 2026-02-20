@@ -37,7 +37,7 @@ use rust_xlsxwriter::IntoExcelData;
 //             let row_number: u32 = (row_count + 1) as u32;
 
 //             worksheet
-//                 .write(row_number, 0, row_values.strategic_schedule.clone())
+//                 .write(row_number, 0, row_values.weekly_schedule.clone())
 //                 .unwrap();
 //             worksheet
 //                 .write(row_number, 1, row_values.project_schedule.clone())
@@ -159,7 +159,7 @@ use rust_xlsxwriter::IntoExcelData;
 // #[derive(Debug)]
 // struct RowNames
 // {
-//     strategic_schedule: ReasonForNotScheduling,
+//     weekly_schedule: ReasonForNotScheduling,
 //     project_schedule: OptionDay,
 //     priority: Priority,
 //     revision: Revision,
@@ -215,11 +215,11 @@ use rust_xlsxwriter::IntoExcelData;
 //         .collect();
 
 //     for (work_order_number, work_order) in work_orders_by_asset {
-//         let strategic_period = shared_solution
-//             .strategic()?
+//         let weekly_period = shared_solution
+//             .weekly()?
 //             .scheduled_task(&work_order_number);
 
-//         let strategic_schedule = match strategic_period {
+//         let weekly_schedule = match weekly_period {
 //             Some(opt_period) => match opt_period {
 //                 WhereIsWorkOrder::Weekly(period) =>
 // ReasonForNotScheduling::Scheduled(period.clone()),
@@ -244,7 +244,7 @@ use rust_xlsxwriter::IntoExcelData;
 //             };
 
 //             let one_row = RowNames {
-//                 strategic_schedule: strategic_schedule.clone(),
+//                 weekly_schedule: weekly_schedule.clone(),
 //                 project_schedule: option_day,
 //                 priority: work_order.work_order_info.priority.clone(),
 //                 revision: work_order.work_order_info.revision.clone(),
@@ -348,7 +348,7 @@ use rust_xlsxwriter::IntoExcelData;
 // }
 // fn make_header_row(worksheet: &mut Worksheet)
 // {
-//     worksheet.write(0, 0, "strategic_schedule").unwrap();
+//     worksheet.write(0, 0, "weekly_schedule").unwrap();
 //     worksheet.write(0, 1, "project_schedule").unwrap();
 //     worksheet.write(0, 2, "priority").unwrap();
 //     worksheet.write(0, 3, "revision").unwrap();

@@ -97,7 +97,7 @@ impl Solution for DailySolution
 
     fn from_parameters(_parameters: &Self::Parameters) -> Result<Self>
     {
-        // TODO: Initialize from strategic actor state rather than parameters
+        // TODO: Initialize from weekly actor state rather than parameters
         let operational_state_machine = HashMap::new();
         // TODO: Implement initialization from supervisor work orders
         let objective_value = Percent::new(0, 100).unwrap();

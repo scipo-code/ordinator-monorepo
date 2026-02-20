@@ -67,7 +67,7 @@ pub async fn project_solution_status(
 #[utoipa::path(
     get,
     tag = "Solution Status",
-    path = "/{asset}/strategic",
+    path = "/{asset}/weekly",
     params (
         ("asset" = AssetNames, Path),
     ),
@@ -77,7 +77,7 @@ pub async fn project_solution_status(
         (status = 500, body = AppError),
     )
 )]
-pub async fn strategic_solution_status(
+pub async fn weekly_solution_status(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     Path(asset): Path<AssetNames>,
 ) -> Result<Json<SolutionVersionDto>, AppError>
@@ -92,7 +92,7 @@ pub async fn strategic_solution_status(
         .with_context(|| format!("{asset:#?} does not exist in the SystemSolution"))
         .map_err(|e| AppError::Anyhow(format!("{e:?}")))?
         .load()
-        .strategic
+        .weekly
         .as_ref()
         .context("ProjectSolution not present in SystemSolution")
         .map_err(|e| AppError::Anyhow(format!("{e:?}")))?

@@ -11,8 +11,8 @@ use tracing::Level;
 use tracing::event;
 
 use crate::WeeklyActor;
-use crate::algorithm::strategic_resources::WeeklyResources;
-use crate::algorithm::strategic_solution::WeeklySolution;
+use crate::algorithm::weekly_resources::WeeklyResources;
+use crate::algorithm::weekly_solution::WeeklySolution;
 
 #[allow(dead_code)]
 pub trait WeeklyAssertions
@@ -27,28 +27,28 @@ where
 {
     fn assert_aggregated_load(&self) -> Result<()>
     {
-        let mut aggregated_strategic_load = WeeklyResources::new(HashMap::new());
-        for period in &self.0.algorithm.parameters.strategic_periods {
-            for (work_order_number, strategic_solution) in self
+        let mut aggregated_weekly_load = WeeklyResources::new(HashMap::new());
+        for period in &self.0.algorithm.parameters.weekly_periods {
+            for (work_order_number, weekly_solution) in self
                 .0
                 .algorithm
                 .solution
-                .strategic_scheduled_work_orders
+                .weekly_scheduled_work_orders
                 .iter()
             {
-                let strategic_parameter = self
+                let weekly_parameter = self
                     .0
                     .algorithm
                     .parameters
-                    .strategic_work_order_parameters
+                    .weekly_work_order_parameters
                     .get(work_order_number)
                     .unwrap();
-                if strategic_solution == &period.clone() {
-                    let work_load = &strategic_parameter.work_load;
+                if weekly_solution == &period.clone() {
+                    let work_load = &weekly_parameter.work_load;
                     for resource in Resources::iter() {
                         let load: Work =
                             work_load.get(&resource).cloned().unwrap_or(Work::from(0.0));
-                        aggregated_strategic_load.update_load(
+                        aggregated_weekly_load.update_load(
                             period,
                             &resource,
                             load,
@@ -59,10 +59,10 @@ where
             }
         }
 
-        for (resource, periods) in aggregated_strategic_load.inner {
+        for (resource, periods) in aggregated_weekly_load.inner {
             for (period, load) in periods.0 {
                 match self
-                    .strategic_algorithm
+                    .weekly_algorithm
                     .resources_loadings()
                     .inner
                     .get(&resource)
@@ -88,21 +88,21 @@ where
 
     fn assert_excluded_periods(&self) -> Result<()>
     {
-        for (work_order_number, strategic_parameter) in
-            &self.0.algorithm.parameters.strategic_work_order_parameters
+        for (work_order_number, weekly_parameter) in
+            &self.0.algorithm.parameters.weekly_work_order_parameters
         {
-            let excluded_periods = &strategic_parameter.excluded_periods;
-            let locked_in_period = &strategic_parameter.locked_in_period;
+            let excluded_periods = &weekly_parameter.excluded_periods;
+            let locked_in_period = &weekly_parameter.locked_in_period;
 
             let scheduled_period = self
                 .0
                 .algorithm
                 .solution
-                .strategic_scheduled_work_orders
+                .weekly_scheduled_work_orders
                 .get(work_order_number)
                 .unwrap();
 
-            if let Some(period) = scheduled_period.strategic_forced() {
+            if let Some(period) = scheduled_period.weekly_forced() {
                 ensure!(
                     !excluded_periods.contains(period),
                     "\n{:#?}\nscheduled in:{:#?}\nlocked_in_period\n{:#?}\nwhich is part of the excluded periods:\n{:#?}",
@@ -127,15 +127,15 @@ where
 // AlgorithmState<Self::InfeasibleCases> {         let scheduling_environment =
 // self.scheduling_environment.lock().unwrap();
 
-//         let mut strategic_state =
+//         let mut weekly_state =
 // AlgorithmState::Infeasible(Self::InfeasibleCases::default());
 
 //         for (work_order_number, scheduled_period) in self
-//             .strategic_agent_algorithm
-//             .strategic_project_solution_arc_swap
+//             .weekly_agent_algorithm
+//             .weekly_project_solution_arc_swap
 //             .0
 //             .load()
-//             .strategic
+//             .weekly
 //             .scheduled_periods
 //         {
 //             let scheduled_period = scheduled_period.clone();
@@ -146,7 +146,7 @@ where
 //                 .unwrap();
 
 //             let first_period =
-// self.strategic_agent_algorithm.periods().first().unwrap();
+// self.weekly_agent_algorithm.periods().first().unwrap();
 
 //             let basic_start_of_first_activity =
 // work_order.order_dates().basic_start_date;
@@ -162,7 +162,7 @@ where
 //                         && &basic_start_of_first_activity >
 // &first_period.start_date().date_naive()                     {
 //
-// strategic_state.infeasible_cases_mut().unwrap().respect_awsc =
+// weekly_state.infeasible_cases_mut().unwrap().respect_awsc =
 // ConstraintState::Infeasible(format!(                                 "Work
 // order {:?} does not respect AWSC. Period: {}, basic start date: {}, status
 // codes: {:?}, unloading_point: {:?}, vendor: {}",
@@ -178,19 +178,19 @@ where
 //                 }
 //                 None => {
 //
-// strategic_state.infeasible_cases_mut().unwrap().respect_awsc =
+// weekly_state.infeasible_cases_mut().unwrap().respect_awsc =
 // ConstraintState::Infeasible(format!(                             "Work order
 // {:?} does not have a period",                             work_order_number,
 //                         ));
 //                     break;
 //                 }
 //             }
-//             strategic_state.infeasible_cases_mut().unwrap().respect_awsc =
+//             weekly_state.infeasible_cases_mut().unwrap().respect_awsc =
 //                 ConstraintState::Feasible;
 //         }
 
 //         for (work_order_number, optimized_work_order) in
-//             self.strategic_agent_algorithm.optimized_work_orders()
+//             self.weekly_agent_algorithm.optimized_work_orders()
 //         {
 //             let work_order = scheduling_environment
 //                 .work_orders()
@@ -218,7 +218,7 @@ where
 // ?optimized_work_order.scheduled_period,
 // optimized_work_order_locked_in_period =
 // ?optimized_work_order.locked_in_period,                 );
-//                 strategic_state
+//                 weekly_state
 //                     .infeasible_cases_mut()
 //                     .unwrap()
 //                     .respect_unloading = ConstraintState::Infeasible(format!(
@@ -231,18 +231,18 @@ where
 //                 ));
 //                 break;
 //             }
-//             strategic_state
+//             weekly_state
 //                 .infeasible_cases_mut()
 //                 .unwrap()
 //                 .respect_unloading = ConstraintState::Feasible;
 //         }
 
 //         for (work_order_number, scheduled_period) in self
-//             .strategic_agent_algorithm
-//             .strategic_project_solution_arc_swap
+//             .weekly_agent_algorithm
+//             .weekly_project_solution_arc_swap
 //             .0
 //             .load()
-//             .strategic
+//             .weekly
 //             .scheduled_periods
 //         {
 //             let work_order = scheduling_environment
@@ -268,7 +268,7 @@ where
 // periods = ?periods[0..=1],
 // optimized_work_order_scheduled_period = ?scheduled_period,
 // optimized_work_order_locked_in_period = ?self.locked_in_period,
-// );                 strategic_state
+// );                 weekly_state
 //                     .infeasible_cases_mut()
 //                     .unwrap()
 //                     .respect_sch = ConstraintState::Infeasible(format!(
@@ -282,9 +282,9 @@ where
 // work_order.unloading_point().as_ref(),                 ));
 //                 break;
 //             }
-//             strategic_state.infeasible_cases_mut().unwrap().respect_sch =
+//             weekly_state.infeasible_cases_mut().unwrap().respect_sch =
 // ConstraintState::Feasible;         }
 
-//         strategic_state
+//         weekly_state
 //     }
 // }

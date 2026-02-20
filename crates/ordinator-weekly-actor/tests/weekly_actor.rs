@@ -7,8 +7,8 @@
 // use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 // use ordinator_scheduling_environment::work_order::operation::Work;
 // use ordinator_scheduling_environment::worker_environment::resources::Resources;
-// use ordinator_strategic_actor::algorithm::strategic_resources::OperationalResource;
-// use ordinator_strategic_actor::algorithm::strategic_resources::WeeklyResources;
+// use ordinator_weekly_actor::algorithm::weekly_resources::OperationalResource;
+// use ordinator_weekly_actor::algorithm::weekly_resources::WeeklyResources;
 
 #[test]
 fn test_update_scheduler_state() -> anyhow::Result<()>
@@ -20,7 +20,7 @@ fn test_update_scheduler_state() -> anyhow::Result<()>
     // let schedule_work_order = ScheduleChange::new(vec_work_order_number,
     // period_string);
 
-    // let strategic_scheduling_internal =
+    // let weekly_scheduling_internal =
     // WeeklyRequestScheduling::Schedule(schedule_work_order);
 
     // let periods: Vec<Period> = vec![Period::from_str("2023-W47-48").unwrap()];
@@ -29,21 +29,21 @@ fn test_update_scheduler_state() -> anyhow::Result<()>
     // Arc::new(Mutex::new(SchedulingEnvironment::builder().build()));
 
     // let system_configuration = SystemConfigurations::read_all_configs().unwrap();
-    // let strategic_options = WeeklyOptions::from((system_configuration,
+    // let weekly_options = WeeklyOptions::from((system_configuration,
     // &Id::default()));
 
     // let algorithm: WeeklyAlgorithm<Ss> = Algorithm::builder()
     //     .id(Id::default())
-    //     .parameters(strategic_options, &scheduling_environment.lock().unwrap());
+    //     .parameters(weekly_options, &scheduling_environment.lock().unwrap());
 
-    // let mut strategic_algorithm = Algorithm::new(
+    // let mut weekly_algorithm = Algorithm::new(
     //     &id,
-    //     strategic_solution,
-    //     strategic_parameters,
+    //     weekly_solution,
+    //     weekly_parameters,
     //     ArcSwapSharedSolution::default().into(),
     // );
 
-    // let strategic_parameter = WorkOrderParameter::new(
+    // let weekly_parameter = WorkOrderParameter::new(
     //     Some(periods[0].clone()),
     //     HashSet::new(),
     //     periods.first().unwrap().clone(),
@@ -51,19 +51,19 @@ fn test_update_scheduler_state() -> anyhow::Result<()>
     //     HashMap::new(),
     // );
 
-    // strategic_algorithm
+    // weekly_algorithm
     //     .parameters
-    //     .strategic_work_order_parameters
-    //     .insert(work_order_number, strategic_parameter);
+    //     .weekly_work_order_parameters
+    //     .insert(work_order_number, weekly_parameter);
 
-    // strategic_algorithm
-    //     .update_scheduling_state(strategic_scheduling_internal)
+    // weekly_algorithm
+    //     .update_scheduling_state(weekly_scheduling_internal)
     //     .unwrap();
 
     // assert_eq!(
-    //     strategic_algorithm
+    //     weekly_algorithm
     //         .parameters
-    //         .strategic_work_order_parameters
+    //         .weekly_work_order_parameters
     //         .get(&work_order_number)
     //         .as_ref()
     //         .unwrap()
@@ -93,10 +93,10 @@ fn test_calculate_objective_value() -> anyhow::Result<()>
     //     Work::from(40.0),
     //     vec![Resources::MtnScaf, Resources::MtnElec, Resources::VenMech],
     // );
-    // let mut strategic_resources = WeeklyResources::default();
+    // let mut weekly_resources = WeeklyResources::default();
 
-    // strategic_resources.insert_operational_resource(period.clone(),
-    // operational_resource_1); strategic_resources.
+    // weekly_resources.insert_operational_resource(period.clone(),
+    // operational_resource_1); weekly_resources.
     // insert_operational_resource(period.clone(), operational_resource_2);
 
     // let scheduling_environment =
@@ -104,15 +104,15 @@ fn test_calculate_objective_value() -> anyhow::Result<()>
 
     // TODO: All functions need testing, but currently blocked by Id::default() issue
 
-    // let strategic_options = WeeklyOptions::default();
+    // let weekly_options = WeeklyOptions::default();
 
-    // let mut strategic_parameters = WeeklyParameters::new(
+    // let mut weekly_parameters = WeeklyParameters::new(
     //     &id,
-    //     strategic_options,
+    //     weekly_options,
     //     &scheduling_environment.lock().unwrap(),
     // )?;
 
-    // let strategic_parameter = WorkOrderParameter::new(
+    // let weekly_parameter = WorkOrderParameter::new(
     //     Some(period),
     //     HashSet::new(),
     //     Period::from_str("2023-W47-48").unwrap(),
@@ -122,29 +122,29 @@ fn test_calculate_objective_value() -> anyhow::Result<()>
 
     // TODO: Consider dependency injection for SchedulingEnvironment to allow
     // all Parameters implementers to have an insert function
-    // strategic_parameters
-    //     .insert_strategic_parameter(WorkOrderNumber(2100023841),
-    // strategic_parameter);
+    // weekly_parameters
+    //     .insert_weekly_parameter(WorkOrderNumber(2100023841),
+    // weekly_parameter);
 
-    // // let strategic_solution =
-    // WeeklySolution::new(&strategic_parameters); // let mut
-    // strategic_algorithm = Algorithm::new( //     &Id::default(),
-    // //     strategic_solution,
-    // //     strategic_parameters,
+    // // let weekly_solution =
+    // WeeklySolution::new(&weekly_parameters); // let mut
+    // weekly_algorithm = Algorithm::new( //     &Id::default(),
+    // //     weekly_solution,
+    // //     weekly_parameters,
     // //     ArcSwapSharedSolution::default().into(),
     // // );
 
-    // // strategic_algorithm
+    // // weekly_algorithm
     // //     .solution
-    // //     .strategic_scheduled_work_orders
+    // //     .weekly_scheduled_work_orders
     // //     .insert(work_order_number, None);
 
-    // // strategic_algorithm
+    // // weekly_algorithm
     // //     .schedule_forced_work_order(&
     // ForcedWorkOrder::Locked(work_order_number))? // ;
 
     // // let objective_value_type =
-    // strategic_algorithm.calculate_objective_value()?;
+    // weekly_algorithm.calculate_objective_value()?;
 
     // // let objective_value =
     // //     if let ObjectiveValueType::Better(objective_value) =
@@ -153,12 +153,12 @@ fn test_calculate_objective_value() -> anyhow::Result<()>
     // //         panic!();
     // //     };
 
-    // // strategic_algorithm.solution.objective_value = objective_value;
+    // // weekly_algorithm.solution.objective_value = objective_value;
 
     // // assert_eq!(
-    // //     strategic_algorithm.solution.objective_value.objective_value,
+    // //     weekly_algorithm.solution.objective_value.objective_value,
     // 2000, //     "{:#?}",
-    // //     strategic_algorithm.solution.objective_value
+    // //     weekly_algorithm.solution.objective_value
     // // );
     Ok(())
 }

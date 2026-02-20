@@ -77,7 +77,7 @@ fn test_calculate_objective_value()
     //     .unwrap()
     //     .build();
 
-    // TODO: Extract strategic options from SystemConfigurations
+    // TODO: Extract weekly options from SystemConfigurations
     // TODO: Pass system configuration to Orchestrator and Agents
     // TODO: Add SystemConfiguration methods for extracting required configs
 

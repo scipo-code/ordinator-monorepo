@@ -65,7 +65,7 @@ impl<Ss: SystemSolutions + std::fmt::Debug> std::fmt::Debug for DailyAlgorithm<S
         let supervisor_tasks = self
             .0
             .loaded_system_solution
-            .strategic()
+            .weekly()
             .expect("The WeeklySolution should be present")
             .supervisor_tasks(supervisor_periods);
 
@@ -147,7 +147,7 @@ where
     {
         ensure!(
             self.loaded_system_solution
-                .strategic()
+                .weekly()
                 .unwrap()
                 .supervisor_tasks(&self.parameters.supervisor_periods)
                 .len()
@@ -165,7 +165,7 @@ where
             {} `Activity`s in the DailyParameters\n\
             Location: {}",
             self.loaded_system_solution
-                .strategic()
+                .weekly()
                 .unwrap()
                 .supervisor_tasks(&self.parameters.supervisor_periods)
                 .len(),
@@ -337,14 +337,14 @@ where
             .map(|(_, woa)| woa.0)
             .collect::<HashSet<WorkOrderNumber>>();
 
-        // Fetch strategic work orders scheduled within the supervisor period
-        let strategic_activities_in_supervisor_period = self
+        // Fetch weekly work orders scheduled within the supervisor period
+        let weekly_activities_in_supervisor_period = self
             .loaded_system_solution
-            .strategic()?
+            .weekly()?
             .supervisor_tasks(&self.parameters.supervisor_periods);
 
         // Filter to only new activities not already in the supervisor solution
-        let incoming_activities = strategic_activities_in_supervisor_period
+        let incoming_activities = weekly_activities_in_supervisor_period
             .iter()
             .filter(|(won, _)| !current_activities.contains(won));
 
@@ -393,7 +393,7 @@ where
             }
         }
 
-        let strategic_activities = strategic_activities_in_supervisor_period
+        let weekly_activities = weekly_activities_in_supervisor_period
             .iter()
             .map(|e| e.0)
             .cloned()
@@ -401,7 +401,7 @@ where
 
         self.solution
             .operational_state_machine
-            .retain(|id_woa, _| strategic_activities.contains(&id_woa.1.0));
+            .retain(|id_woa, _| weekly_activities.contains(&id_woa.1.0));
 
         let supervisor_work_orders = self
             .solution
@@ -410,18 +410,18 @@ where
             .map(|e| e.0.1.0)
             .collect::<HashSet<_>>();
         ensure!(
-            strategic_activities
+            weekly_activities
                 == supervisor_work_orders
                     .union(&non_incorporated_work_orders)
                     .cloned()
                     .collect(),
             "Weekly activities: {:#?}\n\
              Daily solution: {:#?}\n\
-             difference between strategic / supervisor: {:#?}\n\
-             difference between supervisor / strategic: {:#?}",
-            strategic_activities,
+             difference between weekly / supervisor: {:#?}\n\
+             difference between supervisor / weekly: {:#?}",
+            weekly_activities,
             supervisor_work_orders.union(&non_incorporated_work_orders),
-            strategic_activities.difference(
+            weekly_activities.difference(
                 &supervisor_work_orders
                     .union(&non_incorporated_work_orders)
                     .cloned()
@@ -431,7 +431,7 @@ where
                 .union(&non_incorporated_work_orders)
                 .cloned()
                 .collect::<HashSet<_>>()
-                .difference(&strategic_activities),
+                .difference(&weekly_activities),
         );
 
         Ok(true)

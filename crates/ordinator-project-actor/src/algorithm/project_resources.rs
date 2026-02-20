@@ -112,7 +112,7 @@ impl ProjectResources
         let days = &self
             .resources
             .get(resource)
-            .with_context(|| "The resources between the strategic and the project should always correspond, unless that the project has not been initialized yet".to_string())?
+            .with_context(|| "The resources between the weekly and the project should always correspond, unless that the project has not been initialized yet".to_string())?
             .days;
 
         Ok(days

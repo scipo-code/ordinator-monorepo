@@ -18,9 +18,9 @@ use serde::Deserialize;
 use serde::Serialize;
 use valuable::Valuable;
 
-use super::strategic_parameters::WeeklyParameters;
-use super::strategic_resources::OperationalResource;
-use super::strategic_resources::WeeklyResources;
+use super::weekly_parameters::WeeklyParameters;
+use super::weekly_resources::OperationalResource;
+use super::weekly_resources::WeeklyResources;
 
 // Solution fields should never be made `pub` to preserve business invariants,
 // which are critical in this system.
@@ -28,15 +28,15 @@ use super::strategic_resources::WeeklyResources;
 pub struct WeeklySolution
 {
     objective_value: WeeklyObjectiveValue,
-    pub(crate) strategic_scheduled_work_orders: HashMap<WorkOrderNumber, WhereIsWorkOrder<Period>>,
-    pub(crate) strategic_loadings: WeeklyResources,
+    pub(crate) weekly_scheduled_work_orders: HashMap<WorkOrderNumber, WhereIsWorkOrder<Period>>,
+    pub(crate) weekly_loadings: WeeklyResources,
 }
 
 impl WeeklySolution
 {
     pub fn every_work_order(&self) -> &HashMap<WorkOrderNumber, WhereIsWorkOrder<Period>>
     {
-        &self.strategic_scheduled_work_orders
+        &self.weekly_scheduled_work_orders
     }
 
     pub fn set_work_order_to_unschedule(
@@ -44,17 +44,17 @@ impl WeeklySolution
         work_order_number: WorkOrderNumber,
     ) -> Option<WhereIsWorkOrder<Period>>
     {
-        self.strategic_scheduled_work_orders
+        self.weekly_scheduled_work_orders
             .insert(work_order_number, WhereIsWorkOrder::NotScheduled)
     }
 
-    pub fn set_work_order_to_strategic(
+    pub fn set_work_order_to_weekly(
         &mut self,
         work_order_number: WorkOrderNumber,
         period: Period,
     ) -> Option<WhereIsWorkOrder<Period>>
     {
-        self.strategic_scheduled_work_orders
+        self.weekly_scheduled_work_orders
             .insert(work_order_number, WhereIsWorkOrder::Weekly(period))
     }
 
@@ -72,7 +72,7 @@ impl WeeklyInterface for WeeklySolution
         work_order_number: &WorkOrderNumber,
     ) -> Option<&WhereIsWorkOrder<Period>>
     {
-        self.strategic_scheduled_work_orders.get(work_order_number)
+        self.weekly_scheduled_work_orders.get(work_order_number)
     }
 
     fn supervisor_tasks(
@@ -80,7 +80,7 @@ impl WeeklyInterface for WeeklySolution
         supervisor_periods: &[Period],
     ) -> std::collections::HashMap<WorkOrderNumber, Period>
     {
-        self.strategic_scheduled_work_orders
+        self.weekly_scheduled_work_orders
             .clone()
             .into_iter()
             .filter_map(|(won, opt_str_per)| {
@@ -97,7 +97,7 @@ impl WeeklyInterface for WeeklySolution
 
     fn all_scheduled_tasks(&self) -> std::collections::HashMap<WorkOrderNumber, Period>
     {
-        self.strategic_scheduled_work_orders
+        self.weekly_scheduled_work_orders
             .clone()
             .into_iter()
             .filter_map(|(won, where_is_work_order)| {
@@ -124,12 +124,12 @@ impl Debug for WeeklySolution
                     "{:#?}\n{:<30}{}\n{:<30}{}",
                     self.objective_value,
                     "Scheduled work orders: ",
-                    self.strategic_scheduled_work_orders
+                    self.weekly_scheduled_work_orders
                         .iter()
-                        .filter(|e| e.1.is_strategic_or_project())
+                        .filter(|e| e.1.is_weekly_or_project())
                         .count(),
                     "Total work orders: ",
-                    self.strategic_scheduled_work_orders.len()
+                    self.weekly_scheduled_work_orders.len()
                 )
                 .purple()
             )
@@ -137,7 +137,7 @@ impl Debug for WeeklySolution
             write!(
                 f,
                 "{:#?}{:#?}{:#?}",
-                self.objective_value, self.strategic_scheduled_work_orders, self.strategic_loadings
+                self.objective_value, self.weekly_scheduled_work_orders, self.weekly_loadings
             )
         }
     }
@@ -155,13 +155,13 @@ pub struct WeeklyObjectiveValue
 
 impl WeeklyObjectiveValue
 {
-    pub fn new(strategic_options: &WeeklyOptions) -> Self
+    pub fn new(weekly_options: &WeeklyOptions) -> Self
     {
         Self {
             objective_value: i64::MAX,
-            urgency: (strategic_options.urgency_weight, 0),
-            resource_penalty: (strategic_options.resource_penalty_weight, 0),
-            clustering_value: (strategic_options.clustering_weight, 0),
+            urgency: (weekly_options.urgency_weight, 0),
+            resource_penalty: (weekly_options.resource_penalty_weight, 0),
+            clustering_value: (weekly_options.clustering_weight, 0),
             percent_scheduled: (0, Percent::new(0, 100).unwrap()),
         }
     }
@@ -181,8 +181,8 @@ impl Solution for WeeklySolution
 
     fn from_parameters(parameters: &Self::Parameters) -> Result<Self>
     {
-        let strategic_loadings = parameters
-            .strategic_capacity
+        let weekly_loadings = parameters
+            .weekly_capacity
             .0
             .iter()
             .map(|(per, res)| {
@@ -204,20 +204,20 @@ impl Solution for WeeklySolution
             })
             .collect::<HashMap<_, _>>();
 
-        let strategic_loadings = WeeklyResources::new(strategic_loadings);
+        let weekly_loadings = WeeklyResources::new(weekly_loadings);
 
-        let strategic_scheduled_work_orders = parameters
-            .strategic_work_order_parameters
+        let weekly_scheduled_work_orders = parameters
+            .weekly_work_order_parameters
             .keys()
             .map(|won| (*won, WhereIsWorkOrder::NotScheduled))
             .collect();
 
-        // TODO: Consider whether strategic options should be passed through parameters or injected as dependencies
-        let strategic_objective_value = WeeklyObjectiveValue::new(&parameters.strategic_options);
+        // TODO: Consider whether weekly options should be passed through parameters or injected as dependencies
+        let weekly_objective_value = WeeklyObjectiveValue::new(&parameters.weekly_options);
         Ok(Self {
-            objective_value: strategic_objective_value,
-            strategic_scheduled_work_orders,
-            strategic_loadings,
+            objective_value: weekly_objective_value,
+            weekly_scheduled_work_orders,
+            weekly_loadings,
         })
     }
 
@@ -237,6 +237,6 @@ where
         system_solution: &mut Ss,
     )
     {
-        system_solution.strategic_swap(id, solution);
+        system_solution.weekly_swap(id, solution);
     }
 }

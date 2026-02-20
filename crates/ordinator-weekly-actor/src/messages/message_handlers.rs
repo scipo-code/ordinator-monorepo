@@ -18,9 +18,9 @@ use super::WeeklyResponseMessage;
 use super::WeeklySchedulingEnvironmentCommands;
 use super::WeeklyStatusMessage;
 use crate::algorithm::WeeklyAlgorithm;
-use crate::algorithm::strategic_parameters::WorkOrderParameter;
-use crate::algorithm::strategic_resources::WeeklyResources;
-use crate::algorithm::strategic_solution::WeeklySolution;
+use crate::algorithm::weekly_parameters::WorkOrderParameter;
+use crate::algorithm::weekly_resources::WeeklyResources;
+use crate::algorithm::weekly_solution::WeeklySolution;
 use crate::messages::WeeklyRequestScheduling;
 use crate::messages::WeeklyResponseScheduling;
 
@@ -33,12 +33,12 @@ where
 {
     fn handle_request_message(
         &mut self,
-        strategic_request_message: WeeklyRequestMessage,
+        weekly_request_message: WeeklyRequestMessage,
     ) -> Result<WeeklyResponseMessage>
     {
-        let strategic_response = match strategic_request_message {
-            ordinator_actor_core::RequestMessage::Status(strategic_status_message) => {
-                match strategic_status_message {
+        let weekly_response = match weekly_request_message {
+            ordinator_actor_core::RequestMessage::Status(weekly_status_message) => {
+                match weekly_status_message {
                     WeeklyStatusMessage::General => {
                         // TODO: Implement general status message handling
                         Err(anyhow::anyhow!(
@@ -50,7 +50,7 @@ where
                         if !self
                             .algorithm
                             .parameters
-                            .strategic_periods
+                            .weekly_periods
                             .iter()
                             .map(|period| period.period_string())
                             .collect::<Vec<_>>()
@@ -62,7 +62,7 @@ where
                         // let work_orders_by_period: HashMap<WorkOrderNumber, WorkOrderResponse> =
                         //     self.algorithm
                         //         .solution
-                        //         .strategic_scheduled_work_orders
+                        //         .weekly_scheduled_work_orders
                         //         .iter()
                         //         .filter(|(_, sch_per)| match sch_per {
                         //             Some(scheduled_period) => {
@@ -89,7 +89,7 @@ where
                         //                     .lock()
                         //                     .unwrap()
                         //                     .time_environment
-                        //                     .strategic_periods
+                        //                     .weekly_periods
                         //                     .clone(),
                         //                 work_order_configurations,
                         //             );
@@ -103,17 +103,17 @@ where
                     WeeklyStatusMessage::WorkOrder(_work_order_number) => {
                         // TODO [ ]
                         // Make a `From` implementation.
-                        // let strategic_solution_for_specific_work_order = self
+                        // let weekly_solution_for_specific_work_order = self
                         //     .algorithm
                         //     .solution
-                        //     .strategic_scheduled_work_orders
+                        //     .weekly_scheduled_work_orders
                         //     .get(&work_order_number)
                         //     .with_context(|| format!("{:?} not found in", work_order_number,))?;
 
-                        // let strategic_parameter = self
+                        // let weekly_parameter = self
                         //     .algorithm
                         //     .parameters
-                        //     .strategic_work_order_parameters
+                        //     .weekly_work_order_parameters
                         //     .get(&work_order_number)
                         //     .with_context(|| {
                         //         format!(
@@ -123,22 +123,22 @@ where
                         //         )
                         //     })?;
 
-                        // let locked_in_period = &strategic_parameter.locked_in_period;
-                        // let excluded_from_period = &strategic_parameter.excluded_periods;
+                        // let locked_in_period = &weekly_parameter.locked_in_period;
+                        // let excluded_from_period = &weekly_parameter.excluded_periods;
 
-                        // let strategic_api_solution = WeeklyApiSolution {
-                        //     solution: strategic_solution_for_specific_work_order.clone(),
+                        // let weekly_api_solution = WeeklyApiSolution {
+                        //     solution: weekly_solution_for_specific_work_order.clone(),
                         //     locked_in_period: locked_in_period.clone(),
                         //     excluded_from_period: excluded_from_period.clone(),
                         // };
 
                         // let work_orders_in_period =
-                        //     WorkOrdersStatus::SingleSolution(strategic_api_solution);
+                        //     WorkOrdersStatus::SingleSolution(weekly_api_solution);
 
-                        // let strategic_response_message =
+                        // let weekly_response_message =
                         //     WeeklyResponseMessage::WorkOrder(work_orders_in_period);
 
-                        // Ok(strategic_response_message)
+                        // Ok(weekly_response_message)
                         todo!()
                     }
                 }
@@ -159,14 +159,14 @@ where
                     })?;
 
                 self.algorithm.calculate_objective_value()?;
-                event!(target: "research", Level::INFO, strategic_objective_value = ?self.algorithm.solution.objective_value());
+                event!(target: "research", Level::INFO, weekly_objective_value = ?self.algorithm.solution.objective_value());
                 Ok(WeeklyResponseMessage::Scheduling(scheduling_output))
             }
             ordinator_actor_core::RequestMessage::Resource(resources_message) => {
                 let resources_output = self.algorithm.update_resources_state(resources_message);
 
                 self.algorithm.calculate_objective_value()?;
-                event!(target: "research", Level::INFO, strategic_objective_value = ?self.algorithm.solution.objective_value());
+                event!(target: "research", Level::INFO, weekly_objective_value = ?self.algorithm.solution.objective_value());
                 Ok(WeeklyResponseMessage::Resources(
                     resources_output.unwrap(),
                 ))
@@ -177,7 +177,7 @@ where
 
                 // let periods = &mut scheduling_environment_guard
                 //     .time_environment
-                //     .strategic_periods;
+                //     .weekly_periods;
 
                 // for period_id in periods_message.periods.iter() {
                 //     if periods.last().unwrap().id() + 1 == *period_id {
@@ -190,27 +190,27 @@ where
                 // }
                 // // It should not happen like this. I think that the periods should be
                 // // created through the
-                // self.algorithm.parameters.strategic_periods = periods.to_vec();
-                // let strategic_response_periods =
+                // self.algorithm.parameters.weekly_periods = periods.to_vec();
+                // let weekly_response_periods =
                 // WeeklyResponsePeriods::new(periods.clone());
                 // Ok(WeeklyResponseMessage::Periods(
-                //     strategic_response_periods,
+                //     weekly_response_periods,
                 // ))
                 todo!()
             }
             ordinator_actor_core::RequestMessage::SchedulingEnvironment(
-                strategic_scheduling_environment_commands,
-            ) => match strategic_scheduling_environment_commands {
+                weekly_scheduling_environment_commands,
+            ) => match weekly_scheduling_environment_commands {
                 // TODO: Move user status handling to Orchestrator. This handler should only read
                 // SchedulingEnvironment and update WeeklyParameters, delegating business logic
                 // elsewhere through DTO-based approaches.
                 WeeklySchedulingEnvironmentCommands::UserStatus(
-                    _strategic_user_status_codes,
+                    _weekly_user_status_codes,
                 ) => {
                     // let scheduling_environment_lock =
                     //     &mut self.scheduling_environment.lock().unwrap();
 
-                    // for work_order_number in &strategic_user_status_codes.work_order_numbers {
+                    // for work_order_number in &weekly_user_status_codes.work_order_numbers {
                     //     let work_order = scheduling_environment_lock
                     //         .work_orders
                     //         .inner
@@ -228,13 +228,13 @@ where
                     //     let user_status_codes =
                     //         &mut work_order.work_order_analytic.user_status_codes;
 
-                    //     if let Some(sece) = strategic_user_status_codes.sece {
+                    //     if let Some(sece) = weekly_user_status_codes.sece {
                     //         user_status_codes.sece = sece;
                     //     }
-                    //     if let Some(sch) = strategic_user_status_codes.sch {
+                    //     if let Some(sch) = weekly_user_status_codes.sch {
                     //         user_status_codes.sch = sch;
                     //     }
-                    //     if let Some(awsc) = strategic_user_status_codes.awsc {
+                    //     if let Some(awsc) = weekly_user_status_codes.awsc {
                     //         user_status_codes.awsc = awsc;
                     //     }
 
@@ -242,13 +242,13 @@ where
                     // access internal fields. Instead, implement InteractWithSchedulingEnvironment trait
                     // for each Actor type to provide controlled access to state modifications.
                     //     let last_period =
-                    //         self.algorithm.parameters.strategic_periods.
+                    //         self.algorithm.parameters.weekly_periods.
                     // last().cloned();
 
                     //     let unscheduled_period = self
                     //         .algorithm
                     //         .solution
-                    //         .strategic_scheduled_work_orders
+                    //         .weekly_scheduled_work_orders
                     //         .insert(*work_order_number,
                     // last_period.clone())
                     //         .expect("WorkOrderNumber should always be
@@ -260,7 +260,7 @@ where
                     //     let work_load = self
                     //         .algorithm
                     //         .parameters
-                    //         .strategic_work_order_parameters
+                    //         .weekly_work_order_parameters
                     //         .get(work_order_number)
                     //         .unwrap()
                     //         .work_load
@@ -319,7 +319,7 @@ where
 
                     // self.notify_orchestrator
                     //     .notify_all_agents_of_work_order_change(
-                    //         strategic_user_status_codes.work_order_numbers,
+                    //         weekly_user_status_codes.work_order_numbers,
                     //         &asset,
                     //     )
                     //     .context("Could not notify Orchestrator")?;
@@ -331,7 +331,7 @@ where
         };
         self.algorithm.calculate_objective_value()?;
 
-        strategic_response
+        weekly_response
     }
 
     fn handle_state_link(&mut self, msg: StateLink) -> Result<WeeklyResponseMessage>
@@ -356,7 +356,7 @@ where
                         .material_repo
                         .material_to_period;
 
-                    let strategic_parameter = WorkOrderParameter::builder()
+                    let weekly_parameter = WorkOrderParameter::builder()
                         .with_scheduling_environment(
                             work_order,
                             &scheduling_environment_guard.time_environment.periods,
@@ -369,22 +369,22 @@ where
                     drop(scheduling_environment_guard);
                     self.algorithm
                         .parameters
-                        .strategic_work_order_parameters
-                        .insert(work_order_number, strategic_parameter);
+                        .weekly_work_order_parameters
+                        .insert(work_order_number, weekly_parameter);
                 }
 
                 Ok(WeeklyResponseMessage::StateLink)
             }
             StateLink::WorkerEnvironment => {
                 let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
-                let strategic_resources =
+                let weekly_resources =
                     WeeklyResources::from((&scheduling_environment_guard, &self.actor_id));
                 drop(scheduling_environment_guard);
 
                 self.algorithm
                     .parameters
-                    .strategic_capacity
-                    .update_resource_capacities(strategic_resources)
+                    .weekly_capacity
+                    .update_resource_capacities(weekly_resources)
                     .expect("Could not update the WeeklyResources");
 
                 Ok(WeeklyResponseMessage::StateLink)

@@ -7,11 +7,11 @@ use ordinator_scheduling_environment::worker_environment::resources::Skill;
 pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpecificationBuilder
 {
     actor_builder
-        .strategic(|strategic| {
-            strategic
+        .weekly(|weekly| {
+            weekly
                 .id("TEST_STRATEGIC")
-                .number_of_strategic_periods(52)
-                .strategic_options(|f| {
+                .number_of_weekly_periods(52)
+                .weekly_options(|f| {
                     f.number_of_removed_work_orders(5)
                         .urgency_weight(1000)
                         .resource_penalty_weight(1_000_000)

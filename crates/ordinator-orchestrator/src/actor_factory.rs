@@ -13,8 +13,8 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_strategic_actor::WeeklyApi;
-use ordinator_strategic_actor::algorithm::strategic_solution::WeeklySolution;
+use ordinator_weekly_actor::WeeklyApi;
+use ordinator_weekly_actor::algorithm::weekly_solution::WeeklySolution;
 use ordinator_supervisor_actor::DailyApi;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::DailySolution;
 use ordinator_project_actor::ProjectApi;
@@ -64,7 +64,7 @@ where
 
     // The `ActorCompositeId` uniquely identifies an actor and specifies all
     // characteristics required for that specific actor instance
-    pub fn start_strategic_actor(&mut self, id: &ActorCompositeId) -> Result<()>
+    pub fn start_weekly_actor(&mut self, id: &ActorCompositeId) -> Result<()>
     {
         let build_dependencies = self.extract_factory_dependencies(id.asset())?;
 
@@ -85,7 +85,7 @@ where
             .unwrap()
             .get_mut(id.asset())
             .expect("The ActorRegistry for asset should exist before creating Actors on it")
-            .strategic_agent_sender = communication;
+            .weekly_agent_sender = communication;
         Ok(())
     }
 

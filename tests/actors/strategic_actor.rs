@@ -7,7 +7,7 @@
 
         let schedule_work_order = ScheduleChange::new(vec_work_order_number, period_string);
 
-        let strategic_scheduling_internal =
+        let weekly_scheduling_internal =
             StrategicRequestScheduling::Schedule(schedule_work_order);
 
         let periods: Vec<Period> = vec![Period::from_str("2023-W47-48").unwrap()];
@@ -15,11 +15,11 @@
         let scheduling_environment = Arc::new(Mutex::new(SchedulingEnvironment::builder().build()));
 
         let system_configuration = SystemConfigurations::read_all_configs().unwrap();
-        let strategic_options = StrategicOptions::from((system_configuration, &Id::default()));
+        let weekly_options = StrategicOptions::from((system_configuration, &Id::default()));
 
         let algorithm: StrategicAlgorithm<Ss> = Algorithm::builder()
             .id(Id::default())
-            .parameters(strategic_options, &scheduling_environment.lock().unwrap());
+            .parameters(weekly_options, &scheduling_environment.lock().unwrap());
 
         Ok(())
     }
@@ -41,24 +41,24 @@
             Resources::MtnElec,
             Resources::VenMech,
         ]);
-        let mut strategic_resources = StrategicResources::default();
+        let mut weekly_resources = StrategicResources::default();
 
-        strategic_resources.insert_operational_resource(period.clone(), operational_resource_1);
-        strategic_resources.insert_operational_resource(period.clone(), operational_resource_2);
+        weekly_resources.insert_operational_resource(period.clone(), operational_resource_1);
+        weekly_resources.insert_operational_resource(period.clone(), operational_resource_2);
 
         let scheduling_environment = Arc::new(Mutex::new(SchedulingEnvironment::default()));
 
         let id = Id::default();
 
-        let strategic_options = StrategicOptions::default();
+        let weekly_options = StrategicOptions::default();
 
-        let mut strategic_parameters = StrategicParameters::new(
+        let mut weekly_parameters = StrategicParameters::new(
             &id,
-            strategic_options,
+            weekly_options,
             &scheduling_environment.lock().unwrap(),
         )?;
 
-        let strategic_parameter = WorkOrderParameter::new(
+        let weekly_parameter = WorkOrderParameter::new(
             Some(period),
             HashSet::new(),
             Period::from_str("2023-W47-48").unwrap(),
@@ -68,8 +68,8 @@
 
         // TODO: Consider dependency injection for `SchedulingEnvironment` and add insert
         // functions to all types implementing `Parameters`
-        strategic_parameters
-            .insert_strategic_parameter(WorkOrderNumber(2100023841), strategic_parameter);
+        weekly_parameters
+            .insert_weekly_parameter(WorkOrderNumber(2100023841), weekly_parameter);
 
         Ok(())
     }

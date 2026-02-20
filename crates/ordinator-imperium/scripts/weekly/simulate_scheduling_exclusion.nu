@@ -1,3 +1,4 @@
+
 let work_orders = [
     2400325774,
     2400355795,
@@ -506,29 +507,23 @@ fish -c "cargo build -p scheduling_system --release"
 fish -c "cargo run -p scheduling_system --release &"
 
 ^sleep 65
-imperium strategic strategic-scheduling-environment-commands df user-status ...($work_orders | skip 0 | take 100) --sece=true --awsc=true 
+imperium weekly scheduling df exclude ...$work_orders 2025-W1-2
 
 ^sleep 60
-imperium strategic strategic-scheduling-environment-commands df user-status ...($work_orders | skip 100 | take 100) --sece=true --awsc=true
+imperium weekly scheduling df exclude ...$work_orders 2025-W3-4
 
 ^sleep 60
-imperium strategic strategic-scheduling-environment-commands df user-status ...($work_orders | skip 200 | take 100) --sece=true --awsc=true 
+imperium weekly scheduling df exclude ...$work_orders 2025-W5-6
 
 ^sleep 60
-imperium strategic strategic-scheduling-environment-commands df user-status ...($work_orders | skip 300 | take 100) --sece=true --awsc=true 
+imperium weekly scheduling df exclude ...$work_orders 2025-W7-8
 
 ^sleep 60
-imperium strategic strategic-scheduling-environment-commands df user-status ...($work_orders | skip 400 | take 100) --sece=true --awsc=true 
-
-# ^sleep 60
-# imperium strategic strategic-scheduling-environment-commands df user-status ...($work_orders) --sece=true 
-
-# ^sleep 60
-# imperium strategic strategic-scheduling-environment-commands df user-status ...($work_orders) --sece=false 
+imperium weekly scheduling df exclude ...$work_orders 2025-W9-10
 
 ^sleep 60
 
 ps | where name =~ "scheduling_syst" | kill $in.pid.0 --force 
 
-cd ../generalized-multi-agent-maintenance-scheduling-system/ | just nushell-strategic-data-extract strategic_objective_value_weight_change_plot.tex
+cd ../generalized-multi-agent-maintenance-scheduling-system/ | just nushell-weekly-data-extract weekly_objective_value_exclusion_plot.tex
 ^sleep 10

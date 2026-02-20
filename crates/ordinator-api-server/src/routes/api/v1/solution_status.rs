@@ -11,7 +11,7 @@ pub async fn solution_status_routes(
 {
     OpenApiRouter::new()
         .routes(routes!(
-            crate::handlers::solution_status_handlers::strategic_solution_status
+            crate::handlers::solution_status_handlers::weekly_solution_status
         ))
         .routes(routes!(
             crate::handlers::solution_status_handlers::project_solution_status

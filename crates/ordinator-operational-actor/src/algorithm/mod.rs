@@ -964,7 +964,7 @@ where
         operational_parameter: &OperationalParameter,
     ) -> Result<DateTime<Utc>>
     {
-        // Load project and strategic scheduling information to determine start time window
+        // Load project and weekly scheduling information to determine start time window
         // TODO: Move this into the trait and expose only necessary information
         let project_days_option = self
             .loaded_system_solution
@@ -973,13 +973,13 @@ where
             // FIX: Consider a more descriptive name for this method
             .start_and_finish_dates(work_order_activity);
 
-        let strategic_period_option = self
+        let weekly_period_option = self
             .loaded_system_solution
-            .strategic()?
+            .weekly()?
             .scheduled_task(&work_order_activity.0);
 
-        // Determine start and end windows based on project and strategic scheduling
-        let (start_window, end_window) = match (strategic_period_option, project_days_option) {
+        // Determine start and end windows based on project and weekly scheduling
+        let (start_window, end_window) = match (weekly_period_option, project_days_option) {
             (None, None) => (
                 self.parameters.availability.start_datetime(),
                 self.parameters.availability.finish_datetime(),
@@ -1023,7 +1023,7 @@ where
                * DailyActor: {:?} \     \n{}:{}",
                *     work_order_activity.0,
                *     self.loaded_shared_solution
-               *         .strategic()
+               *         .weekly()
                *         .unwrap()
                *         .scheduled_task(&work_order_activity.0),
                *     work_order_activity.0,

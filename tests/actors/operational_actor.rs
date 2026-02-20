@@ -15,13 +15,13 @@ fn test_determine_first_available_start_time() -> Result<()>
 
     operational_algorithm.load_shared_solution();
 
-    let mut strategic_updated_shared_solution =
+    let mut weekly_updated_shared_solution =
         (**operational_algorithm.loaded_shared_solution).clone();
 
-    // Isolate strategic changes to avoid coupling test setup directly to actors
-    strategic_updated_shared_solution
-        .strategic
-        .strategic_scheduled_work_orders
+    // Isolate weekly changes to avoid coupling test setup directly to actors
+    weekly_updated_shared_solution
+        .weekly
+        .weekly_scheduled_work_orders
         .insert(
             WorkOrderNumber(0),
             Some(Period::from_str("2024-W41-42").unwrap()),
@@ -30,7 +30,7 @@ fn test_determine_first_available_start_time() -> Result<()>
     operational_algorithm
         .arc_swap_shared_solution
         .0
-        .store(Arc::new(strategic_updated_shared_solution));
+        .store(Arc::new(weekly_updated_shared_solution));
 
     operational_algorithm.load_shared_solution();
     let mut project_updated_shared_solution =

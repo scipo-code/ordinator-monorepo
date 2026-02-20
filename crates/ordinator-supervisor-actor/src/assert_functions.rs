@@ -39,7 +39,7 @@ where
         let project_operation_woas: HashSet<WorkOrderNumber> = self
             .algorithm
             .loaded_system_solution
-            .strategic()?
+            .weekly()?
             .supervisor_tasks(&self.algorithm.parameters.supervisor_periods)
             .iter()
             .map(|f| *f.0)
@@ -75,10 +75,10 @@ where
         &self,
     ) -> Result<()>
     {
-        let strategic_work_orders: HashSet<WorkOrderNumber> = self
+        let weekly_work_orders: HashSet<WorkOrderNumber> = self
             .algorithm
             .loaded_system_solution
-            .strategic()?
+            .weekly()?
             .supervisor_tasks(&self.algorithm.parameters.supervisor_periods)
             .iter()
             .map(|f| *f.0)
@@ -91,11 +91,11 @@ where
             .map(|(woa, _)| woa.1 .0)
             .collect();
 
-        if !operational_state_work_order_activities.is_subset(&strategic_work_orders) {
+        if !operational_state_work_order_activities.is_subset(&weekly_work_orders) {
             event!(
                 Level::ERROR,
                 operational_difference_with_project_operations = ?operational_state_work_order_activities
-                    .difference(&strategic_work_orders)
+                    .difference(&weekly_work_orders)
                     .cloned()
                     .collect::<HashSet<_>>()
             );

@@ -140,11 +140,11 @@ impl
             let work_order_view = work_order.view();
             let sorted_operations = work_order_view.operations.iter().collect::<Vec<_>>();
 
-            let strategic_period = system_solution
-                .strategic()?
+            let weekly_period = system_solution
+                .weekly()?
                 .scheduled_task(&work_order_view.work_order_number);
 
-            let strategic_schedule = match strategic_period {
+            let weekly_schedule = match weekly_period {
                 Some(opt_period) => match opt_period {
                     WhereIsWorkOrder::Weekly(period) => period.clone().to_string(),
                     WhereIsWorkOrder::Project(period) => period.clone().to_string(),
@@ -164,7 +164,7 @@ impl
                 None => "Work Order not part of scheduling process".to_string(),
             };
 
-            let period_status = match strategic_period {
+            let period_status = match weekly_period {
                 Some(opt_period) => match opt_period {
                     WhereIsWorkOrder::Weekly(period) => {
                         PeriodStatus::status_for(period, &periods_for_frozen_and_draft)
@@ -194,7 +194,7 @@ impl
 
                 let one_row = SingleRowDto {
                     work_order_number: work_order_view.work_order_number.to_string(),
-                    suggested_scheduled_period: strategic_schedule.clone(),
+                    suggested_scheduled_period: weekly_schedule.clone(),
                     scheduled_start_date: option_day.to_string(),
                     period_status: period_status.clone(),
                     priority: work_order_view.priority.to_string(),
@@ -317,11 +317,11 @@ impl
 
         let system_solution = value.2;
 
-        let strategic_period = system_solution
-            .strategic()?
+        let weekly_period = system_solution
+            .weekly()?
             .scheduled_task(&work_order.work_order_number());
 
-        let strategic_schedule = match strategic_period {
+        let weekly_schedule = match weekly_period {
             Some(opt_period) => match opt_period {
                 WhereIsWorkOrder::Weekly(period) => period.clone().to_string(),
                 WhereIsWorkOrder::Project(period) => period.clone().to_string(),
@@ -343,7 +343,7 @@ impl
 
         let periods = value.1.time_environment.periods.clone();
         let periods_for_frozen_and_draft = [periods[0].clone(), periods[1].clone()];
-        let period_status = match strategic_period {
+        let period_status = match weekly_period {
             Some(opt_period) => match opt_period {
                 WhereIsWorkOrder::Weekly(period) => {
                     PeriodStatus::status_for(period, &periods_for_frozen_and_draft)
@@ -395,7 +395,7 @@ impl
             priority: work_order_view.priority.to_string(),
             revision: work_order_view.revision.to_string(),
             period_status,
-            suggested_scheduled_period: strategic_schedule.clone(),
+            suggested_scheduled_period: weekly_schedule.clone(),
             basic_start_date: work_order_view.basic_start_date.to_string(),
             basic_finish_date: work_order_view.basic_finish_date.to_string(),
             earliest_allowed_start_date: work_order_view.earliest_allowed_start_date,

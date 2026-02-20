@@ -132,12 +132,12 @@ impl SystemSolutions for TestSystemSolution<DailySolution>
         todo!()
     }
 
-    fn strategic(&self) -> anyhow::Result<&Self::Weekly>
+    fn weekly(&self) -> anyhow::Result<&Self::Weekly>
     {
         todo!()
     }
 
-    fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<TestWeekly>)
+    fn weekly_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<TestWeekly>)
     where
         Self::Weekly: ordinator_orchestrator_actor_traits::Solution,
     {

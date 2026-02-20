@@ -1,10 +1,10 @@
-[strategic]
-id = "strategic"
+[weekly]
+id = "weekly"
 asset = "Df"
-strategic_options.number_of_removed_work_orders = 25
-strategic_options.urgency_weight = 1
-strategic_options.resource_penalty_weight = 1000000
-strategic_options.clustering_weight = 1000
+weekly_options.number_of_removed_work_orders = 25
+weekly_options.urgency_weight = 1
+weekly_options.resource_penalty_weight = 1000000
+weekly_options.clustering_weight = 1000
 
 [project]
 id = "project"
@@ -21,12 +21,13 @@ supervisor_options.number_of_removed_work_orders = 15
 
 # [[supervisors]]
 # id = "supervisor-second"
+
 ################################
 ###          MTN-ELEC        ###
 ################################
 [[operational]]
 id = "OP-01-001"
-resources = ["MTN-ELEC" ]
+resources = [ "MTN-ELEC" ]
 hours_per_day = 6.0
 operational_options.number_of_removed_work_orders = 15
 operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
@@ -71,28 +72,6 @@ operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
 assets = [ "Df" ]
-[[operational]]
-id = "OP-01-005"
-resources = [ "MTN-ELEC" ]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-[[operational]]
-id = "OP-01-006"
-resources = [ "MTN-ELEC" ]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
 
 ################################
 ###          MTN-INST        ###
@@ -111,30 +90,6 @@ assets = [ "Df" ]
 
 [[operational]]
 id = "OP-02-002"
-resources = [ "MTN-INST" ]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-
-[[operational]]
-id = "OP-02-003"
-resources = [ "MTN-INST" ]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-
-[[operational]]
-id = "OP-02-004"
 resources = [ "MTN-INST" ]
 hours_per_day = 6.0
 operational_options.number_of_removed_work_orders = 15
@@ -195,28 +150,6 @@ operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
 assets = [ "Df" ]
-[[operational]]
-id = "OP-02-005"
-resources = [ "MTN-MECH"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-[[operational]]
-id = "OP-02-006"
-resources = [ "MTN-MECH"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
 
 ################################
 ###          MTN-TURB        ###
@@ -247,28 +180,6 @@ assets = [ "Df" ]
 
 [[operational]]
 id = "OP-03-003"
-resources = [ "MTN-TURB"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-[[operational]]
-id = "OP-03-004"
-resources = [ "MTN-TURB"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-[[operational]]
-id = "OP-03-005"
 resources = [ "MTN-TURB"]
 hours_per_day = 6.0
 operational_options.number_of_removed_work_orders = 15
@@ -317,28 +228,6 @@ operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
 assets = [ "Df" ]
-[[operational]]
-id = "OP-03-004"
-resources = [ "MTN-TELE"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-[[operational]]
-id = "OP-03-005"
-resources = [ "MTN-TELE"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
 
 ################################
 ###          MTN-ROUS        ###
@@ -369,30 +258,6 @@ assets = [ "Df" ]
 
 [[operational]]
 id = "OP-04-003"
-resources = [ "MTN-ROUS"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-
-[[operational]]
-id = "OP-04-004"
-resources = [ "MTN-ROUS"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-
-[[operational]]
-id = "OP-04-005"
 resources = [ "MTN-ROUS"]
 hours_per_day = 6.0
 operational_options.number_of_removed_work_orders = 15
@@ -444,28 +309,6 @@ operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
 assets = [ "Df" ]
-[[operational]]
-id = "OP-05-003"
-resources = [ "MTN-LAGG"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-[[operational]]
-id = "OP-05-004"
-resources = [ "MTN-LAGG"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
 
 ################################
 ###          MTN-PAIN        ###
@@ -503,17 +346,6 @@ operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
 assets = [ "Df" ]
-[[operational]]
-id = "OP-06-004"
-resources = [ "MTN-PAIN"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
 
 ################################
 ###          MTN-PIPF        ###
@@ -529,6 +361,7 @@ operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
 assets = [ "Df" ]
+
 [[operational]]
 id = "OP-07-002"
 resources = [ "MTN-PIPF"]
@@ -540,6 +373,7 @@ operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
 assets = [ "Df" ]
+
 [[operational]]
 id = "OP-07-003"
 resources = [ "MTN-PIPF"]
@@ -553,28 +387,6 @@ operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
 assets = [ "Df" ]
 [[operational]]
 id = "OP-07-004"
-resources = [ "MTN-PIPF"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-[[operational]]
-id = "OP-07-005"
-resources = [ "MTN-PIPF"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-[[operational]]
-id = "OP-07-006"
 resources = [ "MTN-PIPF"]
 hours_per_day = 6.0
 operational_options.number_of_removed_work_orders = 15
@@ -623,28 +435,6 @@ operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
 assets = [ "Df" ]
 [[operational]]
 id = "OP-08-004"
-resources = [ "MTN-ROPE"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-[[operational]]
-id = "OP-08-005"
-resources = [ "MTN-ROPE"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-[[operational]]
-id = "OP-08-006"
 resources = [ "MTN-ROPE"]
 hours_per_day = 6.0
 operational_options.number_of_removed_work_orders = 15
@@ -703,30 +493,6 @@ operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
 assets = [ "Df" ]
 
-[[operational]]
-id = "OP-09-005"
-resources = [ "MTN-SCAF"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-
-[[operational]]
-id = "OP-09-006"
-resources = [ "MTN-SCAF"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-
 ################################
 ###          INP-SITE        ###
 ################################
@@ -754,28 +520,6 @@ operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
 assets = [ "Df" ]
 [[operational]]
 id = "OP-10-003"
-resources = [ "INP-SITE"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-[[operational]]
-id = "OP-10-004"
-resources = [ "INP-SITE"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-[[operational]]
-id = "OP-10-005"
 resources = [ "INP-SITE"]
 hours_per_day = 6.0
 operational_options.number_of_removed_work_orders = 15
@@ -844,25 +588,40 @@ operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:
 operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
 operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
 assets = [ "Df" ]
-[[operational]]
-id = "OP-11-006"
-resources = [ "PRODTECH"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
-[[operational]]
-id = "OP-11-007"
-resources = [ "PRODTECH"]
-hours_per_day = 6.0
-operational_options.number_of_removed_work_orders = 15
-operational_configuration.off_shift_interval = { start = "19:00:00", end = "07:00:00" }
-operational_configuration.break_interval = { start = "11:00:00", end = "12:00:00" }
-operational_configuration.toolbox_interval = { start = "07:00:00", end = "08:00:00" }
-operational_configuration.availability.start_date = "2025-01-13T07:00:00Z"
-operational_configuration.availability.finish_date = "2025-01-27T15:00:00Z"
-assets = [ "Df" ]
+
+# mtnelec = 3.5
+# mtninst = 2.5
+# mtnmech = 4.5
+# mtncran = 0.0
+# mtnturb = 3.0
+# mtntele = 3.0
+# mtnrous = 3.0
+# medic = 1.0
+# mtnlagg = 2.0
+# mtnpain = 3.0
+# mtnpipf = 4.0
+# mtnrigg = 2.0
+# mtnrope = 3.5
+# mtnsat = 0.0
+# mtnscaf = 3.5
+# inpsite = 3.0
+# prodlabo = 0.0
+# prodtech = 5.0
+# venacco = 0.0
+# vencomm = 0.0
+# venelec = 0.0
+# venhvac = 0.0
+# veninsp = 0.0
+# veninst = 0.0
+# venmech = 0.0
+# venmete = 0.0
+# venrope = 0.0
+# venscaf = 0.0
+# vensubs = 0.0
+# vencran = 0.0
+# qaqcelec = 0.0
+# qaqcmech = 0.0
+# qaqcpain = 0.0
+# wellsupv = 0.0
+
+

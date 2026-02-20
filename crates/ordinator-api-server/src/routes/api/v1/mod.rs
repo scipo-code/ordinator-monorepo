@@ -1,7 +1,7 @@
 pub mod material_clerk;
 mod orchestrator;
 pub mod solution_status;
-mod strategic;
+mod weekly;
 mod supervisor;
 mod project;
 mod technician;
@@ -14,7 +14,7 @@ use orchestrator::orchestrator_api_scope;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Orchestrator;
 use solution_status::solution_status_routes;
-use strategic::scheduler_nest;
+use weekly::scheduler_nest;
 use supervisor::supervisor_routes;
 use project::project_route;
 use technician::technician_routes;

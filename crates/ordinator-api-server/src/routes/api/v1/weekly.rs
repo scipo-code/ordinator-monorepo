@@ -12,16 +12,16 @@ pub async fn scheduler_nest(
 {
     OpenApiRouter::new()
         .routes(routes!(
-            crate::handlers::strategic_handlers::get_scheduler_work_orders
+            crate::handlers::weekly_handlers::get_scheduler_work_orders
         ))
         .routes(routes!(
-            crate::handlers::strategic_handlers::get_single_work_order_with_schedule
+            crate::handlers::weekly_handlers::get_single_work_order_with_schedule
         ))
         .routes(routes!(
-            crate::handlers::strategic_handlers::work_orders_with_suggested_period,
+            crate::handlers::weekly_handlers::work_orders_with_suggested_period,
         ))
         .routes(routes!(
-            crate::handlers::strategic_handlers::assign_work_order_to_period,
+            crate::handlers::weekly_handlers::assign_work_order_to_period,
         ))
         .with_state(state)
 }

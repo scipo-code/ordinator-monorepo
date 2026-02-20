@@ -31,14 +31,14 @@ use super::WeeklyResources;
 #[derive(Debug)]
 pub struct WeeklyParameters
 {
-    pub strategic_work_order_parameters: HashMap<WorkOrderNumber, WorkOrderParameter>,
-    pub strategic_capacity: WeeklyResources,
-    pub strategic_clustering: WeeklyClustering,
+    pub weekly_work_order_parameters: HashMap<WorkOrderNumber, WorkOrderParameter>,
+    pub weekly_capacity: WeeklyResources,
+    pub weekly_clustering: WeeklyClustering,
     pub period_locks: HashSet<Period>,
 
     // TODO #04 #00 #01: Create PeriodState enum that changes based on SystemClock
-    pub strategic_periods: Vec<Period>,
-    pub strategic_options: WeeklyOptions,
+    pub weekly_periods: Vec<Period>,
+    pub weekly_options: WeeklyOptions,
 }
 
 // TODO: Consider implementing a builder pattern for Parameters
@@ -56,7 +56,7 @@ impl Parameters for WeeklyParameters
 
         let work_orders = &scheduling_environment.work_orders;
 
-        let strategic_periods = &scheduling_environment.time_environment.periods;
+        let weekly_periods = &scheduling_environment.time_environment.periods;
         let days = &scheduling_environment.time_environment.days;
 
         // TODO: Move actor specifications retrieval to a separate module
@@ -66,7 +66,7 @@ impl Parameters for WeeklyParameters
             .get(id.asset())
             .unwrap();
 
-        let strategic_options = actor_specifications.strategic_options();
+        let weekly_options = actor_specifications.weekly_options();
         let work_order_configurations = &scheduling_environment.work_order_policies;
         let material_to_period = &scheduling_environment.material_repo.material_to_period;
 
@@ -78,7 +78,7 @@ impl Parameters for WeeklyParameters
             .filter(|(_, wo)| wo.released_for_scheduling());
 
         // ISSUE #000: Critical to fix correctly
-        let strategic_work_order_parameters = filter
+        let weekly_work_order_parameters = filter
             .map(|(won, wo)| {
                 Ok((
                     *won,
@@ -88,7 +88,7 @@ impl Parameters for WeeklyParameters
                         // TODO: Accept list of work order numbers instead of current implementation
                         .with_scheduling_environment(
                             wo,
-                            strategic_periods,
+                            weekly_periods,
                             days,
                             work_order_configurations,
                             material_to_period,
@@ -98,7 +98,7 @@ impl Parameters for WeeklyParameters
             })
             .collect::<Result<HashMap<WorkOrderNumber, WorkOrderParameter>>>()?;
 
-        let strategic_clustering = WeeklyClustering::calculate_clustering_values(
+        let weekly_clustering = WeeklyClustering::calculate_clustering_values(
             asset,
             work_orders,
             &scheduling_environment
@@ -107,15 +107,15 @@ impl Parameters for WeeklyParameters
         )?;
 
         // TODO: Decouple SchedulingEnvironment from WeeklyResources
-        let strategic_capacity = WeeklyResources::from((scheduling_environment, id));
+        let weekly_capacity = WeeklyResources::from((scheduling_environment, id));
 
         Ok(Self {
-            strategic_work_order_parameters,
-            strategic_capacity,
-            strategic_clustering,
+            weekly_work_order_parameters,
+            weekly_capacity,
+            weekly_clustering,
             period_locks: HashSet::default(),
-            strategic_periods: strategic_periods.clone(),
-            strategic_options: strategic_options.clone(),
+            weekly_periods: weekly_periods.clone(),
+            weekly_options: weekly_options.clone(),
         })
     }
 
@@ -179,8 +179,8 @@ impl WeeklyParameters
     pub fn get_locked_in_period<'a>(&'a self, work_order_number: &'a WorkOrderNumber)
     -> &'a Period
     {
-        let option_period = match self.strategic_work_order_parameters.get(work_order_number) {
-            Some(strategic_parameter) => &strategic_parameter.locked_in_period,
+        let option_period = match self.weekly_work_order_parameters.get(work_order_number) {
+            Some(weekly_parameter) => &weekly_parameter.locked_in_period,
             None => {
                 panic!("Work order number {work_order_number:?} not found in WeeklyParameters")
             }
@@ -201,7 +201,7 @@ impl WeeklyParameters
     ) -> Result<()>
     {
         let optimized_work_order = match self
-            .strategic_work_order_parameters
+            .weekly_work_order_parameters
             .get_mut(&work_order_number)
         {
             Some(optimized_work_order) => optimized_work_order,
@@ -380,7 +380,7 @@ impl WeeklyClustering
     }
 }
 
-pub fn create_strategic_parameters(
+pub fn create_weekly_parameters(
     _work_orders: &WorkOrders,
     _periods: &[Period],
     _asset: &Asset,

@@ -15,7 +15,7 @@
 
 // impl SystemSolutionTester
 // {
-//     pub fn test_strategic_actor(&self) -> Result<()>
+//     pub fn test_weekly_actor(&self) -> Result<()>
 //     {
 //         let a = 1;
 //         Ok(())

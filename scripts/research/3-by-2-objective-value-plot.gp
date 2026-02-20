@@ -25,7 +25,7 @@ set lmargin 12
 set rmargin 05.5
 set bmargin 07.0
 set ylabel "Urgency\n[priority \\& LAFD] (MIN)"
-plot strategic using 1:2 with lines linestyle 1 title "Scheduler (<2y) - Strategic Model" 
+plot weekly using 1:2 with lines linestyle 1 title "Scheduler (<2y) - Strategic Model" 
 
 set lmargin 10
 set rmargin 7.5

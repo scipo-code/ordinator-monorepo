@@ -236,18 +236,18 @@ impl OrchestratorCommands
     }
 }
 
-pub fn strategic_periods(client: &Client) -> Vec<Period>
+pub fn weekly_periods(client: &Client) -> Vec<Period>
 {
     let orchestrator_request = OrchestratorRequest::GetPeriods;
 
     let system_message = SystemMessages::Orchestrator(orchestrator_request);
 
-    let strategic_periods_string =
+    let weekly_periods_string =
         crate::send_http(client, system_message).expect("Could not receive the WeeklyResources");
 
-    let strategic_periods: HashMap<String, HashMap<String, Vec<Period>>> =
-        serde_json::from_str(&strategic_periods_string).unwrap();
-    strategic_periods
+    let weekly_periods: HashMap<String, HashMap<String, Vec<Period>>> =
+        serde_json::from_str(&weekly_periods_string).unwrap();
+    weekly_periods
         .get("Orchestrator")
         .unwrap()
         .get("Periods")

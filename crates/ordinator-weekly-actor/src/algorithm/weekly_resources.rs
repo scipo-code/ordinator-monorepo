@@ -37,7 +37,7 @@ impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for W
         };
 
         // Requires Actor ID to properly populate resource mapping
-        let mut strategic_resources_inner =
+        let mut weekly_resources_inner =
             HashMap::<Period, HashMap<OperationalId, OperationalResource>>::new();
 
         for (i, period) in value.0.time_environment.periods.iter().enumerate() {
@@ -84,10 +84,10 @@ impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for W
 
                 operational_resource_map.insert(operational_agent.0.clone(), operational_resource);
             }
-            strategic_resources_inner.insert(period.clone(), operational_resource_map);
+            weekly_resources_inner.insert(period.clone(), operational_resource_map);
         }
 
-        WeeklyResources::new(strategic_resources_inner)
+        WeeklyResources::new(weekly_resources_inner)
     }
 }
 
