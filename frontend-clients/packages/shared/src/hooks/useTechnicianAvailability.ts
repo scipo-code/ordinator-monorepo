@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchTechnicianAvailability } from "../api/supervisor.ts";
+import { fetchTechnicianAvailability } from "../api/daily.ts";
 
 export const useTechnicianAvailability = (
   asset: string,
-  supervisorId: string,
+  dailyId: string,
 ) => {
   return useQuery({
-    queryKey: ["technicianAvailability", asset, supervisorId],
-    enabled: !!asset && !!supervisorId,
-    queryFn: () => fetchTechnicianAvailability(asset, supervisorId),
+    queryKey: ["technicianAvailability", asset, dailyId],
+    enabled: !!asset && !!dailyId,
+    queryFn: () => fetchTechnicianAvailability(asset, dailyId),
     retry: 2,
     staleTime: 60_000,
   });

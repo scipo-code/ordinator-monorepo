@@ -4,7 +4,7 @@ members = [
     "crates/ordinator-actor-core",
     "crates/ordinator-operational-actor",
     "crates/ordinator-weekly-actor",
-    "crates/ordinator-supervisor-actor",
+    "crates/ordinator-daily-actor",
     "crates/ordinator-project-actor",
 
     "crates/ordinator-api-server",

@@ -25,7 +25,7 @@ pub enum ResponseMessage<S, Sc, R, T>
     Time(T),
 }
 
-// Use module paths for namespacing (e.g., `operational::response::Status`, `supervisor::request::Status`)
+// Use module paths for namespacing (e.g., `operational::response::Status`, `daily::request::Status`)
 #[derive(Debug, Serialize)]
 pub enum OperationalResponseMessage
 {

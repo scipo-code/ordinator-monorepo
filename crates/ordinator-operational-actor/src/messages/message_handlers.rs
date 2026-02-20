@@ -97,7 +97,7 @@ where
                 let (assign, assess, unassign): (u64, u64, u64) = self
                     .algorithm
                     .loaded_system_solution
-                    .supervisor_actor_solutions()?
+                    .daily_actor_solutions()?
                     .count_delegate_types(&self.actor_id);
 
                 // Business types must remain distinct from algorithm types.

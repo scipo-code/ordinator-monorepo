@@ -1,16 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchMainTable } from "../api/supervisor.ts";
+import { fetchMainTable } from "../api/daily.ts";
 import { NaiveDateDto } from "../types/NaiveDateDto.ts";
 
 export const useSupervisorMainTable = (
   asset: string,
-  supervisorId: string,
+  dailyId: string,
   day?: NaiveDateDto,
 ) => {
   return useQuery({
-    queryKey: ["supervisorMainTable", asset, supervisorId, day],
-    enabled: !!asset && !!supervisorId,
-    queryFn: () => fetchMainTable(asset, supervisorId, day),
+    queryKey: ["dailyMainTable", asset, dailyId, day],
+    enabled: !!asset && !!dailyId,
+    queryFn: () => fetchMainTable(asset, dailyId, day),
     retry: 2,
     staleTime: 60_000,
   });

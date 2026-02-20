@@ -3,11 +3,11 @@ use std::io::Read;
 use clap::Args;
 use clap::Subcommand;
 use reqwest::blocking::Client;
-use shared_types::agents::supervisor::requests::supervisor_scheduling_message::DailySchedulingMessage;
-use shared_types::agents::supervisor::requests::supervisor_status_message::DailyStatusMessage;
-use shared_types::agents::supervisor::DailyRequest;
-use shared_types::agents::supervisor::DailyRequestMessage;
-use shared_types::agents::supervisor::DailyType;
+use shared_types::agents::daily::requests::daily_scheduling_message::DailySchedulingMessage;
+use shared_types::agents::daily::requests::daily_status_message::DailyStatusMessage;
+use shared_types::agents::daily::DailyRequest;
+use shared_types::agents::daily::DailyRequestMessage;
+use shared_types::agents::daily::DailyType;
 use shared_types::scheduling_environment::worker_environment::resources::Id;
 use shared_types::Asset;
 use shared_types::SystemMessages;
@@ -19,13 +19,13 @@ pub enum DailyCommands
     Status
     {
         asset: Asset,
-        supervisor: DailyType,
+        daily: DailyType,
     },
     /// Get the commands for manually scheduling a work order activity
     Scheduling
     {
         asset: Asset,
-        supervisor_type: DailyType,
+        daily_type: DailyType,
         #[clap(subcommand)]
         scheduling_commands: SchedulingCommands,
     },
@@ -51,43 +51,43 @@ impl DailyCommands
     pub fn execute(&self, client: &Client) -> SystemMessages
     {
         match self {
-            DailyCommands::Status { asset, supervisor } => {
-                let supervisor_status_message = DailyStatusMessage::General;
+            DailyCommands::Status { asset, daily } => {
+                let daily_status_message = DailyStatusMessage::General;
 
-                let supervisor_request_message =
-                    DailyRequestMessage::Status(supervisor_status_message);
+                let daily_request_message =
+                    DailyRequestMessage::Status(daily_status_message);
 
-                let supervisor_request = DailyRequest {
+                let daily_request = DailyRequest {
                     asset: asset.clone(),
-                    supervisor: supervisor.clone(),
-                    supervisor_request_message,
+                    daily: daily.clone(),
+                    daily_request_message,
                 };
 
-                SystemMessages::Daily(supervisor_request)
+                SystemMessages::Daily(daily_request)
             }
             DailyCommands::Scheduling {
                 asset,
-                supervisor_type,
+                daily_type,
                 scheduling_commands,
             } => match scheduling_commands {
                 SchedulingCommands::Schedule(assign) => {
                     let id_operational = get_id_operational(client, assign.id_operational.clone());
 
-                    let supervisor_scheduling_message = DailySchedulingMessage::new(
+                    let daily_scheduling_message = DailySchedulingMessage::new(
                         (assign.work_order_number.into(), assign.activity_number),
                         id_operational,
                     );
 
-                    let supervisor_request_message =
-                        DailyRequestMessage::Scheduling(supervisor_scheduling_message);
+                    let daily_request_message =
+                        DailyRequestMessage::Scheduling(daily_scheduling_message);
 
-                    let supervisor_request = DailyRequest {
+                    let daily_request = DailyRequest {
                         asset: asset.clone(),
-                        supervisor: supervisor_type.clone(),
-                        supervisor_request_message,
+                        daily: daily_type.clone(),
+                        daily_request_message,
                     };
 
-                    SystemMessages::Daily(supervisor_request)
+                    SystemMessages::Daily(daily_request)
                 }
             },
         }

@@ -47,12 +47,12 @@ use ordinator_weekly_actor::WeeklyApi;
 use ordinator_weekly_actor::algorithm::weekly_solution::WeeklySolution;
 pub use ordinator_weekly_actor::messages::WeeklyRequestMessage;
 pub use ordinator_weekly_actor::messages::WeeklyResponseMessage;
-use ordinator_supervisor_actor::DailyApi;
-use ordinator_supervisor_actor::algorithm::supervisor_solution::DailySolution;
-pub use ordinator_supervisor_actor::messages::DailyRequestMessage;
-pub use ordinator_supervisor_actor::messages::DailyResponseMessage;
-pub use ordinator_supervisor_actor::messages::requests::DailyStatusMessage;
-pub use ordinator_supervisor_actor::messages::responses::DailyResponseStatus;
+use ordinator_daily_actor::DailyApi;
+use ordinator_daily_actor::algorithm::daily_solution::DailySolution;
+pub use ordinator_daily_actor::messages::DailyRequestMessage;
+pub use ordinator_daily_actor::messages::DailyResponseMessage;
+pub use ordinator_daily_actor::messages::requests::DailyStatusMessage;
+pub use ordinator_daily_actor::messages::responses::DailyResponseStatus;
 use ordinator_project_actor::ProjectApi;
 use ordinator_project_actor::algorithm::project_solution::ProjectSolution;
 pub use ordinator_project_actor::messages::ProjectRequestMessage;
@@ -210,10 +210,10 @@ where
             }
             OrchestratorRequest::CreateDailyAgent(
                 _asset,
-                _number_of_supervisor_periods,
+                _number_of_daily_periods,
                 _id_string,
             ) => {
-                // TODO: Implement supervisor agent creation
+                // TODO: Implement daily agent creation
                 Ok(OrchestratorResponse::Todo)
             }
             OrchestratorRequest::DeleteDailyAgent(asset, id_string) => {
@@ -223,14 +223,14 @@ where
                     .unwrap()
                     .get(&asset)
                     .unwrap()
-                    .supervisor_by_id_string(id_string);
+                    .daily_by_id_string(id_string);
 
                 self.actor_registries
                     .lock()
                     .unwrap()
                     .get_mut(&asset)
                     .unwrap()
-                    .supervisor_agent_senders
+                    .daily_agent_senders
                     .remove(&id);
 
                 let response_string = format!("Daily agent deleted with id {id}");
@@ -284,7 +284,7 @@ where
                     .unwrap()
                     .get(&asset)
                     .unwrap()
-                    .supervisor_by_id_string(id_string.clone());
+                    .daily_by_id_string(id_string.clone());
 
                 self.actor_registries
                     .lock()
@@ -311,7 +311,7 @@ impl ActorRegistry
     fn new(
         weekly_agent_addr: Communication<WeeklyRequestMessage, WeeklyResponseMessage>,
         project_agent_addr: Communication<ProjectRequestMessage, ProjectResponseMessage>,
-        supervisor_agent_addrs: HashMap<
+        daily_agent_addrs: HashMap<
             ActorCompositeId,
             Communication<DailyRequestMessage, DailyResponseMessage>,
         >,
@@ -324,18 +324,18 @@ impl ActorRegistry
         ActorRegistry {
             weekly_agent_sender: weekly_agent_addr,
             project_agent_sender: project_agent_addr,
-            supervisor_agent_senders: supervisor_agent_addrs,
+            daily_agent_senders: daily_agent_addrs,
             operational_agent_senders: operational_actor_communication,
         }
     }
 
-    pub fn add_supervisor_agent(
+    pub fn add_daily_agent(
         &mut self,
         id: ActorCompositeId,
         communication: Communication<DailyRequestMessage, DailyResponseMessage>,
     )
     {
-        self.supervisor_agent_senders.insert(id, communication);
+        self.daily_agent_senders.insert(id, communication);
     }
 
     pub fn add_operational_agent(
@@ -347,9 +347,9 @@ impl ActorRegistry
         self.operational_agent_senders.insert(id, communication);
     }
 
-    pub fn supervisor_by_id_string(&self, id_string: String) -> ActorCompositeId
+    pub fn daily_by_id_string(&self, id_string: String) -> ActorCompositeId
     {
-        self.supervisor_agent_senders
+        self.daily_agent_senders
             .keys()
             .find(|id| id.0 == id_string)
             .unwrap()
@@ -406,7 +406,7 @@ where
             .insert(asset.clone(), system_solution);
         let dependencies = self.extract_factory_dependencies(asset)?;
 
-        let (weekly_id, project_id, supervisors, operationals) = {
+        let (weekly_id, project_id, dailys, operationals) = {
             let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
             let actor_specifications = scheduling_environment_guard
                 .worker_environment
@@ -455,24 +455,24 @@ where
                 )?,
             );
 
-            let supervisors = actor_specifications.supervisor();
+            let dailys = actor_specifications.daily();
 
-            let mut supervisor_ids: Vec<ActorCompositeId> = vec![];
-            for input_supervisor in supervisors {
-                let supervisor_actor_id = ActorCompositeId::new(
-                    &input_supervisor.id,
+            let mut daily_ids: Vec<ActorCompositeId> = vec![];
+            for input_daily in dailys {
+                let daily_actor_id = ActorCompositeId::new(
+                    &input_daily.id,
                     vec![],
                     Availability::new(
                         *periods.first().unwrap().start_datetime(),
                         *periods
-                            .get((input_supervisor.number_of_supervisor_periods - 1) as usize)
+                            .get((input_daily.number_of_daily_periods - 1) as usize)
                             .unwrap()
                             .finish_datetime(),
                         vec![asset.clone()],
                     )?,
                 );
 
-                supervisor_ids.push(supervisor_actor_id)
+                daily_ids.push(daily_actor_id)
             }
 
             let operationals: Vec<ActorCompositeId> = actor_specifications
@@ -500,7 +500,7 @@ where
                 })
                 .collect::<Vec<_>>();
 
-            (weekly_id, project_id, supervisor_ids, operationals)
+            (weekly_id, project_id, daily_ids, operationals)
         };
 
         let weekly_communication = WeeklyApi::construct_actor(
@@ -523,10 +523,10 @@ where
         )
         .with_context(|| format!("{project_id} could not be constructed"))?;
 
-        let mut supervisor_communications = HashMap::default();
-        for supervisor_id in supervisors {
-            let supervisor_communication = DailyApi::construct_actor(
-                supervisor_id.clone(),
+        let mut daily_communications = HashMap::default();
+        for daily_id in dailys {
+            let daily_communication = DailyApi::construct_actor(
+                daily_id.clone(),
                 dependencies.0.clone(),
                 dependencies.1.clone(),
                 dependencies.2.clone(),
@@ -534,7 +534,7 @@ where
                 self.error_sender.clone(),
             )?;
 
-            supervisor_communications.insert(supervisor_id.clone(), supervisor_communication);
+            daily_communications.insert(daily_id.clone(), daily_communication);
         }
 
         let mut operational_communications = HashMap::default();
@@ -554,7 +554,7 @@ where
         let agent_registry = ActorRegistry::new(
             weekly_communication,
             project_communication,
-            supervisor_communications,
+            daily_communications,
             operational_communications,
         );
 
@@ -684,14 +684,14 @@ impl OrchestratorBuilder<StepConfiguration>
         self,
         weekly_throttling: u64,
         project_throttling: u64,
-        supervisor_throttling: u64,
+        daily_throttling: u64,
         operational_throttling: u64,
     ) -> OrchestratorBuilder<StepSchedulingEnvironment>
     {
         let throttling = Throttling {
             weekly_throttling,
             project_throttling,
-            supervisor_throttling,
+            daily_throttling,
             operational_throttling,
         };
         let configurations = SystemConfigurations::build_configs(throttling);

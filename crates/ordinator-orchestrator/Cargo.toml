@@ -13,7 +13,7 @@ ordinator-configuration = { path = "../ordinator-configuration"}
 
 ordinator-weekly-actor = { path = "../ordinator-weekly-actor" }
 ordinator-project-actor = { path = "../ordinator-project-actor" }
-ordinator-supervisor-actor = { path = "../ordinator-supervisor-actor" }
+ordinator-daily-actor = { path = "../ordinator-daily-actor" }
 ordinator-operational-actor = { path = "../ordinator-operational-actor" }
 
 # From workspace

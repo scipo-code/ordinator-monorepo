@@ -11,13 +11,13 @@ pub async fn material_clerk_routes(
 {
     OpenApiRouter::new()
         .routes(routes!(crate::handlers::material_handlers::check_material))
-        // .route("/{asset}/{supervisor_id}", get(status))
+        // .route("/{asset}/{daily_id}", get(status))
         .with_state(state)
 
     // TODO: Move this logic into the handler
     // let orchestrator = orchestrator.lock().unwrap();
 
     // Ok(orchestrator
-    //     .handle_supervisor_request(supervisor_request)
+    //     .handle_daily_request(daily_request)
     //     .await?)
 }

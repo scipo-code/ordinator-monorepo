@@ -6,6 +6,6 @@ pub struct Throttling
 {
     pub weekly_throttling: u64,
     pub project_throttling: u64,
-    pub supervisor_throttling: u64,
+    pub daily_throttling: u64,
     pub operational_throttling: u64,
 }

@@ -29,11 +29,11 @@ pub fn three_workers_builder(actor_builder: ActorSpecificationBuilder)
                         .resource_penalty(100000)
                 })
         })
-        .supervisors(|supervisor| {
-            supervisor.supervisor(|f| {
+        .dailys(|daily| {
+            daily.daily(|f| {
                 f.id("TEST_SUPERVISOR")
-                    .number_of_supervisor_periods(2)
-                    .supervisor_options(|f| f.number_of_unassigned_work_orders(10))
+                    .number_of_daily_periods(2)
+                    .daily_options(|f| f.number_of_unassigned_work_orders(10))
             })
         })
         .operational(|operational_builder| {

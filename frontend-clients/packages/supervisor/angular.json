@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "supervisor-calendar": {
+    "daily-calendar": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/supervisor-calendar",
+            "outputPath": "dist/daily-calendar",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -55,10 +55,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "supervisor-calendar:build:production"
+              "buildTarget": "daily-calendar:build:production"
             },
             "development": {
-              "buildTarget": "supervisor-calendar:build:development"
+              "buildTarget": "daily-calendar:build:development"
             }
           },
           "defaultConfiguration": "development"

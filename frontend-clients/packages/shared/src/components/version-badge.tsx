@@ -10,7 +10,7 @@ const StagnationStatus: Record<string, {background: string}> = {
 export enum Actors {
   weekly,
   project,
-  supervisor,
+  daily,
 }
 
 interface SolutionStability {

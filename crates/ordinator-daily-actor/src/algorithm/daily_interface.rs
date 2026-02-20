@@ -6,7 +6,7 @@ use ordinator_orchestrator_actor_traits::DailyInterface;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
-use super::supervisor_solution::DailySolution;
+use super::daily_solution::DailySolution;
 
 impl DailyInterface for DailySolution
 {

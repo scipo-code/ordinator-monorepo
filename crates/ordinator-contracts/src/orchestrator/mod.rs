@@ -56,7 +56,7 @@ pub struct ApiSolution
 {
     pub weekly: String,   // TODO: Replace with ApiWeekly type
     pub project: String,    // TODO: Replace with ApiProject type
-    pub supervisor: String,  // TODO: Replace with HashMap<Id, ApiDaily>
+    pub daily: String,  // TODO: Replace with HashMap<Id, ApiDaily>
     pub operational: String, // TODO: Replace with HashMap<Id, ApiOperational>
 }
 

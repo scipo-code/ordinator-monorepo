@@ -90,15 +90,15 @@ pub enum DailyAgentCommands
     {
         asset: Asset,
         shift: Shift,
-        supervisor_id: String,
+        daily_id: String,
         resource: Option<Resources>,
-        number_of_supervisor_periods: u64,
+        number_of_daily_periods: u64,
     },
 
     /// Delete a DailyAgent
     Delete
     {
-        asset: Asset, id_supervisor: String
+        asset: Asset, id_daily: String
     },
 }
 #[derive(Subcommand, Debug)]
@@ -158,36 +158,36 @@ impl OrchestratorCommands
                 let agent_status = OrchestratorRequest::AgentStatusRequest;
                 SystemMessages::Orchestrator(agent_status)
             }
-            OrchestratorCommands::DailyAgent(supervisor_agent_command) => {
-                match supervisor_agent_command {
+            OrchestratorCommands::DailyAgent(daily_agent_command) => {
+                match daily_agent_command {
                     // FIXME: This implementation needs to be reworked
                     DailyAgentCommands::Create {
                         asset,
                         shift: _,
                         resource,
-                        supervisor_id,
-                        number_of_supervisor_periods,
+                        daily_id,
+                        number_of_daily_periods,
                     } => {
                         let resource = match resource {
                             Some(resource) => vec![resource],
                             None => vec![],
                         };
-                        let create_supervisor_agent = OrchestratorRequest::CreateDailyAgent(
+                        let create_daily_agent = OrchestratorRequest::CreateDailyAgent(
                             asset.clone(),
-                            number_of_supervisor_periods,
-                            Id::new(&supervisor_id, resource, vec![asset]),
+                            number_of_daily_periods,
+                            Id::new(&daily_id, resource, vec![asset]),
                         );
-                        SystemMessages::Orchestrator(create_supervisor_agent)
+                        SystemMessages::Orchestrator(create_daily_agent)
                     }
                     DailyAgentCommands::Delete {
                         asset,
-                        id_supervisor,
+                        id_daily,
                     } => {
-                        let delete_supervisor_agent = OrchestratorRequest::DeleteDailyAgent(
+                        let delete_daily_agent = OrchestratorRequest::DeleteDailyAgent(
                             asset.clone(),
-                            id_supervisor.clone(),
+                            id_daily.clone(),
                         );
-                        SystemMessages::Orchestrator(delete_supervisor_agent)
+                        SystemMessages::Orchestrator(delete_daily_agent)
                     }
                 }
             }

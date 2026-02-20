@@ -5,7 +5,7 @@ pub mod orchestrator;
 pub mod sap;
 pub mod status;
 pub mod weekly;
-pub mod supervisor;
+pub mod daily;
 pub mod project;
 
 use orchestrator::OrchestratorCommands;
@@ -20,7 +20,7 @@ use weekly::WeeklyCommands;
 use project::ProjectCommands;
 
 use self::operational::OperationalCommands;
-use self::supervisor::DailyCommands;
+use self::daily::DailyCommands;
 use crate::Cli;
 
 /// Imperium: The command line interface to access the Ordinator scheduling
@@ -52,11 +52,11 @@ pub enum Commands
         #[clap(subcommand)]
         project_commands: ProjectCommands,
     },
-    /// Access the supervisor agents
+    /// Access the daily agents
     Daily
     {
         #[clap(subcommand)]
-        supervisor_commands: DailyCommands,
+        daily_commands: DailyCommands,
     },
     /// Access the operational agents
     Operational
@@ -125,8 +125,8 @@ pub fn handle_command(cli: Cli, client: &Client) -> SystemMessages
         Commands::Project { project_commands } => project_commands.execute(client),
 
         Commands::Daily {
-            supervisor_commands,
-        } => supervisor_commands.execute(client),
+            daily_commands,
+        } => daily_commands.execute(client),
         Commands::Operational {
             operational_commands,
         } => operational_commands.execute(),

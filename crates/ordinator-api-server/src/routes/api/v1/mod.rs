@@ -2,7 +2,7 @@ pub mod material_clerk;
 mod orchestrator;
 pub mod solution_status;
 mod weekly;
-mod supervisor;
+mod daily;
 mod project;
 mod technician;
 
@@ -15,7 +15,7 @@ use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Orchestrator;
 use solution_status::solution_status_routes;
 use weekly::scheduler_nest;
-use supervisor::supervisor_routes;
+use daily::daily_routes;
 use project::project_route;
 use technician::technician_routes;
 use utoipa_axum::router::OpenApiRouter;
@@ -30,7 +30,7 @@ pub async fn api_scope(
         .nest("/export", export_xlsx(state.clone()).await)
         .nest("/orchestrator", orchestrator_api_scope(state.clone()).await)
         .nest("/project", project_route(state.clone()).await)
-        .nest("/supervisor", supervisor_routes(state.clone()).await)
+        .nest("/daily", daily_routes(state.clone()).await)
         .nest("/technician", technician_routes(state.clone()).await)
         .nest(
             "/solution_status",
@@ -53,7 +53,7 @@ pub async fn api_scope(
         .routes(routes!(
             crate::handlers::orchestrator_handlers::work_order_info
         ))
-    // .nest("/supervisor", router)
+    // .nest("/daily", router)
 }
 // pub fn api_scope() -> actix_web::Scope
 // {

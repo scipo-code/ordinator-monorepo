@@ -21,10 +21,10 @@ export-ts-bindings:
     
 build-ordinator-frontends:
     mkdir -p ./dist/static_files/scheduler
-    mkdir -p ./dist/static_files/supervisor
+    mkdir -p ./dist/static_files/daily
     cd frontend-clients/ && pnpm install && pnpm -r build
     cp -r frontend-clients/packages/scheduler/dist/* ./dist/static_files/scheduler/
-    cp -r frontend-clients/packages/supervisor/dist/* ./dist/static_files/supervisor/
+    cp -r frontend-clients/packages/daily/dist/* ./dist/static_files/daily/
 
 build-ordinator-api-windows:
     cross build --target x86_64-pc-windows-gnu --release && cp target/x86_64-pc-windows-gnu/release/ordinator-api-server.exe ././dist/

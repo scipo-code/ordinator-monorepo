@@ -1,5 +1,5 @@
 [package]
-name = "ordinator-supervisor-actor"
+name = "ordinator-daily-actor"
 version = "0.1.0"
 edition = "2024"
 

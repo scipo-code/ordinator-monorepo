@@ -12,9 +12,9 @@ use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::worker_environment::IdString;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
-use ordinator_supervisor_actor::algorithm::supervisor_solution::DailySolution;
-use ordinator_supervisor_actor::messages::DailyResponseMessage;
-use ordinator_supervisor_actor::messages::responses::DailyResponseStatus;
+use ordinator_daily_actor::algorithm::daily_solution::DailySolution;
+use ordinator_daily_actor::messages::DailyResponseMessage;
+use ordinator_daily_actor::messages::responses::DailyResponseStatus;
 use serde::Serialize;
 use ts_rs::TS;
 use utoipa::ToSchema;
@@ -124,7 +124,7 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for DailyMai
 
         let assigned_activities = &value
             .1
-            .supervisor
+            .daily
             .as_ref()
             .unwrap()
             .assess_and_assign_activities();
@@ -144,7 +144,7 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for DailyMai
                     operation_solution.operational_assignments_by_day(work_order_activity, &day);
 
                 if let Some(_operational_assignment) = operational_assignments_by_day {
-                    let work_order_supervisor_row = WorkOrderDailyRow::from((
+                    let work_order_daily_row = WorkOrderDailyRow::from((
                         value
                             .0
                             .inner
@@ -162,7 +162,7 @@ impl TryFrom<(&WorkOrders, &TotalSystemSolution, &TimeEnvironment)> for DailyMai
                     work_order_activities_per_work_center
                         .entry(resource)
                         .or_default()
-                        .push(work_order_supervisor_row);
+                        .push(work_order_daily_row);
                 }
             }
             work_order_activities_per_work_center
@@ -187,7 +187,7 @@ pub enum DailyResponseMessageDto
     Time,
 }
 
-// Status information derived from supervisor response
+// Status information derived from daily response
 #[derive(Serialize, ToSchema, TS)]
 #[ts(export, export_to = "../../../static_files/packages/shared/src/types/")]
 pub struct DailyResponseStatusDto
@@ -212,12 +212,12 @@ impl From<DailyResponseMessage> for DailyResponseMessageDto
     {
         match value {
             DailyResponseMessage::StateLink => todo!(),
-            DailyResponseMessage::Status(supervisor_response_status) => {
-                Self::Status(supervisor_response_status.into())
+            DailyResponseMessage::Status(daily_response_status) => {
+                Self::Status(daily_response_status.into())
             }
-            DailyResponseMessage::Scheduling(_supervisor_response_scheduling) => todo!(),
-            DailyResponseMessage::Resources(_supervisor_response_resources) => todo!(),
-            DailyResponseMessage::Time(_supervisor_response_time) => todo!(),
+            DailyResponseMessage::Scheduling(_daily_response_scheduling) => todo!(),
+            DailyResponseMessage::Resources(_daily_response_resources) => todo!(),
+            DailyResponseMessage::Time(_daily_response_time) => todo!(),
         }
     }
 }

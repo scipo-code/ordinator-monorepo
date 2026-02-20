@@ -2,7 +2,7 @@
 
 weekly_throttling   = 500
 project_throttling    = 500
-supervisor_throttling  = 500
+daily_throttling  = 500
 operational_throttling = 500
 
 

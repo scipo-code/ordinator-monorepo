@@ -246,9 +246,9 @@ where
     // should construct them directly to avoid state duplication
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
-        let supervisor_work_order_activities_for_technician = self
+        let daily_work_order_activities_for_technician = self
             .loaded_system_solution
-            .supervisor_actor_solutions()
+            .daily_actor_solutions()
             .with_context(|| {
                 format!(
                     "DailySolution not available to the OperationalActor:\n{}",
@@ -257,13 +257,13 @@ where
             })?
             .delegates_for_agent(&self.id);
 
-        info!(target: "developer", supervisor_work_order_activities_for_technician = ?supervisor_work_order_activities_for_technician, operational_solution =?self.solution
+        info!(target: "developer", daily_work_order_activities_for_technician = ?daily_work_order_activities_for_technician, operational_solution =?self.solution
             .scheduled_work_order_activities);
 
         self.solution
             .scheduled_work_order_activities
             .retain(|(woa, _)| {
-                !supervisor_work_order_activities_for_technician
+                !daily_work_order_activities_for_technician
                     .get(woa)
                     .unwrap_or({
                         // NOTE: WorkOrders may exist in OperationalActor but not in DailyActor
@@ -434,7 +434,7 @@ where
 
         let delegates = self
             .loaded_system_solution
-            .supervisor_actor_solutions()?
+            .daily_actor_solutions()?
             .delegates_for_agent(&self.id);
 
         let counts = delegates.iter().fold((0, 0, 0), |acc, ele| {
@@ -481,11 +481,11 @@ where
     fn schedule(&mut self) -> Result<()>
     {
         self.solution.non_productive.clear();
-        // TODO: Move to the supervisor trait interface
+        // TODO: Move to the daily trait interface
         // Determine delegated work order activities (Assess or Assign)
         let work_order_activities = &self
             .loaded_system_solution
-            .supervisor_actor_solutions()
+            .daily_actor_solutions()
             .with_context(|| "DailySolution is not initialized for the OperationalActor")?
             .delegated_tasks(&self.id);
 
@@ -1016,7 +1016,7 @@ where
                * agent. This should not be possible as the \     OperationalActor
                * gets its state from either of those. An exception is if the the
                * WorkOrder has left the WeeklyActor or \     the ProjectActor,
-               * and the supervisor still have the WorkOrderActivity in his
+               * and the daily still have the WorkOrderActivity in his
                * state.\nDailyActor state: \     \nIs WorkOrder {:#?} present
                * in WeeklyActor: {:?} \     \nIs WorkOrder {:#?} present in
                * ProjectActor : {:?} \     \nIs WorkOrderActivity {:?} present in
@@ -1033,7 +1033,7 @@ where
                *         .start_and_finish_dates(work_order_activity),
                *     work_order_activity,
                *     self.loaded_shared_solution
-               *         .supervisor_actor_solutions()
+               *         .daily_actor_solutions()
                *         .unwrap()
                *         .delegates_for_agent(&self.id)
                *         .contains_key(work_order_activity),

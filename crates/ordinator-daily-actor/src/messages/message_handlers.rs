@@ -13,9 +13,9 @@ use tracing::event;
 use super::DailyRequestMessage;
 use super::DailyResponseMessage;
 use crate::algorithm::DailyAlgorithm;
-use crate::algorithm::supervisor_parameters::DailyParameter;
-use crate::algorithm::supervisor_parameters::DailyParameters;
-use crate::algorithm::supervisor_solution::DailySolution;
+use crate::algorithm::daily_parameters::DailyParameter;
+use crate::algorithm::daily_parameters::DailyParameters;
+use crate::algorithm::daily_solution::DailySolution;
 use crate::messages::responses::DailyResponseScheduling;
 use crate::messages::responses::DailyResponseStatus;
 
@@ -50,11 +50,11 @@ where
                         let work_remaining =
                             work_order.operation_work_remaining(activity_number)?;
 
-                        let supervisor_parameter =
+                        let daily_parameter =
                             DailyParameter::new(resource, number, work_remaining);
-                        self.algorithm.parameters.insert_supervisor_parameter(
+                        self.algorithm.parameters.insert_daily_parameter(
                             &(work_order_number, activity_number),
-                            supervisor_parameter,
+                            daily_parameter,
                         )
                     }
                 }
@@ -67,12 +67,12 @@ where
 
     fn handle_request_message(
         &mut self,
-        supervisor_request_message: DailyRequestMessage,
+        daily_request_message: DailyRequestMessage,
     ) -> Result<DailyResponseMessage>
     {
-        event!(Level::WARN, "start_of_supervisor_handler");
+        event!(Level::WARN, "start_of_daily_handler");
 
-        match supervisor_request_message {
+        match daily_request_message {
             DailyRequestMessage::Scheduling(_scheduling_message) => Ok(
                 DailyResponseMessage::Scheduling(DailyResponseScheduling {}),
             ),
@@ -82,19 +82,19 @@ where
                     self.actor_id.asset()
                 );
             }
-            DailyRequestMessage::Status(supervisor_status_message) => {
+            DailyRequestMessage::Status(daily_status_message) => {
                 event!(Level::WARN, "start of status message initialization");
                 tracing::info!(
                     "Received DailyStatusMessage: {:?}",
-                    supervisor_status_message
+                    daily_status_message
                 );
-                let supervisor_status = DailyResponseStatus {
+                let daily_status = DailyResponseStatus {
                     delegated_work_order_activities: self.algorithm.solution.count_unique_woa(),
                     objective: self.algorithm.solution.objective_value.percent(),
                 };
-                event!(Level::WARN, "after creation of the supervisor_status");
+                event!(Level::WARN, "after creation of the daily_status");
 
-                Ok(DailyResponseMessage::Status(supervisor_status))
+                Ok(DailyResponseMessage::Status(daily_status))
             }
         }
     }

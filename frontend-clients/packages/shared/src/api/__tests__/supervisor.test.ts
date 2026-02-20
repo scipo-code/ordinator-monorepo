@@ -3,13 +3,13 @@ import {
   addTechnician,
   fetchMainTable,
   fetchTechnicianAvailability,
-} from "../supervisor.ts";
+} from "../daily.ts";
 import { CreateTechnicianDto } from "../../types/CreateTechnicianDto.ts";
 
-describe("supervisor API", () => {
+describe("daily API", () => {
   describe("fetchMainTable", () => {
     it("should fetch main table without day parameter", async () => {
-      // ISSUE #000 supervisor_id = main should be fixed!
+      // ISSUE #000 daily_id = main should be fixed!
       const result = await fetchMainTable("Test", "main");
 
       expect(Object.keys(result.days)[0]).toBe("2025-01-13");
@@ -32,7 +32,7 @@ describe("supervisor API", () => {
 
   describe("fetchTechnicianAvailability", () => {
     it("should fetch technician availability successfully", async () => {
-      // ISSUE #000 supervisor_id = main should be fixed!
+      // ISSUE #000 daily_id = main should be fixed!
       const result = await fetchTechnicianAvailability("Test", "main");
 
       expect(
@@ -58,7 +58,7 @@ describe("supervisor API", () => {
         finish: "2025-01-15T07:00:00Z",
       };
 
-      // ISSUE #000 supervisor_id = main should be fixed!
+      // ISSUE #000 daily_id = main should be fixed!
       const result = await addTechnician("Test", "sup123", technician);
 
       expect(result).toBe(
@@ -74,7 +74,7 @@ describe("supervisor API", () => {
         finish: "2025-01-15T07:00:00Z",
       };
 
-      // ISSUE #000 supervisor_id = main should be fixed!
+      // ISSUE #000 daily_id = main should be fixed!
       const result = addTechnician("Test", "sup123", technician);
 
       await expect(result).rejects.toThrow(
@@ -90,7 +90,7 @@ describe("supervisor API", () => {
     //     finish: "2025-01-15T07:00:00Z",
     //   };
 
-    //   // ISSUE #000 supervisor_id = main should be fixed!
+    //   // ISSUE #000 daily_id = main should be fixed!
     //   const result = addTechnician("Test", "sup123", technician);
 
     //   await expect(result).rejects.toThrow(

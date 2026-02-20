@@ -89,7 +89,7 @@ pub trait ActorSpecification: Send + Sync + Debug
 
     fn project(&self) -> &InputProject;
 
-    fn supervisor(&self) -> &Vec<InputDaily>;
+    fn daily(&self) -> &Vec<InputDaily>;
 
     fn operational(&self) -> &HashMap<IdString, InputOperational>;
 
@@ -114,7 +114,7 @@ pub struct ActorSpecifications
 {
     pub weekly: InputWeekly,
     pub project: InputProject,
-    pub supervisors: Vec<InputDaily>,
+    pub dailys: Vec<InputDaily>,
     pub operational: HashMap<IdString, InputOperational>,
     // TODO: Consider using relational database structure instead of HashMap
 }
@@ -131,9 +131,9 @@ impl ActorSpecification for ActorSpecifications
         &self.weekly.weekly_options
     }
 
-    fn supervisor(&self) -> &Vec<InputDaily>
+    fn daily(&self) -> &Vec<InputDaily>
     {
-        &self.supervisors
+        &self.dailys
     }
 
     fn project(&self) -> &InputProject
@@ -233,7 +233,7 @@ pub struct ActorSpecificationBuilder
 {
     weekly: Option<InputWeekly>,
     project: Option<InputProject>,
-    supervisors: Option<Vec<InputDaily>>,
+    dailys: Option<Vec<InputDaily>>,
     operational: Option<HashMap<IdString, InputOperational>>,
 }
 
@@ -244,7 +244,7 @@ impl ActorSpecificationBuilder
         Self {
             weekly: None,
             project: None,
-            supervisors: None,
+            dailys: None,
             operational: None,
         }
     }
@@ -269,13 +269,13 @@ impl ActorSpecificationBuilder
         self
     }
 
-    pub fn supervisors<F>(mut self, f: F) -> Self
+    pub fn dailys<F>(mut self, f: F) -> Self
     where
         F: FnOnce(DailysBuilder) -> DailysBuilder,
     {
-        let supervisors_builder = DailysBuilder::new();
-        let supervisors_builder = f(supervisors_builder);
-        self.supervisors = Some(supervisors_builder.build());
+        let dailys_builder = DailysBuilder::new();
+        let dailys_builder = f(dailys_builder);
+        self.dailys = Some(dailys_builder.build());
         self
     }
 
@@ -298,7 +298,7 @@ impl ActorSpecificationBuilder
             project: self
                 .project
                 .ok_or_else(|| anyhow::anyhow!("Project configuration is required"))?,
-            supervisors: self.supervisors.unwrap_or_default(),
+            dailys: self.dailys.unwrap_or_default(),
             operational: self.operational.unwrap_or_default(),
         })
     }
@@ -325,8 +325,8 @@ pub struct InputProject
 pub struct InputDaily
 {
     pub id: IdString,
-    pub number_of_supervisor_periods: u64,
-    pub supervisor_options: DailyOptions,
+    pub number_of_daily_periods: u64,
+    pub daily_options: DailyOptions,
 }
 
 // TODO: Load IDs directly from configuration
@@ -531,7 +531,7 @@ impl InputProject
 
 pub struct DailysBuilder
 {
-    supervisors: Vec<InputDaily>,
+    dailys: Vec<InputDaily>,
 }
 
 impl DailysBuilder
@@ -539,31 +539,31 @@ impl DailysBuilder
     pub fn new() -> Self
     {
         Self {
-            supervisors: Vec::new(),
+            dailys: Vec::new(),
         }
     }
 
-    pub fn supervisor<F>(mut self, f: F) -> Self
+    pub fn daily<F>(mut self, f: F) -> Self
     where
         F: FnOnce(InputDailyBuilder) -> InputDailyBuilder,
     {
-        let supervisor_builder = InputDailyBuilder::new();
-        let supervisor_builder = f(supervisor_builder);
-        self.supervisors.push(supervisor_builder.build());
+        let daily_builder = InputDailyBuilder::new();
+        let daily_builder = f(daily_builder);
+        self.dailys.push(daily_builder.build());
         self
     }
 
     pub fn build(self) -> Vec<InputDaily>
     {
-        self.supervisors
+        self.dailys
     }
 }
 
 pub struct InputDailyBuilder
 {
     id: Option<IdString>,
-    number_of_supervisor_periods: Option<u64>,
-    supervisor_options: Option<DailyOptions>,
+    number_of_daily_periods: Option<u64>,
+    daily_options: Option<DailyOptions>,
 }
 
 impl Default for InputDailyBuilder
@@ -580,8 +580,8 @@ impl InputDailyBuilder
     {
         Self {
             id: None,
-            number_of_supervisor_periods: None,
-            supervisor_options: None,
+            number_of_daily_periods: None,
+            daily_options: None,
         }
     }
 
@@ -591,19 +591,19 @@ impl InputDailyBuilder
         self
     }
 
-    pub fn number_of_supervisor_periods(mut self, periods: u64) -> Self
+    pub fn number_of_daily_periods(mut self, periods: u64) -> Self
     {
-        self.number_of_supervisor_periods = Some(periods);
+        self.number_of_daily_periods = Some(periods);
         self
     }
 
-    pub fn supervisor_options<F>(mut self, f: F) -> Self
+    pub fn daily_options<F>(mut self, f: F) -> Self
     where
         F: FnOnce(DailyOptionsBuilder) -> DailyOptionsBuilder,
     {
         let options_builder = DailyOptionsBuilder::new();
         let options_builder = f(options_builder);
-        self.supervisor_options = Some(options_builder.build());
+        self.daily_options = Some(options_builder.build());
         self
     }
 
@@ -611,12 +611,12 @@ impl InputDailyBuilder
     {
         InputDaily {
             id: self.id.expect("id is required"),
-            number_of_supervisor_periods: self
-                .number_of_supervisor_periods
-                .expect("number_of_supervisor_periods is required"),
-            supervisor_options: self
-                .supervisor_options
-                .expect("supervisor_options is required"),
+            number_of_daily_periods: self
+                .number_of_daily_periods
+                .expect("number_of_daily_periods is required"),
+            daily_options: self
+                .daily_options
+                .expect("daily_options is required"),
         }
     }
 }
@@ -889,12 +889,12 @@ mod tests
     // fn test_toml_operational_parsing()
     // {
     //     let toml_operational_string = r#"
-    //         [[supervisors]]
+    //         [[dailys]]
     //         id = "main"
     //         number_of_supervisAgentEnvironmentr_periods = 3
 
-    //         # [[supervisors]]
-    //         # id = "supervisor-second"
+    //         # [[dailys]]
+    //         # id = "daily-second"
     //         ################################
     //         ###          MTN-ELEC        ###
     //         ################################
@@ -960,11 +960,11 @@ mod tests
                             .resource_penalty(1)
                     })
             })
-            .supervisors(|builder| {
-                builder.supervisor(|sup| {
-                    sup.id("supervisor-001")
-                        .number_of_supervisor_periods(3)
-                        .supervisor_options(|options| options.number_of_unassigned_work_orders(2))
+            .dailys(|builder| {
+                builder.daily(|sup| {
+                    sup.id("daily-001")
+                        .number_of_daily_periods(3)
+                        .daily_options(|options| options.number_of_unassigned_work_orders(2))
                 })
             })
             .build()
@@ -974,8 +974,8 @@ mod tests
         assert_eq!(actor_spec.weekly.number_of_weekly_periods, 5);
         assert_eq!(actor_spec.project.id, "project-001");
         assert_eq!(actor_spec.project.number_of_project_days, 7);
-        assert_eq!(actor_spec.supervisors.len(), 1);
-        assert_eq!(actor_spec.supervisors[0].id, "supervisor-001");
+        assert_eq!(actor_spec.dailys.len(), 1);
+        assert_eq!(actor_spec.dailys[0].id, "daily-001");
     }
 
     #[test]
@@ -1006,7 +1006,7 @@ mod tests
                 todo!()
             }
 
-            fn supervisor(&self) -> &Vec<super::InputDaily>
+            fn daily(&self) -> &Vec<super::InputDaily>
             {
                 todo!()
             }

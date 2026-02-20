@@ -29,8 +29,8 @@ export default function ResourceView() {
 
   // ISSUE #000 The Supervisor ID does not have any meaningful functionality and will have to be fixed
   // in the future!
-  const supervisorId = "main";
-  const { data: availableTechnicians, isLoading: isTechniciansLoading } = useTechnicianAvailability(asset || "", supervisorId);
+  const dailyId = "main";
+  const { data: availableTechnicians, isLoading: isTechniciansLoading } = useTechnicianAvailability(asset || "", dailyId);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
   const [selectedResources, setSelectedResources] = useState<string[]>([]);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);

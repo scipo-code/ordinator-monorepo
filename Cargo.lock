@@ -1469,11 +1469,11 @@ dependencies = [
  "arc-swap",
  "chrono",
  "clap",
+ "ordinator-daily-actor",
  "ordinator-operational-actor",
  "ordinator-orchestrator-actor-traits",
  "ordinator-project-actor",
  "ordinator-scheduling-environment",
- "ordinator-supervisor-actor",
  "ordinator-weekly-actor",
  "serde",
  "strum",
@@ -1482,6 +1482,28 @@ dependencies = [
  "tracing",
  "ts-rs",
  "utoipa",
+]
+
+[[package]]
+name = "ordinator-daily-actor"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "arc-swap",
+ "bus",
+ "chrono",
+ "colored",
+ "flume",
+ "itertools",
+ "ordinator-actor-core",
+ "ordinator-configuration",
+ "ordinator-orchestrator-actor-traits",
+ "ordinator-scheduling-environment",
+ "proptest",
+ "rand 0.9.1",
+ "serde",
+ "tracing",
+ "valuable",
 ]
 
 [[package]]
@@ -1514,9 +1536,9 @@ dependencies = [
  "mockall",
  "ordinator-actor-core",
  "ordinator-configuration",
+ "ordinator-daily-actor",
  "ordinator-orchestrator-actor-traits",
  "ordinator-scheduling-environment",
- "ordinator-supervisor-actor",
  "proptest",
  "rand 0.9.1",
  "serde",
@@ -1537,11 +1559,11 @@ dependencies = [
  "flume",
  "ordinator-configuration",
  "ordinator-contracts",
+ "ordinator-daily-actor",
  "ordinator-operational-actor",
  "ordinator-orchestrator-actor-traits",
  "ordinator-project-actor",
  "ordinator-scheduling-environment",
- "ordinator-supervisor-actor",
  "ordinator-test-support",
  "ordinator-total-data-processing",
  "ordinator-weekly-actor",
@@ -1620,28 +1642,6 @@ dependencies = [
  "tracing",
  "ts-rs",
  "uuid",
- "valuable",
-]
-
-[[package]]
-name = "ordinator-supervisor-actor"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "arc-swap",
- "bus",
- "chrono",
- "colored",
- "flume",
- "itertools",
- "ordinator-actor-core",
- "ordinator-configuration",
- "ordinator-orchestrator-actor-traits",
- "ordinator-scheduling-environment",
- "proptest",
- "rand 0.9.1",
- "serde",
- "tracing",
  "valuable",
 ]
 

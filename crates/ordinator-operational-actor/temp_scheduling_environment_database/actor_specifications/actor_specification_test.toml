@@ -22,10 +22,10 @@ project_options.number_of_removed_work_orders = 25
 project_options.urgency = 1
 project_options.resource_penalty = 10000000
 
-[[supervisors]]
-number_of_supervisor_periods = 3
+[[dailys]]
+number_of_daily_periods = 3
 id = [ "main", [], ["Test"] ]
-supervisor_options.number_of_unassigned_work_orders = 15
+daily_options.number_of_unassigned_work_orders = 15
 
 ################################
 ###          MTN-ELEC        ###

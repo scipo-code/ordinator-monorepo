@@ -28,8 +28,8 @@ export default function MainTable() {
   const [ selectedDay, setSelectedDay ] = useState<NaiveDateDto | null>(null);
   // ISSUE #000 The Supervisor ID does not have any meaningful functionality and will have to be fixed
   // in the future!
-  const supervisorId = "main";
-  const { data: mainTableData } = useSupervisorMainTable(asset || "", supervisorId, selectedDay ? selectedDay : undefined );
+  const dailyId = "main";
+  const { data: mainTableData } = useSupervisorMainTable(asset || "", dailyId, selectedDay ? selectedDay : undefined );
 
 
   useEffect(() => {
@@ -97,7 +97,7 @@ export default function MainTable() {
         </div>
         <div className='flex items-center gap-2 px-2 py-1 text-gray-700 text-xs rounded-md font-medium'>
           Solution Stability
-          <StagnationDot asset={asset} actor={Actors.supervisor}/>
+          <StagnationDot asset={asset} actor={Actors.daily}/>
         </div>
       </div>
       <WorkSchedule data={mainTableData} selectedDay={selectedDay} />

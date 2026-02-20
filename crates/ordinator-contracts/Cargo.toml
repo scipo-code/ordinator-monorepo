@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 ordinator-scheduling-environment = { path = "../ordinator-scheduling-environment"}
-ordinator-supervisor-actor = { path = "../ordinator-supervisor-actor" }
+ordinator-daily-actor = { path = "../ordinator-daily-actor" }
 ordinator-weekly-actor = { path = "../ordinator-weekly-actor" }
 ordinator-project-actor = { path = "../ordinator-project-actor" }
 ordinator-operational-actor = { path = "../ordinator-operational-actor" }

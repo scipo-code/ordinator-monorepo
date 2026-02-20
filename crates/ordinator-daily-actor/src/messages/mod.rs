@@ -47,7 +47,7 @@ impl DailyResponseMessage
     pub fn status(self) -> DailyResponseStatus
     {
         match self {
-            Self::Status(supervisor_response_status) => supervisor_response_status,
+            Self::Status(daily_response_status) => daily_response_status,
             _ => panic!("The underlying variant of the enum was not a status response"),
         }
     }

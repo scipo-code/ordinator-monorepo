@@ -15,8 +15,8 @@ use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_weekly_actor::WeeklyApi;
 use ordinator_weekly_actor::algorithm::weekly_solution::WeeklySolution;
-use ordinator_supervisor_actor::DailyApi;
-use ordinator_supervisor_actor::algorithm::supervisor_solution::DailySolution;
+use ordinator_daily_actor::DailyApi;
+use ordinator_daily_actor::algorithm::daily_solution::DailySolution;
 use ordinator_project_actor::ProjectApi;
 use ordinator_project_actor::algorithm::project_solution::ProjectSolution;
 
@@ -115,7 +115,7 @@ where
     }
 
     // TODO: Move the ActorSpecification into the SchedulingEnvironment
-    pub fn start_supervisor_actor(&mut self, id: &ActorCompositeId) -> Result<()>
+    pub fn start_daily_actor(&mut self, id: &ActorCompositeId) -> Result<()>
     {
         // TODO: Insert entry into the `SchedulingEnvironment`
         let build_dependencies = self.extract_factory_dependencies(id.asset())?;
@@ -128,14 +128,14 @@ where
             self.state_link_bus.lock().unwrap().add_rx(),
             self.error_sender.clone(),
         )
-        .with_context(|| format!("Could not create supervisorActor for Asset {}", id.asset()))?;
+        .with_context(|| format!("Could not create dailyActor for Asset {}", id.asset()))?;
 
         self.actor_registries
             .lock()
             .unwrap()
             .get_mut(id.asset())
             .expect("The ActorRegistry for asset should exist before creating Actors on it")
-            .supervisor_agent_senders
+            .daily_agent_senders
             .insert(id.clone(), communication);
         Ok(())
     }

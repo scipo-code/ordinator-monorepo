@@ -17,15 +17,15 @@ pub async fn solution_status_routes(
             crate::handlers::solution_status_handlers::project_solution_status
         ))
         .routes(routes!(
-            crate::handlers::solution_status_handlers::supervisor_solution_status
+            crate::handlers::solution_status_handlers::daily_solution_status
         ))
-        // .route("/{asset}/{supervisor_id}", get(status))
+        // .route("/{asset}/{daily_id}", get(status))
         .with_state(state)
 
-    // TODO: Move the supervisor request handling into the handler
+    // TODO: Move the daily request handling into the handler
     // let orchestrator = orchestrator.lock().unwrap();
 
     // Ok(orchestrator
-    //     .handle_supervisor_request(supervisor_request)
+    //     .handle_daily_request(daily_request)
     //     .await?)
 }

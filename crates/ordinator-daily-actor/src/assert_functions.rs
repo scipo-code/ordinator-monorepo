@@ -10,7 +10,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use tracing::event;
 use tracing::Level;
 
-use crate::algorithm::supervisor_solution::DailySolution;
+use crate::algorithm::daily_solution::DailySolution;
 use crate::algorithm::DailyAlgorithm;
 use crate::messages::DailyRequestMessage;
 use crate::messages::DailyResponseMessage;
@@ -40,7 +40,7 @@ where
             .algorithm
             .loaded_system_solution
             .weekly()?
-            .supervisor_tasks(&self.algorithm.parameters.supervisor_periods)
+            .daily_tasks(&self.algorithm.parameters.daily_periods)
             .iter()
             .map(|f| *f.0)
             .collect();
@@ -79,7 +79,7 @@ where
             .algorithm
             .loaded_system_solution
             .weekly()?
-            .supervisor_tasks(&self.algorithm.parameters.supervisor_periods)
+            .daily_tasks(&self.algorithm.parameters.daily_periods)
             .iter()
             .map(|f| *f.0)
             .collect();

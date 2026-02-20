@@ -6,7 +6,7 @@ import { SupervisorMainTableDto } from "../types/SupervisorMainTableDto.ts";
 
 export async function fetchMainTable(
   asset: string,
-  supervisor_id: string,
+  daily_id: string,
   day?: NaiveDateDto,
 ): Promise<SupervisorMainTableDto> {
   const params = new URLSearchParams();
@@ -16,7 +16,7 @@ export async function fetchMainTable(
   }
 
   const url =
-    `${apiConfig.baseUrl}/api/v1/supervisor/supervisor_main_table/${asset}/${supervisor_id}?`;
+    `${apiConfig.baseUrl}/api/v1/daily/daily_main_table/${asset}/${daily_id}?`;
   const res = await fetch(
     url + params.toString(),
   );
@@ -31,10 +31,10 @@ export async function fetchMainTable(
 
 export async function fetchTechnicianAvailability(
   asset: string,
-  supervisor_id: string,
+  daily_id: string,
 ): Promise<SupervisorAllAvailableTechnicians> {
   const url =
-    `${apiConfig.baseUrl}/api/v1/supervisor/technician_availability/${asset}/${supervisor_id}`;
+    `${apiConfig.baseUrl}/api/v1/daily/technician_availability/${asset}/${daily_id}`;
   const res = await fetch(url);
 
   if (!res.ok) {
@@ -47,14 +47,14 @@ export async function fetchTechnicianAvailability(
 
 export async function addTechnician(
   asset: string,
-  supervisor_id: string,
+  daily_id: string,
   technician: CreateTechnicianDto,
 ): Promise<string> {
   const url =
-    `${apiConfig.baseUrl}/api/v1/supervisor/add_technician/${
+    `${apiConfig.baseUrl}/api/v1/daily/add_technician/${
       encodeURIComponent(asset)
     }` +
-    `/${encodeURIComponent(supervisor_id)}`;
+    `/${encodeURIComponent(daily_id)}`;
 
   const reqOptions = {
     method: "POST",

@@ -17,9 +17,9 @@ use ordinator_scheduling_environment::worker_environment::resources::Skill;
 
 pub struct DailyParameters
 {
-    pub supervisor_work_orders:
+    pub daily_work_orders:
         HashMap<WorkOrderNumber, HashMap<ActivityNumber, DailyParameter>>,
-    pub supervisor_periods: Vec<Period>,
+    pub daily_periods: Vec<Period>,
     pub options: DailyOptions,
 }
 
@@ -33,8 +33,8 @@ impl std::fmt::Debug for DailyParameters
                 f,
                 "Number of WorkOrderActivities: {}\n\
                 Daily periods: {:#?}",
-                self.supervisor_work_orders.len(),
-                self.supervisor_periods,
+                self.daily_work_orders.len(),
+                self.daily_periods,
             )
         } else {
             panic!("Use the alternate version of the Debug formatter")
@@ -51,29 +51,29 @@ impl Parameters for DailyParameters
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>
     {
-        let mut supervisor_parameters = HashMap::new();
+        let mut daily_parameters = HashMap::new();
 
         // Consider refactoring SchedulingEnvironment to use Arc<WorkOrders> and ArcSwap<TimeEnvironment>
         // for better performance with Functional programming patterns
-        let input_supervisor = scheduling_environment
+        let input_daily = scheduling_environment
             .worker_environment
             .actor_specification
             .get(id.asset())
             .unwrap()
-            .supervisor()
+            .daily()
             .iter()
             .find(|e| e.id == *id.0)
             .with_context(|| format!("Missing an Daily entry for {id}"))?;
 
-        let options = input_supervisor
-            .supervisor_options
+        let options = input_daily
+            .daily_options
             .clone();
 
-        let supervisor_periods = &scheduling_environment
+        let daily_periods = &scheduling_environment
             .time_environment
             .periods
-            .get(0..input_supervisor.number_of_supervisor_periods as usize)
-            .with_context(||format!("There are not enough periods in the TimeEnvironment to initialize the Daily\nNumber of supervisor periods: {}", input_supervisor.number_of_supervisor_periods))?;
+            .get(0..input_daily.number_of_daily_periods as usize)
+            .with_context(||format!("There are not enough periods in the TimeEnvironment to initialize the Daily\nNumber of daily periods: {}", input_daily.number_of_daily_periods))?;
 
         for (work_order_number, work_order) in scheduling_environment
             .work_orders
@@ -87,19 +87,19 @@ impl Parameters for DailyParameters
                 let number = work_order.number_of_people(activity_number)?;
                 let work = work_order.operation_work_remaining(activity_number)?;
 
-                let supervisor_parameter = DailyParameter::new(resource, number, work);
+                let daily_parameter = DailyParameter::new(resource, number, work);
 
-                inner_map.insert(activity_number, supervisor_parameter);
+                inner_map.insert(activity_number, daily_parameter);
             }
 
-            let _assert_option = supervisor_parameters.insert(*work_order_number, inner_map);
+            let _assert_option = daily_parameters.insert(*work_order_number, inner_map);
 
             assert!(_assert_option.is_none());
         }
 
         Ok(Self {
-            supervisor_work_orders: supervisor_parameters,
-            supervisor_periods: supervisor_periods.to_vec(),
+            daily_work_orders: daily_parameters,
+            daily_periods: daily_periods.to_vec(),
             options,
         })
     }
@@ -117,31 +117,31 @@ impl Parameters for DailyParameters
 #[allow(dead_code)]
 impl DailyParameters
 {
-    pub(crate) fn supervisor_parameter(
+    pub(crate) fn daily_parameter(
         &self,
         work_order_activity: &WorkOrderActivity,
     ) -> Result<&DailyParameter>
     {
-        let supervisor_parameter = self.supervisor_work_orders
+        let daily_parameter = self.daily_work_orders
             .get(&work_order_activity.0)
             .context(format!("WorkOrderNumber: {:?} was not part of the DailyParameters", work_order_activity.0))?
             .get(&work_order_activity.1)
             .context(format!("WorkOrderNumber: {:?} with ActivityNumber: {:?} was not part of the DailyParameters", work_order_activity.0, work_order_activity.1))?;
 
-        Ok(supervisor_parameter)
+        Ok(daily_parameter)
     }
 
     // TODO: Consider moving this to the `Parameters` trait
-    pub(crate) fn insert_supervisor_parameter(
+    pub(crate) fn insert_daily_parameter(
         &mut self,
         work_order_activity: &WorkOrderActivity,
-        supervisor_parameter: DailyParameter,
+        daily_parameter: DailyParameter,
     )
     {
-        self.supervisor_work_orders
+        self.daily_work_orders
             .entry(work_order_activity.0)
             .or_default()
-            .insert(work_order_activity.1, supervisor_parameter);
+            .insert(work_order_activity.1, daily_parameter);
     }
 }
 

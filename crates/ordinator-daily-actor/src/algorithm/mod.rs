@@ -1,7 +1,7 @@
 pub mod assert_functions;
-pub mod supervisor_interface;
-pub mod supervisor_parameters;
-pub mod supervisor_solution;
+pub mod daily_interface;
+pub mod daily_parameters;
+pub mod daily_solution;
 
 use std::collections::HashSet;
 use std::ops::Deref;
@@ -31,8 +31,8 @@ use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::DailyOptions;
 use rand::rng;
 use rand::seq::IndexedRandom;
-use supervisor_parameters::DailyParameters;
-use supervisor_solution::DailySolution;
+use daily_parameters::DailyParameters;
+use daily_solution::DailySolution;
 #[allow(unused_imports)]
 use tracing::Level;
 #[allow(unused_imports)]
@@ -61,13 +61,13 @@ impl<Ss: SystemSolutions + std::fmt::Debug> std::fmt::Debug for DailyAlgorithm<S
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
-        let supervisor_periods = &self.parameters.supervisor_periods;
-        let supervisor_tasks = self
+        let daily_periods = &self.parameters.daily_periods;
+        let daily_tasks = self
             .0
             .loaded_system_solution
             .weekly()
             .expect("The WeeklySolution should be present")
-            .supervisor_tasks(supervisor_periods);
+            .daily_tasks(daily_periods);
 
         write!(
             f,
@@ -77,17 +77,17 @@ impl<Ss: SystemSolutions + std::fmt::Debug> std::fmt::Debug for DailyAlgorithm<S
             \tSecond: {}\n\
             \tThird : {}",
             self.0,
-            supervisor_tasks
+            daily_tasks
                 .iter()
-                .filter(|(_wo, per)| **per == supervisor_periods[0])
+                .filter(|(_wo, per)| **per == daily_periods[0])
                 .count(),
-            supervisor_tasks
+            daily_tasks
                 .iter()
-                .filter(|(_wo, per)| **per == supervisor_periods[1])
+                .filter(|(_wo, per)| **per == daily_periods[1])
                 .count(),
-            supervisor_tasks
+            daily_tasks
                 .iter()
-                .filter(|(_wo, per)| **per == supervisor_periods[2])
+                .filter(|(_wo, per)| **per == daily_periods[2])
                 .count(),
         )
     }
@@ -114,7 +114,7 @@ where
         self.arc_swap_shared_solution.rcu(|old| {
             let mut system_solutions = (**old).clone();
             SwapSolution::swap(&self.id, self.solution.clone(), &mut system_solutions);
-            system_solutions.supervisor_swap(&self.id, self.solution.clone());
+            system_solutions.daily_swap(&self.id, self.solution.clone());
             Arc::new(system_solutions)
         });
     }
@@ -142,14 +142,14 @@ where
         }
     }
 
-    // TODO: Fix supervisor initialization logic
+    // TODO: Fix daily initialization logic
     fn schedule(&mut self) -> Result<()>
     {
         ensure!(
             self.loaded_system_solution
                 .weekly()
                 .unwrap()
-                .supervisor_tasks(&self.parameters.supervisor_periods)
+                .daily_tasks(&self.parameters.daily_periods)
                 .len()
                 >= self
                     .solution
@@ -158,8 +158,8 @@ where
                     .map(|e| e.0)
                     .collect::<HashSet<_>>()
                     .len(),
-            "{} Weekly workorders in supervisor interval\n\
-            {} Daily workorders in supervisor interval\n\
+            "{} Weekly workorders in daily interval\n\
+            {} Daily workorders in daily interval\n\
             {} activities in the Daily Solution\n\
             {} `WorkOrder`s in the Daily parameters\n\
             {} `Activity`s in the DailyParameters\n\
@@ -167,7 +167,7 @@ where
             self.loaded_system_solution
                 .weekly()
                 .unwrap()
-                .supervisor_tasks(&self.parameters.supervisor_periods)
+                .daily_tasks(&self.parameters.daily_periods)
                 .len(),
             self.solution
                 .get_work_order_activities()
@@ -176,9 +176,9 @@ where
                 .collect::<HashSet<_>>()
                 .len(),
             self.solution.get_work_order_activities().len(),
-            self.parameters.supervisor_work_orders.len(),
+            self.parameters.daily_work_orders.len(),
             self.parameters
-                .supervisor_work_orders
+                .daily_work_orders
                 .iter()
                 .fold(0, |acc, count_activities| {
                     acc + count_activities.1.len()
@@ -189,7 +189,7 @@ where
         for work_order_activity in &self.solution.get_work_order_activities() {
             let number_of_people_for_operation = self
                 .parameters
-                .supervisor_work_orders
+                .daily_work_orders
                 .get(&work_order_activity.0)
                 .and_then(|activities| activities.get(&work_order_activity.1))
                 .expect("The DailyParameter should always be available")
@@ -329,7 +329,7 @@ where
 
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
-        // Collect current work order activities in the supervisor solution
+        // Collect current work order activities in the daily solution
         let current_activities = self
             .solution
             .operational_state_machine
@@ -337,19 +337,19 @@ where
             .map(|(_, woa)| woa.0)
             .collect::<HashSet<WorkOrderNumber>>();
 
-        // Fetch weekly work orders scheduled within the supervisor period
-        let weekly_activities_in_supervisor_period = self
+        // Fetch weekly work orders scheduled within the daily period
+        let weekly_activities_in_daily_period = self
             .loaded_system_solution
             .weekly()?
-            .supervisor_tasks(&self.parameters.supervisor_periods);
+            .daily_tasks(&self.parameters.daily_periods);
 
-        // Filter to only new activities not already in the supervisor solution
-        let incoming_activities = weekly_activities_in_supervisor_period
+        // Filter to only new activities not already in the daily solution
+        let incoming_activities = weekly_activities_in_daily_period
             .iter()
             .filter(|(won, _)| !current_activities.contains(won));
 
         // Assign incoming activities to operational agents with required resources
-        let work_order_parameters = self.parameters.supervisor_work_orders.clone();
+        let work_order_parameters = self.parameters.daily_work_orders.clone();
         let all_operational_actors = self.loaded_system_solution.all_operational().clone();
 
         // Track work orders that cannot be incorporated due to infeasibility or missing resources
@@ -361,25 +361,25 @@ where
                 .keys()
                 .cloned();
 
-            // Note: Weekly and supervisor states may differ; work is added if feasible
+            // Note: Weekly and daily states may differ; work is added if feasible
             for activity_number in activity_number {
                 for operational_id in &all_operational_actors {
-                    let supervisor_parameter = self
+                    let daily_parameter = self
                         .parameters
-                        .supervisor_work_orders
+                        .daily_work_orders
                         .get(work_order_number)
                         .context("Missing WorkOrder Parameter in Daily")?
                         .get(&activity_number)
                         .context("Missing Activity Parameter in Daily")?;
 
-                    let supervisor_parameter_resource = &supervisor_parameter.resource;
+                    let daily_parameter_resource = &daily_parameter.resource;
 
-                    if supervisor_parameter.work_remaining == Work::from(0.0) {
+                    if daily_parameter.work_remaining == Work::from(0.0) {
                         non_incorporated_work_orders.insert(*work_order_number);
                         continue;
                     };
 
-                    if operational_id.1.contains(supervisor_parameter_resource) {
+                    if operational_id.1.contains(daily_parameter_resource) {
                         let work_order_activity = (*work_order_number, activity_number);
                         let operational_state = ((*operational_id).clone(), work_order_activity);
 
@@ -393,7 +393,7 @@ where
             }
         }
 
-        let weekly_activities = weekly_activities_in_supervisor_period
+        let weekly_activities = weekly_activities_in_daily_period
             .iter()
             .map(|e| e.0)
             .cloned()
@@ -403,7 +403,7 @@ where
             .operational_state_machine
             .retain(|id_woa, _| weekly_activities.contains(&id_woa.1.0));
 
-        let supervisor_work_orders = self
+        let daily_work_orders = self
             .solution
             .operational_state_machine
             .iter()
@@ -411,23 +411,23 @@ where
             .collect::<HashSet<_>>();
         ensure!(
             weekly_activities
-                == supervisor_work_orders
+                == daily_work_orders
                     .union(&non_incorporated_work_orders)
                     .cloned()
                     .collect(),
             "Weekly activities: {:#?}\n\
              Daily solution: {:#?}\n\
-             difference between weekly / supervisor: {:#?}\n\
-             difference between supervisor / weekly: {:#?}",
+             difference between weekly / daily: {:#?}\n\
+             difference between daily / weekly: {:#?}",
             weekly_activities,
-            supervisor_work_orders.union(&non_incorporated_work_orders),
+            daily_work_orders.union(&non_incorporated_work_orders),
             weekly_activities.difference(
-                &supervisor_work_orders
+                &daily_work_orders
                     .union(&non_incorporated_work_orders)
                     .cloned()
                     .collect::<HashSet<_>>()
             ),
-            supervisor_work_orders
+            daily_work_orders
                 .union(&non_incorporated_work_orders)
                 .cloned()
                 .collect::<HashSet<_>>()
@@ -449,7 +449,7 @@ where
 
     fn throttling(&self, throttling: &ordinator_configuration::throttling::Throttling) -> u64
     {
-        throttling.supervisor_throttling
+        throttling.daily_throttling
     }
 }
 

@@ -6,8 +6,8 @@ use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_weekly_actor::messages::WeeklyRequestMessage;
 use ordinator_weekly_actor::messages::WeeklyResponseMessage;
-use ordinator_supervisor_actor::messages::DailyRequestMessage;
-use ordinator_supervisor_actor::messages::DailyResponseMessage;
+use ordinator_daily_actor::messages::DailyRequestMessage;
+use ordinator_daily_actor::messages::DailyResponseMessage;
 use ordinator_project_actor::messages::ProjectRequestMessage;
 use ordinator_project_actor::messages::ProjectResponseMessage;
 
@@ -15,7 +15,7 @@ pub struct ActorRegistry
 {
     pub weekly_agent_sender: Communication<WeeklyRequestMessage, WeeklyResponseMessage>,
     pub project_agent_sender: Communication<ProjectRequestMessage, ProjectResponseMessage>,
-    pub supervisor_agent_senders:
+    pub daily_agent_senders:
         HashMap<ActorCompositeId, Communication<DailyRequestMessage, DailyResponseMessage>>,
     pub operational_agent_senders:
         HashMap<ActorCompositeId, Communication<OperationalRequestMessage, OperationalResponseMessage>>,
@@ -38,7 +38,7 @@ impl ActorRegistry
     // type should be consistent across agents, possibly a `Status` type.
     // Note: Genericization may introduce complexity; consider design impact.
     // pub fn recv_all_agents_status(&self) -> Result<AgentStatus> {
-    //     let mut supervisor_statai: Vec<DailyResponseStatus> = vec![];
+    //     let mut daily_statai: Vec<DailyResponseStatus> = vec![];
     //     let mut operational_statai: Vec<OperationalResponseStatus> = vec![];
 
     //     let weekly = self.weekly_agent_sender.receiver.recv()??;
@@ -56,10 +56,10 @@ impl ActorRegistry
     //         panic!()
     //     };
 
-    //     for receiver in self.supervisor_agent_senders.iter() {
-    //         let supervisor = receiver.1.receiver.recv()??;
-    //         if let DailyResponseMessage::Status(supervisor) = supervisor {
-    //             supervisor_statai.push(supervisor);
+    //     for receiver in self.daily_agent_senders.iter() {
+    //         let daily = receiver.1.receiver.recv()??;
+    //         if let DailyResponseMessage::Status(daily) = daily {
+    //             daily_statai.push(daily);
     //         } else {
     //             panic!()
     //         }
@@ -78,7 +78,7 @@ impl ActorRegistry
     //     let agent_status = AgentStatus {
     //         weekly_status,
     //         project_status,
-    //         supervisor_statai,
+    //         daily_statai,
     //         operational_statai,
     //     };
     //     Ok(agent_status)

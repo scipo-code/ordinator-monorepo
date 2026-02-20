@@ -24,4 +24,4 @@ valuable.workspace = true
 [dev-dependencies]
 mockall = {workspace = true}
 proptest.workspace = true
-ordinator-supervisor-actor.path = "../ordinator-supervisor-actor/"
+ordinator-daily-actor.path = "../ordinator-daily-actor/"

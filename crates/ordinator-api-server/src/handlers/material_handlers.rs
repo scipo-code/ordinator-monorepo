@@ -48,7 +48,7 @@ impl Display for MaterialCheck
 )]
 pub async fn check_material(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
-    // TODO: Use supervisor_id when additional authentication is implemented
+    // TODO: Use daily_id when additional authentication is implemented
     Path((_asset, work_order_number)): Path<(AssetNames, WorkOrderNumberDto)>,
     Json(checked): Json<MaterialCheck>,
 ) -> Result<String, AppError>

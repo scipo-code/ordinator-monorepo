@@ -75,9 +75,9 @@ impl WeeklyInterface for WeeklySolution
         self.weekly_scheduled_work_orders.get(work_order_number)
     }
 
-    fn supervisor_tasks(
+    fn daily_tasks(
         &self,
-        supervisor_periods: &[Period],
+        daily_periods: &[Period],
     ) -> std::collections::HashMap<WorkOrderNumber, Period>
     {
         self.weekly_scheduled_work_orders
@@ -90,7 +90,7 @@ impl WeeklyInterface for WeeklySolution
                     WhereIsWorkOrder::NotScheduled => None,
                 };
                 period_option
-                    .and_then(|per| supervisor_periods.contains(&per).then_some((won, per)))
+                    .and_then(|per| daily_periods.contains(&per).then_some((won, per)))
             })
             .collect()
     }

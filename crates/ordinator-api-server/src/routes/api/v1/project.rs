@@ -31,7 +31,7 @@ pub async fn project_route(
 //     .handle_project_request(project_request)
 //     .await?)
 //
-// TODO: Add supervisor handlers for available technicians
+// TODO: Add daily handlers for available technicians
 // .routes(routes!(
-//     crate::handlers::supervisor_handlers::all_available_technicians
+//     crate::handlers::daily_handlers::all_available_technicians
 // ))

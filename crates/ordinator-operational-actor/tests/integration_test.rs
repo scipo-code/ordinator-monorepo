@@ -42,12 +42,12 @@ use ordinator_scheduling_environment::worker_environment::ActorSpecifications;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
-use ordinator_supervisor_actor::algorithm::supervisor_solution::DailySolution;
+use ordinator_daily_actor::algorithm::daily_solution::DailySolution;
 
 #[derive(Clone, Debug)]
 struct TestSystemSolution<Zs: DailyInterface + Clone>
 {
-    supervisor: Option<Zs>,
+    daily: Option<Zs>,
     operational: HashMap<ActorCompositeId, SolutionState<OperationalSolution>>,
 }
 
@@ -64,7 +64,7 @@ impl WeeklyInterface for TestWeekly
         todo!()
     }
 
-    fn supervisor_tasks(&self, periods: &[Period]) -> HashMap<WorkOrderNumber, Period>
+    fn daily_tasks(&self, periods: &[Period]) -> HashMap<WorkOrderNumber, Period>
     {
         todo!()
     }
@@ -156,12 +156,12 @@ impl SystemSolutions for TestSystemSolution<DailySolution>
         todo!()
     }
 
-    fn supervisor_actor_solutions(&self) -> anyhow::Result<&Self::Daily>
+    fn daily_actor_solutions(&self) -> anyhow::Result<&Self::Daily>
     {
-        Ok(self.supervisor.as_ref().unwrap())
+        Ok(self.daily.as_ref().unwrap())
     }
 
-    fn supervisor_swap(
+    fn daily_swap(
         &mut self,
         id: &ActorCompositeId,
         solution: SolutionState<DailySolution>,
@@ -380,21 +380,21 @@ fn start_operational_actor()
         .0
         .clone();
 
-    let supervisor_id = &scheduling_environment
+    let daily_id = &scheduling_environment
         .lock()
         .unwrap()
         .worker_environment
         .actor_specification
         .get(&Asset::Test)
         .unwrap()
-        .supervisor()
+        .daily()
         .first()
         .unwrap()
         .id
         .clone();
 
     let _system_solution = Arc::new(ArcSwap::new(Arc::new(TestSystemSolution {
-        supervisor: None,
+        daily: None,
         operational: HashMap::new(),
     })));
 
@@ -410,8 +410,8 @@ fn start_operational_actor()
         Delegate::Assess,
     )]);
 
-    let supervisor = DailySolution::new_from_parts(operational_state_machine);
-    dbg!(&supervisor);
+    let daily = DailySolution::new_from_parts(operational_state_machine);
+    dbg!(&daily);
     // TODO: Implement builder for SystemSolution (2025-07-08)
     let (sender, receiver) = flume::unbounded();
     let system_configuration = SystemConfigurations::read_all_configs().unwrap();

@@ -7,8 +7,8 @@ use std::ops::DerefMut;
 use std::sync::Arc;
 use std::sync::Mutex;
 
-use algorithm::supervisor_parameters::DailyParameters;
-use algorithm::supervisor_solution::DailySolution;
+use algorithm::daily_parameters::DailyParameters;
+use algorithm::daily_solution::DailySolution;
 use algorithm::DailyAlgorithm;
 use anyhow::Result;
 use arc_swap::ArcSwap;

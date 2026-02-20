@@ -18,7 +18,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
-use super::supervisor_parameters::DailyParameters;
+use super::daily_parameters::DailyParameters;
 
 pub type DailyObjectiveValue = Percent;
 
@@ -99,7 +99,7 @@ impl Solution for DailySolution
     {
         // TODO: Initialize from weekly actor state rather than parameters
         let operational_state_machine = HashMap::new();
-        // TODO: Implement initialization from supervisor work orders
+        // TODO: Implement initialization from daily work orders
         let objective_value = Percent::new(0, 100).unwrap();
 
         Ok(Self {
@@ -120,7 +120,7 @@ where
 {
     fn swap(id: &ActorCompositeId, solution: SolutionState<Self>, system_solution: &mut Ss)
     {
-        system_solution.supervisor_swap(id, solution);
+        system_solution.daily_swap(id, solution);
     }
 }
 /// Represents solution state for an iterative combinatorial auction system

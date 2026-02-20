@@ -22,6 +22,6 @@ pub async fn technician_routes(
     // let orchestrator = orchestrator.lock().unwrap();
 
     // Ok(orchestrator
-    //     .handle_supervisor_request(supervisor_request)
+    //     .handle_daily_request(daily_request)
     //     .await?)
 }

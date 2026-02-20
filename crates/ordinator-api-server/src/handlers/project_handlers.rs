@@ -69,10 +69,10 @@ where
 // #[utoipa::path(
 //     get,
 //     tag = "Daily",
-//     path = "/{asset}/{supervisor_id}",
+//     path = "/{asset}/{daily_id}",
 //     params (
 //         ("asset" = AssetNames, Path),
-//         ("supervisor_id" = String, Path),
+//         ("daily_id" = String, Path),
 //     ),
 //     responses(
 //         (status = 200, body = DailyResponseMessageDto),

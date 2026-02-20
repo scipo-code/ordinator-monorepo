@@ -36,7 +36,7 @@ set lmargin 12
 set rmargin 5.5
 set yrange [0:100]
 set ylabel "Projected Scheduling\nCompliance [%] (MAX)"
-plot supervisor using 1:2 with lines linestyle 1 title "Supervisor (<4W)" 
+plot daily using 1:2 with lines linestyle 1 title "Supervisor (<4W)" 
 
 set yrange [0:100]
 set lmargin 10

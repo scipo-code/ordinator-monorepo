@@ -94,7 +94,7 @@ where
 {
     pub weekly: Option<SolutionState<S>>,
     pub project: Option<SolutionState<T>>,
-    pub supervisor: Option<SolutionState<U>>,
+    pub daily: Option<SolutionState<U>>,
     pub operational: HashMap<ActorCompositeId, SolutionState<V>>,
 }
 
@@ -127,7 +127,7 @@ where
                 } else {
                     "absent".red()
                 },
-                if self.supervisor.is_some() {
+                if self.daily.is_some() {
                     "present".green()
                 } else {
                     "absent".red()
@@ -162,9 +162,9 @@ pub trait SystemSolutions: Clone + Sized
     fn project_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Project>)
     where
         Self::Project: Solution;
-    fn supervisor_actor_solutions(&self) -> Result<&Self::Daily>;
+    fn daily_actor_solutions(&self) -> Result<&Self::Daily>;
 
-    fn supervisor_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Daily>)
+    fn daily_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Daily>)
     where
         Self::Daily: Solution;
     fn operational_actor_solutions(&self, id: &ActorCompositeId) -> Result<&Self::Operational>;
@@ -198,7 +198,7 @@ where
         Self {
             weekly: None,
             project: None,
-            supervisor: None,
+            daily: None,
             operational: HashMap::default(),
         }
     }
@@ -221,10 +221,10 @@ where
             .inner)
     }
 
-    fn supervisor_actor_solutions(&self) -> Result<&Self::Daily>
+    fn daily_actor_solutions(&self) -> Result<&Self::Daily>
     {
         Ok(&self
-            .supervisor
+            .daily
             .as_ref()
             .with_context(|| "DailyActor SystemSolution not found")?
             .inner)
@@ -263,11 +263,11 @@ where
         self.project = Some(solution);
     }
 
-    fn supervisor_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Daily>)
+    fn daily_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Daily>)
     where
         Self::Daily: Solution,
     {
-        self.supervisor = Some(solution);
+        self.daily = Some(solution);
     }
 
     fn all_operational(&self) -> HashSet<ActorCompositeId>
@@ -402,7 +402,7 @@ where
         work_order_number: &WorkOrderNumber,
     ) -> Option<&WhereIsWorkOrder<Period>>;
 
-    fn supervisor_tasks(&self, periods: &[Period]) -> HashMap<WorkOrderNumber, Period>;
+    fn daily_tasks(&self, periods: &[Period]) -> HashMap<WorkOrderNumber, Period>;
 
     fn all_scheduled_tasks(&self) -> HashMap<WorkOrderNumber, Period>;
 }
