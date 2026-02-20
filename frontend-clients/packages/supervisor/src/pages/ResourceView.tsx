@@ -27,7 +27,7 @@ export default function ResourceView() {
   const { asset } = useParams();
   const { data: days, isLoading: isDaysLoading } = useDays();
 
-  // ISSUE #000 The Supervisor ID does not have any meaningful functionality and will have to be fixed
+  // ISSUE #000 The Daily ID does not have any meaningful functionality and will have to be fixed
   // in the future!
   const dailyId = "main";
   const { data: availableTechnicians, isLoading: isTechniciansLoading } = useTechnicianAvailability(asset || "", dailyId);

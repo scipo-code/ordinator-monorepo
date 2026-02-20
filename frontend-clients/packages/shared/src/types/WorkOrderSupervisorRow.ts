@@ -4,4 +4,4 @@ import type { MaterialStatusDto } from "./MaterialStatusDto";
 import type { Percentage } from "./Percentage";
 import type { WorkOrderNumberDto } from "./WorkOrderNumberDto";
 
-export type WorkOrderSupervisorRow = { id: IdStringDto, area: string | null, work_order_number: WorkOrderNumberDto, activity_number: bigint, permit: string | null, material: MaterialStatusDto, icc: string | null, description: string, hands_on_tool_time: number, hours_worked: number, hours_planned: number, percentage_complete: Percentage, };
+export type WorkOrderDailyRow = { id: IdStringDto, area: string | null, work_order_number: WorkOrderNumberDto, activity_number: bigint, permit: string | null, material: MaterialStatusDto, icc: string | null, description: string, hands_on_tool_time: number, hours_worked: number, hours_planned: number, percentage_complete: Percentage, };

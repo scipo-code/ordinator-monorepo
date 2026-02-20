@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { addTechnician, NaiveDateDto, SupervisorAllAvailableTechnicians, TechnicianAvailability, useResources} from "@scipo-code/shared";
+import { addTechnician, NaiveDateDto, DailyAllAvailableTechnicians, TechnicianAvailability, useResources} from "@scipo-code/shared";
 import { format } from "date-fns";
 import { ChevronsUpDown, ChevronDownIcon, X, Check } from "lucide-react";
 import 'react-day-picker/dist/style.css';
@@ -35,7 +35,7 @@ export function ResourceSidebar({ resources, selectedResources, onToggle, toggle
   onToggle: (value: string) => void,
   toggleAll: () => void,
   onClear: () => void,
-  technicians: SupervisorAllAvailableTechnicians,
+  technicians: DailyAllAvailableTechnicians,
 }) {
   return (
     <Card>

@@ -2,4 +2,4 @@
 import type { DaySubtable } from "./DaySubtable";
 import type { NaiveDateDto } from "./NaiveDateDto";
 
-export type SupervisorMainTableDto = { days: { [key in NaiveDateDto]?: DaySubtable }, };
+export type DailyMainTableDto = { days: { [key in NaiveDateDto]?: DaySubtable }, };

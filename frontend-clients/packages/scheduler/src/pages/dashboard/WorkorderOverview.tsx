@@ -10,7 +10,7 @@ import { fetchPeriods } from "@scipo-code/shared";
 import { PeriodDto } from "@scipo-code/shared";
 import { PeriodAssignment } from "@/components/PeriodAssignment";
 import { useCallback } from "react";
-import { TacticalDayAssignment } from "@/components/TacticalDayAssignment";
+import { ProjectDayAssignment } from "@/components/ProjectDayAssignment";
 import { toast } from "sonner";
 
 
@@ -104,7 +104,7 @@ function WorkorderCard({
         </div>
         <div>
           <h3 className="font-semibold mb-2">Schedule to date (TODO)</h3>
-          <TacticalDayAssignment
+          <ProjectDayAssignment
             periods={periods}
             suggestedPeriod={wo.suggested_scheduled_period}
             workOrderNumber={wo.work_order_number.toString()}

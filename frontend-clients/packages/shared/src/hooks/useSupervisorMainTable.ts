@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchMainTable } from "../api/daily.ts";
 import { NaiveDateDto } from "../types/NaiveDateDto.ts";
 
-export const useSupervisorMainTable = (
+export const useDailyMainTable = (
   asset: string,
   dailyId: string,
   day?: NaiveDateDto,

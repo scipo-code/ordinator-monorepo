@@ -8,16 +8,16 @@
         let schedule_work_order = ScheduleChange::new(vec_work_order_number, period_string);
 
         let weekly_scheduling_internal =
-            StrategicRequestScheduling::Schedule(schedule_work_order);
+            WeeklyRequestScheduling::Schedule(schedule_work_order);
 
         let periods: Vec<Period> = vec![Period::from_str("2023-W47-48").unwrap()];
 
         let scheduling_environment = Arc::new(Mutex::new(SchedulingEnvironment::builder().build()));
 
         let system_configuration = SystemConfigurations::read_all_configs().unwrap();
-        let weekly_options = StrategicOptions::from((system_configuration, &Id::default()));
+        let weekly_options = WeeklyOptions::from((system_configuration, &Id::default()));
 
-        let algorithm: StrategicAlgorithm<Ss> = Algorithm::builder()
+        let algorithm: WeeklyAlgorithm<Ss> = Algorithm::builder()
             .id(Id::default())
             .parameters(weekly_options, &scheduling_environment.lock().unwrap());
 
@@ -41,7 +41,7 @@
             Resources::MtnElec,
             Resources::VenMech,
         ]);
-        let mut weekly_resources = StrategicResources::default();
+        let mut weekly_resources = WeeklyResources::default();
 
         weekly_resources.insert_operational_resource(period.clone(), operational_resource_1);
         weekly_resources.insert_operational_resource(period.clone(), operational_resource_2);
@@ -50,9 +50,9 @@
 
         let id = Id::default();
 
-        let weekly_options = StrategicOptions::default();
+        let weekly_options = WeeklyOptions::default();
 
-        let mut weekly_parameters = StrategicParameters::new(
+        let mut weekly_parameters = WeeklyParameters::new(
             &id,
             weekly_options,
             &scheduling_environment.lock().unwrap(),

@@ -41,7 +41,7 @@ fn test_calculate_objective_value()
     let system_configurations = SystemConfigurations::read_all_configs().unwrap().load();
 
     // Note: This test should be in integration tests with proper SharedSolution initialization
-    let algorithm: TacticalAlgorithm = Algorithm::builder()
+    let algorithm: ProjectAlgorithm = Algorithm::builder()
         .id(id)
         .parameters_and_solution(
             &system_configurations,
@@ -91,7 +91,7 @@ fn test_calculate_objective_value()
 
     // // We simply have to make
     // let optimized_project_work_order =
-    //     TacticalParameter::new(&work_order, operation_parameters);
+    //     ProjectParameter::new(&work_order, operation_parameters);
 
     // project_algorithm
     //     .parameters_mut()
@@ -123,12 +123,12 @@ fn test_schedule_1()
     // The commented code below will be uncommented and refactored later
     // let mut project_algorithm =
     // Algorithm::builder().new(     project_days(56),
-    //     TacticalResources::new_from_data(
+    //     ProjectResources::new_from_data(
     //         Resources::iter().collect(),
     //         project_days(56),
     //         Work::from(0.0),
     //     ),
-    //     TacticalResources::new_from_data(
+    //     ProjectResources::new_from_data(
     //         Resources::iter().collect(),
     //         project_days(56),
     //         Work::from(0.0),
@@ -155,7 +155,7 @@ fn test_schedule_1()
     // project_operation_parameters.insert(1, operation_parameter);
 
     // let project_work_order_parameter =
-    //     TacticalParameter::new(work_order,
+    //     ProjectParameter::new(work_order,
     // project_operation_parameters);
 
     // project_algorithm
@@ -164,7 +164,7 @@ fn test_schedule_1()
 
     // let activity_number = 0;
 
-    // let mut project_activities = TacticalScheduledOperations::default();
+    // let mut project_activities = ProjectScheduledOperations::default();
 
     // project_activities.0.insert(
     //     activity_number,
@@ -184,7 +184,7 @@ fn test_schedule_1()
     //     .0
     //     .insert(
     //         work_order_number,
-    //         WhereIsWorkOrder::Tactical(project_activities),
+    //         WhereIsWorkOrder::Project(project_activities),
     //     );
 
     // project_algorithm.schedule().unwrap();
@@ -214,22 +214,22 @@ fn test_schedule_2()
     };
 
     let id = Id::default();
-    let options = TacticalOptions::default();
+    let options = ProjectOptions::default();
     let scheduling_environment = SchedulingEnvironment::default();
 
     // SchedulingEnvironment
 
-    let project_parameters = TacticalParameters::new(&id, options, &scheduling_environment)?;
-    let project_solution = TacticalSolution::new(&project_parameters);
+    let project_parameters = ProjectParameters::new(&id, options, &scheduling_environment)?;
+    let project_solution = ProjectSolution::new(&project_parameters);
 
     let mut project_algorithm = Algorithm::new(
         project_days(56),
-        TacticalResources::new_from_data(
+        ProjectResources::new_from_data(
             Resources::iter().collect(),
             project_days(56),
             Work::from(100.0),
         ),
-        TacticalResources::new_from_data(
+        ProjectResources::new_from_data(
             Resources::iter().collect(),
             project_days(56),
             Work::from(0.0),
@@ -237,7 +237,7 @@ fn test_schedule_2()
         ArcSwapSharedSolution::default().into(),
     );
 
-    let mut project_activities = TacticalScheduledOperations::default();
+    let mut project_activities = ProjectScheduledOperations::default();
 
     project_activities.0.insert(
         activity_number,
@@ -257,7 +257,7 @@ fn test_schedule_2()
         .0
         .insert(
             work_order_number,
-            WhereIsWorkOrder::Tactical(project_activities),
+            WhereIsWorkOrder::Project(project_activities),
         );
 
     // Operation
@@ -276,7 +276,7 @@ fn test_schedule_2()
     // 10,
     // vec![],
     // NaiveDate::from_ymd_opt(2024, 10, 10).unwrap(),
-    let optimized_project_work_order = TacticalParameter::new(work_order, operation_parameters);
+    let optimized_project_work_order = ProjectParameter::new(work_order, operation_parameters);
 
     project_algorithm
         .parameters_mut()

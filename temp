@@ -2,7 +2,7 @@ Error: Ordinator Scheduling Systems experienced a catastraphoic
             error:
 Ok([95mScheduleIteration: 2[0m
 Actor    : [34mId: Id(TEST_TACTICAL, resources: [], assets: Availability { start_datetime: 2025-01-13T00:00:00Z, finish_datetime: 2025-05-12T00:00:00Z, assets: [Test] })[0m
-Algorithm: TacticalAlgorithm(
+Algorithm: ProjectAlgorithm(
     Algorithm {
         id: [34mId: Id(TEST_TACTICAL, resources: [], assets: Availability { start_datetime: 2025-01-13T00:00:00Z, finish_datetime: 2025-05-12T00:00:00Z, assets: [Test] })[0m,
         solution_intermediate: PriorityQueue {
@@ -11,7 +11,7 @@ Algorithm: TacticalAlgorithm(
         solution: SolutionState {
             stagnation_iterations: 0,
             version: 2,
-            inner: [94mTacticalObjectiveValue {
+            inner: [94mProjectObjectiveValue {
                 objective_value: 27175180500,
                 urgency: (
                     10,
@@ -31,37 +31,37 @@ Algorithm: TacticalAlgorithm(
                 ),
             }
             number of project work orders: 6400
-            [94mTacticalResources: 
+            [94mProjectResources: 
             Days: 120
             Technicians: 11[0m[94m[0m,
         },
-        parameters: TacticalParameters {
+        parameters: ProjectParameters {
             work_orders: 2341
             project_days: 120
-            project_capacity: [94mTacticalResources: 
+            project_capacity: [94mProjectResources: 
             Technicians: 11[0m,
-            project_options: TacticalOptions {
+            project_options: ProjectOptions {
                 number_of_removed_work_orders: 20,
                 urgency: 10,
                 resource_penalty: 100000000,
             },
         },
         arc_swap_shared_solution: ArcSwapAny(
-            StrategicSolution:   [32mpresent[0m
-            TacticalSolution:     [32mpresent[0m
-            SupervisorSolution:   [32mpresent[0m
+            WeeklySolution:   [32mpresent[0m
+            ProjectSolution:     [32mpresent[0m
+            DailySolution:   [32mpresent[0m
             OperationalSolutions: [32m30[0m,
         ),
-        loaded_system_solution: StrategicSolution:   [32mpresent[0m
-        TacticalSolution:     [32mpresent[0m
-        SupervisorSolution:   [32mpresent[0m
+        loaded_system_solution: WeeklySolution:   [32mpresent[0m
+        ProjectSolution:     [32mpresent[0m
+        DailySolution:   [32mpresent[0m
         OperationalSolutions: [32m30[0m,
     },
 )
 Location : /home/cbrje/projects/ordinator/ordinator-monorepo/crates/ordinator-actors/ordinator-actor-core/src/lib.rs:164:21
 
 Caused by:
-    0: [94mTacticalObjectiveValue {
+    0: [94mProjectObjectiveValue {
            objective_value: 27175180500,
            urgency: (
                10,
@@ -81,7 +81,7 @@ Caused by:
            ),
        }
        number of project work orders: 6400
-       [94mTacticalResources: 
+       [94mProjectResources: 
        Days: 120
        Technicians: 11[0m[94m[0m
     1: Condition failed: `Local::now().minute() != 55` (55 vs 55))

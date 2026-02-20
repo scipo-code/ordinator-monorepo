@@ -1,14 +1,14 @@
 import { apiConfig } from "./config.ts";
 import { CreateTechnicianDto } from "../types/CreateTechnicianDto.ts";
 import { NaiveDateDto } from "../types/NaiveDateDto.ts";
-import { SupervisorAllAvailableTechnicians } from "../types/SupervisorAllAvailableTechnicians.ts";
-import { SupervisorMainTableDto } from "../types/SupervisorMainTableDto.ts";
+import { DailyAllAvailableTechnicians } from "../types/DailyAllAvailableTechnicians.ts";
+import { DailyMainTableDto } from "../types/DailyMainTableDto.ts";
 
 export async function fetchMainTable(
   asset: string,
   daily_id: string,
   day?: NaiveDateDto,
-): Promise<SupervisorMainTableDto> {
+): Promise<DailyMainTableDto> {
   const params = new URLSearchParams();
 
   if (day) {
@@ -26,13 +26,13 @@ export async function fetchMainTable(
     throw new Error(`(${res.status}) ${body}`);
   }
 
-  return (await res.json()) as SupervisorMainTableDto;
+  return (await res.json()) as DailyMainTableDto;
 }
 
 export async function fetchTechnicianAvailability(
   asset: string,
   daily_id: string,
-): Promise<SupervisorAllAvailableTechnicians> {
+): Promise<DailyAllAvailableTechnicians> {
   const url =
     `${apiConfig.baseUrl}/api/v1/daily/technician_availability/${asset}/${daily_id}`;
   const res = await fetch(url);
@@ -42,7 +42,7 @@ export async function fetchTechnicianAvailability(
     throw new Error(`(${res.status}) ${body}`);
   }
 
-  return (await res.json()) as SupervisorAllAvailableTechnicians;
+  return (await res.json()) as DailyAllAvailableTechnicians;
 }
 
 export async function addTechnician(

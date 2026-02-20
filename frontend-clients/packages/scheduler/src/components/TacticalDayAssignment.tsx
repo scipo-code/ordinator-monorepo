@@ -20,7 +20,7 @@ interface PeriodAssignmentProps {
   isAssigning?: boolean,
 };
 
-export function TacticalDayAssignment({
+export function ProjectDayAssignment({
   // periods,
   // suggestedPeriod,
   // workOrderNumber,

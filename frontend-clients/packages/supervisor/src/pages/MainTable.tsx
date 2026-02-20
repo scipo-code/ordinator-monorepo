@@ -9,8 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Actors, NaiveDateDto, StagnationDot, SupervisorMainTableDto, useDays, useSystemClock } from '@scipo-code/shared';
-import { useSupervisorMainTable } from "@scipo-code/shared";
+import { Actors, NaiveDateDto, StagnationDot, DailyMainTableDto, useDays, useSystemClock } from '@scipo-code/shared';
+import { useDailyMainTable } from "@scipo-code/shared";
 import { format, parseISO } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -26,10 +26,10 @@ export default function MainTable() {
   const { data: days } = useDays();
 
   const [ selectedDay, setSelectedDay ] = useState<NaiveDateDto | null>(null);
-  // ISSUE #000 The Supervisor ID does not have any meaningful functionality and will have to be fixed
+  // ISSUE #000 The Daily ID does not have any meaningful functionality and will have to be fixed
   // in the future!
   const dailyId = "main";
-  const { data: mainTableData } = useSupervisorMainTable(asset || "", dailyId, selectedDay ? selectedDay : undefined );
+  const { data: mainTableData } = useDailyMainTable(asset || "", dailyId, selectedDay ? selectedDay : undefined );
 
 
   useEffect(() => {
@@ -111,7 +111,7 @@ const formatColumnName = (column: string) => {
   return column.replace(/_/g, ' ').replace(/\b\w/g, l => l.toLocaleUpperCase())
 }
 
-function WorkSchedule({data, selectedDay}: {data: SupervisorMainTableDto,selectedDay: NaiveDateDto}) {
+function WorkSchedule({data, selectedDay}: {data: DailyMainTableDto,selectedDay: NaiveDateDto}) {
 
   if (!data.days || !selectedDay) return <div>Missing Data</div>;
 
