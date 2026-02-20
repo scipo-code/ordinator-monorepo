@@ -132,7 +132,7 @@ where
 
 //         for (work_order_number, scheduled_period) in self
 //             .strategic_agent_algorithm
-//             .strategic_tactical_solution_arc_swap
+//             .strategic_project_solution_arc_swap
 //             .0
 //             .load()
 //             .strategic
@@ -239,7 +239,7 @@ where
 
 //         for (work_order_number, scheduled_period) in self
 //             .strategic_agent_algorithm
-//             .strategic_tactical_solution_arc_swap
+//             .strategic_project_solution_arc_swap
 //             .0
 //             .load()
 //             .strategic

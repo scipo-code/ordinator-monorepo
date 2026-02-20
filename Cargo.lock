@@ -1471,10 +1471,10 @@ dependencies = [
  "clap",
  "ordinator-operational-actor",
  "ordinator-orchestrator-actor-traits",
+ "ordinator-project-actor",
  "ordinator-scheduling-environment",
  "ordinator-strategic-actor",
  "ordinator-supervisor-actor",
- "ordinator-tactical-actor",
  "serde",
  "strum",
  "strum_macros",
@@ -1539,10 +1539,10 @@ dependencies = [
  "ordinator-contracts",
  "ordinator-operational-actor",
  "ordinator-orchestrator-actor-traits",
+ "ordinator-project-actor",
  "ordinator-scheduling-environment",
  "ordinator-strategic-actor",
  "ordinator-supervisor-actor",
- "ordinator-tactical-actor",
  "ordinator-test-support",
  "ordinator-total-data-processing",
  "serde",
@@ -1569,6 +1569,31 @@ dependencies = [
  "ordinator-scheduling-environment",
  "serde",
  "thiserror 2.0.12",
+ "valuable",
+]
+
+[[package]]
+name = "ordinator-project-actor"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "arc-swap",
+ "bus",
+ "chrono",
+ "colored",
+ "flume",
+ "itertools",
+ "ordinator-actor-core",
+ "ordinator-configuration",
+ "ordinator-orchestrator-actor-traits",
+ "ordinator-scheduling-environment",
+ "ordinator-test-support",
+ "priority-queue",
+ "proptest",
+ "rand 0.9.1",
+ "serde",
+ "strum",
+ "tracing",
  "valuable",
 ]
 
@@ -1647,31 +1672,6 @@ dependencies = [
 [[package]]
 name = "ordinator-system-tests"
 version = "0.0.1"
-
-[[package]]
-name = "ordinator-tactical-actor"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "arc-swap",
- "bus",
- "chrono",
- "colored",
- "flume",
- "itertools",
- "ordinator-actor-core",
- "ordinator-configuration",
- "ordinator-orchestrator-actor-traits",
- "ordinator-scheduling-environment",
- "ordinator-test-support",
- "priority-queue",
- "proptest",
- "rand 0.9.1",
- "serde",
- "strum",
- "tracing",
- "valuable",
-]
 
 [[package]]
 name = "ordinator-test-support"

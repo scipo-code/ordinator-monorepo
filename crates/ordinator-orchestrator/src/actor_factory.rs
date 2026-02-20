@@ -17,8 +17,8 @@ use ordinator_strategic_actor::WeeklyApi;
 use ordinator_strategic_actor::algorithm::strategic_solution::WeeklySolution;
 use ordinator_supervisor_actor::DailyApi;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::DailySolution;
-use ordinator_tactical_actor::ProjectApi;
-use ordinator_tactical_actor::algorithm::tactical_solution::ProjectSolution;
+use ordinator_project_actor::ProjectApi;
+use ordinator_project_actor::algorithm::project_solution::ProjectSolution;
 
 use crate::Orchestrator;
 use crate::StartError;
@@ -89,7 +89,7 @@ where
         Ok(())
     }
 
-    pub fn start_tactical_actor(&mut self, id: &ActorCompositeId) -> Result<()>
+    pub fn start_project_actor(&mut self, id: &ActorCompositeId) -> Result<()>
     {
         // TODO: Insert entry into the `SchedulingEnvironment`
         let build_dependencies = self.extract_factory_dependencies(id.asset())?;
@@ -110,7 +110,7 @@ where
             .unwrap()
             .get_mut(id.asset())
             .expect("The ActorRegistry for asset should exist before creating Actors on it")
-            .tactical_agent_sender = communication;
+            .project_agent_sender = communication;
         Ok(())
     }
 

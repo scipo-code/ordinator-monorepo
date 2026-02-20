@@ -964,12 +964,12 @@ where
         operational_parameter: &OperationalParameter,
     ) -> Result<DateTime<Utc>>
     {
-        // Load tactical and strategic scheduling information to determine start time window
+        // Load project and strategic scheduling information to determine start time window
         // TODO: Move this into the trait and expose only necessary information
-        let tactical_days_option = self
+        let project_days_option = self
             .loaded_system_solution
             // Swap the solution in the `ArcSwap`
-            .tactical_actor_solution()?
+            .project_actor_solution()?
             // FIX: Consider a more descriptive name for this method
             .start_and_finish_dates(work_order_activity);
 
@@ -978,19 +978,19 @@ where
             .strategic()?
             .scheduled_task(&work_order_activity.0);
 
-        // Determine start and end windows based on tactical and strategic scheduling
-        let (start_window, end_window) = match (strategic_period_option, tactical_days_option) {
+        // Determine start and end windows based on project and strategic scheduling
+        let (start_window, end_window) = match (strategic_period_option, project_days_option) {
             (None, None) => (
                 self.parameters.availability.start_datetime(),
                 self.parameters.availability.finish_datetime(),
             ),
             // ISSUE #000: Change hardcoded times to reflect Availability and consider night shifts
-            (_, Some((tactical_start, tactical_finish))) => (
-                tactical_start
+            (_, Some((project_start, project_finish))) => (
+                project_start
                     .and_hms_opt(7, 0, 0)
                     .context("DateTime created wrong. This really should never happen")?
                     .and_utc(),
-                tactical_finish
+                project_finish
                     .and_hms_opt(19, 0, 0)
                     .context("DateTime created wrong. This really should never happen")?
                     .and_utc(),
@@ -1028,7 +1028,7 @@ where
                *         .scheduled_task(&work_order_activity.0),
                *     work_order_activity.0,
                *     self.loaded_shared_solution
-               *         .tactical_actor_solution()
+               *         .project_actor_solution()
                *         .unwrap()
                *         .start_and_finish_dates(work_order_activity),
                *     work_order_activity,

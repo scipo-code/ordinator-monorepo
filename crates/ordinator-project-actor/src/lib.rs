@@ -8,8 +8,8 @@ use std::sync::Arc;
 use std::sync::Mutex;
 
 use algorithm::ProjectAlgorithm;
-use algorithm::tactical_parameters::ProjectParameters;
-use algorithm::tactical_solution::ProjectSolution;
+use algorithm::project_parameters::ProjectParameters;
+use algorithm::project_solution::ProjectSolution;
 use anyhow::Result;
 use arc_swap::ArcSwap;
 use bus::BusReader;

@@ -12,7 +12,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 
-use super::tactical_solution::ProjectSolution;
+use super::project_solution::ProjectSolution;
 
 impl ProjectInterface for ProjectSolution
 {
@@ -21,7 +21,7 @@ impl ProjectInterface for ProjectSolution
         work_order_activity: &WorkOrderActivity,
     ) -> Option<(&NaiveDate, &NaiveDate)>
     {
-        let activities = self.tactical_work_orders.0.get(&work_order_activity.0)?;
+        let activities = self.project_work_orders.0.get(&work_order_activity.0)?;
         let scheduled_days = match &activities {
             Weekly(_) => return None,
             Project(value) => &value.0.get(&work_order_activity.1).unwrap().scheduled,
@@ -34,13 +34,13 @@ impl ProjectInterface for ProjectSolution
         Some((start, end))
     }
 
-    fn tactical_period<'a>(
+    fn project_period<'a>(
         &self,
         _work_order_number: &WorkOrderNumber,
         periods: &'a [Period],
     ) -> Option<&'a Period>
     {
-        match self.tactical_work_orders.0.get(_work_order_number) {
+        match self.project_work_orders.0.get(_work_order_number) {
             Some(c) => match c {
                 Weekly(_) => None,
                 Project(wo) => {
@@ -65,7 +65,7 @@ impl ProjectInterface for ProjectSolution
     >
     {
         self
-            .tactical_work_orders
+            .project_work_orders
             .0
             .iter()
             .clone()
@@ -89,9 +89,9 @@ impl ProjectInterface for ProjectSolution
             .collect()
     }
 
-    fn tactical_loadings(&self) -> BTreeMap<Skill, Vec<Work>>
+    fn project_loadings(&self) -> BTreeMap<Skill, Vec<Work>>
     {
-        self.tactical_loadings
+        self.project_loadings
             .resources
             .iter()
             .map(|e| (*e.0, e.1.days.clone()))

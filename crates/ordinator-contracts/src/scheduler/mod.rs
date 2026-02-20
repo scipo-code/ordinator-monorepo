@@ -133,7 +133,7 @@ impl
         let periods = value.1.time_environment.periods.clone();
         let periods_for_frozen_and_draft = [periods[0].clone(), periods[1].clone()];
 
-        info!(target: "developer", tactical_work_orders = system_solution.tactical.clone().unwrap().all_scheduled_tasks().len());
+        info!(target: "developer", project_work_orders = system_solution.project.clone().unwrap().all_scheduled_tasks().len());
         let time = std::time::Instant::now();
         warn!(target: "developer", time_first = ?time);
         for work_order in work_orders_by_asset {
@@ -177,18 +177,18 @@ impl
                 None => PeriodStatus::NotScheduled,
             };
 
-            let tactical_solution = &system_solution
-                .tactical
+            let project_solution = &system_solution
+                .project
                 .as_ref()
                 .ok_or(anyhow!("There is no ProjectActor present"))?;
 
             for operation_view in sorted_operations {
-                let tactical_days = tactical_solution.start_and_finish_dates(&(
+                let project_days = project_solution.start_and_finish_dates(&(
                     work_order_view.work_order_number,
                     operation_view.activity,
                 ));
-                let option_day = match tactical_days {
-                    Some(tactical_day) => tactical_day.0.to_string(),
+                let option_day = match project_days {
+                    Some(project_day) => project_day.0.to_string(),
                     None => "Work order was not scheduled".to_string(),
                 };
 
@@ -360,8 +360,8 @@ impl
             .operations
             .iter()
             .map(|operation| {
-                let tactical_date = &system_solution
-                    .tactical
+                let project_date = &system_solution
+                    .project
                     .as_ref()
                     .ok_or(anyhow!("There is no ProjectAgent present"))?
                     .start_and_finish_dates(&(
@@ -369,7 +369,7 @@ impl
                         operation.activity,
                     ));
 
-                let scheduled_date = match tactical_date {
+                let scheduled_date = match project_date {
                     Some(date) => date.0.to_string(),
                     None => "No scheduled start date".to_string(),
                 };

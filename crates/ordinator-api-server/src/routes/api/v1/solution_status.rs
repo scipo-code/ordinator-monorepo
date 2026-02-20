@@ -14,7 +14,7 @@ pub async fn solution_status_routes(
             crate::handlers::solution_status_handlers::strategic_solution_status
         ))
         .routes(routes!(
-            crate::handlers::solution_status_handlers::tactical_solution_status
+            crate::handlers::solution_status_handlers::project_solution_status
         ))
         .routes(routes!(
             crate::handlers::solution_status_handlers::supervisor_solution_status

@@ -7,7 +7,7 @@ import shutil
 import argparse
 import openpyxl
 
-def update_excel_with_tactical_output(json_data, excel_file, work_order_col, activity_col):
+def update_excel_with_project_output(json_data, excel_file, work_order_col, activity_col):
     # Load the Excel file
     df = pd.read_excel(excel_file)
     print(df.columns)
@@ -92,7 +92,7 @@ def main():
     json_data = json.loads(json_data)
     print(json_data)
     # Update the Excel file based on JSON data
-    update_excel_with_tactical_output(json_data['tactical_agent_solution'], output_path, work_order_col, activity_col)
+    update_excel_with_project_output(json_data['project_agent_solution'], output_path, work_order_col, activity_col)
     update_excel_with_strategic_output(json_data['strategic_agent_solution'], output_path, work_order_col)
 
 if __name__ == "__main__":

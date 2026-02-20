@@ -8,13 +8,13 @@ use ordinator_strategic_actor::messages::WeeklyRequestMessage;
 use ordinator_strategic_actor::messages::WeeklyResponseMessage;
 use ordinator_supervisor_actor::messages::DailyRequestMessage;
 use ordinator_supervisor_actor::messages::DailyResponseMessage;
-use ordinator_tactical_actor::messages::ProjectRequestMessage;
-use ordinator_tactical_actor::messages::ProjectResponseMessage;
+use ordinator_project_actor::messages::ProjectRequestMessage;
+use ordinator_project_actor::messages::ProjectResponseMessage;
 
 pub struct ActorRegistry
 {
     pub strategic_agent_sender: Communication<WeeklyRequestMessage, WeeklyResponseMessage>,
-    pub tactical_agent_sender: Communication<ProjectRequestMessage, ProjectResponseMessage>,
+    pub project_agent_sender: Communication<ProjectRequestMessage, ProjectResponseMessage>,
     pub supervisor_agent_senders:
         HashMap<ActorCompositeId, Communication<DailyRequestMessage, DailyResponseMessage>>,
     pub operational_agent_senders:
@@ -49,9 +49,9 @@ impl ActorRegistry
     //         panic!()
     //     };
 
-    //     let tactical = self.tactical_agent_sender.receiver.recv()??;
-    //     let tactical_status = if let ProjectResponseMessage::Status(tactical) =
-    // tactical {         tactical
+    //     let project = self.project_agent_sender.receiver.recv()??;
+    //     let project_status = if let ProjectResponseMessage::Status(project) =
+    // project {         project
     //     } else {
     //         panic!()
     //     };
@@ -77,7 +77,7 @@ impl ActorRegistry
     //     // I am not sure that this is what we want
     //     let agent_status = AgentStatus {
     //         strategic_status,
-    //         tactical_status,
+    //         project_status,
     //         supervisor_statai,
     //         operational_statai,
     //     };

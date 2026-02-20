@@ -11,7 +11,7 @@ pub enum SapCommands
     /// authorization)
     PushWeeklyToSap,
 
-    /// Push the 5W (tactical) optimized data to SAP (requires user
+    /// Push the 5W (project) optimized data to SAP (requires user
     /// authorization)
     PushProjectToSap,
 

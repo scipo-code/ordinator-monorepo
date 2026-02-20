@@ -21,7 +21,7 @@
 //         Ok(())
 //     }
 
-//     pub fn test_tactical_actor(&self) -> Result<()>
+//     pub fn test_project_actor(&self) -> Result<()>
 //     {
 //         self.system_solution.load()
 //     }

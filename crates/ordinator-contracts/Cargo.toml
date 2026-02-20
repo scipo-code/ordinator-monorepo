@@ -7,7 +7,7 @@ edition = "2024"
 ordinator-scheduling-environment = { path = "../ordinator-scheduling-environment"}
 ordinator-supervisor-actor = { path = "../ordinator-supervisor-actor" }
 ordinator-strategic-actor = { path = "../ordinator-strategic-actor" }
-ordinator-tactical-actor = { path = "../ordinator-tactical-actor" }
+ordinator-project-actor = { path = "../ordinator-project-actor" }
 ordinator-operational-actor = { path = "../ordinator-operational-actor" }
 ordinator-orchestrator-actor-traits = { path = "../ordinator-orchestrator-actor-traits"}
 

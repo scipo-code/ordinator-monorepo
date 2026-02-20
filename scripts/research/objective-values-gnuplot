@@ -82,7 +82,7 @@ if test "$_flag_ordinator_test"
       .fields.objective_value.urgency[1], 
       .fields.objective_value.resource_penalty[1] 
       ] |
-      join(" ")' $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log | sed 's/"//g' >./scripts/research/data/tactical.dat
+      join(" ")' $ORDINATOR_LOG_DIR/ordinator/ordinator.research.log | sed 's/"//g' >./scripts/research/data/project.dat
 
     jq '
       select(.threadName == "TEST_SUPERVISOR" and (.fields | has("objective_value"))) |
@@ -101,7 +101,7 @@ if test "$_flag_ordinator_test"
 
         gnuplot -e "
           strategic='scripts/research/data/strategic.dat';
-          tactical='scripts/research/data/tactical.dat';
+          project='scripts/research/data/project.dat';
           supervisor='scripts/research/data/supervisor.dat';
           operational_1='scripts/research/data/operational-001-01.dat';
           operational_2='scripts/research/data/operational-001-02.dat';
@@ -145,7 +145,7 @@ if test "$_flag_ordinator_test"
 
         gnuplot -e "
           strategic='scripts/research/data/strategic.dat';
-          tactical='scripts/research/data/tactical.dat';
+          project='scripts/research/data/project.dat';
           supervisor='scripts/research/data/supervisor.dat';
           operational_1='scripts/research/data/operational-001-01.dat';
           operational_2='scripts/research/data/operational-001-02.dat';

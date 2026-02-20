@@ -113,12 +113,12 @@ where
 
         {
             // Project model takes precedence over the strategic
-            let tactical_scheduled_period = self
+            let project_scheduled_period = self
                 .loaded_system_solution
-                .tactical_actor_solution()
+                .project_actor_solution()
                 .ok()
-                .and_then(|tactical_solution| {
-                    tactical_solution.tactical_period(work_order_number, &periods)
+                .and_then(|project_solution| {
+                    project_solution.project_period(work_order_number, &periods)
                 });
 
             let strategic_scheduled_period = self
@@ -131,11 +131,11 @@ where
 
             // If the [`ProjectAlgorithm`] have the [`WorkOrder`] the [`Weekly`]
             // should respect this, but not schedule it and use resources.
-            if let Some(tactical_period) = tactical_scheduled_period {
-                if *strategic_scheduled_period != WhereIsWorkOrder::Project(tactical_period.clone()) {
+            if let Some(project_period) = project_scheduled_period {
+                if *strategic_scheduled_period != WhereIsWorkOrder::Project(project_period.clone()) {
                     state_change = true
                 };
-                *strategic_scheduled_period = WhereIsWorkOrder::Project(tactical_period.clone())
+                *strategic_scheduled_period = WhereIsWorkOrder::Project(project_period.clone())
             }
 
             if strategic_parameter.locked_in_period == strategic_scheduled_period.clone() {
@@ -656,7 +656,7 @@ impl<Ss> WeeklyUtils for WeeklyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    // TODO: Rely on interface instead. This function should determine period for tactical work order's first day
+    // TODO: Rely on interface instead. This function should determine period for project work order's first day
 
     fn schedule_strategic_work_order(
         &mut self,
@@ -2831,17 +2831,17 @@ mod tests
         //     .strategic_work_order_parameters
         //     .insert(work_order_number, strategic_parameter);
 
-        // let tactical_solution_builder = ProjectSolutionBuilder::new();
+        // let project_solution_builder = ProjectSolutionBuilder::new();
 
-        // let mut tactical_days = HashMap::new();
-        // tactical_days.insert(work_order_number, WhereIsWorkOrder::NotScheduled);
+        // let mut project_days = HashMap::new();
+        // project_days.insert(work_order_number, WhereIsWorkOrder::NotScheduled);
 
-        // let tactical_solution = tactical_solution_builder
-        //     .with_tactical_days(tactical_days)
+        // let project_solution = project_solution_builder
+        //     .with_project_days(project_days)
         //     .build();
 
         // let shared_solution = SharedSolution {
-        //     tactical: tactical_solution,
+        //     project: project_solution,
         //     ..SharedSolution::default()
         // };
 

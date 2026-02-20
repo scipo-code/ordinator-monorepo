@@ -5,7 +5,7 @@ export async function fetchDailyLoadings(
   asset: string,
 ): Promise<DailyLoadingDto> {
   const res = await fetch(
-    `${apiConfig.baseUrl}/api/v1/tactical/daily_loadings/${asset}`,
+    `${apiConfig.baseUrl}/api/v1/project/daily_loadings/${asset}`,
   );
 
   if (!res.ok) {

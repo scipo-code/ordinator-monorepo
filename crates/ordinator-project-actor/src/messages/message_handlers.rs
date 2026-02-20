@@ -12,10 +12,10 @@ use ordinator_scheduling_environment::assignments::AnyAssignment;
 use super::ProjectRequestMessage;
 use super::ProjectResponseMessage;
 use crate::algorithm::ProjectAlgorithm;
-use crate::algorithm::tactical_parameters::ProjectParameters;
-use crate::algorithm::tactical_parameters::create_tactical_parameter;
-use crate::algorithm::tactical_resources::ProjectResources;
-use crate::algorithm::tactical_solution::ProjectSolution;
+use crate::algorithm::project_parameters::ProjectParameters;
+use crate::algorithm::project_parameters::create_project_parameter;
+use crate::algorithm::project_resources::ProjectResources;
+use crate::algorithm::project_solution::ProjectSolution;
 
 // TODO: Refactor to use ProjectAgent design instead of current implementation
 impl<Ss: Debug> CommandHandler<ProjectRequestMessage, ProjectResponseMessage>
@@ -25,27 +25,27 @@ where
 {
     fn handle_request_message(
         &mut self,
-        tactical_request: ProjectRequestMessage,
+        project_request: ProjectRequestMessage,
     ) -> Result<ProjectResponseMessage>
     {
-        match tactical_request {
-            ProjectRequestMessage::Status(_tactical_status_message) => {
+        match project_request {
+            ProjectRequestMessage::Status(_project_status_message) => {
                 // let status_message = self.status().unwrap();
                 // Ok(ProjectResponseMessage::Status(status_message))
                 todo!()
             }
-            ProjectRequestMessage::Scheduling(_tactical_scheduling_message) => {
+            ProjectRequestMessage::Scheduling(_project_scheduling_message) => {
                 todo!()
             }
-            ProjectRequestMessage::Resource(_tactical_resources_message) => {
+            ProjectRequestMessage::Resource(_project_resources_message) => {
                 // let resource_response = self
-                //     .update_resources_state(tactical_resources_message)
+                //     .update_resources_state(project_resources_message)
                 //     .unwrap();
                 Ok(ProjectResponseMessage::FreeStringResponse(
                     "Implement the Update code here.".to_string(),
                 ))
             }
-            ProjectRequestMessage::Time(_tactical_time_message) => {
+            ProjectRequestMessage::Time(_project_time_message) => {
                 todo!()
             }
             ProjectRequestMessage::Update => {
@@ -55,7 +55,7 @@ where
                 // let asset = &self.asset;
 
                 // self.algorithm
-                //     .create_tactical_parameters(locked_scheduling_environment, asset);
+                //     .create_project_parameters(locked_scheduling_environment, asset);
                 // Ok(ProjectResponseMessage::Update)
             }
         }
@@ -73,7 +73,7 @@ where
 
                 let assignments: Vec<_> = scheduling_environment_guard
                     .assignments
-                    .assignment_for_tactical()
+                    .assignment_for_project()
                     .iter()
                     .map(|e| (*e.0, e.1.clone()))
                     .collect();
@@ -97,7 +97,7 @@ where
 
                     // TODO: Make solution updates generic and wrap in Interface trait
 
-                    let tactical_parameter = create_tactical_parameter(
+                    let project_parameter = create_project_parameter(
                         work_order,
                         start_days_for_activities,
                         work_order_configurations,
@@ -106,8 +106,8 @@ where
                     // Only the algorithm can modify parameters; create an interface for this
                     self.algorithm
                         .parameters
-                        .tactical_work_orders
-                        .insert(work_order_number, tactical_parameter);
+                        .project_work_orders
+                        .insert(work_order_number, project_parameter);
 
                     // TODO: Ensure solution state remains consistent with parameter updates.
                     // StateLink should only update parameters, not solution directly.
@@ -116,7 +116,7 @@ where
                         .unschedule_specific_work_order(work_order_number)
                         .with_context(|| {
                             format!(
-                                "could not unschedule tactical work order:\n{work_order_number:#?}"
+                                "could not unschedule project work order:\n{work_order_number:#?}"
                             )
                         })?;
                 }
@@ -128,14 +128,14 @@ where
                 let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 
                 // Convert reference to ProjectResources without consuming the value
-                let tactical_resources =
+                let project_resources =
                     ProjectResources::from((&scheduling_environment_guard, &self.actor_id));
                 drop(scheduling_environment_guard);
 
                 self.algorithm
                     .parameters
-                    .tactical_capacity
-                    .update_resources(tactical_resources);
+                    .project_capacity
+                    .update_resources(project_resources);
 
                 // TODO: Return JSON response instead of string
                 Ok(ProjectResponseMessage::FreeStringResponse(
@@ -166,7 +166,7 @@ where
 //             let day: Day = match self
 //                 .algorithm
 //                 .parameters
-//                 .tactical_days
+//                 .project_days
 //                 .iter()
 //                 .find(|d| **d == day)
 //             {
@@ -175,7 +175,7 @@ where
 //                     day.clone()
 //                 }
 //                 None => {
-//                     bail!("Day not found in the tactical days".to_string(),);
+//                     bail!("Day not found in the project days".to_string(),);
 //                 }
 //             };
 
@@ -187,33 +187,33 @@ where
 //     days_end: _,
 //     select_resources: _,
 // } => {
-//     let loadings = self.algorithm.solution.tactical_loadings.clone();
+//     let loadings = self.algorithm.solution.project_loadings.clone();
 
-//     let tactical_response_resources =
+//     let project_response_resources =
 // ProjectResourceResponse::Loading(loadings);
-//     Ok(tactical_response_resources)
+//     Ok(project_response_resources)
 // }
 // ProjectResourceRequest::GetCapacities {
 //     days_end: _,
 //     select_resources: _,
 // } => {
-//     let capacities = self.algorithm.parameters.tactical_capacity.clone();
+//     let capacities = self.algorithm.parameters.project_capacity.clone();
 
-//     let tactical_response_resources =
+//     let project_response_resources =
 // ProjectResourceResponse::Capacity(capacities);
 
-//     Ok(tactical_response_resources)
+//     Ok(project_response_resources)
 // }
 // ProjectResourceRequest::GetPercentageLoadings {
 //     days_end: _,
 //     resources: _,
 // } => {
-//     let capacities = &self.algorithm.parameters.tactical_capacity;
-//     let loadings = &self.algorithm.solution.tactical_loadings;
+//     let capacities = &self.algorithm.parameters.project_capacity;
+//     let loadings = &self.algorithm.solution.project_loadings;
 
-//     let tactical_response_resources =
+//     let project_response_resources =
 //         ProjectResourceResponse::Percentage((capacities.clone(),
-// loadings.clone()));     Ok(tactical_response_resources)
+// loadings.clone()));     Ok(project_response_resources)
 // }
 //             _ => todo!(),
 //         }

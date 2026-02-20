@@ -28,8 +28,8 @@ use tracing::Level;
 use tracing::event;
 use valuable::Valuable;
 
-use super::tactical_parameters::ProjectParameters;
-use super::tactical_resources::ProjectResources;
+use super::project_parameters::ProjectParameters;
+use super::project_resources::ProjectResources;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize, Clone, Valuable)]
 pub struct ProjectObjectiveValue
@@ -40,15 +40,15 @@ pub struct ProjectObjectiveValue
     pub percent_scheduled: (usize, Percent),
 }
 
-/// Represents a tactical objective value with multiple optimization criteria (assumes minimization)
+/// Represents a project objective value with multiple optimization criteria (assumes minimization)
 impl ProjectObjectiveValue
 {
-    pub fn new(tactical_options: &ProjectOptions) -> Self
+    pub fn new(project_options: &ProjectOptions) -> Self
     {
         Self {
             objective_value: u64::MAX,
-            urgency: (tactical_options.urgency, u64::MAX),
-            resource_penalty: (tactical_options.resource_penalty, u64::MAX),
+            urgency: (project_options.urgency, u64::MAX),
+            resource_penalty: (project_options.resource_penalty, u64::MAX),
             percent_scheduled: (usize::MIN, Percent::new(0, 100).unwrap()),
         }
     }
@@ -64,8 +64,8 @@ impl ProjectObjectiveValue
 pub struct ProjectSolution
 {
     pub(crate) objective_value: ProjectObjectiveValue,
-    pub(crate) tactical_work_orders: ProjectScheduledWorkOrders,
-    pub(crate) tactical_loadings: ProjectResources,
+    pub(crate) project_work_orders: ProjectScheduledWorkOrders,
+    pub(crate) project_loadings: ProjectResources,
 }
 
 impl std::fmt::Debug for ProjectSolution
@@ -73,22 +73,22 @@ impl std::fmt::Debug for ProjectSolution
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
         if f.alternate() {
-            let tactical_work_orders = self.tactical_work_orders.0.len();
+            let project_work_orders = self.project_work_orders.0.len();
 
             write!(
                 f,
                 "{}",
                 format!(
-                    "{:#?}\nnumber of tactical work orders: {}\n{:#?}",
-                    self.objective_value, tactical_work_orders, self.tactical_loadings,
+                    "{:#?}\nnumber of project work orders: {}\n{:#?}",
+                    self.objective_value, project_work_orders, self.project_loadings,
                 )
                 .bright_blue()
             )
         } else {
             f.debug_struct("ProjectSolution")
                 .field("objective_value", &self.objective_value)
-                .field("tactical_work_orders", &self.tactical_work_orders)
-                .field("tactical_loadings", &self.tactical_loadings)
+                .field("project_work_orders", &self.project_work_orders)
+                .field("project_loadings", &self.project_loadings)
                 .finish()
         }
     }
@@ -101,8 +101,8 @@ impl Solution for ProjectSolution
 
     fn from_parameters(parameters: &Self::Parameters) -> Result<Self>
     {
-        let tactical_loadings_inner: HashMap<Skill, Days> = parameters
-            .tactical_capacity
+        let project_loadings_inner: HashMap<Skill, Days> = parameters
+            .project_capacity
             .resources
             .iter()
             .map(|(wo, days)| {
@@ -111,18 +111,18 @@ impl Solution for ProjectSolution
             })
             .collect();
 
-        event!(target: "developer", Level::INFO, tactical_capacity = ?parameters.tactical_capacity);
+        event!(target: "developer", Level::INFO, project_capacity = ?parameters.project_capacity);
 
-        let tactical_scheduled_work_orders_inner: HashMap<_, _> = parameters
-            .tactical_work_orders
+        let project_scheduled_work_orders_inner: HashMap<_, _> = parameters
+            .project_work_orders
             .keys()
             .map(|won| (*won, WhereIsWorkOrder::NotScheduled))
             .collect();
 
         Ok(Self {
-            objective_value: ProjectObjectiveValue::new(&parameters.tactical_options),
-            tactical_work_orders: ProjectScheduledWorkOrders(tactical_scheduled_work_orders_inner),
-            tactical_loadings: ProjectResources::new(tactical_loadings_inner),
+            objective_value: ProjectObjectiveValue::new(&parameters.project_options),
+            project_work_orders: ProjectScheduledWorkOrders(project_scheduled_work_orders_inner),
+            project_loadings: ProjectResources::new(project_loadings_inner),
         })
     }
 
@@ -138,48 +138,48 @@ where
 {
     fn swap(id: &ActorCompositeId, solution: SolutionState<Self>, system_solution: &mut Ss)
     {
-        system_solution.tactical_swap(id, solution);
+        system_solution.project_swap(id, solution);
     }
 }
 
 impl ProjectSolution
 {
-    pub fn tactical_scheduled_days(
+    pub fn project_scheduled_days(
         &self,
         work_order_number: &WorkOrderNumber,
         activity_number: &ActivityNumber,
     ) -> Result<&Vec<(Day, Work)>>
     {
-        let tactical_day = &self
-            .tactical_work_orders
+        let project_day = &self
+            .project_work_orders
             .0
             .get(work_order_number)
             .with_context(|| {
-                format!("WorkOrderNumber: {work_order_number:?} was not present in the tactical solution")
+                format!("WorkOrderNumber: {work_order_number:?} was not present in the project solution")
             })?
-            .tactical_operations()
+            .project_operations()
             .with_context(|| {
-                format!("WorkOrderNumber: {work_order_number:?} was not scheduled for the tactical solution")
+                format!("WorkOrderNumber: {work_order_number:?} was not scheduled for the project solution")
             })?
             .0
             .get(activity_number)
             .with_context(|| {
-                format!("ActivityNumber: {activity_number:?} was not present in the tactical solution")
+                format!("ActivityNumber: {activity_number:?} was not present in the project solution")
             })?
             .scheduled;
 
-        Ok(tactical_day)
+        Ok(project_day)
     }
 
-    pub fn tactical_insert_work_order(
+    pub fn project_insert_work_order(
         &mut self,
         work_order_number: WorkOrderNumber,
-        tactical_scheduled_operations: ProjectScheduledOperations,
+        project_scheduled_operations: ProjectScheduledOperations,
     )
     {
-        self.tactical_work_orders.0.insert(
+        self.project_work_orders.0.insert(
             work_order_number,
-            WhereIsWorkOrder::Project(tactical_scheduled_operations),
+            WhereIsWorkOrder::Project(project_scheduled_operations),
         );
     }
 }
@@ -191,18 +191,18 @@ pub struct ProjectScheduledWorkOrders(
 
 pub trait ProjectWhereIsWorkOrder
 {
-    fn is_tactical(&self) -> bool;
+    fn is_project(&self) -> bool;
 
-    fn tactical_operations(&self) -> Result<&ProjectScheduledOperations>;
+    fn project_operations(&self) -> Result<&ProjectScheduledOperations>;
 }
 impl ProjectWhereIsWorkOrder for WhereIsWorkOrder<ProjectScheduledOperations>
 {
-    fn is_tactical(&self) -> bool
+    fn is_project(&self) -> bool
     {
         matches!(self, WhereIsWorkOrder::Project(_))
     }
 
-    fn tactical_operations(&self) -> Result<&ProjectScheduledOperations>
+    fn project_operations(&self) -> Result<&ProjectScheduledOperations>
     {
         match self {
             WhereIsWorkOrder::Weekly(_) => bail!(
@@ -210,8 +210,8 @@ impl ProjectWhereIsWorkOrder for WhereIsWorkOrder<ProjectScheduledOperations>
                 std::any::type_name::<ProjectScheduledOperations>(),
                 std::any::type_name_of_val(self),
             ),
-            WhereIsWorkOrder::Project(tactical_scheduled_operations) => {
-                Ok(tactical_scheduled_operations)
+            WhereIsWorkOrder::Project(project_scheduled_operations) => {
+                Ok(project_scheduled_operations)
             }
             WhereIsWorkOrder::NotScheduled => bail!(
                 "The work order has not been scheduled yet, you are most likely calling this method before complete initialization"
@@ -226,7 +226,7 @@ impl ProjectScheduledWorkOrders
     {
         self.0
             .iter()
-            .filter(|(_won, sch_wo)| sch_wo.is_tactical())
+            .filter(|(_won, sch_wo)| sch_wo.is_project())
             .count()
     }
 }
@@ -250,11 +250,11 @@ impl Display for ProjectScheduledOperations
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
-        let mut tactical_operations = self.0.iter().collect::<Vec<_>>();
-        tactical_operations
+        let mut project_operations = self.0.iter().collect::<Vec<_>>();
+        project_operations
             .sort_by(|a, b| a.1.work_order_activity.1.cmp(&b.1.work_order_activity.1));
 
-        for operation_solution in tactical_operations {
+        for operation_solution in project_operations {
             write!(f, "activity: {:#?}", operation_solution.0)?;
             write!(f, "{}", operation_solution.1)?;
         }
@@ -268,12 +268,12 @@ pub struct ProjectSolutionBuilder(ProjectSolution);
 #[allow(dead_code)]
 impl ProjectSolutionBuilder
 {
-    pub fn with_tactical_days(
+    pub fn with_project_days(
         mut self,
-        tactical_days: HashMap<WorkOrderNumber, WhereIsWorkOrder<ProjectScheduledOperations>>,
+        project_days: HashMap<WorkOrderNumber, WhereIsWorkOrder<ProjectScheduledOperations>>,
     ) -> Self
     {
-        self.0.tactical_work_orders.0 = tactical_days;
+        self.0.project_work_orders.0 = project_days;
         self
     }
 
@@ -281,8 +281,8 @@ impl ProjectSolutionBuilder
     {
         ProjectSolution {
             objective_value: self.0.objective_value,
-            tactical_work_orders: self.0.tactical_work_orders,
-            tactical_loadings: self.0.tactical_loadings,
+            project_work_orders: self.0.project_work_orders,
+            project_loadings: self.0.project_loadings,
         }
     }
 }

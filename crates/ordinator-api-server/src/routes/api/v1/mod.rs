@@ -3,7 +3,7 @@ mod orchestrator;
 pub mod solution_status;
 mod strategic;
 mod supervisor;
-mod tactical;
+mod project;
 mod technician;
 
 use std::sync::Arc;
@@ -16,7 +16,7 @@ use ordinator_orchestrator::Orchestrator;
 use solution_status::solution_status_routes;
 use strategic::scheduler_nest;
 use supervisor::supervisor_routes;
-use tactical::tactical_route;
+use project::project_route;
 use technician::technician_routes;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
@@ -29,7 +29,7 @@ pub async fn api_scope(
         .nest("/scheduler/", scheduler_nest(state.clone()).await)
         .nest("/export", export_xlsx(state.clone()).await)
         .nest("/orchestrator", orchestrator_api_scope(state.clone()).await)
-        .nest("/tactical", tactical_route(state.clone()).await)
+        .nest("/project", project_route(state.clone()).await)
         .nest("/supervisor", supervisor_routes(state.clone()).await)
         .nest("/technician", technician_routes(state.clone()).await)
         .nest(

@@ -1,6 +1,6 @@
 # Should this be on an per asset basis? 
 [time_input]
 number_of_strategic_periods = 52
-number_of_tactical_periods = 4
+number_of_project_periods = 4
 number_of_days = 150
 number_of_supervisor_periods = 3

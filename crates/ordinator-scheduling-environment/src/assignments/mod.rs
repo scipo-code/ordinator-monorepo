@@ -84,7 +84,7 @@ impl SavedAssignment
                     technicians,
                 )
             }
-            ForcedWorkOrder::Days(tactical_force_type) => match tactical_force_type {
+            ForcedWorkOrder::Days(project_force_type) => match project_force_type {
                 work_order::ProjectForceType::OnlyStartDay(day) => {
                     let technicians = id.iter().map(|e| (e.clone(), None)).collect::<HashSet<_>>();
                     Assignment::new(
@@ -119,14 +119,14 @@ impl SavedAssignment
         Ok(())
     }
 
-    pub fn make_assignment_for_tactical(
+    pub fn make_assignment_for_project(
         &mut self,
         work_order_number: WorkOrderNumber,
         work_order: &ForcedWorkOrder,
         day: Day,
     ) -> Result<()>
     {
-        // Creates a tactical assignment with the given WorkOrder and day. Returns
+        // Creates a project assignment with the given WorkOrder and day. Returns
         // an error if the day conflicts with the work order constraints.
         let assignment = match work_order {
             ForcedWorkOrder::Period(period) => {
@@ -145,7 +145,7 @@ impl SavedAssignment
                     HashSet::new(),
                 )
             }
-            ForcedWorkOrder::Days(tactical_force_type) => match tactical_force_type {
+            ForcedWorkOrder::Days(project_force_type) => match project_force_type {
                 work_order::ProjectForceType::OnlyStartDay(work_order_day) => {
                     ensure!(
                         *work_order_day == day,
@@ -181,7 +181,7 @@ impl SavedAssignment
         Ok(())
     }
 
-    pub fn assignment_for_tactical(&self) -> Vec<(&Uuid, &AnyAssignment)>
+    pub fn assignment_for_project(&self) -> Vec<(&Uuid, &AnyAssignment)>
     {
         self.assignments
             .iter()

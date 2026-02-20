@@ -55,7 +55,7 @@ pub struct WorkOrderResponse
 pub struct ApiSolution
 {
     pub strategic: String,   // TODO: Replace with ApiWeekly type
-    pub tactical: String,    // TODO: Replace with ApiProject type
+    pub project: String,    // TODO: Replace with ApiProject type
     pub supervisor: String,  // TODO: Replace with HashMap<Id, ApiDaily>
     pub operational: String, // TODO: Replace with HashMap<Id, ApiOperational>
 }

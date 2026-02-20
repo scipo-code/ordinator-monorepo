@@ -19,9 +19,9 @@ use tracing::Level;
 use tracing::event;
 
 use super::Algorithm;
-use super::tactical_parameters::ProjectParameters;
-use super::tactical_solution::ProjectSolution;
-use super::tactical_solution::ProjectWhereIsWorkOrder;
+use super::project_parameters::ProjectParameters;
+use super::project_solution::ProjectSolution;
+use super::project_solution::ProjectWhereIsWorkOrder;
 
 type TotalExcessHours = Work;
 
@@ -46,13 +46,13 @@ where
 
         for (_work_order_number, solution) in &self
             .solution
-            .tactical_work_orders
+            .project_work_orders
             .0
             .iter()
-            .filter(|(_, whe_tac_sch)| whe_tac_sch.is_tactical())
+            .filter(|(_, whe_tac_sch)| whe_tac_sch.is_project())
             .collect::<Vec<_>>()
         {
-            for operation_solution in solution.tactical_operations()?.0.values() {
+            for operation_solution in solution.project_operations()?.0.values() {
                 let resource = &operation_solution.resource;
 
                 for (day, load) in &operation_solution.scheduled {
@@ -66,7 +66,7 @@ where
         }
 
         for resource in Skill::iter() {
-            for day in self.parameters.tactical_days.iter().enumerate() {
+            for day in self.parameters.project_days.iter().enumerate() {
                 let resource_map = match aggregated_load.get(&resource) {
                     Some(map) => Cow::Borrowed(map),
                     None => Cow::Owned(HashMap::new()),
@@ -76,7 +76,7 @@ where
                 let agg_load = resource_map.get(day.1).unwrap_or(&zero_work);
                 let sch_load = self
                     .solution
-                    .tactical_loadings
+                    .project_loadings
                     .get_resource(&resource, day.0)
                     // Asserts must not depend on initialization details
                     .unwrap_or(&zero_work);
@@ -102,10 +102,10 @@ where
     fn asset_that_capacity_is_not_exceeded(&self) -> Result<TotalExcessHours>
     {
         let mut total_excess_hours = Work::from(0.0);
-        for (resource, days) in &self.solution.tactical_loadings.resources {
+        for (resource, days) in &self.solution.project_loadings.resources {
             let capacity_days = self
                 .parameters
-                .tactical_capacity
+                .project_capacity
                 .resources
                 .get(resource)
                 .cloned()
@@ -114,7 +114,7 @@ where
             for (load, capacity) in days.days.iter().zip(capacity_days.days) {
                 // let capacity = self
                 //     .parameters
-                //     .tactical_capacity
+                //     .project_capacity
                 //     .resources.
                 //     .get_resource(resource, day)?;
 
@@ -134,17 +134,17 @@ where
 
     fn assert_that_total_loading_is_equal_to_total_scheduled(&self) -> Result<TotalExcessHours>
     {
-        let loadings_work = self.solution.tactical_loadings.total_hours();
+        let loadings_work = self.solution.project_loadings.total_hours();
 
         let mut scheduled_work = Work::from(0.0);
         // Work::from(0.0),
-        for work_order_solution in &self.solution.tactical_work_orders.0 {
+        for work_order_solution in &self.solution.project_work_orders.0 {
             let work_order_work = &self
                 .parameters
-                .tactical_work_orders
+                .project_work_orders
                 .get(work_order_solution.0)
                 .expect("Parameters should always cover the Solution")
-                .tactical_operation_parameters;
+                .project_operation_parameters;
 
             if let WhereIsWorkOrder::Project(wo) = work_order_solution.1 {
                 // TODO: Project should continue searching when unable to fit an operation, not stop
@@ -239,11 +239,11 @@ where
 // optimized_work_order.scheduled_period {                     Some(period) =>
 // period,                     None => return ConstraintState::Feasible,
 //                 };
-//                 if !self.tactical_periods.contains(&scheduled_period) {
+//                 if !self.project_periods.contains(&scheduled_period) {
 //                     error!(work_order_number = ?_work_order_number,
-// scheduled_period = ?scheduled_period, tactical_periods =
-// ?self.tactical_periods, "Project period does not contain the scheduled
-// period of the tactical work order");                     return
+// scheduled_period = ?scheduled_period, project_periods =
+// ?self.project_periods, "Project period does not contain the scheduled
+// period of the project work order");                     return
 // ConstraintState::Infeasible(format!(                         "{:?} has a
 // wrong scheduled period {}",                         _work_order_number,
 // scheduled_period                     ));

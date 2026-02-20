@@ -11,7 +11,7 @@ use ordinator_scheduling_environment::work_order::work_order_analytic::status_co
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_strategic_actor::algorithm::strategic_solution::WeeklySolution;
 use ordinator_supervisor_actor::algorithm::supervisor_solution::DailySolution;
-use ordinator_tactical_actor::algorithm::tactical_solution::ProjectSolution;
+use ordinator_project_actor::algorithm::project_solution::ProjectSolution;
 use serde::Deserialize;
 use serde::Serialize;
 use strum::IntoEnumIterator;

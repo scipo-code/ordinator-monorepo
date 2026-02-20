@@ -12,7 +12,7 @@ ordinator-configuration = { path = "../ordinator-configuration"}
 
 
 ordinator-strategic-actor = { path = "../ordinator-strategic-actor" }
-ordinator-tactical-actor = { path = "../ordinator-tactical-actor" }
+ordinator-project-actor = { path = "../ordinator-project-actor" }
 ordinator-supervisor-actor = { path = "../ordinator-supervisor-actor" }
 ordinator-operational-actor = { path = "../ordinator-operational-actor" }
 

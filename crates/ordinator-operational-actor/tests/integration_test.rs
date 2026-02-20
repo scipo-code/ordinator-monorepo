@@ -88,7 +88,7 @@ impl ProjectInterface for TestProject
         todo!()
     }
 
-    fn tactical_period<'a>(
+    fn project_period<'a>(
         &self,
         work_order_number: &WorkOrderNumber,
         periods: &'a [Period],
@@ -110,7 +110,7 @@ impl ProjectInterface for TestProject
         todo!()
     }
 
-    fn tactical_loadings(
+    fn project_loadings(
         &self,
     ) -> std::collections::BTreeMap<
         Skill,
@@ -144,12 +144,12 @@ impl SystemSolutions for TestSystemSolution<DailySolution>
         todo!()
     }
 
-    fn tactical_actor_solution(&self) -> anyhow::Result<&Self::Project>
+    fn project_actor_solution(&self) -> anyhow::Result<&Self::Project>
     {
         todo!()
     }
 
-    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<TestProject>)
+    fn project_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<TestProject>)
     where
         Self::Project: ordinator_orchestrator_actor_traits::Solution,
     {

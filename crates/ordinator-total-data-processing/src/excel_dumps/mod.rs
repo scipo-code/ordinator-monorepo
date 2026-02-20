@@ -40,7 +40,7 @@ use rust_xlsxwriter::IntoExcelData;
 //                 .write(row_number, 0, row_values.strategic_schedule.clone())
 //                 .unwrap();
 //             worksheet
-//                 .write(row_number, 1, row_values.tactical_schedule.clone())
+//                 .write(row_number, 1, row_values.project_schedule.clone())
 //                 .unwrap();
 //             worksheet
 //                 .write(row_number, 2, row_values.priority.clone())
@@ -160,7 +160,7 @@ use rust_xlsxwriter::IntoExcelData;
 // struct RowNames
 // {
 //     strategic_schedule: ReasonForNotScheduling,
-//     tactical_schedule: OptionDay,
+//     project_schedule: OptionDay,
 //     priority: Priority,
 //     revision: Revision,
 //     work_order_type: WorkOrderType,
@@ -234,18 +234,18 @@ use rust_xlsxwriter::IntoExcelData;
 // scheduling process".to_string()),         };
 
 //         for activity in work_order.op {
-//             let tactical_solution = shared_solution
-//                 .tactical_actor_solution()?
+//             let project_solution = shared_solution
+//                 .project_actor_solution()?
 //                 .start_and_finish_dates(&(work_order_number, *activity.0));
 
-//             let option_day = match tactical_solution {
-//                 Some(tactical_day) => OptionDay(Some(*tactical_day.0)),
+//             let option_day = match project_solution {
+//                 Some(project_day) => OptionDay(Some(*project_day.0)),
 //                 None => OptionDay(None),
 //             };
 
 //             let one_row = RowNames {
 //                 strategic_schedule: strategic_schedule.clone(),
-//                 tactical_schedule: option_day,
+//                 project_schedule: option_day,
 //                 priority: work_order.work_order_info.priority.clone(),
 //                 revision: work_order.work_order_info.revision.clone(),
 //                 work_order_type:
@@ -349,7 +349,7 @@ use rust_xlsxwriter::IntoExcelData;
 // fn make_header_row(worksheet: &mut Worksheet)
 // {
 //     worksheet.write(0, 0, "strategic_schedule").unwrap();
-//     worksheet.write(0, 1, "tactical_schedule").unwrap();
+//     worksheet.write(0, 1, "project_schedule").unwrap();
 //     worksheet.write(0, 2, "priority").unwrap();
 //     worksheet.write(0, 3, "revision").unwrap();
 //     worksheet.write(0, 4, "work_order_type").unwrap();

@@ -1,8 +1,8 @@
 mod assert_functions;
-pub mod tactical_interface;
-pub mod tactical_parameters;
-pub mod tactical_resources;
-pub mod tactical_solution;
+pub mod project_interface;
+pub mod project_parameters;
+pub mod project_resources;
+pub mod project_solution;
 
 use std::cmp::Ordering;
 use std::collections::HashSet;
@@ -41,16 +41,16 @@ use ordinator_scheduling_environment::Percent;
 use priority_queue::PriorityQueue;
 use rand::rng;
 use rand::seq::IndexedRandom;
-use tactical_solution::ProjectObjectiveValue;
-use tactical_solution::ProjectScheduledOperations;
-use tactical_solution::ProjectSolution;
+use project_solution::ProjectObjectiveValue;
+use project_solution::ProjectScheduledOperations;
+use project_solution::ProjectSolution;
 use tracing::event;
 use tracing::warn;
 use tracing::Level;
 
 use self::assert_functions::ProjectAssertions;
-use self::tactical_parameters::ProjectParameters;
-use self::tactical_solution::OperationSolution;
+use self::project_parameters::ProjectParameters;
+use self::project_solution::OperationSolution;
 
 // If using a single crate, call this directly
 #[derive(Debug)]
@@ -69,7 +69,7 @@ where
 // * What is the objective value?
 // * A function for each of the constraints of the problem.
 // FIX
-// Move the `tactical_days` into the parameters.
+// Move the `project_days` into the parameters.
 // QUESTION
 // I think that we should delete all these, and turn the nested hashmaps into
 // Vec<Vec<Work>> instead. That would be a much better solution.
@@ -91,21 +91,21 @@ where
     {
         Ok(&self
             .parameters
-            .tactical_capacity
+            .project_capacity
             .resources
             .get(resource)
             .with_context(|| format!("No entry for resource{resource}"))?
             .days[day])
     }
 
-    fn determine_aggregate_excess(&self, tactical_objective_value: &mut ProjectObjectiveValue)
+    fn determine_aggregate_excess(&self, project_objective_value: &mut ProjectObjectiveValue)
     {
         let mut objective_value_from_excess = 0;
-        for (resources, days) in self.parameters.tactical_capacity.resources.iter() {
+        for (resources, days) in self.parameters.project_capacity.resources.iter() {
             // Avoid using `Day` directly; it's a core domain model with upcoming extensions in `SchedulingEnvironement`
             let loadings = self
                 .solution
-                .tactical_loadings
+                .project_loadings
                 .resources
                 .get(resources)
                 .cloned()
@@ -113,7 +113,7 @@ where
 
             let capacity = self
                 .parameters
-                .tactical_capacity
+                .project_capacity
                 .resources
                 .get(resources)
                 .cloned()
@@ -126,22 +126,22 @@ where
                 }
             }
         }
-        tactical_objective_value.resource_penalty.1 = objective_value_from_excess;
+        project_objective_value.resource_penalty.1 = objective_value_from_excess;
     }
 
-    fn determine_tardiness(&mut self, tactical_objective_value: &mut ProjectObjectiveValue)
+    fn determine_tardiness(&mut self, project_objective_value: &mut ProjectObjectiveValue)
     {
         let mut objective_value_from_tardiness = 0;
         for (work_order_number, _solution) in self
             .solution
-            .tactical_work_orders
+            .project_work_orders
             .0
             .iter()
-            .filter(|(_, ts)| ts.is_tactical())
+            .filter(|(_, ts)| ts.is_project())
         {
-            let tactical_parameter = self
+            let project_parameter = self
                 .parameters
-                .tactical_work_orders
+                .project_work_orders
                 .get(work_order_number)
                 .unwrap();
 
@@ -158,16 +158,16 @@ where
                     match where_is_work_order {
                         WhereIsWorkOrder::Weekly(period) => period.start_datetime().date_naive(),
                         WhereIsWorkOrder::Project(period) => period.start_datetime().date_naive(),
-                        // ISSUE #000 TODO [ ] 2025-07-22 fix the tactical objective
+                        // ISSUE #000 TODO [ ] 2025-07-22 fix the project objective
                         WhereIsWorkOrder::NotScheduled => {
-                            tactical_parameter.earliest_allowed_start_date
+                            project_parameter.earliest_allowed_start_date
                         }
                     }
                 })
                 .expect("All edge cases have been handled above");
 
-            let mut activity_keys: Vec<ActivityNumber> = tactical_parameter
-                .tactical_operation_parameters
+            let mut activity_keys: Vec<ActivityNumber> = project_parameter
+                .project_operation_parameters
                 .keys()
                 .cloned()
                 .collect();
@@ -178,8 +178,8 @@ where
 
             let last_day = self
                 .solution
-                .tactical_scheduled_days(work_order_number, last_activity)
-                .expect("Missing state from the tactical agent when calculating objective value")
+                .project_scheduled_days(work_order_number, last_activity)
+                .expect("Missing state from the project agent when calculating objective value")
                 .last()
                 .unwrap()
                 .0
@@ -189,19 +189,19 @@ where
             let day_difference = (last_day - period_start_date).max(TimeDelta::zero());
 
             objective_value_from_tardiness +=
-                tactical_parameter.weight * day_difference.num_days() as u64;
+                project_parameter.weight * day_difference.num_days() as u64;
         }
-        tactical_objective_value.urgency.1 = objective_value_from_tardiness;
+        project_objective_value.urgency.1 = objective_value_from_tardiness;
     }
 
     fn determine_loading(&self) -> f64
     {
-        let length = self.parameters.tactical_days.len();
+        let length = self.parameters.project_days.len();
         let mut total_capacity = Work::from(0.0);
         let mut total_loading = Work::from(0.0);
 
-        let loadings = &self.solution.tactical_loadings;
-        let capacity = &self.parameters.tactical_capacity;
+        let loadings = &self.solution.project_loadings;
+        let capacity = &self.parameters.project_capacity;
 
         // Combine the keys
         let loading_keys = loadings.resources.keys();
@@ -233,7 +233,7 @@ where
         total_loading.to_f64() / total_capacity.to_f64()
     }
 
-    fn force_schedule_tactical_work_orders(
+    fn force_schedule_project_work_orders(
         &mut self,
         forced_operations: Vec<WorkOrderNumber>,
     ) -> Result<()>
@@ -245,13 +245,13 @@ where
         for work_order_number in forced_operations {
             let parameters = self
                 .parameters
-                .tactical_work_orders
+                .project_work_orders
                 .get(&work_order_number)
                 .context("WorkOrder not present in ProjectActor")?;
 
             // TODO: Create a generic forced scheduling concept for reuse
             let start_days = parameters
-                .tactical_operation_parameters
+                .project_operation_parameters
                 .iter()
                 .map(|e| {
                     (
@@ -263,7 +263,7 @@ where
                 })
                 .collect::<Vec<_>>();
 
-            determine_forced_tactical_assignment(&start_days);
+            determine_forced_project_assignment(&start_days);
 
             // let operation_solution = OperationSolution::new(scheduled,
             // resource, number, work_remaining, work_order_number,
@@ -275,12 +275,12 @@ where
 
     fn determine_percent_scheduled(
         &self,
-        tactical_objective_value: &mut ProjectObjectiveValue,
+        project_objective_value: &mut ProjectObjectiveValue,
     ) -> Result<()>
     {
-        let tactical_scheduled = self
+        let project_scheduled = self
             .solution
-            .tactical_work_orders
+            .project_work_orders
             .0
             .iter()
             .filter(|(_k, v)| match v {
@@ -290,10 +290,10 @@ where
             })
             .count();
 
-        let tactical_total = self.parameters.tactical_work_orders.len();
+        let project_total = self.parameters.project_work_orders.len();
 
-        tactical_objective_value.percent_scheduled.1 =
-            Percent::new(tactical_scheduled as u64, tactical_total as u64)?;
+        project_objective_value.percent_scheduled.1 =
+            Percent::new(project_scheduled as u64, project_total as u64)?;
 
         Ok(())
     }
@@ -301,7 +301,7 @@ where
 
 // TODO: Add resource-specific and people count logic
 #[allow(unused_assignments)]
-fn determine_forced_tactical_assignment(
+fn determine_forced_project_assignment(
     scheduled_days: &[(Option<Day>, Work, Work, u64)],
 ) -> Vec<VecDeque<(Day, Work)>>
 {
@@ -448,12 +448,12 @@ where
 
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
-        // TODO: Unschedule work orders that fall outside tactical_days window
+        // TODO: Unschedule work orders that fall outside project_days window
         // TODO: Implement force scheduling method in ActorBasedLargeNeighborhoodSearch
         self.force_schedule()
-            .context("Could not force schedule tactical solutions")?;
+            .context("Could not force schedule project solutions")?;
 
-        warn!(target: "debug", tactical_solution = ?self.solution);
+        warn!(target: "debug", project_solution = ?self.solution);
         Ok(true)
     }
 
@@ -462,7 +462,7 @@ where
         // TODO: Optimize with COW or selective cloning of SharedSolution fields
         self.arc_swap_shared_solution.rcu(|old| {
             let mut shared_solution = (**old).clone();
-            shared_solution.tactical_swap(&self.id, self.solution.clone());
+            shared_solution.project_swap(&self.id, self.solution.clone());
             Arc::new(shared_solution)
         });
     }
@@ -473,18 +473,18 @@ where
         ObjectiveValueType<<<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective>,
     >
     {
-        let options = &self.parameters.tactical_options;
+        let options = &self.parameters.project_options;
 
-        let mut tactical_objective_value = ProjectObjectiveValue::new(options);
+        let mut project_objective_value = ProjectObjectiveValue::new(options);
 
-        self.determine_tardiness(&mut tactical_objective_value);
+        self.determine_tardiness(&mut project_objective_value);
 
         // Calculate penalty for exceeding the capacity
-        self.determine_aggregate_excess(&mut tactical_objective_value);
+        self.determine_aggregate_excess(&mut project_objective_value);
 
-        self.determine_percent_scheduled(&mut tactical_objective_value)?;
+        self.determine_percent_scheduled(&mut project_objective_value)?;
 
-        tactical_objective_value.aggregate_objectives();
+        project_objective_value.aggregate_objectives();
 
         event!(
             Level::INFO,
@@ -492,11 +492,11 @@ where
             aggregate_load = self.determine_loading()
         );
 
-        if tactical_objective_value.objective_value < self.solution.objective_value.objective_value
+        if project_objective_value.objective_value < self.solution.objective_value.objective_value
         {
-            Ok(ObjectiveValueType::Better(tactical_objective_value))
+            Ok(ObjectiveValueType::Better(project_objective_value))
         } else {
-            Ok(ObjectiveValueType::Worse(tactical_objective_value))
+            Ok(ObjectiveValueType::Worse(project_objective_value))
         }
     }
 
@@ -520,10 +520,10 @@ where
                 )
                 .bright_red()
             })?;
-        for (work_order_number, solution) in &self.solution.tactical_work_orders.0.clone() {
-            let tactical_parameter = self
+        for (work_order_number, solution) in &self.solution.project_work_orders.0.clone() {
+            let project_parameter = self
                 .parameters
-                .tactical_work_orders
+                .project_work_orders
                 .get(work_order_number)
                 .expect("ProjectParameter should ALWAYS be available for a ProjectSolution")
                 .clone();
@@ -531,7 +531,7 @@ where
             // All the work orders that does not have a solution gets pushed to the queue.
             if matches!(solution, WhereIsWorkOrder::NotScheduled) {
                 self.solution_intermediate
-                    .push(*work_order_number, tactical_parameter.weight);
+                    .push(*work_order_number, project_parameter.weight);
             }
         }
 
@@ -557,12 +557,12 @@ where
             );
 
             event!(target: "developer", Level::WARN, start_day_index);
-            let tactical_parameter = match loop_state {
+            let project_parameter = match loop_state {
                 LoopState::Unscheduled => {
                     start_day_index += 1;
 
                     self.parameters
-                        .tactical_work_orders
+                        .project_work_orders
                         .get(&current_work_order_number)
                         .unwrap()
                 }
@@ -578,13 +578,13 @@ where
                     };
 
                     self.parameters
-                        .tactical_work_orders
+                        .project_work_orders
                         .get(&current_work_order_number)
                         .unwrap()
                 }
                 LoopState::ReleaseFromProject => {
                     self.solution
-                        .tactical_work_orders
+                        .project_work_orders
                         .0
                         .insert(current_work_order_number, WhereIsWorkOrder::NotScheduled);
 
@@ -599,7 +599,7 @@ where
                     };
 
                     self.parameters
-                        .tactical_work_orders
+                        .project_work_orders
                         .get(&current_work_order_number)
                         .unwrap()
                 }
@@ -609,9 +609,9 @@ where
 
             let allowed_starting_days = self
                 .parameters
-                .tactical_days
+                .project_days
                 .iter()
-                .filter(|day| tactical_parameter.earliest_allowed_start_date <= day.date)
+                .filter(|day| project_parameter.earliest_allowed_start_date <= day.date)
                 .nth(start_day_index);
 
             let Some(start_day) = allowed_starting_days else {
@@ -621,14 +621,14 @@ where
 
             let mut current_day = self
                 .parameters
-                .tactical_days
+                .project_days
                 .iter()
                 .filter(|date| start_day.date <= date.date)
                 .peekable();
 
-            for activity_number in tactical_parameter.tactical_operation_parameters.keys() {
-                let operation_parameters = tactical_parameter
-                    .tactical_operation_parameters
+            for activity_number in project_parameter.project_operation_parameters.keys() {
+                let operation_parameters = project_parameter
+                    .project_operation_parameters
                     .get(activity_number)
                     .expect("The work order should always have its corresponding parameters");
 
@@ -687,22 +687,22 @@ where
                     };
                 }
 
-                let calculated_tactical_work =
+                let calculated_project_work =
                     activity_load.iter().fold(Work::from(0.0), |mut acc, e| {
                         acc += e.1;
                         acc
                     });
 
-                if operation_parameters.work_remaining != calculated_tactical_work {
+                if operation_parameters.work_remaining != calculated_project_work {
                     loop_state = LoopState::ReleaseFromProject;
                     continue 'back_to_loop_state_handle;
                 }
 
                 ensure!(
-                    operation_parameters.work_remaining == calculated_tactical_work,
+                    operation_parameters.work_remaining == calculated_project_work,
                     "required_work: {}\noptimized_work: {}\nwork_order: {}\nactivity: {}\nnext day: {:?}",
                     operation_parameters.work_remaining,
-                    calculated_tactical_work,
+                    calculated_project_work,
                     current_work_order_number,
                     activity_number,
                     (current_day.peek()).clone(),
@@ -724,7 +724,7 @@ where
             loop_state = LoopState::Scheduled;
 
             self.solution
-                .tactical_insert_work_order(current_work_order_number, operation_solutions);
+                .project_insert_work_order(current_work_order_number, operation_solutions);
         }
         Ok(())
     }
@@ -737,7 +737,7 @@ where
         let mut rng = rng();
         let work_order_numbers: Vec<WorkOrderNumber> = self
             .solution
-            .tactical_work_orders
+            .project_work_orders
             .0
             .clone()
             .into_keys()
@@ -746,24 +746,24 @@ where
         let random_work_order_numbers = work_order_numbers.choose_multiple(
             &mut rng,
             self.parameters
-                .tactical_options
+                .project_options
                 .number_of_removed_work_orders,
         );
 
         // Log work order count for debugging
-        event!(target: "developer", Level::INFO, number_of_work_orders_in_tactical_solution = self.solution.tactical_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Project(_))).count());
+        event!(target: "developer", Level::INFO, number_of_work_orders_in_project_solution = self.solution.project_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Project(_))).count());
         for work_order_number in random_work_order_numbers {
             self.unschedule_specific_work_order(*work_order_number)
                 .with_context(|| {
                     format!(
-                        "Could not unschedule tactical work order: {:?}\n\
+                        "Could not unschedule project work order: {:?}\n\
                         Location: {}",
                         work_order_number,
                         Location::caller(),
                     )
                 })?;
         }
-        event!(target: "developer", Level::INFO, number_of_work_orders_in_tactical_solution = self.solution.tactical_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Project(_))).count());
+        event!(target: "developer", Level::INFO, number_of_work_orders_in_project_solution = self.solution.project_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Project(_))).count());
         Ok(())
     }
 
@@ -776,10 +776,10 @@ where
     {
         let forced_work_orders: Vec<_> = self
             .parameters
-            .tactical_work_orders
+            .project_work_orders
             .iter()
             .filter(|e| {
-                e.1.tactical_operation_parameters
+                e.1.project_operation_parameters
                     .iter()
                     .any(|e| e.1.forced_start_date.is_some())
             })
@@ -787,12 +787,12 @@ where
             .cloned()
             .collect();
 
-        self.force_schedule_tactical_work_orders(forced_work_orders)
+        self.force_schedule_project_work_orders(forced_work_orders)
     }
 
     fn throttling(&self, throttling: &ordinator_configuration::throttling::Throttling) -> u64
     {
-        throttling.tactical_throttling
+        throttling.project_throttling
     }
 }
 
@@ -843,7 +843,7 @@ where
                 let load = &loadings.1;
                 let resource_loading = self
                     .solution
-                    .tactical_loadings
+                    .project_loadings
                     .get_resource(resource, day.day_index)?;
 
                 let new_load = match load_operation {
@@ -852,7 +852,7 @@ where
                 };
                 *self
                     .solution
-                    .tactical_loadings
+                    .project_loadings
                     // WARN [ ] 2025-07-02 It is crucial that the index is always at the right place
                     // in the code.
                     .get_resource_mut(resource, day.day_index)? = new_load;
@@ -868,7 +868,7 @@ where
     {
         let previous_solution = self
             .solution
-            .tactical_work_orders
+            .project_work_orders
             .0
             .insert(work_order_number, WhereIsWorkOrder::NotScheduled)
             .context("This means that the ProjectAlgorithm has been initialized wrong")?;
@@ -886,12 +886,12 @@ where
     {
         let remaining_capacity = self
             .parameters
-            .tactical_capacity
+            .project_capacity
             .get_resource(resource, day.day_index)
             .ok()?
             - self
                 .solution
-                .tactical_loadings
+                .project_loadings
                 .get_resource(resource, day.day_index)
                 .ok()?;
 
@@ -961,7 +961,7 @@ pub mod tests
     use ordinator_scheduling_environment::work_order::operation::Work;
     use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
-    use super::determine_forced_tactical_assignment;
+    use super::determine_forced_project_assignment;
     use crate::algorithm::determine_load;
 
     #[test]
@@ -1025,7 +1025,7 @@ pub mod tests
     {
         let day = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
         let scheduled_days = vec![(Some(day.clone()), Work::from(4.0), Work::from(6.0), 1)];
-        let value = determine_forced_tactical_assignment(&scheduled_days);
+        let value = determine_forced_project_assignment(&scheduled_days);
 
         assert_eq!(value, vec![vec![(day.clone(), Work::from(4.0))]])
     }
@@ -1036,7 +1036,7 @@ pub mod tests
         let day = Day::new(3, NaiveDate::from_ymd_opt(2025, 1, 1).unwrap());
         let day_2 = Day::new(4, NaiveDate::from_ymd_opt(2025, 1, 2).unwrap());
         let scheduled_days = vec![(Some(day.clone()), Work::from(8.0), Work::from(6.0), 1)];
-        let value = determine_forced_tactical_assignment(&scheduled_days);
+        let value = determine_forced_project_assignment(&scheduled_days);
 
         assert_eq!(
             value,
@@ -1058,7 +1058,7 @@ pub mod tests
             (Some(day_2.clone()), Work::from(4.0), Work::from(6.0), 1),
         ];
         // TODO [ ] - Add the Date
-        let value = determine_forced_tactical_assignment(&scheduled_days);
+        let value = determine_forced_project_assignment(&scheduled_days);
 
         assert_eq!(
             value,
@@ -1084,7 +1084,7 @@ pub mod tests
             (Some(day_2.clone()), Work::from(4.0), Work::from(6.0), 1),
         ];
         // TODO [ ] - Add the Date
-        let value = determine_forced_tactical_assignment(&scheduled_days);
+        let value = determine_forced_project_assignment(&scheduled_days);
 
         assert_eq!(
             value,
@@ -1112,7 +1112,7 @@ pub mod tests
     //         (Some(day_2.clone()), Work::from(4.0), Work::from(6.0), 1),
     //     ];
     //     // TODO [ ] - Add the Date
-    //     let value = determine_forced_tactical_assignment(&scheduled_days);
+    //     let value = determine_forced_project_assignment(&scheduled_days);
 
     //     assert_eq!(value, vec![
     //         vec![
@@ -1142,7 +1142,7 @@ pub mod tests
     //         (Some(day_2.clone()), Work::from(4.0), Work::from(6.0), 1),
     //     ];
     //     // TODO [ ] - Add the Date
-    //     let value = determine_forced_tactical_assignment(&scheduled_days);
+    //     let value = determine_forced_project_assignment(&scheduled_days);
 
     //     assert_eq!(value, vec![
     //         vec![

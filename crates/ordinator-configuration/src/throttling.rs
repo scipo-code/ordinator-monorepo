@@ -5,7 +5,7 @@ use serde::Serialize;
 pub struct Throttling
 {
     pub strategic_throttling: u64,
-    pub tactical_throttling: u64,
+    pub project_throttling: u64,
     pub supervisor_throttling: u64,
     pub operational_throttling: u64,
 }

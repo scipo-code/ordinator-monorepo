@@ -6,12 +6,12 @@ strategic_options.urgency_weight = 1
 strategic_options.resource_penalty_weight = 1000000
 strategic_options.clustering_weight = 1000
 
-[tactical]
-id = "DF-tactical"
-number_of_tactical_days = 120
-tactical_options.number_of_removed_work_orders = 25
-tactical_options.urgency = 1
-tactical_options.resource_penalty = 10000000
+[project]
+id = "DF-project"
+number_of_project_days = 120
+project_options.number_of_removed_work_orders = 25
+project_options.urgency = 1
+project_options.resource_penalty = 10000000
 
 [[supervisors]]
 id = "DF-main"

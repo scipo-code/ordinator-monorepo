@@ -53,11 +53,11 @@ pub use ordinator_supervisor_actor::messages::DailyRequestMessage;
 pub use ordinator_supervisor_actor::messages::DailyResponseMessage;
 pub use ordinator_supervisor_actor::messages::requests::DailyStatusMessage;
 pub use ordinator_supervisor_actor::messages::responses::DailyResponseStatus;
-use ordinator_tactical_actor::ProjectApi;
-use ordinator_tactical_actor::algorithm::tactical_solution::ProjectSolution;
-pub use ordinator_tactical_actor::messages::ProjectRequestMessage;
-pub use ordinator_tactical_actor::messages::ProjectResponseMessage;
-pub use ordinator_tactical_actor::messages::requests::ProjectStatusMessage;
+use ordinator_project_actor::ProjectApi;
+use ordinator_project_actor::algorithm::project_solution::ProjectSolution;
+pub use ordinator_project_actor::messages::ProjectRequestMessage;
+pub use ordinator_project_actor::messages::ProjectResponseMessage;
+pub use ordinator_project_actor::messages::requests::ProjectStatusMessage;
 // use ordinator_total_data_processing::excel_dumps::create_excel_dump;
 use serde::Deserialize;
 use serde::Serialize;
@@ -205,8 +205,8 @@ where
 
                 let days = scheduling_environment_guard.time_environment.days.clone();
 
-                let tactical_days = OrchestratorResponse::Days(days);
-                Ok(tactical_days)
+                let project_days = OrchestratorResponse::Days(days);
+                Ok(project_days)
             }
             OrchestratorRequest::CreateDailyAgent(
                 _asset,
@@ -310,7 +310,7 @@ impl ActorRegistry
 {
     fn new(
         strategic_agent_addr: Communication<WeeklyRequestMessage, WeeklyResponseMessage>,
-        tactical_agent_addr: Communication<ProjectRequestMessage, ProjectResponseMessage>,
+        project_agent_addr: Communication<ProjectRequestMessage, ProjectResponseMessage>,
         supervisor_agent_addrs: HashMap<
             ActorCompositeId,
             Communication<DailyRequestMessage, DailyResponseMessage>,
@@ -323,7 +323,7 @@ impl ActorRegistry
     {
         ActorRegistry {
             strategic_agent_sender: strategic_agent_addr,
-            tactical_agent_sender: tactical_agent_addr,
+            project_agent_sender: project_agent_addr,
             supervisor_agent_senders: supervisor_agent_addrs,
             operational_agent_senders: operational_actor_communication,
         }
@@ -406,7 +406,7 @@ where
             .insert(asset.clone(), system_solution);
         let dependencies = self.extract_factory_dependencies(asset)?;
 
-        let (strategic_id, tactical_id, supervisors, operationals) = {
+        let (strategic_id, project_id, supervisors, operationals) = {
             let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
             let actor_specifications = scheduling_environment_guard
                 .worker_environment
@@ -432,10 +432,10 @@ where
                 )?,
             );
 
-            let input_tactical = &actor_specifications.tactical();
+            let input_project = &actor_specifications.project();
             debug!(target: "developer", days = ?days);
-            let tactical_id = ActorCompositeId::new(
-                &actor_specifications.tactical().id,
+            let project_id = ActorCompositeId::new(
+                &actor_specifications.project().id,
                 vec![],
                 Availability::new(
                     days.first()
@@ -444,7 +444,7 @@ where
                         .and_hms_opt(0, 0, 0)
                         .context("Could not make a DateTime in Availability for ProjectActor")?
                         .and_utc(),
-                    days.get(input_tactical.number_of_tactical_days - 1)
+                    days.get(input_project.number_of_project_days - 1)
                         .or_else(|| days.last())
                         .unwrap()
                         .date
@@ -500,7 +500,7 @@ where
                 })
                 .collect::<Vec<_>>();
 
-            (strategic_id, tactical_id, supervisor_ids, operationals)
+            (strategic_id, project_id, supervisor_ids, operationals)
         };
 
         let strategic_communication = WeeklyApi::construct_actor(
@@ -513,15 +513,15 @@ where
         )
         .with_context(|| format!("Could not construct StartegicActor {strategic_id}"))?;
 
-        let tactical_communication = ProjectApi::construct_actor(
-            tactical_id.clone(),
+        let project_communication = ProjectApi::construct_actor(
+            project_id.clone(),
             dependencies.0.clone(),
             dependencies.1.clone(),
             dependencies.2.clone(),
             self.state_link_bus.lock().unwrap().add_rx(),
             self.error_sender.clone(),
         )
-        .with_context(|| format!("{tactical_id} could not be constructed"))?;
+        .with_context(|| format!("{project_id} could not be constructed"))?;
 
         let mut supervisor_communications = HashMap::default();
         for supervisor_id in supervisors {
@@ -553,7 +553,7 @@ where
 
         let agent_registry = ActorRegistry::new(
             strategic_communication,
-            tactical_communication,
+            project_communication,
             supervisor_communications,
             operational_communications,
         );
@@ -683,14 +683,14 @@ impl OrchestratorBuilder<StepConfiguration>
     pub fn system_configurations_manual(
         self,
         strategic_throttling: u64,
-        tactical_throttling: u64,
+        project_throttling: u64,
         supervisor_throttling: u64,
         operational_throttling: u64,
     ) -> OrchestratorBuilder<StepSchedulingEnvironment>
     {
         let throttling = Throttling {
             strategic_throttling,
-            tactical_throttling,
+            project_throttling,
             supervisor_throttling,
             operational_throttling,
         };

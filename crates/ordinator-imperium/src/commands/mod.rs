@@ -6,7 +6,7 @@ pub mod sap;
 pub mod status;
 pub mod strategic;
 pub mod supervisor;
-pub mod tactical;
+pub mod project;
 
 use orchestrator::OrchestratorCommands;
 use reqwest::blocking::Client;
@@ -17,7 +17,7 @@ use shared_types::SystemMessages;
 use status::StatusCommands;
 use status::WorkOrders;
 use strategic::WeeklyCommands;
-use tactical::ProjectCommands;
+use project::ProjectCommands;
 
 use self::operational::OperationalCommands;
 use self::supervisor::DailyCommands;
@@ -46,11 +46,11 @@ pub enum Commands
         #[clap(subcommand)]
         strategic_commands: WeeklyCommands,
     },
-    /// Access the tactical agent
+    /// Access the project agent
     Project
     {
         #[clap(subcommand)]
-        tactical_commands: ProjectCommands,
+        project_commands: ProjectCommands,
     },
     /// Access the supervisor agents
     Daily
@@ -122,7 +122,7 @@ pub fn handle_command(cli: Cli, client: &Client) -> SystemMessages
 
         Commands::Weekly { strategic_commands } => strategic_commands.execute(),
 
-        Commands::Project { tactical_commands } => tactical_commands.execute(client),
+        Commands::Project { project_commands } => project_commands.execute(client),
 
         Commands::Daily {
             supervisor_commands,

@@ -33,7 +33,7 @@ use crate::routes::api::AppError;
 #[utoipa::path(
     get,
     tag = "Scheduler",
-    path = "/tactical_algorithm_status",
+    path = "/project_algorithm_status",
     responses((status = 200, body = [Vec<String>]))
 )]
 pub async fn status<Ss>(
@@ -52,7 +52,7 @@ where
         .get(&asset)
         .unwrap()
         // .with_context(|| format!("Asset {} not initialized", &asset))?
-        .tactical_agent_sender;
+        .project_agent_sender;
 
     actor_registry_for_asset.from_agent(message).unwrap();
 
@@ -98,7 +98,7 @@ where
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let tactical_days = orchestrator
+    let project_days = orchestrator
         .system_solutions
         .lock()
         .unwrap_or_else(|_| panic!("Could not lock the SystemSolution for Asset: {}", &asset))
@@ -106,11 +106,11 @@ where
         .with_context(|| format!("SystemSolution for Asset: {} does not exist", &asset))
         .map_err(|e| AppError::Anyhow(e.to_string()))?
         .load()
-        .tactical_actor_solution()
+        .project_actor_solution()
         .map_err(|_| AppError::Anyhow(format!("No ProjectSolution exists for Asset: {}", &asset)))?
         .all_scheduled_tasks();
 
-    Ok(Json(tactical_days).into_response())
+    Ok(Json(project_days).into_response())
 }
 
 #[utoipa::path(
@@ -175,8 +175,8 @@ where
 
     scheduling_environment_lock
         .assignments
-        .make_assignment_for_tactical(work_order_number, &work_order, day.clone())
-        .with_context(|| "Could not make a tactical assignment".to_string())
+        .make_assignment_for_project(work_order_number, &work_order, day.clone())
+        .with_context(|| "Could not make a project assignment".to_string())
         .map_err(|e| AppError::Anyhow(e.to_string()))?;
 
     orchestrator
@@ -222,7 +222,7 @@ where
 {
     let asset = Asset::try_from(asset).map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    let tactical_days = orchestrator
+    let project_days = orchestrator
         .system_solutions
         .lock()
         .unwrap_or_else(|_| panic!("Could not lock the SystemSolution for Asset: {}", &asset))
@@ -230,9 +230,9 @@ where
         .with_context(|| format!("SystemSolution for Asset: {} does not exist", &asset))
         .map_err(|e| AppError::Anyhow(e.to_string()))?
         .load()
-        .tactical_actor_solution()
+        .project_actor_solution()
         .map_err(|_| AppError::Anyhow(format!("No ProjectSolution exists for Asset: {}", &asset)))?
-        .tactical_loadings();
+        .project_loadings();
 
     let days = orchestrator
         .scheduling_environment
@@ -242,13 +242,13 @@ where
         .days
         .clone();
 
-    info!(target: "developer", tactical_days = ?tactical_days);
+    info!(target: "developer", project_days = ?project_days);
 
-    if tactical_days
+    if project_days
         .values()
         .all(|work_vec| work_vec.len() == days.len())
     {
-        let daily_loadings = tactical_days
+        let daily_loadings = project_days
             .into_iter()
             .map(|(resource, work_vec)| {
                 let daily_loads = work_vec

@@ -21,11 +21,11 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                         .clustering_weight(1_000)
                 })
         })
-        .tactical(|tactical| {
-            tactical
+        .project(|project| {
+            project
                 .id("TEST_TACTICAL")
-                .number_of_tactical_days(120)
-                .tactical_options(|f| {
+                .number_of_project_days(120)
+                .project_options(|f| {
                     f.number_of_removed_work_orders(35)
                         .urgency(10)
                         .resource_penalty(10_000_000)

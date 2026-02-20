@@ -5,7 +5,7 @@ members = [
     "crates/ordinator-operational-actor",
     "crates/ordinator-strategic-actor",
     "crates/ordinator-supervisor-actor",
-    "crates/ordinator-tactical-actor",
+    "crates/ordinator-project-actor",
 
     "crates/ordinator-api-server",
     "crates/ordinator-configuration",
@@ -77,7 +77,7 @@ itertools ="*"
 mockall = "*"
 priority-queue = "*"
 proptest ="*"
-rand = "*"
+rand = "0.9"
 rgb = "*"
 serde = { version = "*", features = ["derive"] } 
 serde_json = "*"

@@ -26,7 +26,7 @@ pub struct SolutionVersionDto
 #[utoipa::path(
     get,
     tag = "Solution Status",
-    path = "/{asset}/tactical",
+    path = "/{asset}/project",
     params (
         ("asset" = AssetNames, Path),
     ),
@@ -36,7 +36,7 @@ pub struct SolutionVersionDto
         (status = 500, body = AppError),
     )
 )]
-pub async fn tactical_solution_status(
+pub async fn project_solution_status(
     State(orchestrator): State<Arc<Orchestrator<TotalSystemSolution>>>,
     Path(asset): Path<AssetNames>,
 ) -> Result<Json<SolutionVersionDto>, AppError>
@@ -51,7 +51,7 @@ pub async fn tactical_solution_status(
         .with_context(|| format!("{asset:#?} does not exist in the SystemSolution"))
         .map_err(|e| AppError::Anyhow(format!("{e:?}")))?
         .load()
-        .tactical
+        .project
         .as_ref()
         .context("ProjectSolution not present in SystemSolution")
         .map_err(|e| AppError::Anyhow(format!("{e:?}")))?

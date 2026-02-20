@@ -343,7 +343,7 @@ impl fmt::Display for SchedulingEnvironment
         \n  number of work orders: {}
         \n  number of worker entries: {}
         \n  number of strategic periods: {},
-        \n  number of tactical days: {}",
+        \n  number of project days: {}",
             self.work_orders.inner.len(),
             workers,
             self.time_environment.periods.len(),

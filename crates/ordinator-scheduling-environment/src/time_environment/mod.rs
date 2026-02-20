@@ -70,13 +70,13 @@ impl TimeEnvironmentBuilder
         self
     }
 
-    pub fn tactical_days(&mut self, first_day: &str, number_of_tactical_days: u64) -> &mut Self
+    pub fn project_days(&mut self, first_day: &str, number_of_project_days: u64) -> &mut Self
     {
         let mut first_day: DateTime<Utc> =
             first_day.parse().expect("You did not provide a valid date");
-        let mut tactical_days = |number_of_tactical_days: u64| -> Vec<Day> {
+        let mut project_days = |number_of_project_days: u64| -> Vec<Day> {
             let mut days: Vec<Day> = Vec::new();
-            for day_index in 0..number_of_tactical_days {
+            for day_index in 0..number_of_project_days {
                 days.push(Day::new(
                     day_index as usize,
                     first_day.date_naive().to_owned(),
@@ -85,7 +85,7 @@ impl TimeEnvironmentBuilder
             }
             days
         };
-        self.days = Some(tactical_days(number_of_tactical_days));
+        self.days = Some(project_days(number_of_project_days));
         self
     }
 }

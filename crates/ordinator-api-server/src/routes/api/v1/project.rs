@@ -6,21 +6,21 @@ use ordinator_orchestrator::Orchestrator;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
-use crate::handlers::tactical_handlers::status;
+use crate::handlers::project_handlers::status;
 
 // Create status endpoint for each actor in the orchestrator
-pub async fn tactical_route(
+pub async fn project_route(
     state: Arc<Orchestrator<TotalSystemSolution>>,
 ) -> OpenApiRouter<Arc<Orchestrator<TotalSystemSolution>>>
 {
     OpenApiRouter::new()
         .route("/", get(status::<TotalSystemSolution>))
         .routes(routes!(
-            crate::handlers::tactical_handlers::start_days_for_activities,
+            crate::handlers::project_handlers::start_days_for_activities,
         ))
-        .routes(routes!(crate::handlers::tactical_handlers::daily_loadings,))
+        .routes(routes!(crate::handlers::project_handlers::daily_loadings,))
         .routes(routes!(
-            crate::handlers::tactical_handlers::assign_start_day_for_work_order
+            crate::handlers::project_handlers::assign_start_day_for_work_order
         ))
         .with_state(state)
 }
@@ -28,7 +28,7 @@ pub async fn tactical_route(
 // TODO: Implement orchestrator request handling
 // let orchestrator = orchestrator.lock().unwrap();
 // Ok(orchestrator
-//     .handle_tactical_request(tactical_request)
+//     .handle_project_request(project_request)
 //     .await?)
 //
 // TODO: Add supervisor handlers for available technicians

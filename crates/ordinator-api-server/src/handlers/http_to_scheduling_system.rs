@@ -9,8 +9,8 @@
 //     use std::collections::HashMap;
 
 //     use chrono::Utc;
-//     use shared_types::agents::tactical::Days;
-//     use shared_types::agents::tactical::ProjectResources;
+//     use shared_types::agents::project::Days;
+//     use shared_types::agents::project::ProjectResources;
 //     use shared_types::scheduling_environment::time_environment::day::Day;
 //     use shared_types::scheduling_environment::work_order::operation::Work;
 //     use shared_types::scheduling_environment::worker_environment::resources::Resources;
@@ -26,7 +26,7 @@
 //         hash_map_nested.insert(day, Work::from(123.0));
 
 //         hash_map.insert(Resources::MtnMech,
-// Days::new(hash_map_nested.clone()));         let tactical_resources =
+// Days::new(hash_map_nested.clone()));         let project_resources =
 // ProjectResources::new(hash_map.clone());         serde_json::to_string(&
-// tactical_resources).unwrap();     }
+// project_resources).unwrap();     }
 // }

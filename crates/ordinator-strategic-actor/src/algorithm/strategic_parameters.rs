@@ -238,7 +238,7 @@ impl WorkOrderParameterBuilder
                 self.locked_in_period = WhereIsWorkOrder::Weekly(period.0);
                 self.excluded_periods = period.1;
             }
-            // Give tactical control via WhereIsWorkOrder::Project when forced to days
+            // Give project control via WhereIsWorkOrder::Project when forced to days
             ForcedWorkOrder::Days(days) => {
                 match &days {
                     ProjectForceType::OnlyStartDay(day) => {

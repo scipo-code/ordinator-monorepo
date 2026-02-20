@@ -30,17 +30,17 @@ Algorithm: TacticalAlgorithm(
                     },
                 ),
             }
-            number of tactical work orders: 6400
+            number of project work orders: 6400
             [94mTacticalResources: 
             Days: 120
             Technicians: 11[0m[94m[0m,
         },
         parameters: TacticalParameters {
             work_orders: 2341
-            tactical_days: 120
-            tactical_capacity: [94mTacticalResources: 
+            project_days: 120
+            project_capacity: [94mTacticalResources: 
             Technicians: 11[0m,
-            tactical_options: TacticalOptions {
+            project_options: TacticalOptions {
                 number_of_removed_work_orders: 20,
                 urgency: 10,
                 resource_penalty: 100000000,
@@ -80,7 +80,7 @@ Caused by:
                },
            ),
        }
-       number of tactical work orders: 6400
+       number of project work orders: 6400
        [94mTacticalResources: 
        Days: 120
        Technicians: 11[0m[94m[0m

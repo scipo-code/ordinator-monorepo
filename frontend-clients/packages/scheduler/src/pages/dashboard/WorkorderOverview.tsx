@@ -134,7 +134,7 @@ export default function WorkorderOverview() {
   })
 
   useVersionChangeDetector(
-    asset ? `api/v1/solution_status/${encodeURIComponent(asset)}/tactical` : "",
+    asset ? `api/v1/solution_status/${encodeURIComponent(asset)}/project` : "",
     ["workorderInfo"],
     200
   );

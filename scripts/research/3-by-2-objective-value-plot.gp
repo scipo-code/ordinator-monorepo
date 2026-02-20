@@ -30,7 +30,7 @@ plot strategic using 1:2 with lines linestyle 1 title "Scheduler (<2y) - Strateg
 set lmargin 10
 set rmargin 7.5
 set ylabel "Urgency\n[priority \\& LAFD] (MIN)"
-plot tactical using 1:2 with lines linestyle 1 title "Scheduler (<4M) - Tactical Model" 
+plot project using 1:2 with lines linestyle 1 title "Scheduler (<4M) - Tactical Model" 
 
 set lmargin 12
 set rmargin 5.5

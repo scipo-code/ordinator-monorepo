@@ -255,17 +255,17 @@ pub fn strategic_periods(client: &Client) -> Vec<Period>
         .to_owned()
 }
 
-pub fn tactical_days(client: &Client) -> Vec<Day>
+pub fn project_days(client: &Client) -> Vec<Day>
 {
     let orchestrator_request = OrchestratorRequest::GetDays;
 
     let system_message = SystemMessages::Orchestrator(orchestrator_request);
 
-    let tactical_days_string =
-        crate::send_http(client, system_message).expect("Could not receive the tactical_days");
-    let tactical_days: HashMap<String, HashMap<String, Vec<Day>>> =
-        serde_json::from_str(&tactical_days_string).unwrap();
-    tactical_days
+    let project_days_string =
+        crate::send_http(client, system_message).expect("Could not receive the project_days");
+    let project_days: HashMap<String, HashMap<String, Vec<Day>>> =
+        serde_json::from_str(&project_days_string).unwrap();
+    project_days
         .get("Orchestrator")
         .unwrap()
         .get("Days")

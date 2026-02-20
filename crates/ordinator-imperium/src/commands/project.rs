@@ -2,12 +2,12 @@ use std::collections::HashMap;
 
 use clap::Subcommand;
 use reqwest::blocking::Client;
-use shared_types::agents::tactical::requests::tactical_resources_message::ProjectResourceRequest;
-use shared_types::agents::tactical::requests::tactical_status_message::ProjectStatusMessage;
-use shared_types::agents::tactical::Days;
-use shared_types::agents::tactical::ProjectRequest;
-use shared_types::agents::tactical::ProjectRequestMessage;
-use shared_types::agents::tactical::ProjectResources;
+use shared_types::agents::project::requests::project_resources_message::ProjectResourceRequest;
+use shared_types::agents::project::requests::project_status_message::ProjectStatusMessage;
+use shared_types::agents::project::Days;
+use shared_types::agents::project::ProjectRequest;
+use shared_types::agents::project::ProjectRequestMessage;
+use shared_types::agents::project::ProjectResources;
 use shared_types::scheduling_environment::time_environment::day::Day;
 use shared_types::scheduling_environment::work_order::operation::Work;
 use shared_types::scheduling_environment::worker_environment::resources::Resources;
@@ -20,21 +20,21 @@ use super::orchestrator;
 #[derive(Subcommand, Debug)]
 pub enum ProjectCommands
 {
-    /// Get the status of the tactical agent
+    /// Get the status of the project agent
     Status
     {
         asset: Asset
     },
-    /// Get the objectives of the tactical agent
+    /// Get the objectives of the project agent
     Resources
     {
         asset: Asset,
         #[clap(subcommand)]
         resource_commands: ResourceCommands,
     },
-    /// Access the scheduling of the tactical agent
+    /// Access the scheduling of the project agent
     Scheduling,
-    /// Access the days of the tactical agent
+    /// Access the days of the project agent
     Days,
 }
 
@@ -44,14 +44,14 @@ impl ProjectCommands
     {
         match self {
             ProjectCommands::Status { asset } => {
-                let tactical_request = ProjectRequest {
+                let project_request = ProjectRequest {
                     asset: asset.clone(),
-                    tactical_request_message: ProjectRequestMessage::Status(
+                    project_request_message: ProjectRequestMessage::Status(
                         ProjectStatusMessage::General,
                     ),
                 };
 
-                SystemMessages::Project(tactical_request)
+                SystemMessages::Project(project_request)
             }
 
             ProjectCommands::Resources {
@@ -62,73 +62,73 @@ impl ProjectCommands
                     days_end,
                     select_resources,
                 } => {
-                    let tactical_resources_message = ProjectResourceRequest::GetCapacities {
+                    let project_resources_message = ProjectResourceRequest::GetCapacities {
                         days_end: days_end.to_string(),
                         select_resources: select_resources.clone(),
                     };
 
-                    let tactical_request_request =
-                        ProjectRequestMessage::Resources(tactical_resources_message);
+                    let project_request_request =
+                        ProjectRequestMessage::Resources(project_resources_message);
 
-                    let tactical_request = ProjectRequest {
+                    let project_request = ProjectRequest {
                         asset: asset.clone(),
-                        tactical_request_message: tactical_request_request,
+                        project_request_message: project_request_request,
                     };
 
-                    SystemMessages::Project(tactical_request)
+                    SystemMessages::Project(project_request)
                 }
                 ResourceCommands::Loading {
                     days_end,
                     select_resources,
                 } => {
-                    let tactical_resources_message = ProjectResourceRequest::GetLoadings {
+                    let project_resources_message = ProjectResourceRequest::GetLoadings {
                         days_end: days_end.to_string(),
                         select_resources: select_resources.clone(),
                     };
 
-                    let tactical_request_message =
-                        ProjectRequestMessage::Resources(tactical_resources_message);
+                    let project_request_message =
+                        ProjectRequestMessage::Resources(project_resources_message);
 
-                    let tactical_request = ProjectRequest {
+                    let project_request = ProjectRequest {
                         asset: asset.clone(),
-                        tactical_request_message,
+                        project_request_message,
                     };
 
-                    SystemMessages::Project(tactical_request)
+                    SystemMessages::Project(project_request)
                 }
                 ResourceCommands::PercentageLoading {
                     days_end,
                     select_resources,
                 } => {
-                    let tactical_resources_message =
+                    let project_resources_message =
                         ProjectResourceRequest::GetPercentageLoadings {
                             days_end: days_end.to_string(),
                             resources: select_resources.clone(),
                         };
 
-                    let tactical_request_message =
-                        ProjectRequestMessage::Resources(tactical_resources_message);
+                    let project_request_message =
+                        ProjectRequestMessage::Resources(project_resources_message);
 
-                    let tactical_request = ProjectRequest {
+                    let project_request = ProjectRequest {
                         asset: asset.clone(),
-                        tactical_request_message,
+                        project_request_message,
                     };
-                    SystemMessages::Project(tactical_request)
+                    SystemMessages::Project(project_request)
                 }
                 ResourceCommands::LoadCapacityFile { toml_path } => {
                     let resources = generate_manual_resources(client, toml_path.clone());
 
-                    let tactical_resources = resources;
-                    let tactical_resources_message =
-                        ProjectResourceRequest::new_set_resources(tactical_resources);
+                    let project_resources = resources;
+                    let project_resources_message =
+                        ProjectResourceRequest::new_set_resources(project_resources);
 
-                    let tactical_request_message =
-                        ProjectRequestMessage::Resources(tactical_resources_message);
-                    let tactical_request = ProjectRequest {
+                    let project_request_message =
+                        ProjectRequestMessage::Resources(project_resources_message);
+                    let project_request = ProjectRequest {
                         asset: asset.clone(),
-                        tactical_request_message,
+                        project_request_message,
                     };
-                    SystemMessages::Project(tactical_request)
+                    SystemMessages::Project(project_request)
                 }
             },
             ProjectCommands::Scheduling => {
@@ -166,10 +166,10 @@ pub enum ResourceCommands
     },
 }
 
-/// Generates manual resources for the tactical agent from a TOML configuration file.
+/// Generates manual resources for the project agent from a TOML configuration file.
 fn generate_manual_resources(client: &Client, toml_path: String) -> ProjectResources
 {
-    let days: Vec<Day> = orchestrator::tactical_days(client);
+    let days: Vec<Day> = orchestrator::project_days(client);
     let contents = std::fs::read_to_string(toml_path).unwrap();
 
     let config: ActorSpecifications = toml::from_str(&contents).unwrap();

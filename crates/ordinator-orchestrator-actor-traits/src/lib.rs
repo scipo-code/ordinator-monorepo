@@ -93,7 +93,7 @@ where
     V: OperationalInterface + Solution,
 {
     pub strategic: Option<SolutionState<S>>,
-    pub tactical: Option<SolutionState<T>>,
+    pub project: Option<SolutionState<T>>,
     pub supervisor: Option<SolutionState<U>>,
     pub operational: HashMap<ActorCompositeId, SolutionState<V>>,
 }
@@ -122,7 +122,7 @@ where
                 } else {
                     "absent".red()
                 },
-                if self.tactical.is_some() {
+                if self.project.is_some() {
                     "present".green()
                 } else {
                     "absent".red()
@@ -157,9 +157,9 @@ pub trait SystemSolutions: Clone + Sized
     fn strategic_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Weekly>)
     where
         Self::Weekly: Solution;
-    fn tactical_actor_solution(&self) -> Result<&Self::Project>;
+    fn project_actor_solution(&self) -> Result<&Self::Project>;
 
-    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Project>)
+    fn project_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Project>)
     where
         Self::Project: Solution;
     fn supervisor_actor_solutions(&self) -> Result<&Self::Daily>;
@@ -197,7 +197,7 @@ where
     {
         Self {
             strategic: None,
-            tactical: None,
+            project: None,
             supervisor: None,
             operational: HashMap::default(),
         }
@@ -212,10 +212,10 @@ where
             .inner)
     }
 
-    fn tactical_actor_solution(&self) -> Result<&Self::Project>
+    fn project_actor_solution(&self) -> Result<&Self::Project>
     {
         Ok(&self
-            .tactical
+            .project
             .as_ref()
             .with_context(|| "ProjectActor SystemSolution not found")?
             .inner)
@@ -256,11 +256,11 @@ where
         self.strategic = Some(solution);
     }
 
-    fn tactical_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Project>)
+    fn project_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Project>)
     where
         Self::Project: Solution,
     {
-        self.tactical = Some(solution);
+        self.project = Some(solution);
     }
 
     fn supervisor_swap(&mut self, id: &ActorCompositeId, solution: SolutionState<Self::Daily>)
@@ -416,7 +416,7 @@ where
         work_order_activity: &WorkOrderActivity,
     ) -> Option<(&NaiveDate, &NaiveDate)>;
 
-    fn tactical_period<'a>(
+    fn project_period<'a>(
         &self,
         work_order_number: &WorkOrderNumber,
         periods: &'a [Period],
@@ -424,7 +424,7 @@ where
 
     fn all_scheduled_tasks(&self) -> HashMap<WorkOrderNumber, BTreeMap<ActivityNumber, Day>>;
 
-    fn tactical_loadings(&self) -> BTreeMap<Skill, Vec<Work>>;
+    fn project_loadings(&self) -> BTreeMap<Skill, Vec<Work>>;
 }
 
 /// Indicates the scheduling level at which a work order is allocated.
@@ -439,7 +439,7 @@ pub enum WhereIsWorkOrder<T>
 }
 impl<T> WhereIsWorkOrder<T>
 {
-    pub fn is_tactical(&self) -> bool
+    pub fn is_project(&self) -> bool
     {
         matches!(self, WhereIsWorkOrder::Project(_))
     }
@@ -454,9 +454,9 @@ impl<T> WhereIsWorkOrder<T>
         matches!(self, WhereIsWorkOrder::Weekly(_))
     }
 
-    pub fn is_strategic_or_tactical(&self) -> bool
+    pub fn is_strategic_or_project(&self) -> bool
     {
-        self.is_tactical() || self.strategic_forced()
+        self.is_project() || self.strategic_forced()
     }
 }
 

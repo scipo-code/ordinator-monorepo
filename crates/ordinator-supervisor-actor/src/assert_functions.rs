@@ -18,10 +18,10 @@ use crate::messages::DailyResponseMessage;
 #[allow(dead_code)]
 pub trait DailyAssertions
 {
-    fn test_symmetric_difference_between_tactical_operations_and_operational_state_machine(
+    fn test_symmetric_difference_between_project_operations_and_operational_state_machine(
         &self,
     ) -> Result<()>;
-    fn assert_operational_state_machine_woas_is_subset_of_tactical_shared_solution(
+    fn assert_operational_state_machine_woas_is_subset_of_project_shared_solution(
         &self,
     ) -> Result<()>;
 }
@@ -32,11 +32,11 @@ where
     Ss: SystemSolutions<Daily = DailySolution> + Debug,
     DailyResponseMessage: Debug,
 {
-    fn test_symmetric_difference_between_tactical_operations_and_operational_state_machine(
+    fn test_symmetric_difference_between_project_operations_and_operational_state_machine(
         &self,
     ) -> Result<()>
     {
-        let tactical_operation_woas: HashSet<WorkOrderNumber> = self
+        let project_operation_woas: HashSet<WorkOrderNumber> = self
             .algorithm
             .loaded_system_solution
             .strategic()?
@@ -52,7 +52,7 @@ where
             .map(|(woa, _)| woa.1 .0)
             .collect();
 
-        let symmetric_difference = tactical_operation_woas
+        let symmetric_difference = project_operation_woas
             .symmetric_difference(&operational_state_woas)
             .cloned()
             .collect::<HashSet<WorkOrderNumber>>();
@@ -60,7 +60,7 @@ where
         if !symmetric_difference.is_empty() {
             event!(Level::ERROR,
                 non_corresponding_work_order_activities = ? symmetric_difference,
-                in_the_tactical_operations = ?symmetric_difference.intersection(&tactical_operation_woas),
+                in_the_project_operations = ?symmetric_difference.intersection(&project_operation_woas),
                 in_the_operational_state_woas = ?symmetric_difference.intersection(&operational_state_woas),
             );
             bail!(
@@ -70,8 +70,8 @@ where
         Ok(())
     }
 
-    // Assert that operational state machine work orders are a subset of tactical operations
-    fn assert_operational_state_machine_woas_is_subset_of_tactical_shared_solution(
+    // Assert that operational state machine work orders are a subset of project operations
+    fn assert_operational_state_machine_woas_is_subset_of_project_shared_solution(
         &self,
     ) -> Result<()>
     {
@@ -94,13 +94,13 @@ where
         if !operational_state_work_order_activities.is_subset(&strategic_work_orders) {
             event!(
                 Level::ERROR,
-                operational_difference_with_tactical_operations = ?operational_state_work_order_activities
+                operational_difference_with_project_operations = ?operational_state_work_order_activities
                     .difference(&strategic_work_orders)
                     .cloned()
                     .collect::<HashSet<_>>()
             );
             bail!(
-                "The tactical_operations should always hold all the work_order_activities of the operational_state_machine"
+                "The project_operations should always hold all the work_order_activities of the operational_state_machine"
             );
         }
         Ok(())

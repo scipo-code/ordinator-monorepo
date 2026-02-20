@@ -86,9 +86,9 @@ impl ProjectResources
             .with_context(|| format!("Day not present {day}"))
     }
 
-    pub fn new_from_data(resources: Vec<Skill>, tactical_days: Vec<Day>, load: Work) -> Self
+    pub fn new_from_data(resources: Vec<Skill>, project_days: Vec<Day>, load: Work) -> Self
     {
-        let days_template = vec![load; tactical_days.len()];
+        let days_template = vec![load; project_days.len()];
         let resource_capacity = resources
             .into_iter()
             .map(|resource| {
@@ -112,7 +112,7 @@ impl ProjectResources
         let days = &self
             .resources
             .get(resource)
-            .with_context(|| "The resources between the strategic and the tactical should always correspond, unless that the tactical has not been initialized yet".to_string())?
+            .with_context(|| "The resources between the strategic and the project should always correspond, unless that the project has not been initialized yet".to_string())?
             .days;
 
         Ok(days
@@ -151,7 +151,7 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for Pr
         };
 
         // FIXME: Support multi-skill resources; currently only handles single skill
-        let mut tactical_resources_inner = HashMap::<Skill, Days>::new();
+        let mut project_resources_inner = HashMap::<Skill, Days>::new();
         for operational_configuration_all in value
             .0
             .worker_environment
@@ -162,7 +162,7 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for Pr
             .iter()
         {
             for (i, _) in value.0.time_environment.days.iter().enumerate() {
-                let resource_periods = tactical_resources_inner
+                let resource_periods = project_resources_inner
                     // FIXME: Logic error when comparing with WeeklyAgent
                     .entry(
                         operational_configuration_all
@@ -170,7 +170,7 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for Pr
                             .operational_configuration
                             .resources
                             .iter()
-                            // ISSUE #000 - add multi-skill to tactical.
+                            // ISSUE #000 - add multi-skill to project.
                             .next()
                             .cloned()
                             .unwrap(),
@@ -193,6 +193,6 @@ impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for Pr
                 );
             }
         }
-        ProjectResources::new(tactical_resources_inner)
+        ProjectResources::new(project_resources_inner)
     }
 }

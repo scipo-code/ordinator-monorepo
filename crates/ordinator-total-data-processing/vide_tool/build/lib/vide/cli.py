@@ -17,12 +17,12 @@ def parse_args():
     subparsers = parser.add_subparsers(dest='command', required=True, help='Plotting options for the strategic agent')
 
     strategic_parser = subparsers.add_parser('strategic', help='Visualizations for the strategic agent')
-    tactical_parser = subparsers.add_parser('tactical', help='Visualizations for the tactical agent')
+    project_parser = subparsers.add_parser('project', help='Visualizations for the project agent')
 
     strategic_parser.add_argument('--offset', type=int, default=0, help='observation offset for the x-axis')
     strategic_parser.add_argument('--title', type=str, required=True, help='graph title')
     strategic_parser.add_argument('--relative', type=bool, required=True, help='controls whether the time on the x-axis is absolute or relative')
-    # tactical_parser.add_argument('--input', type=str, required=True, help="JSON input data")
+    # project_parser.add_argument('--input', type=str, required=True, help="JSON input data")
     
     return parser.parse_args()
 
@@ -37,8 +37,8 @@ def main():
         json_data = json.loads(input_data)
         if args.command == 'strategic':
             strategic_plotting(args, json_data)
-        elif args.command == 'tactical':
-            tactical_plotting(args, json_data)
+        elif args.command == 'project':
+            project_plotting(args, json_data)
     else: 
         println("Data should always be piped into vide")
 

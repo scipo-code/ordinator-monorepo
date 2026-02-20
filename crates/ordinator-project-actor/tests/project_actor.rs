@@ -15,16 +15,16 @@
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 // use ordinator_scheduling_environment::worker_environment::resources::Resources;
-// use ordinator_tactical_actor::algorithm::tactical_parameters::OperationParameter;
-// use ordinator_tactical_actor::algorithm::tactical_parameters::ProjectParameter;
-// use ordinator_tactical_actor::algorithm::tactical_parameters::ProjectParameters;
-// use ordinator_tactical_actor::algorithm::tactical_resources::ProjectResources;
-// use ordinator_tactical_actor::algorithm::tactical_solution::OperationSolution;
-// use ordinator_tactical_actor::algorithm::tactical_solution::ProjectScheduledOperations;
-// use ordinator_tactical_actor::algorithm::tactical_solution::ProjectSolution;
+// use ordinator_project_actor::algorithm::project_parameters::OperationParameter;
+// use ordinator_project_actor::algorithm::project_parameters::ProjectParameter;
+// use ordinator_project_actor::algorithm::project_parameters::ProjectParameters;
+// use ordinator_project_actor::algorithm::project_resources::ProjectResources;
+// use ordinator_project_actor::algorithm::project_solution::OperationSolution;
+// use ordinator_project_actor::algorithm::project_solution::ProjectScheduledOperations;
+// use ordinator_project_actor::algorithm::project_solution::ProjectSolution;
 // use strum::IntoEnumIterator;
 
-// TODO: Add test with stubs for tactical actor construction
+// TODO: Add test with stubs for project actor construction
 
 #[test]
 #[ignore]
@@ -34,7 +34,7 @@ fn test_calculate_objective_value()
     // let activity_number = 1;
     // let first_period = Period::from_str("2024-W13-14").unwrap();
 
-    // let tactical_days = |number_of_days: u32| -> Vec<Day> {
+    // let project_days = |number_of_days: u32| -> Vec<Day> {
     //     let mut days: Vec<Day> = Vec::new();
     //     let mut date = first_period.start_date().to_owned();
     //     for day_index in 0..number_of_days {
@@ -57,7 +57,7 @@ fn test_calculate_objective_value()
     // Resources::MtnMech,
     // SchedulingEnvironment requires arc mutex protection to ensure thread-safe access
     let _scheduling_environment = SchedulingEnvironment::builder()
-        .time_environment_builder(|ib| ib.tactical_days("2025-02-22T07:00:00Z", 56))
+        .time_environment_builder(|ib| ib.project_days("2025-02-22T07:00:00Z", 56))
         .build();
 
     // TODO: Add functions to create SchedulingEnvironment
@@ -81,7 +81,7 @@ fn test_calculate_objective_value()
     // TODO: Pass system configuration to Orchestrator and Agents
     // TODO: Add SystemConfiguration methods for extracting required configs
 
-    // let mut tactical_algorithm = Algorithm::new(
+    // let mut project_algorithm = Algorithm::new(
     //     &id,
     //     solution,
     //     parameters,
@@ -94,7 +94,7 @@ fn test_calculate_objective_value()
 
     // let operation_solution = OperationSolution::new(
     //     vec![(
-    //         tactical_algorithm.tactical_days[27].clone(),
+    //         project_algorithm.project_days[27].clone(),
     //         Work::from(1.0),
     //     )],
     //     Resources::MtnMech,
@@ -111,16 +111,16 @@ fn test_calculate_objective_value()
     // operation_solutions.insert(1, operation_solution);
 
     // // We simply have to make
-    // let optimized_tactical_work_order =
+    // let optimized_project_work_order =
     //     ProjectParameter::new(&work_order, operation_parameters);
 
-    // tactical_algorithm
+    // project_algorithm
     //     .parameters_mut()
-    //     .insert(work_order_number, optimized_tactical_work_order);
+    //     .insert(work_order_number, optimized_project_work_order);
 
-    // tactical_algorithm.calculate_objective_value().unwrap();
+    // project_algorithm.calculate_objective_value().unwrap();
 
-    // // assert_eq!(tactical_algorithm.objective_value().0, 270);
+    // // assert_eq!(project_algorithm.objective_value().0, 270);
 }
 
 // TODO: Implement test_schedule_1 properly
@@ -130,7 +130,7 @@ fn test_schedule_1()
     // let work_order_number = WorkOrderNumber(2100000001);
     // let first_period = Period::from_str("2024-W13-14").unwrap();
 
-    // let tactical_days = |number_of_days: u32| -> Vec<Day> {
+    // let project_days = |number_of_days: u32| -> Vec<Day> {
     //     let mut days: Vec<Day> = Vec::new();
     //     let mut date = first_period.start_date().to_owned();
     //     for day_index in 0..number_of_days {
@@ -141,16 +141,16 @@ fn test_schedule_1()
     // };
 
     // NOTE: Prioritize system operational stability over test implementation
-    // let mut tactical_algorithm =
-    // Algorithm::builder().new(     tactical_days(56),
+    // let mut project_algorithm =
+    // Algorithm::builder().new(     project_days(56),
     //     ProjectResources::new_from_data(
     //         Resources::iter().collect(),
-    //         tactical_days(56),
+    //         project_days(56),
     //         Work::from(0.0),
     //     ),
     //     ProjectResources::new_from_data(
     //         Resources::iter().collect(),
-    //         tactical_days(56),
+    //         project_days(56),
     //         Work::from(0.0),
     //     ),
     //     ArcSwapSharedSolution::default().into(),
@@ -171,22 +171,22 @@ fn test_schedule_1()
     // let operation_parameter = OperationParameter::new(work_order_number,
     // operation);
 
-    // let mut tactical_operation_parameters = HashMap::new();
-    // tactical_operation_parameters.insert(1, operation_parameter);
+    // let mut project_operation_parameters = HashMap::new();
+    // project_operation_parameters.insert(1, operation_parameter);
 
-    // let tactical_work_order_parameter =
+    // let project_work_order_parameter =
     //     ProjectParameter::new(work_order,
-    // tactical_operation_parameters);
+    // project_operation_parameters);
 
-    // tactical_algorithm
+    // project_algorithm
     //     .parameters_mut()
-    //     .insert(work_order_number, tactical_work_order_parameter);
+    //     .insert(work_order_number, project_work_order_parameter);
 
     // let activity_number = 0;
 
-    // let mut tactical_activities = ProjectScheduledOperations::default();
+    // let mut project_activities = ProjectScheduledOperations::default();
 
-    // tactical_activities.0.insert(
+    // project_activities.0.insert(
     //     activity_number,
     //     OperationSolution::new(
     //         vec![],
@@ -198,20 +198,20 @@ fn test_schedule_1()
     //     ),
     // );
 
-    // tactical_algorithm
+    // project_algorithm
     //     .solution
-    //     .tactical_scheduled_work_orders
+    //     .project_scheduled_work_orders
     //     .0
     //     .insert(
     //         work_order_number,
-    //         WhereIsWorkOrder::Project(tactical_activities),
+    //         WhereIsWorkOrder::Project(project_activities),
     //     );
 
-    // tactical_algorithm.schedule().unwrap();
+    // project_algorithm.schedule().unwrap();
 
-    // let scheduled_date = tactical_algorithm
+    // let scheduled_date = project_algorithm
     //     .solution
-    //     .tactical_scheduled_days(&work_order_number, 0);
+    //     .project_scheduled_days(&work_order_number, 0);
 
     // assert!(scheduled_date.is_ok());
 }
@@ -223,7 +223,7 @@ fn test_schedule_2()
     // let activity_number = 1;
     // let first_period = Period::from_str("2024-W13-14").unwrap();
 
-    // let tactical_days = |number_of_days: u32| -> Vec<Day> {
+    // let project_days = |number_of_days: u32| -> Vec<Day> {
     //     let mut days: Vec<Day> = Vec::new();
     //     let mut date = first_period.start_date().to_owned();
     //     for day_index in 0..number_of_days {
@@ -237,28 +237,28 @@ fn test_schedule_2()
     // let options = ProjectOptions::default();
     // TODO: Make SchedulingEnvironment testable with dependency injection
     // let scheduling_environment = SchedulingEnvironment::default();
-    // let tactical_parameters = ProjectParameters::new(&id, options,
-    // &scheduling_environment)?; let tactical_solution =
-    // ProjectSolution::new(&tactical_parameters);
+    // let project_parameters = ProjectParameters::new(&id, options,
+    // &scheduling_environment)?; let project_solution =
+    // ProjectSolution::new(&project_parameters);
     // TODO: Refactor file structure and establish clearer testing patterns
-    // let mut tactical_algorithm = Algorithm::new(
-    //     tactical_days(56),
+    // let mut project_algorithm = Algorithm::new(
+    //     project_days(56),
     //     ProjectResources::new_from_data(
     //         Resources::iter().collect(),
-    //         tactical_days(56),
+    //         project_days(56),
     //         Work::from(100.0),
     //     ),
     //     ProjectResources::new_from_data(
     //         Resources::iter().collect(),
-    //         tactical_days(56),
+    //         project_days(56),
     //         Work::from(0.0),
     //     ),
     //     SystemSolution::new(),
     // );
 
-    // let mut tactical_activities = ProjectScheduledOperations::default();
+    // let mut project_activities = ProjectScheduledOperations::default();
 
-    // tactical_activities.0.insert(
+    // project_activities.0.insert(
     //     activity_number,
     //     OperationSolution::new(
     //         vec![],
@@ -270,13 +270,13 @@ fn test_schedule_2()
     //     ),
     // );
 
-    // tactical_algorithm
+    // project_algorithm
     //     .solution
-    //     .tactical_scheduled_work_orders
+    //     .project_scheduled_work_orders
     //     .0
     //     .insert(
     //         work_order_number,
-    //         WhereIsWorkOrder::Project(tactical_activities),
+    //         WhereIsWorkOrder::Project(project_activities),
     //     );
 
     // // Operation
@@ -296,18 +296,18 @@ fn test_schedule_2()
     // // 10,
     // // vec![],
     // // NaiveDate::from_ymd_opt(2024, 10, 10).unwrap(),
-    // let optimized_tactical_work_order = ProjectParameter::new(work_order,
+    // let optimized_project_work_order = ProjectParameter::new(work_order,
     // operation_parameters);
 
-    // tactical_algorithm
+    // project_algorithm
     //     .parameters_mut()
-    //     .insert(work_order_number, optimized_tactical_work_order);
+    //     .insert(work_order_number, optimized_project_work_order);
 
-    // tactical_algorithm.schedule().unwrap();
+    // project_algorithm.schedule().unwrap();
 
-    // let scheduled_date = tactical_algorithm
+    // let scheduled_date = project_algorithm
     //     .solution
-    //     .tactical_scheduled_days(&work_order_number, 1);
+    //     .project_scheduled_days(&work_order_number, 1);
 
     // assert!(scheduled_date.is_ok());
 }

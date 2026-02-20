@@ -126,7 +126,7 @@ impl Debug for WeeklySolution
                     "Scheduled work orders: ",
                     self.strategic_scheduled_work_orders
                         .iter()
-                        .filter(|e| e.1.is_strategic_or_tactical())
+                        .filter(|e| e.1.is_strategic_or_project())
                         .count(),
                     "Total work orders: ",
                     self.strategic_scheduled_work_orders.len()

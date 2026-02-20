@@ -87,7 +87,7 @@ pub trait ActorSpecification: Send + Sync + Debug
 
     fn strategic(&self) -> &InputWeekly;
 
-    fn tactical(&self) -> &InputProject;
+    fn project(&self) -> &InputProject;
 
     fn supervisor(&self) -> &Vec<InputDaily>;
 
@@ -113,7 +113,7 @@ pub type IdString = String;
 pub struct ActorSpecifications
 {
     pub strategic: InputWeekly,
-    pub tactical: InputProject,
+    pub project: InputProject,
     pub supervisors: Vec<InputDaily>,
     pub operational: HashMap<IdString, InputOperational>,
     // TODO: Consider using relational database structure instead of HashMap
@@ -136,9 +136,9 @@ impl ActorSpecification for ActorSpecifications
         &self.supervisors
     }
 
-    fn tactical(&self) -> &InputProject
+    fn project(&self) -> &InputProject
     {
-        &self.tactical
+        &self.project
     }
 
     fn strategic(&self) -> &InputWeekly
@@ -232,7 +232,7 @@ pub struct TimeInput
 pub struct ActorSpecificationBuilder
 {
     strategic: Option<InputWeekly>,
-    tactical: Option<InputProject>,
+    project: Option<InputProject>,
     supervisors: Option<Vec<InputDaily>>,
     operational: Option<HashMap<IdString, InputOperational>>,
 }
@@ -243,7 +243,7 @@ impl ActorSpecificationBuilder
     {
         Self {
             strategic: None,
-            tactical: None,
+            project: None,
             supervisors: None,
             operational: None,
         }
@@ -259,13 +259,13 @@ impl ActorSpecificationBuilder
         self
     }
 
-    pub fn tactical<F>(mut self, f: F) -> Self
+    pub fn project<F>(mut self, f: F) -> Self
     where
         F: FnOnce(InputProjectBuilder) -> InputProjectBuilder,
     {
-        let tactical_builder = InputProject::builder();
-        let tactical_builder = f(tactical_builder);
-        self.tactical = Some(tactical_builder.build());
+        let project_builder = InputProject::builder();
+        let project_builder = f(project_builder);
+        self.project = Some(project_builder.build());
         self
     }
 
@@ -295,8 +295,8 @@ impl ActorSpecificationBuilder
             strategic: self
                 .strategic
                 .ok_or_else(|| anyhow::anyhow!("Weekly configuration is required"))?,
-            tactical: self
-                .tactical
+            project: self
+                .project
                 .ok_or_else(|| anyhow::anyhow!("Project configuration is required"))?,
             supervisors: self.supervisors.unwrap_or_default(),
             operational: self.operational.unwrap_or_default(),
@@ -317,8 +317,8 @@ pub struct InputWeekly
 pub struct InputProject
 {
     pub id: IdString,
-    pub number_of_tactical_days: usize,
-    pub tactical_options: ProjectOptions,
+    pub number_of_project_days: usize,
+    pub project_options: ProjectOptions,
 }
 
 #[derive(Eq, Hash, PartialEq, Serialize, Deserialize, Debug)]
@@ -472,8 +472,8 @@ impl InputWeekly
 pub struct InputProjectBuilder
 {
     id: Option<IdString>,
-    number_of_tactical_days: Option<usize>,
-    tactical_options: Option<ProjectOptions>,
+    number_of_project_days: Option<usize>,
+    project_options: Option<ProjectOptions>,
 }
 
 impl InputProjectBuilder
@@ -482,8 +482,8 @@ impl InputProjectBuilder
     {
         Self {
             id: None,
-            number_of_tactical_days: None,
-            tactical_options: None,
+            number_of_project_days: None,
+            project_options: None,
         }
     }
 
@@ -493,19 +493,19 @@ impl InputProjectBuilder
         self
     }
 
-    pub fn number_of_tactical_days(mut self, days: usize) -> Self
+    pub fn number_of_project_days(mut self, days: usize) -> Self
     {
-        self.number_of_tactical_days = Some(days);
+        self.number_of_project_days = Some(days);
         self
     }
 
-    pub fn tactical_options<F>(mut self, f: F) -> Self
+    pub fn project_options<F>(mut self, f: F) -> Self
     where
         F: FnOnce(ProjectOptionsBuilder) -> ProjectOptionsBuilder,
     {
         let options_builder = ProjectOptionsBuilder::new();
         let options_builder = f(options_builder);
-        self.tactical_options = Some(options_builder.build());
+        self.project_options = Some(options_builder.build());
         self
     }
 
@@ -513,10 +513,10 @@ impl InputProjectBuilder
     {
         InputProject {
             id: self.id.expect("id is required"),
-            number_of_tactical_days: self
-                .number_of_tactical_days
-                .expect("number_of_tactical_days is required"),
-            tactical_options: self.tactical_options.expect("tactical_options is required"),
+            number_of_project_days: self
+                .number_of_project_days
+                .expect("number_of_project_days is required"),
+            project_options: self.project_options.expect("project_options is required"),
         }
     }
 }
@@ -949,11 +949,11 @@ mod tests
                             .clustering_weight(1)
                     })
             })
-            .tactical(|builder| {
+            .project(|builder| {
                 builder
-                    .id("tactical-001")
-                    .number_of_tactical_days(7)
-                    .tactical_options(|options| {
+                    .id("project-001")
+                    .number_of_project_days(7)
+                    .project_options(|options| {
                         options
                             .number_of_removed_work_orders(5)
                             .urgency(2)
@@ -972,8 +972,8 @@ mod tests
 
         assert_eq!(actor_spec.strategic.id, "strategic-001");
         assert_eq!(actor_spec.strategic.number_of_strategic_periods, 5);
-        assert_eq!(actor_spec.tactical.id, "tactical-001");
-        assert_eq!(actor_spec.tactical.number_of_tactical_days, 7);
+        assert_eq!(actor_spec.project.id, "project-001");
+        assert_eq!(actor_spec.project.number_of_project_days, 7);
         assert_eq!(actor_spec.supervisors.len(), 1);
         assert_eq!(actor_spec.supervisors[0].id, "supervisor-001");
     }
@@ -1001,7 +1001,7 @@ mod tests
                 todo!()
             }
 
-            fn tactical(&self) -> &super::InputProject
+            fn project(&self) -> &super::InputProject
             {
                 todo!()
             }

@@ -27,15 +27,15 @@ use ordinator_scheduling_environment::worker_environment::resources::ActorCompos
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Serialize;
 
-use super::tactical_resources::ProjectResources;
+use super::project_resources::ProjectResources;
 
 #[derive(Debug)]
 pub struct ProjectParameters
 {
-    pub tactical_work_orders: HashMap<WorkOrderNumber, ProjectParameter>,
-    pub tactical_days: Vec<Day>,
-    pub tactical_capacity: ProjectResources,
-    pub tactical_options: ProjectOptions,
+    pub project_work_orders: HashMap<WorkOrderNumber, ProjectParameter>,
+    pub project_days: Vec<Day>,
+    pub project_capacity: ProjectResources,
+    pub project_options: ProjectOptions,
 }
 
 impl Parameters for ProjectParameters
@@ -68,10 +68,10 @@ impl Parameters for ProjectParameters
             .filter(|(_, wo)| &wo.functional_location().asset == id.2.main_asset())
             .filter(|(_, wo)| wo.released_for_scheduling());
 
-        let assignments = &scheduling_environment.assignments.assignment_for_tactical();
-        let tactical_capacity = ProjectResources::from((scheduling_environment, id));
+        let assignments = &scheduling_environment.assignments.assignment_for_project();
+        let project_capacity = ProjectResources::from((scheduling_environment, id));
 
-        let tactical_work_orders: HashMap<WorkOrderNumber, ProjectParameter> = work_orders
+        let project_work_orders: HashMap<WorkOrderNumber, ProjectParameter> = work_orders
             .map(|(won, wo)| {
                 let start_days_for_activities: HashMap<Option<ActivityNumber>, AnyAssignment> =
                     assignments
@@ -82,21 +82,21 @@ impl Parameters for ProjectParameters
                 Ok((
                     *won,
                     // TODO: Design logic for inverting database constraints
-                    create_tactical_parameter(wo, start_days_for_activities, work_order_policies)?,
+                    create_project_parameter(wo, start_days_for_activities, work_order_policies)?,
                 ))
             })
             .collect::<Result<HashMap<WorkOrderNumber, ProjectParameter>>>()?;
 
-        let tactical_days = scheduling_environment.time_environment.days[0..min(
-            actor_specification.tactical().number_of_tactical_days,
+        let project_days = scheduling_environment.time_environment.days[0..min(
+            actor_specification.project().number_of_project_days,
             scheduling_environment.time_environment.days.len(),
         )]
             .to_vec();
         Ok(Self {
-            tactical_work_orders,
-            tactical_days,
-            tactical_capacity,
-            tactical_options: actor_specification.tactical().tactical_options.clone(),
+            project_work_orders,
+            project_days,
+            project_capacity,
+            project_options: actor_specification.project().project_options.clone(),
         })
     }
 
@@ -111,7 +111,7 @@ impl Parameters for ProjectParameters
 }
 
 // TODO: Consider making `create_parameter` functions associated trait methods that accept generic types
-pub fn create_tactical_parameter(
+pub fn create_project_parameter(
     work_order: &WorkOrder,
     start_days_for_activities: HashMap<Option<ActivityNumber>, AnyAssignment>,
     work_order_configuration: &WorkOrderPolicies,
@@ -140,8 +140,8 @@ pub fn create_tactical_parameter(
 #[derive(Debug, Clone, Serialize)]
 pub struct ProjectParameter
 {
-    pub tactical_operation_parameters: BTreeMap<ActivityNumber, OperationParameter>,
-    // TODO: ISSUE #300 Implement forced_schedule_* in the tactical actor
+    pub project_operation_parameters: BTreeMap<ActivityNumber, OperationParameter>,
+    // TODO: ISSUE #300 Implement forced_schedule_* in the project actor
     pub weight: u64,
     pub relations: Vec<ActivityRelation>,
     // TODO: Move earliest_allowed_start_date to SchedulingEnvironment
@@ -157,8 +157,8 @@ impl ProjectParameter
     ) -> Result<Self>
     {
         Ok(Self {
-            tactical_operation_parameters: operation_parameters,
-            // TODO: ISSUE #300 Implement forced_schedule_* in the tactical actor
+            project_operation_parameters: operation_parameters,
+            // TODO: ISSUE #300 Implement forced_schedule_* in the project actor
             weight: work_order.work_order_value(work_order_configuration)?,
             relations: work_order.activity_relations(),
             earliest_allowed_start_date: work_order.earliest_allowed_start_date(),
@@ -171,7 +171,7 @@ impl ProjectParameter
 pub struct OperationParameter
 {
     pub work_order_number: WorkOrderNumber,
-    // TODO: ISSUE #300 Implement forced_schedule_* in the tactical actor
+    // TODO: ISSUE #300 Implement forced_schedule_* in the project actor
     // pub forced_start_day: Option<Day>,
     pub number: NumberOfPeople,
     pub duration: Work,

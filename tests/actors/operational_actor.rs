@@ -33,19 +33,19 @@ fn test_determine_first_available_start_time() -> Result<()>
         .store(Arc::new(strategic_updated_shared_solution));
 
     operational_algorithm.load_shared_solution();
-    let mut tactical_updated_shared_solution =
+    let mut project_updated_shared_solution =
         (**operational_algorithm.loaded_shared_solution).clone();
 
-    tactical_updated_shared_solution
-        .tactical
-        .tactical_work_orders
+    project_updated_shared_solution
+        .project
+        .project_work_orders
         .0
         .insert(WorkOrderNumber(0), WhereIsWorkOrder::NotScheduled);
 
     operational_algorithm
         .arc_swap_shared_solution
         .0
-        .store(Arc::new(tactical_updated_shared_solution));
+        .store(Arc::new(project_updated_shared_solution));
 
     operational_algorithm.load_shared_solution();
 
