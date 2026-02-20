@@ -32,6 +32,7 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = [
+            pkgs.bashInteractive
             pkgs.act
             (pkgs.gnuplot.override {
               lua = pkgs.lua;
