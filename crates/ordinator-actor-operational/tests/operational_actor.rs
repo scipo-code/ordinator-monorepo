@@ -5,8 +5,8 @@
 // use chrono::TimeDelta;
 // use ordinator_actor_core::algorithm::Algorithm;
 // use ordinator_configuration::SystemConfigurations;
-// use ordinator_operational_actor::algorithm::OperationalAlgorithm;
-// use ordinator_operational_actor::algorithm::operational_events::OperationalEvents;
+// use ordinator_actor_operational::algorithm::OperationalAlgorithm;
+// use ordinator_actor_operational::algorithm::operational_events::OperationalEvents;
 // use ordinator_scheduling_environment::SchedulingEnvironment;
 // use ordinator_scheduling_environment::worker_environment::resources::Id;
 

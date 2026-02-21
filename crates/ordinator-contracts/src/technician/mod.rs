@@ -1,4 +1,4 @@
-use ordinator_operational_actor::algorithm::operational_solution::OperationalAssignment;
+use ordinator_actor_operational::algorithm::operational_solution::OperationalAssignment;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use serde::Serialize;

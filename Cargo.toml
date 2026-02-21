@@ -2,10 +2,10 @@
 resolver = "2"
 members = [
     "crates/ordinator-actor-core",
-    "crates/ordinator-operational-actor",
-    "crates/ordinator-weekly-actor",
-    "crates/ordinator-daily-actor",
-    "crates/ordinator-project-actor",
+    "crates/ordinator-actor-operational",
+    "crates/ordinator-actor-weekly",
+    "crates/ordinator-actor-daily",
+    "crates/ordinator-actor-project",
 
     "crates/ordinator-api-server",
     "crates/ordinator-configuration",

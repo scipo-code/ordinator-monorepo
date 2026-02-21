@@ -1,15 +1,15 @@
 use std::collections::HashMap;
 
-use ordinator_operational_actor::messages::OperationalRequestMessage;
-use ordinator_operational_actor::messages::OperationalResponseMessage;
+use ordinator_actor_operational::messages::OperationalRequestMessage;
+use ordinator_actor_operational::messages::OperationalResponseMessage;
 use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_weekly_actor::messages::WeeklyRequestMessage;
-use ordinator_weekly_actor::messages::WeeklyResponseMessage;
-use ordinator_daily_actor::messages::DailyRequestMessage;
-use ordinator_daily_actor::messages::DailyResponseMessage;
-use ordinator_project_actor::messages::ProjectRequestMessage;
-use ordinator_project_actor::messages::ProjectResponseMessage;
+use ordinator_actor_weekly::messages::WeeklyRequestMessage;
+use ordinator_actor_weekly::messages::WeeklyResponseMessage;
+use ordinator_actor_daily::messages::DailyRequestMessage;
+use ordinator_actor_daily::messages::DailyResponseMessage;
+use ordinator_actor_project::messages::ProjectRequestMessage;
+use ordinator_actor_project::messages::ProjectResponseMessage;
 
 pub struct ActorRegistry
 {

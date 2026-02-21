@@ -7,8 +7,8 @@
 // use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 // use ordinator_scheduling_environment::work_order::operation::Work;
 // use ordinator_scheduling_environment::worker_environment::resources::Resources;
-// use ordinator_weekly_actor::algorithm::weekly_resources::OperationalResource;
-// use ordinator_weekly_actor::algorithm::weekly_resources::WeeklyResources;
+// use ordinator_actor_weekly::algorithm::weekly_resources::OperationalResource;
+// use ordinator_actor_weekly::algorithm::weekly_resources::WeeklyResources;
 
 #[test]
 fn test_update_scheduler_state() -> anyhow::Result<()>

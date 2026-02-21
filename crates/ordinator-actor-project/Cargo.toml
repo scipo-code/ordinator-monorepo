@@ -1,5 +1,5 @@
 [package]
-name = "ordinator-project-actor"
+name = "ordinator-actor-project"
 version = "0.1.0"
 edition = "2024"
 

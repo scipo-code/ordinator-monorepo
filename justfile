@@ -5,7 +5,7 @@ run-test:
     cargo test master_system_test_6400_work_orders_30_technicians -- --ignored --nocapture 2> temp_output_from_program.log
 
 bs-test:
-    bs target/debug/deps/ordinator_project_actor-cd5c23df1ab83245 
+    bs target/debug/deps/ordinator_actor_project-cd5c23df1ab83245 
 
 test-front-ends:
     #!/usr/bin/env bash

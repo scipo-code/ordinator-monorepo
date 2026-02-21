@@ -15,13 +15,13 @@
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 // use ordinator_scheduling_environment::worker_environment::resources::Resources;
-// use ordinator_project_actor::algorithm::project_parameters::OperationParameter;
-// use ordinator_project_actor::algorithm::project_parameters::ProjectParameter;
-// use ordinator_project_actor::algorithm::project_parameters::ProjectParameters;
-// use ordinator_project_actor::algorithm::project_resources::ProjectResources;
-// use ordinator_project_actor::algorithm::project_solution::OperationSolution;
-// use ordinator_project_actor::algorithm::project_solution::ProjectScheduledOperations;
-// use ordinator_project_actor::algorithm::project_solution::ProjectSolution;
+// use ordinator_actor_project::algorithm::project_parameters::OperationParameter;
+// use ordinator_actor_project::algorithm::project_parameters::ProjectParameter;
+// use ordinator_actor_project::algorithm::project_parameters::ProjectParameters;
+// use ordinator_actor_project::algorithm::project_resources::ProjectResources;
+// use ordinator_actor_project::algorithm::project_solution::OperationSolution;
+// use ordinator_actor_project::algorithm::project_solution::ProjectScheduledOperations;
+// use ordinator_actor_project::algorithm::project_solution::ProjectSolution;
 // use strum::IntoEnumIterator;
 
 // TODO: Add test with stubs for project actor construction

@@ -12,10 +12,10 @@ use chrono::TimeZone;
 use chrono::Utc;
 use ordinator_actor_core::Actor;
 use ordinator_configuration::SystemConfigurations;
-use ordinator_operational_actor::algorithm::OperationalAlgorithm;
-use ordinator_operational_actor::algorithm::operational_solution::OperationalSolution;
-use ordinator_operational_actor::messages::OperationalRequestMessage;
-use ordinator_operational_actor::messages::OperationalResponseMessage;
+use ordinator_actor_operational::algorithm::OperationalAlgorithm;
+use ordinator_actor_operational::algorithm::operational_solution::OperationalSolution;
+use ordinator_actor_operational::messages::OperationalRequestMessage;
+use ordinator_actor_operational::messages::OperationalResponseMessage;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::SolutionState;
 use ordinator_orchestrator_actor_traits::WeeklyInterface;
@@ -42,7 +42,7 @@ use ordinator_scheduling_environment::worker_environment::ActorSpecifications;
 use ordinator_scheduling_environment::worker_environment::TimeInput;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
-use ordinator_daily_actor::algorithm::daily_solution::DailySolution;
+use ordinator_actor_daily::algorithm::daily_solution::DailySolution;
 
 #[derive(Clone, Debug)]
 struct TestSystemSolution<Zs: DailyInterface + Clone>

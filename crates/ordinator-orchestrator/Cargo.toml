@@ -11,10 +11,10 @@ ordinator-total-data-processing = { path = "../ordinator-total-data-processing"}
 ordinator-configuration = { path = "../ordinator-configuration"}
 
 
-ordinator-weekly-actor = { path = "../ordinator-weekly-actor" }
-ordinator-project-actor = { path = "../ordinator-project-actor" }
-ordinator-daily-actor = { path = "../ordinator-daily-actor" }
-ordinator-operational-actor = { path = "../ordinator-operational-actor" }
+ordinator-actor-weekly = { path = "../ordinator-actor-weekly" }
+ordinator-actor-project = { path = "../ordinator-actor-project" }
+ordinator-actor-daily = { path = "../ordinator-actor-daily" }
+ordinator-actor-operational = { path = "../ordinator-actor-operational" }
 
 # From workspace
 anyhow.workspace = true 

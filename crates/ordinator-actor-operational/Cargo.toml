@@ -1,5 +1,5 @@
 [package]
-name = "ordinator-weekly-actor"
+name = "ordinator-actor-operational"
 version = "0.1.0"
 edition = "2024"
 
@@ -16,10 +16,12 @@ chrono.workspace = true
 colored.workspace = true
 flume.workspace = true
 itertools.workspace = true
-priority-queue.workspace = true
-proptest.workspace = true
 rand.workspace = true
 serde.workspace = true
-strum.workspace = true 
 tracing.workspace = true
 valuable.workspace = true
+
+[dev-dependencies]
+mockall = {workspace = true}
+proptest.workspace = true
+ordinator-actor-daily.path = "../ordinator-actor-daily/"
