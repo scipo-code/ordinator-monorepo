@@ -13,6 +13,7 @@ pub mod work_orders_6400_work_orders_11_resource_types;
 pub struct WorkOrderData
 {
     work_order_number: WorkOrderNumber,
+    #[allow(dead_code)]
     priority: WorkOrderType,
     operations: Vec<OperationInput>,
     basic_start: (i32, u32, u32),

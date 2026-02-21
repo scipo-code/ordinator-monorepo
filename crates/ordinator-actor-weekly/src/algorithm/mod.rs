@@ -285,6 +285,7 @@ where
         &mut self.0
     }
 
+    #[allow(unreachable_code, unused_variables)]
     fn force_schedule(&mut self) -> Result<()> {
 
 

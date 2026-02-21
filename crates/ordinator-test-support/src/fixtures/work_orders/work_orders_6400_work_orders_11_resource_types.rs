@@ -3,7 +3,6 @@ use std::fs;
 /// Generates complex test data for stress testing the optimization algorithms and their interactions.
 /// Focuses on data volume rather than attribute correctness.
 use chrono::TimeDelta;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
 use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
 use ordinator_scheduling_environment::work_order::work_order_info::priority::Priority;
@@ -13,7 +12,6 @@ use ordinator_scheduling_environment::work_order::work_order_info::work_order_te
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 
-use crate::fixtures::work_orders::OperationInput;
 use crate::fixtures::work_orders::WorkOrderData;
 
 /// Builds PhD dataset work orders with the following numbering scheme:

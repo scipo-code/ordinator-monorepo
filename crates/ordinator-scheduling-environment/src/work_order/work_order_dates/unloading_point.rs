@@ -1,5 +1,4 @@
 use chrono::Datelike;
-use chrono::Utc;
 use clap::Args;
 use rust_xlsxwriter::IntoExcelData;
 use serde::Deserialize;

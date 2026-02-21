@@ -1,16 +1,4 @@
-use anyhow::Context;
-use chrono::TimeDelta;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
-use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
-use ordinator_scheduling_environment::work_order::work_order_info::priority::Priority;
-use ordinator_scheduling_environment::work_order::work_order_info::revision::Revision;
-use ordinator_scheduling_environment::work_order::work_order_info::system_condition::SystemCondition;
-use ordinator_scheduling_environment::work_order::work_order_info::work_order_text::WorkOrderText;
-use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
-use ordinator_scheduling_environment::worker_environment::resources::Skill;
-
-use crate::fixtures::work_orders::WorkOrderData;
 
 /// Builds manually created `WorkOrder`s for the phd data set.
 ///
@@ -20,7 +8,7 @@ use crate::fixtures::work_orders::WorkOrderData;
 /// 2. 222299xxxx: normal filler work order, no binding status code, no vendor,
 ///    with status code modifiers
 /// 3. 333399xxxx: edgecase work orders, added to determine a particular aspect
-pub fn phd_work_order_builder(mut wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilder
+pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilder
 {
 //     for work_order_data in work_order_datas {
 //         wo_builder = wo_builder.work_order_builder(work_order_data.work_order_number, |wob| {

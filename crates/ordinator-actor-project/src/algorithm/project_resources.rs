@@ -38,7 +38,7 @@ impl std::fmt::Debug for ProjectResources
             let number_of_days = days.days.len();
 
             let mut days_loading = vec![Work::from(0.0); days.days.len()];
-            let average_hours_per_day = self.resources.values().map(|day| {
+            let _average_hours_per_day = self.resources.values().map(|day| {
                 days_loading.iter_mut().enumerate().for_each(|f| {
                     *f.1 += day
                         .days
