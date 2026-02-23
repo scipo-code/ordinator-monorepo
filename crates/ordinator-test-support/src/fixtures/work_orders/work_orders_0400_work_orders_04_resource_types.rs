@@ -1,15 +1,15 @@
-//! This file creates complex test data for stress testing optimization algorithms.
-//! Structure is less important than exercising the system's ability to handle
-//! internal message passing and algorithm interplay.
+//! This file creates complex test data for stress testing optimization
+//! algorithms. Structure is less important than exercising the system's ability
+//! to handle internal message passing and algorithm interplay.
 use chrono::TimeDelta;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
-use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
 use ordinator_scheduling_environment::work_order::work_order_info::priority::Priority;
 use ordinator_scheduling_environment::work_order::work_order_info::revision::Revision;
 use ordinator_scheduling_environment::work_order::work_order_info::system_condition::SystemCondition;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_text::WorkOrderText;
 use ordinator_scheduling_environment::work_order::work_order_info::work_order_type::WorkOrderType;
+use ordinator_scheduling_environment::work_order::work_order_info::WorkOrderInfoDetail;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::WorkOrdersBuilder;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 
 /// These are the manually created `WorkOrder`s for the phd data set.
@@ -23524,12 +23524,3 @@ pub fn phd_work_order_builder(wo_builder: WorkOrdersBuilder) -> WorkOrdersBuilde
                 })
         })
 }
-
-// TODO START HERE!
-// 1. add a lot of `WorkOrder`s to the code
-//
-// 2. plot the results
-//
-// TODO [ ] add special cases
-// 3. test that EASD is respected, test that material is respected
-// 4. you could add constraint satisfaction to the problem and UI

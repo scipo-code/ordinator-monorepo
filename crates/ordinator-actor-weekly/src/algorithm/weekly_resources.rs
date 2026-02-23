@@ -17,8 +17,10 @@ use serde::Deserialize;
 use serde::Serialize;
 
 // TODO: Move OperationalResource to shared types rather than deserializing
+//
+//
 #[derive(Default, Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
-pub struct WeeklyResources(pub HashMap<Period, HashMap<OperationalId, OperationalResource>>);
+pub struct WeeklyResources(pub HashMap<Period, HashMap<Skill, Work>>);
 
 impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for WeeklyResources
 {
@@ -56,7 +58,8 @@ impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for W
                 // TODO: Consider implementing trait-based conversion for OperationalResource
                 let mut skill_hours: HashMap<Skill, Work> = HashMap::new();
 
-                // TODO: Use period.count_overlapping_days(availability) instead of hardcoded 13 days
+                // TODO: Use period.count_overlapping_days(availability) instead of hardcoded 13
+                // days
                 let days_in_period = 13.0;
 
                 for resource in &operational_agent.1.operational_configuration.resources {
@@ -160,7 +163,8 @@ impl WeeklyResources
         Self(resources)
     }
 
-    // TODO: Implement heuristic for load updates now that the operation is non-deterministic
+    // TODO: Implement heuristic for load updates now that the operation is
+    // non-deterministic
     pub fn update_load(
         &mut self,
         period: &Period,

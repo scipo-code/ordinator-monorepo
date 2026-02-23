@@ -686,42 +686,23 @@ where
             return Ok(Some(work_order_number));
         }
 
-        let resource_use_option = self
-            .determine_best_permutation(work_load.clone(), period, ScheduleWorkOrder::Normal)
-            .with_context(|| {
-                format!(
-                    "{:?}\nfor period\n{:#?}\ncould not be {:?}",
-                    work_order_number,
-                    period,
-                    ScheduleWorkOrder::Normal
-                )
-            })?;
+        // let resource_use_option = self
+        //     .determine_best_permutation(work_load.clone(), period, ScheduleWorkOrder::Normal)
+        //     .with_context(|| {
+        //         format!(
+        //             "{:?}\nfor period\n{:#?}\ncould not be {:?}",
+        //             work_order_number,
+        //             period,
+        //             ScheduleWorkOrder::Normal
+        //         )
+        //     })?;
 
-        let resource_use = match resource_use_option {
-            Some(resource_use_inner) => resource_use_inner,
-            None => return Ok(Some(work_order_number)),
-        };
-
-        ensure!(
-            resource_use
-                .0
-                .get(period)
-                .unwrap_or(&HashMap::from([(
-                    "Dummy".to_string(),
-                    OperationalResource::default()
-                )]))
-                .values()
-                .fold(Work::from(0.0), |acc, e| acc + e.total_hours)
-                == work_load.clone().into_values().sum(),
-            "Calculated resources: {:#?}\nWork load: {:#?}",
-            resource_use
-                .0
-                .get(period)
-                .unwrap()
-                .values()
-                .fold(Work::from(0.0), |acc, e| acc + e.total_hours),
-            work_load.clone().into_values().sum::<Work>()
-        );
+        // If no `WeeklyResources` could be determined for the `schedule` decision make an
+        // early return.
+        //
+        // TODO [ ] - replace with multi-skill calculation. You do not need
+        // STARTHERE
+        // high complexity here.
 
         let previous_period = self
             .solution
@@ -737,9 +718,10 @@ where
             line!()
         );
 
+        // You have to 
         // ensure!(resource_use.sum() == work_load.iter().sum())
-        resource_use.assert_well_shaped_resources()?;
-        self.update_loadings(resource_use.clone(), LoadOperation::Add);
+        // resource_use.assert_well_shaped_resources()?;
+        self.update_loadings(work_load, LoadOperation::Add);
         self.assert_work_load_to_loading(work_order_number, period)
             .with_context(|| {
                 format!(
@@ -823,17 +805,22 @@ where
     }
 
     /// Updates WeeklyResources based on the provided loading
+    /// The weekly loadings should not be dependent on the skill, we only
+    /// handle it in the objective function and as a predicate in the
+    /// `schedule` method.
     fn update_loadings(
         &mut self,
+        // This should simply be the "work load"
         weekly_resources: WeeklyResources,
         load_operation: LoadOperation,
     )
     {
         // TODO: Refactor to handle changes correctly without permutation loop 
-        for (period, operational_resources) in weekly_resources.0 {
-            for (operational_id, operational_resource_loading) in operational_resources {
-                assert!(operational_resource_loading.skill_hours.iter().all(|e| e.1 == &operational_resource_loading.total_hours),
-                "Each skill_hours should always be equal to the value of the total_hours\noperational_resource: {:#?}\n{}", operational_resource_loading, std::panic::Location::caller());
+        //
+        // This should look exactly like the... You simply have to add the loadings. You cannot make this
+        // difficult to understand. 
+        for (period, work_load) in weekly_resources.0 {
+            for (skill, work) in work_load {
                 match load_operation {
                     LoadOperation::Add => {
                         self
@@ -843,18 +830,12 @@ where
                             .get_mut(&period)
                             .expect("All Periods should be initialized at this point")
                             // What happens if the value is not present? Should we simply insert it?
-                            .entry(operational_id.clone())
+                            .entry(skill.clone())
                             .and_modify(|e| {
-                                e.total_hours += operational_resource_loading.total_hours;
-                                for (skill, hours) in &operational_resource_loading.skill_hours {
-                                    e
-                                        .skill_hours
-                                        .entry(*skill) .and_modify(|wor| *wor += hours)
-                                        .or_insert(*hours);
-                                }
+                                *e = *e + work;
 
                             })
-                            .or_insert(operational_resource_loading);
+                            .or_insert(work);
 
                     }
                     LoadOperation::Sub => {
@@ -864,17 +845,10 @@ where
                             .0
                             .get_mut(&period)
                             .expect("All Periods should be initialized at this point")
-                            .get_mut(&operational_id)
+                            .get_mut(&skill)
                             .unwrap();
 
-                            weekly_loading.total_hours -= operational_resource_loading.total_hours;
-                            for (skill, hours) in &operational_resource_loading.skill_hours {
-                                weekly_loading
-                                    .skill_hours
-                                    .entry(*skill)
-                                    .and_modify(|wor| *wor -= hours)
-                                    .or_insert((*hours).negate());
-                            }
+                            *weekly_loading -= work;
 
                     }
                 }
