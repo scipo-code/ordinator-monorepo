@@ -1,11 +1,9 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
-use std::collections::hash_map::Entry;
 use std::sync::MutexGuard;
 
 use anyhow::Context;
 use anyhow::Result;
-use anyhow::ensure;
 use ordinator_actor_core::algorithm::LoadOperation;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::period::Period;
@@ -16,9 +14,6 @@ use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Deserialize;
 use serde::Serialize;
 
-// TODO: Move OperationalResource to shared types rather than deserializing
-//
-//
 #[derive(Default, Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct WeeklyResources(pub HashMap<Period, HashMap<Skill, Work>>);
 
@@ -38,12 +33,10 @@ impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for W
             }
         };
 
-        // Requires Actor ID to properly populate resource mapping
-        let mut weekly_resources_inner =
-            HashMap::<Period, HashMap<OperationalId, OperationalResource>>::new();
+        let mut weekly_resources_inner = HashMap::<Period, HashMap<Skill, Work>>::new();
 
         for (i, period) in value.0.time_environment.periods.iter().enumerate() {
-            let mut operational_resource_map = HashMap::new();
+            let mut skill_hours_map: HashMap<Skill, Work> = HashMap::new();
             for operational_agent in value
                 .0
                 .worker_environment
@@ -55,42 +48,23 @@ impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for W
                 .expect("Missing the required Actor")
                 .operational()
             {
-                // TODO: Consider implementing trait-based conversion for OperationalResource
-                let mut skill_hours: HashMap<Skill, Work> = HashMap::new();
-
                 // TODO: Use period.count_overlapping_days(availability) instead of hardcoded 13
                 // days
                 let days_in_period = 13.0;
 
                 for resource in &operational_agent.1.operational_configuration.resources {
-                    skill_hours.insert(
-                        *resource,
-                        Work::from(
-                            operational_agent.1.hours_per_day
-                                * days_in_period
-                                * gradual_reduction(i),
-                        ),
+                    let hours = Work::from(
+                        operational_agent.1.hours_per_day
+                            * days_in_period
+                            * gradual_reduction(i),
                     );
+                    *skill_hours_map.entry(*resource).or_insert(Work::from(0.0)) += hours;
                 }
-
-                let operational_resource = OperationalResource::new(
-                    operational_agent.0,
-                    Work::from(
-                        operational_agent.1.hours_per_day * days_in_period * gradual_reduction(i),
-                    ),
-                    operational_agent
-                        .1
-                        .operational_configuration
-                        .resources
-                        .clone(),
-                );
-
-                operational_resource_map.insert(operational_agent.0.clone(), operational_resource);
             }
-            weekly_resources_inner.insert(period.clone(), operational_resource_map);
+            weekly_resources_inner.insert(period.clone(), skill_hours_map);
         }
 
-        WeeklyResources::new(weekly_resources_inner)
+        WeeklyResources(weekly_resources_inner)
     }
 }
 
@@ -121,144 +95,59 @@ impl WeeklyResources
 {
     pub fn assert_well_shaped_resources(&self) -> Result<()>
     {
-        for period in &self.0 {
-            for operational_resource in period.1 {
-                let total_hours = operational_resource.1.total_hours;
-                ensure!(
-                    operational_resource
-                        .1
-                        .skill_hours
-                        .values()
-                        .all(|wor| *wor == total_hours),
-                    format!(
-                        "WeeklyResources are not well shaped: {:#?}",
-                        operational_resource.1
-                    )
-                )
-            }
-        }
         Ok(())
     }
 
-    pub fn insert_operational_resource(
+    pub fn insert_skill_work(
         &mut self,
         period: Period,
-        operational_resource: OperationalResource,
+        skill: Skill,
+        work: Work,
     )
     {
-        let operational_key = operational_resource.id.clone();
         self.0
             .entry(period)
-            .and_modify(|ele| {
-                ele.insert(operational_key.clone(), operational_resource.clone());
-            })
-            .or_insert_with(|| HashMap::from([(operational_key, operational_resource)]));
+            .or_default()
+            .insert(skill, work);
     }
 }
 
 impl WeeklyResources
 {
-    pub fn new(resources: HashMap<Period, HashMap<OperationalId, OperationalResource>>) -> Self
+    pub fn new(resources: HashMap<Period, HashMap<Skill, Work>>) -> Self
     {
         Self(resources)
     }
 
-    // TODO: Implement heuristic for load updates now that the operation is
-    // non-deterministic
     pub fn update_load(
         &mut self,
         period: &Period,
         resource: Skill,
         load: Work,
-        operational_resource: &OperationalResource,
         load_operation: LoadOperation,
     )
     {
-        let period_entry = self.0.entry(period.clone());
-        let operational = match period_entry {
-            Entry::Occupied(entry) => entry.into_mut(),
-            Entry::Vacant(entry) => entry.insert(HashMap::new()),
-        };
-
-        match operational.entry(operational_resource.id.clone()) {
-            Entry::Occupied(mut operational_resource) => match load_operation {
-                LoadOperation::Add => {
-                    let previous_total_hours = operational_resource.get().total_hours;
-                    operational_resource
-                        .get_mut()
-                        .skill_hours
-                        .entry(resource)
-                        .or_insert(previous_total_hours);
-
-                    operational_resource.get_mut().total_hours += load;
-
-                    operational_resource
-                        .get_mut()
-                        .skill_hours
-                        .iter_mut()
-                        .for_each(|ski_loa| *ski_loa.1 += load);
-                }
-                LoadOperation::Sub => {
-                    let previous_total_hours = operational_resource.get().total_hours;
-                    operational_resource
-                        .get_mut()
-                        .skill_hours
-                        .entry(resource)
-                        .or_insert(previous_total_hours);
-                    operational_resource.get_mut().total_hours -= load;
-                    operational_resource
-                        .get_mut()
-                        .skill_hours
-                        .iter_mut()
-                        .for_each(|ski_loa| *ski_loa.1 -= load);
-                }
-            },
-            Entry::Vacant(operational_resource_entry) => match load_operation {
-                LoadOperation::Add => {
-                    let total_load_hours = Work::from(load.to_f64());
-
-                    let operational_resource = OperationalResource::new(
-                        &operational_resource.id,
-                        total_load_hours,
-                        operational_resource
-                            .skill_hours
-                            .keys()
-                            .chain(std::iter::once(&resource))
-                            .cloned()
-                            .collect(),
-                    );
-
-                    operational_resource_entry.insert(operational_resource);
-                }
-                LoadOperation::Sub => {
-                    let total_load_hours = Work::from(-load.to_f64());
-
-                    let operational_resource = OperationalResource::new(
-                        &operational_resource.id,
-                        total_load_hours,
-                        operational_resource
-                            .skill_hours
-                            .keys()
-                            .chain(std::iter::once(&resource))
-                            .cloned()
-                            .collect(),
-                    );
-                    operational_resource_entry.insert(operational_resource);
-                }
-            },
-        };
+        let skill_map = self.0.entry(period.clone()).or_default();
+        match load_operation {
+            LoadOperation::Add => {
+                *skill_map.entry(resource).or_insert(Work::from(0.0)) += load;
+            }
+            LoadOperation::Sub => {
+                *skill_map.entry(resource).or_insert(Work::from(0.0)) -= load;
+            }
+        }
     }
 
     pub fn update_resource_capacities(&mut self, resources: Self) -> Result<()>
     {
-        for period in &resources.0 {
-            for operational in period.1 {
+        for (period, skill_map) in &resources.0 {
+            for (skill, work) in skill_map {
                 self.0
-                    .entry(period.0.clone())
+                    .entry(period.clone())
                     .or_default()
-                    .entry(operational.0.clone())
-                    .and_modify(|existing| *existing = operational.1.clone())
-                    .or_insert(operational.1.clone());
+                    .entry(*skill)
+                    .and_modify(|existing| *existing = *work)
+                    .or_insert(*work);
             }
         }
         Ok(())
@@ -266,23 +155,14 @@ impl WeeklyResources
 
     pub fn initialize_resource_loadings(&mut self, resources: Self)
     {
-        for period in resources.0 {
-            for operational in period.1 {
-                let mut operational_resource = operational.1;
-
-                operational_resource.total_hours = Work::from(0.0);
-
-                operational_resource
-                    .skill_hours
-                    .iter_mut()
-                    .for_each(|ele| *ele.1 = Work::from(0.0));
-
+        for (period, skill_map) in resources.0 {
+            for (skill, _work) in skill_map {
                 self.0
-                    .entry(period.0.clone())
+                    .entry(period.clone())
                     .or_default()
-                    .entry(operational.0.clone())
-                    .and_modify(|existing| *existing = operational_resource.clone())
-                    .or_insert(operational_resource);
+                    .entry(skill)
+                    .and_modify(|existing| *existing = Work::from(0.0))
+                    .or_insert(Work::from(0.0));
             }
         }
     }
@@ -293,20 +173,17 @@ impl WeeklyResources
         resource: &Skill,
     ) -> Result<Work>
     {
-        Ok(self
+        Ok(*self
             .0
             .get(period)
             .with_context(|| {
                 format!(
-                    "{} not found is {:?}",
+                    "{} not found in {:?}",
                     period,
                     std::any::type_name::<WeeklyResources>()
                 )
             })?
-            // TODO: Verify aggregation logic handles edge cases correctly
-            .values()
-            .fold(Work::from(0.0), |acc, or| {
-                acc + *or.skill_hours.get(resource).unwrap_or(&Work::from(0.0))
-            }))
+            .get(resource)
+            .unwrap_or(&Work::from(0.0)))
     }
 }
