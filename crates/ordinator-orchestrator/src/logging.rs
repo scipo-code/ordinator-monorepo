@@ -187,6 +187,7 @@ pub fn setup_logging() -> anyhow::Result<LogHandles>
         // .with(flame_layer)
         .init();
 
+    event!(target: "debug", Level::INFO, "TESTING TRACING");
     event!(target: "stdout", Level::INFO, "System initialized (1 of 4): logging");
     Ok(LogHandles {
         file_handle: None,

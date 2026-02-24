@@ -122,33 +122,40 @@ impl WorkOrderDatesBuilder
 
     pub fn earliest_allowed_start_from_ymd(mut self, year: i32, month: u32, day: u32) -> Self
     {
-        self.earliest_allowed_start_date = Some(NaiveDate::from_ymd_opt(year, month, day).expect(
-            &format!("Could not create `NaiveDate` from: year: {year}, month: {month}, day: {day}"),
-        ));
+        self.earliest_allowed_start_date = Some(
+            NaiveDate::from_ymd_opt(year, month, day).unwrap_or_else(|| {
+                panic!(
+                    "Could not create `NaiveDate` from: year: {year}, month: {month}, day: {day}"
+                )
+            }),
+        );
         self
     }
 
     pub fn latest_allowed_finish_from_ymd(mut self, year: i32, month: u32, day: u32) -> Self
     {
-        self.latest_allowed_finish_date = Some(NaiveDate::from_ymd_opt(year, month, day).expect(
-            &format!("Could not create `NaiveDate` from: year: {year}, month: {month}, day: {day}"),
-        ));
+        let msg =
+            &format!("Could not create `NaiveDate` from: year: {year}, month: {month}, day: {day}");
+        self.latest_allowed_finish_date =
+            Some(NaiveDate::from_ymd_opt(year, month, day).expect(msg));
         self
     }
 
     pub fn basic_start_from_ymd(mut self, year: i32, month: u32, day: u32) -> Self
     {
-        self.basic_start_date = Some(NaiveDate::from_ymd_opt(year, month, day).expect(
-            "This date is required for constructing a WorkOrderDates object",
-        ));
+        self.basic_start_date = Some(
+            NaiveDate::from_ymd_opt(year, month, day)
+                .expect("This date is required for constructing a WorkOrderDates object"),
+        );
         self
     }
 
     pub fn basic_finish_from_ymd(mut self, year: i32, month: u32, day: u32) -> Self
     {
-        self.basic_finish_date = Some(NaiveDate::from_ymd_opt(year, month, day).expect(
-            "This date is required for constructing a WorkOrderDates object",
-        ));
+        self.basic_finish_date = Some(
+            NaiveDate::from_ymd_opt(year, month, day)
+                .expect("This date is required for constructing a WorkOrderDates object"),
+        );
         self
     }
 }

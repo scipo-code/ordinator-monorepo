@@ -56,46 +56,96 @@ async fn test_material_1() -> anyhow::Result<()>
 
     match every_work_order.get(&WorkOrderNumber(1111990000)).unwrap() {
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Weekly(period) => {
-            assert!(period <= &time_environment[0])
+            assert!(
+                period <= &time_environment[0],
+                "{}\n{:?}",
+                period,
+                &time_environment,
+            )
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Project(period) => {
-            assert!(period <= &time_environment[0])
+            assert!(
+                period <= &time_environment[0],
+                "{}\n{:?}",
+                period,
+                &time_environment
+            )
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => unreachable!(),
     }
     match every_work_order.get(&WorkOrderNumber(1111990001)).unwrap() {
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Weekly(period) => {
-            assert!(period <= &time_environment[2])
+            assert!(
+                period <= &time_environment[2],
+                "{}\n{:?}",
+                period,
+                &time_environment
+            )
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Project(period) => {
-            assert!(period <= &time_environment[2])
+            assert!(
+                period <= &time_environment[2],
+                "{}\n{:?}",
+                period,
+                &time_environment
+            )
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => unreachable!(),
     }
     match every_work_order.get(&WorkOrderNumber(1111990002)).unwrap() {
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Weekly(period) => {
-            assert!(period <= &time_environment[3])
+            assert!(
+                period <= &time_environment[3],
+                "{}\n{:?}",
+                period,
+                &time_environment
+            )
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Project(period) => {
-            assert!(period <= &time_environment[3])
+            assert!(
+                period <= &time_environment[3],
+                "{}\n{:?}",
+                period,
+                &time_environment
+            )
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => unreachable!(),
     }
     match every_work_order.get(&WorkOrderNumber(1111990003)).unwrap() {
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Weekly(period) => {
-            assert!(period <= &time_environment[3])
+            assert!(
+                period <= &time_environment[3],
+                "{}\n{:?}",
+                period,
+                &time_environment
+            )
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Project(period) => {
-            assert!(period <= &time_environment[3])
+            assert!(
+                period <= &time_environment[3],
+                "{}\n{:?}",
+                period,
+                &time_environment
+            )
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => unreachable!(),
     }
     match every_work_order.get(&WorkOrderNumber(1111990004)).unwrap() {
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Weekly(period) => {
-            assert!(period <= &time_environment[0])
+            assert!(
+                period <= &time_environment[0],
+                "{}\n{:?}",
+                period,
+                &time_environment
+            )
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Project(period) => {
-            assert!(period <= &time_environment[0])
+            assert!(
+                period <= &time_environment[0],
+                "{}\n{:?}",
+                period,
+                &time_environment
+            )
         }
         ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled => unreachable!(),
     }

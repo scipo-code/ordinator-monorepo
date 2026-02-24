@@ -4,50 +4,50 @@ pub mod weekly_resources;
 pub mod weekly_solution;
 
 use std::collections::HashMap;
-use std::collections::HashSet;
 use std::fmt::Debug;
 use std::ops::Deref;
 use std::ops::DerefMut;
 use std::panic::Location;
 use std::sync::Arc;
 
-use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::ensure;
 use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::algorithm::LoadOperation;
 use ordinator_actor_core::traits::AbLNSUtils;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
 use ordinator_orchestrator_actor_traits::Parameters;
+use ordinator_orchestrator_actor_traits::ProjectInterface;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_orchestrator_actor_traits::ProjectInterface;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
-use ordinator_scheduling_environment::time_environment::period::Period;
-use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::worker_environment::resources::Skill;
-use ordinator_scheduling_environment::worker_environment::WeeklyOptions;
 use ordinator_scheduling_environment::Percent;
+use ordinator_scheduling_environment::time_environment::period::Period;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::worker_environment::WeeklyOptions;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use priority_queue::PriorityQueue;
 use rand::distr::weighted::Weight;
 use rand::seq::IndexedRandom;
+use strum::IntoEnumIterator;
+use tracing::instrument;
 use weekly_parameters::WeeklyClustering;
 use weekly_parameters::WeeklyParameters;
 use weekly_resources::WeeklyResources;
 use weekly_solution::WeeklyObjectiveValue;
 use weekly_solution::WeeklySolution;
-use strum::IntoEnumIterator;
-use tracing::instrument;
 
 use crate::messages::requests::WeeklyRequestResource;
 use crate::messages::requests::WeeklyRequestScheduling;
 use crate::messages::responses::WeeklyResponseResources;
 use crate::messages::responses::WeeklyResponseScheduling;
 
-// How would this look if made generic? impl Algorithm<WeeklySolution, WeeklyParameters, WeeklyAssertions> { }
-// Note: Making behavior generic is important, as changes would be needed in 4 places with the current design.
+// How would this look if made generic? impl Algorithm<WeeklySolution,
+// WeeklyParameters, WeeklyAssertions> { } Note: Making behavior generic is
+// important, as changes would be needed in 4 places with the current design.
 
 #[derive(Debug)]
 pub struct WeeklyAlgorithm<Ss>(
@@ -94,19 +94,15 @@ where
         Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>;
     type Options = WeeklyOptions;
 
-    /// Incorporates the system solution by updating internal state and force scheduling work orders
+    /// Incorporates the system solution by updating internal state and force
+    /// scheduling work orders
     fn incorporate_system_solution(&mut self) -> Result<bool>
     {
-
         let mut state_change = true;
         let periods = self.parameters.weekly_periods.clone();
         // Weekly loops over all parameters
-        for (work_order_number, weekly_parameter) in self
-            .parameters
-            .weekly_work_order_parameters
-            .clone()
-            .iter()
-
+        for (work_order_number, weekly_parameter) in
+            self.parameters.weekly_work_order_parameters.clone().iter()
         {
             // Project model takes precedence over the weekly
             let project_scheduled_period = self
@@ -136,12 +132,13 @@ where
 
             if weekly_parameter.locked_in_period == weekly_scheduled_period.clone() {
                 continue;
-            } 
+            }
             state_change = true;
         }
 
-        // CRUCIAL: Forced work orders are always part of the shared state in incorporate()
-        // This function should determine what is forced and only update WeeklyParameters 
+        // CRUCIAL: Forced work orders are always part of the shared state in
+        // incorporate() This function should determine what is forced and only
+        // update WeeklyParameters
 
         self.force_schedule()?;
         Ok(state_change)
@@ -161,13 +158,10 @@ where
     fn calculate_objective_value(
         &mut self,
     ) -> Result<
-        ObjectiveValueType<
-            <<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective,
-        >,
+        ObjectiveValueType<<<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective>,
     >
     {
-        let mut new_objective_value =
-            WeeklyObjectiveValue::new(&self.parameters.weekly_options);
+        let mut new_objective_value = WeeklyObjectiveValue::new(&self.parameters.weekly_options);
 
         self.determine_urgency(&mut new_objective_value)
             .context("could not determine weekly urgency")?;
@@ -182,9 +176,7 @@ where
         new_objective_value.aggregate_objectives();
 
         // We always work on self and substitute remaining parts
-        if new_objective_value.objective_value
-            < self.solution.objective_value().objective_value
-        {
+        if new_objective_value.objective_value < self.solution.objective_value().objective_value {
             Ok(ObjectiveValueType::Better(new_objective_value))
         } else {
             Ok(ObjectiveValueType::Worse(new_objective_value))
@@ -193,8 +185,8 @@ where
 
     fn schedule(&mut self) -> Result<()>
     {
-
         // TODO: Refactor to separate schedule and shared_state_update concerns
+
         while !self.solution_intermediate.is_empty() {
             for period in self.parameters.weekly_periods.clone() {
                 let (work_order_number, weight) = match self.solution_intermediate.pop() {
@@ -249,9 +241,7 @@ where
         let sampled_work_order_keys = filtered_keys
             .choose_multiple(
                 &mut rng,
-                self.parameters
-                    .weekly_options
-                    .number_of_removed_work_orders,
+                self.parameters.weekly_options.number_of_removed_work_orders,
             )
             .collect::<Vec<_>>()
             .clone();
@@ -282,9 +272,8 @@ where
     }
 
     #[allow(unreachable_code, unused_variables)]
-    fn force_schedule(&mut self) -> Result<()> {
-
-
+    fn force_schedule(&mut self) -> Result<()>
+    {
         // ISSUE #999 - Disabled temporarily
         return Ok(());
 
@@ -293,11 +282,12 @@ where
             .parameters
             .weekly_work_order_parameters
             .iter()
-            .filter(|e|e.1.locked_in_period.weekly_forced())
-            .map(|e|{
+            .filter(|e| e.1.locked_in_period.weekly_forced())
+            .map(|e| {
                 // TODO: Remove ForcedWorkOrder if unnecessary
                 ForcedWorkOrder::Locked(*e.0)
-            }).collect();
+            })
+            .collect();
 
         for forced_work_order_numbers in &forced_work_orders {
             self.schedule_forced_weekly_work_order(forced_work_order_numbers)
@@ -309,7 +299,8 @@ where
         Ok(())
     }
 
-    fn throttling(&self, throttling: &ordinator_configuration::throttling::Throttling) -> u64 {
+    fn throttling(&self, throttling: &ordinator_configuration::throttling::Throttling) -> u64
+    {
         throttling.weekly_throttling
     }
 }
@@ -345,8 +336,7 @@ where
     //         }
     // }
 
-    fn weekly_capacity_by_resource(&self, resource: &Skill, period: &Period)
-        -> Result<Work>
+    fn weekly_capacity_by_resource(&self, resource: &Skill, period: &Period) -> Result<Work>
     {
         self.parameters
             .weekly_capacity
@@ -382,10 +372,8 @@ where
         Ok(utilization_by_period)
     }
 
-    fn determine_urgency(
-        &mut self,
-        weekly_objective_value: &mut WeeklyObjectiveValue,
-    ) -> Result<()>
+    fn determine_urgency(&mut self, weekly_objective_value: &mut WeeklyObjectiveValue)
+    -> Result<()>
     {
         for (work_order_number, scheduled_period) in self.solution.every_work_order() {
             let optimized_period = match scheduled_period {
@@ -439,24 +427,22 @@ where
                 .solution
                 .every_work_order()
                 .iter()
-                .filter_map(|(won, where_is_period)| {
-                    match where_is_period {
-                        WhereIsWorkOrder::Weekly(opt_per) => {
-                            if opt_per == period {
-                                Some(won)
-                            } else {
-                                None
-                            }
+                .filter_map(|(won, where_is_period)| match where_is_period {
+                    WhereIsWorkOrder::Weekly(opt_per) => {
+                        if opt_per == period {
+                            Some(won)
+                        } else {
+                            None
                         }
-                        WhereIsWorkOrder::Project(opt_per) => {
-                            if opt_per == period {
-                                Some(won)
-                            } else {
-                                None
-                            }
-                        }
-                                WhereIsWorkOrder::NotScheduled => None,
                     }
+                    WhereIsWorkOrder::Project(opt_per) => {
+                        if opt_per == period {
+                            Some(won)
+                        } else {
+                            None
+                        }
+                    }
+                    WhereIsWorkOrder::NotScheduled => None,
                 })
                 .collect();
 
@@ -498,10 +484,7 @@ where
     }
 
     // Calculate resource penalty based on total exceeded hours
-    fn determine_resource_penalty(
-        &mut self,
-        weekly_objective_value: &mut WeeklyObjectiveValue,
-    )
+    fn determine_resource_penalty(&mut self, weekly_objective_value: &mut WeeklyObjectiveValue)
     {
         for (period, skill_map) in &self.parameters.weekly_capacity.0 {
             let capacity: f64 = skill_map.values().map(|w| w.to_f64()).sum();
@@ -534,13 +517,7 @@ where
             .unwrap();
         let work_load = &work_order_parameter.work_load;
         let locked_in_period = &work_order_parameter.locked_in_period;
-        let weekly_loadings = self
-            .solution
-            .weekly_loadings
-            .0
-            .get(period)
-            .unwrap()
-            .clone();
+        let weekly_loadings = self.solution.weekly_loadings.0.get(period).unwrap().clone();
         let weekly_capacity = self
             .parameters
             .weekly_capacity
@@ -548,7 +525,11 @@ where
             .get(period)
             .unwrap()
             .clone();
-        ensure!(combined_loadings(work_load, &weekly_loadings).iter().all(|(res, work)| work >= work_load.get(res).unwrap()), "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
+        ensure!(
+            combined_loadings(work_load, &weekly_loadings)
+                .iter()
+                .all(|(res, work)| work >= work_load.get(res).unwrap()),
+            "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
             possible errors:\n\
             * Rounding error\n\
             * Calculation error\n\
@@ -573,18 +554,26 @@ where
         Ok(())
     }
 
-    fn determine_percent_scheduled(&self, new_objective_value: &mut WeeklyObjectiveValue) -> Result<()>{
+    fn determine_percent_scheduled(
+        &self,
+        new_objective_value: &mut WeeklyObjectiveValue,
+    ) -> Result<()>
+    {
+        let total_work_orders = self.parameters.weekly_work_order_parameters.len() as u64;
+        let scheduled_work_orders = self
+            .solution
+            .weekly_scheduled_work_orders
+            .iter()
+            .filter(|(_, v)| match v {
+                WhereIsWorkOrder::Weekly(_period) => true,
+                WhereIsWorkOrder::Project(_) => false,
+                WhereIsWorkOrder::NotScheduled => false,
+            })
+            .count() as u64;
 
-            let total_work_orders = self.parameters.weekly_work_order_parameters.len() as u64;
-            let scheduled_work_orders  = self.solution.weekly_scheduled_work_orders.iter().filter(|(_, v)| {
-                match v {
-                    WhereIsWorkOrder::Weekly(_period) => true,
-                    WhereIsWorkOrder::Project(_) => false,
-                    WhereIsWorkOrder::NotScheduled => false,
-                }
-            }).count() as u64;
-
-            new_objective_value.percent_scheduled.1 = Percent::new(scheduled_work_orders, total_work_orders).context("percent scheduled could not be calculated")?;
+        new_objective_value.percent_scheduled.1 =
+            Percent::new(scheduled_work_orders, total_work_orders)
+                .context("percent scheduled could not be calculated")?;
         Ok(())
     }
 }
@@ -616,7 +605,8 @@ pub enum ScheduleWorkOrder
     Unschedule,
 }
 
-// TODO: Move this trait to ProjectSolution interface (defines "Metavariables" from the paper)
+// TODO: Move this trait to ProjectSolution interface (defines "Metavariables"
+// from the paper)
 pub trait WeeklyUtils
 {
     fn schedule_weekly_work_order(
@@ -634,25 +624,15 @@ pub trait WeeklyUtils
 
     /// This function updates the WeeklyResources based on the a provided
     /// loading.
-    fn update_loadings(
-        &mut self,
-        weekly_resources: WeeklyResources,
-        load_operation: LoadOperation,
-    );
-
-    fn determine_best_permutation(
-        &self,
-        work_load: HashMap<Skill, Work>,
-        period: &Period,
-        schedule: ScheduleWorkOrder,
-    ) -> Result<Option<WeeklyResources>>;
+    fn update_loadings(&mut self, weekly_resources: WeeklyResources, load_operation: LoadOperation);
 }
 // TODO: Use binary heap instead
 impl<Ss> WeeklyUtils for WeeklyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    // TODO: Rely on interface instead. This function should determine period for project work order's first day
+    // TODO: Rely on interface instead. This function should determine period for
+    // project work order's first day
 
     fn schedule_weekly_work_order(
         &mut self,
@@ -682,8 +662,8 @@ where
         }
 
         // let resource_use_option = self
-        //     .determine_best_permutation(work_load.clone(), period, ScheduleWorkOrder::Normal)
-        //     .with_context(|| {
+        //     .determine_best_permutation(work_load.clone(), period,
+        // ScheduleWorkOrder::Normal)     .with_context(|| {
         //         format!(
         //             "{:?}\nfor period\n{:#?}\ncould not be {:?}",
         //             work_order_number,
@@ -692,8 +672,8 @@ where
         //         )
         //     })?;
 
-        // If no `WeeklyResources` could be determined for the `schedule` decision make an
-        // early return.
+        // If no `WeeklyResources` could be determined for the `schedule` decision make
+        // an early return.
         //
         // TODO [ ] - replace with multi-skill calculation. You do not need
         // STARTHERE
@@ -713,7 +693,8 @@ where
             line!()
         );
 
-        let weekly_resources = WeeklyResources(HashMap::from([(period.clone(), work_load.clone())]));
+        let weekly_resources =
+            WeeklyResources(HashMap::from([(period.clone(), work_load.clone())]));
         self.update_loadings(weekly_resources, LoadOperation::Add);
         self.assert_work_load_to_loading(work_order_number, period)
             .with_context(|| {
@@ -727,7 +708,8 @@ where
         Ok(None)
     }
 
-    // Ensures forced work orders are scheduled in correct order using template trait pattern
+    // Ensures forced work orders are scheduled in correct order using template
+    // trait pattern
     fn schedule_forced_weekly_work_order(
         &mut self,
         force_schedule_work_order: &ForcedWorkOrder,
@@ -777,11 +759,9 @@ where
             .work_load
             .clone();
 
-        let weekly_resources = self
-            .determine_best_permutation(work_load, &locked_in_period, ScheduleWorkOrder::Forced)
-            .with_context(|| format!("{:?}\ncould not be\n{:#?}", force_schedule_work_order, ScheduleWorkOrder::Forced))?
-            .expect("It should always be possible to determine a resource permutation for a forced work order");
-
+        let weekly_resources =
+            WeeklyResources(HashMap::from([(locked_in_period, work_load.clone())]));
+        weekly_resources.assert_well_shaped_resources()?;
         weekly_resources.assert_well_shaped_resources()?;
 
         self.update_loadings(weekly_resources, LoadOperation::Add);
@@ -808,28 +788,25 @@ where
         load_operation: LoadOperation,
     )
     {
-        // TODO: Refactor to handle changes correctly without permutation loop 
+        // TODO: Refactor to handle changes correctly without permutation loop
         //
-        // This should look exactly like the... You simply have to add the loadings. You cannot make this
-        // difficult to understand. 
+        // This should look exactly like the... You simply have to add the loadings. You
+        // cannot make this difficult to understand.
         for (period, work_load) in weekly_resources.0 {
             for (skill, work) in work_load {
                 match load_operation {
                     LoadOperation::Add => {
-                        self
-                            .solution
+                        self.solution
                             .weekly_loadings
                             .0
                             .get_mut(&period)
                             .expect("All Periods should be initialized at this point")
                             // What happens if the value is not present? Should we simply insert it?
-                            .entry(skill.clone())
+                            .entry(skill)
                             .and_modify(|e| {
-                                *e = *e + work;
-
+                                *e += work;
                             })
                             .or_insert(work);
-
                     }
                     LoadOperation::Sub => {
                         let weekly_loading = self
@@ -841,124 +818,9 @@ where
                             .get_mut(&skill)
                             .unwrap();
 
-                            *weekly_loading -= work;
-
+                        *weekly_loading -= work;
                     }
                 }
-            }
-        }
-    }
-
-    /// Determines the best permutation of work order assignments to technicians
-    ///
-    /// Returns whether a feasible permutation exists and the loading to apply
-    fn determine_best_permutation(
-        &self,
-        work_load: HashMap<Skill, Work>,
-        period: &Period,
-        schedule: ScheduleWorkOrder,
-    ) -> Result<Option<WeeklyResources>>
-    {
-        let weekly_capacity_resources = self
-            .parameters
-            .weekly_capacity
-            .0
-            .get(period)
-            .context("There should always be a dummy resource that can soak excess")?;
-
-        if matches!(schedule, ScheduleWorkOrder::Normal)
-            && !work_load.keys().collect::<HashSet<&Skill>>().is_subset(
-                &weekly_capacity_resources
-                    .keys()
-                    .collect::<HashSet<&Skill>>(),
-            )
-        {
-            return Ok(None);
-        }
-
-        let weekly_loading_resources: HashMap<Skill, Work> = self
-            .solution
-            .weekly_loadings
-            .0
-            .get(period)
-            .cloned()
-            .unwrap_or_default();
-
-        // Difference between capacity and loading per skill
-        let difference_resources = determine_difference_resources(
-            weekly_capacity_resources,
-            &weekly_loading_resources,
-        );
-
-        let work_order_resource_loadings =
-            WeeklyResources(HashMap::from([(period.clone(), work_load.clone())]));
-
-        match schedule {
-            ScheduleWorkOrder::Normal => {
-                // Check if all required skills have enough remaining capacity
-                let feasible = work_load.iter().all(|(skill, work)| {
-                    let available = difference_resources.get(skill).copied().unwrap_or(Work::from(0.0));
-                    available >= *work
-                });
-
-                if feasible {
-                    assert_work_load_equal_to_weekly_resource(
-                        period,
-                        &work_order_resource_loadings,
-                        &work_load,
-                        LoadOperation::Add,
-                    )
-                    .with_context(|| format!("file: {}\nline: {}", file!(), line!()))?;
-                    Ok(Some(work_order_resource_loadings))
-                } else {
-                    Ok(None)
-                }
-            }
-            ScheduleWorkOrder::Forced => {
-                // Forced scheduling always succeeds (may exceed capacity)
-                assert_work_load_equal_to_weekly_resource(
-                    period,
-                    &work_order_resource_loadings,
-                    &work_load,
-                    LoadOperation::Add,
-                )
-                .with_context(|| format!("file: {}\nline: {}", file!(), line!()))?;
-
-                Ok(Some(work_order_resource_loadings))
-            }
-            ScheduleWorkOrder::Unschedule => {
-                // Check that loading >= work_load for all relevant skills
-                combined_loadings(&work_load, &weekly_loading_resources)
-                    .iter()
-                    .try_for_each(|(res, work)| {
-                        let allowed =
-                            work_load.get(res).cloned().unwrap_or(Work::from(0.0));
-                        ensure!(work >= &allowed, "The amount of work loaded into the schedule and the work_load of the work order does not match.\n\
-                            possible errors:\n\
-                            * Rounding error\n\
-                            * Calculation error\n\
-                            * Timing error in either pointer swaps or user-input message\n\
-                            combined_loadings: {:#?}\n\
-                            combined_work_load: {:#?}\n\
-                            work_load: {:#?}\n\
-                            Location: {}",
-                            combined_loadings(&work_load, &weekly_loading_resources),
-                            work_load.clone().into_values().sum::<Work>(),
-                            work_load,
-                            Location::caller(),
-                        );
-                        Ok(())
-                    })?;
-
-                assert_work_load_equal_to_weekly_resource(
-                    period,
-                    &work_order_resource_loadings,
-                    &work_load,
-                    LoadOperation::Sub,
-                )
-                .with_context(|| format!("Location: {}", Location::caller()))?;
-
-                Ok(Some(work_order_resource_loadings))
             }
         }
     }
@@ -977,6 +839,7 @@ fn combined_loadings(
         .collect()
 }
 
+#[allow(dead_code)]
 fn assert_work_load_equal_to_weekly_resource(
     period: &Period,
     weekly_resource_loadings: &WeeklyResources,
@@ -1014,19 +877,6 @@ fn assert_work_load_equal_to_weekly_resource(
         )
     );
     Ok(())
-}
-
-fn determine_difference_resources(
-    capacity_resources: &HashMap<Skill, Work>,
-    loading_resources: &HashMap<Skill, Work>,
-) -> HashMap<Skill, Work>
-{
-    let mut difference_resources = HashMap::new();
-    for (skill, capacity) in capacity_resources {
-        let loading = loading_resources.get(skill).copied().unwrap_or(Work::from(0.0));
-        difference_resources.insert(*skill, *capacity - loading);
-    }
-    difference_resources
 }
 
 pub fn calculate_period_difference(scheduled_period: &Period, latest_period: &Period) -> i64
@@ -1128,10 +978,7 @@ where
                     number_of_work_orders += 1;
                 }
 
-                Ok(WeeklyResponseScheduling::new(
-                    number_of_work_orders,
-                    period,
-                ))
+                Ok(WeeklyResponseScheduling::new(number_of_work_orders, period))
             }
             WeeklyRequestScheduling::ExcludeFromPeriod(_exclude_from_period) => {
                 todo!(
@@ -1158,11 +1005,17 @@ where
 
             let work_load = weekly_parameter.work_load.clone();
 
-            let weekly_resources = self
-                .determine_best_permutation(work_load, &unschedule_from_period, ScheduleWorkOrder::Unschedule)
-                .with_context(|| format!("{:#?}\n{:#?}\nfor {:?}\nfile: {}\nline: {}", weekly_parameter, unschedule_from_period, ScheduleWorkOrder::Unschedule, file!(), line!()))?
-                .context("Determining the WeeklyResources associated with a unscheduling operation should always be possible")?;
+            // let weekly_resources = self
+            //     .determine_best_permutation(work_load, &unschedule_from_period,
+            // ScheduleWorkOrder::Unschedule)     .with_context(||
+            // format!("{:#?}\n{:#?}\nfor {:?}\nfile: {}\nline: {}", weekly_parameter,
+            // unschedule_from_period, ScheduleWorkOrder::Unschedule, file!(), line!()))?
+            //     .context("Determining the WeeklyResources associated with a unscheduling
+            // operation should always be possible")?;
+            //
 
+            let weekly_resources =
+                WeeklyResources(HashMap::from([(unschedule_from_period, work_load.clone())]));
             weekly_resources.assert_well_shaped_resources()?;
             self.update_loadings(weekly_resources, LoadOperation::Sub);
         }
@@ -1177,9 +1030,7 @@ where
                 .parameters
                 .weekly_work_order_parameters
                 .get(work_order_number)
-                .expect(
-                    "The WeeklyParameter should always be available for the WeeklySolution",
-                );
+                .expect("The WeeklyParameter should always be available for the WeeklySolution");
 
             if weekly_parameter.locked_in_period.weekly_forced() {
                 continue;
@@ -1200,19 +1051,13 @@ where
     }
 }
 
-impl<Ss>
-    From<Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>>
+impl<Ss> From<Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>>
     for WeeklyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
     fn from(
-        value: Algorithm<
-            WeeklySolution,
-            WeeklyParameters,
-            PriorityQueue<WorkOrderNumber, i64>,
-            Ss,
-        >,
+        value: Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>,
     ) -> Self
     {
         WeeklyAlgorithm(value)
@@ -1223,10 +1068,11 @@ where
 mod tests
 {
     use std::collections::HashMap;
+    use std::collections::HashSet;
     use std::str::FromStr;
 
-    use rand::rngs::StdRng;
     use rand::SeedableRng;
+    use rand::rngs::StdRng;
     use weekly_parameters::WorkOrderParameter;
 
     use super::*;
@@ -1250,32 +1096,6 @@ mod tests
             }
         }
     }
-    #[test]
-    fn test_determine_difference_resources()
-    {
-        let capacity_resource = HashMap::from([
-            (Skill::MtnMech, Work::from(5.0)),
-            (Skill::MtnElec, Work::from(4.0)),
-            (Skill::MtnScaf, Work::from(3.0)),
-        ]);
-        let loading_resource = HashMap::from([
-            (Skill::MtnMech, Work::from(2.0)),
-            (Skill::MtnElec, Work::from(2.0)),
-            (Skill::MtnScaf, Work::from(2.0)),
-        ]);
-
-        let difference = determine_difference_resources(&capacity_resource, &loading_resource);
-
-        let difference_actual = HashMap::from([
-            (Skill::MtnMech, Work::from(3.0)),
-            (Skill::MtnElec, Work::from(2.0)),
-            (Skill::MtnScaf, Work::from(1.0)),
-        ]);
-
-        assert_eq!(difference, difference_actual);
-    }
-    #[test]
-    fn test_determine_best_permutation() {}
 
     #[test]
     fn test_update_load_1()
@@ -1295,20 +1115,25 @@ mod tests
 
         let mut weekly_resources = WeeklyResources::new(weekly_resources_inner);
 
-        weekly_resources.update_load(
-            &period,
-            resource,
-            load,
-            LoadOperation::Add,
-        );
+        weekly_resources.update_load(&period, resource, load, LoadOperation::Add);
 
         assert_eq!(
-            *weekly_resources.0.get(&period).unwrap().get(&Skill::MtnMech).unwrap(),
+            *weekly_resources
+                .0
+                .get(&period)
+                .unwrap()
+                .get(&Skill::MtnMech)
+                .unwrap(),
             Work::from(130.0)
         );
         // Other skills should be unchanged
         assert_eq!(
-            *weekly_resources.0.get(&period).unwrap().get(&Skill::MtnElec).unwrap(),
+            *weekly_resources
+                .0
+                .get(&period)
+                .unwrap()
+                .get(&Skill::MtnElec)
+                .unwrap(),
             Work::from(100.0)
         );
     }
@@ -1331,21 +1156,26 @@ mod tests
 
         let mut weekly_resources = WeeklyResources::new(weekly_resources_inner);
 
-        weekly_resources.update_load(
-            &period,
-            resource,
-            load,
-            LoadOperation::Add,
-        );
+        weekly_resources.update_load(&period, resource, load, LoadOperation::Add);
 
         // New skill should be inserted with the load value
         assert_eq!(
-            *weekly_resources.0.get(&period).unwrap().get(&Skill::VenMech).unwrap(),
+            *weekly_resources
+                .0
+                .get(&period)
+                .unwrap()
+                .get(&Skill::VenMech)
+                .unwrap(),
             Work::from(30.0)
         );
         // Existing skills should be unchanged
         assert_eq!(
-            *weekly_resources.0.get(&period).unwrap().get(&Skill::MtnMech).unwrap(),
+            *weekly_resources
+                .0
+                .get(&period)
+                .unwrap()
+                .get(&Skill::MtnMech)
+                .unwrap(),
             Work::from(100.0)
         );
     }
@@ -1368,26 +1198,32 @@ mod tests
 
         let mut weekly_resources = WeeklyResources::new(weekly_resources_inner);
 
-        weekly_resources.update_load(
-            &period,
-            resource,
-            load,
-            LoadOperation::Sub,
-        );
+        weekly_resources.update_load(&period, resource, load, LoadOperation::Sub);
 
         assert_eq!(
-            *weekly_resources.0.get(&period).unwrap().get(&Skill::MtnMech).unwrap(),
+            *weekly_resources
+                .0
+                .get(&period)
+                .unwrap()
+                .get(&Skill::MtnMech)
+                .unwrap(),
             Work::from(70.0)
         );
         // Other skills should be unchanged
         assert_eq!(
-            *weekly_resources.0.get(&period).unwrap().get(&Skill::MtnElec).unwrap(),
+            *weekly_resources
+                .0
+                .get(&period)
+                .unwrap()
+                .get(&Skill::MtnElec)
+                .unwrap(),
             Work::from(100.0)
         );
     }
 
     // Tests for the removed per-operator permutation functions have been removed
-    // since determine_best_permutation now works with aggregate HashMap<Skill, Work> data.
+    // since determine_best_permutation now works with aggregate HashMap<Skill,
+    // Work> data.
 
     // Should this test go into the integration testing instead? I
     // think that is a really good idea. Also you should never s
@@ -1733,6 +1569,6 @@ mod tests
     // #[test]
     // fn test_update_loadings()
     // {
-    //     let 
+    //     let
     // }
 }
