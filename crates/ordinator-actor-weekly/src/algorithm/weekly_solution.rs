@@ -19,7 +19,6 @@ use serde::Serialize;
 use valuable::Valuable;
 
 use super::weekly_parameters::WeeklyParameters;
-use super::weekly_resources::OperationalResource;
 use super::weekly_resources::WeeklyResources;
 
 // Solution fields should never be made `pub` to preserve business invariants,
@@ -185,22 +184,12 @@ impl Solution for WeeklySolution
             .weekly_capacity
             .0
             .iter()
-            .map(|(per, res)| {
-                let inner_map: HashMap<_, _> = res
-                    .iter()
-                    .map(|(id, or)| {
-                        (
-                            id.clone(),
-                            OperationalResource::new(
-                                id,
-                                Work::from(0.0),
-                                or.skill_hours.keys().cloned().collect(),
-                            ),
-                        )
-                    })
+            .map(|(per, skill_map)| {
+                let zeroed_map: HashMap<_, _> = skill_map
+                    .keys()
+                    .map(|skill| (*skill, Work::from(0.0)))
                     .collect();
-
-                (per.clone(), inner_map)
+                (per.clone(), zeroed_map)
             })
             .collect::<HashMap<_, _>>();
 

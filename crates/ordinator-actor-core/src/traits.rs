@@ -7,8 +7,8 @@ use ordinator_configuration::throttling::Throttling;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use serde::Serialize;
-use tracing::event;
 use tracing::Level;
+use tracing::event;
 use valuable::Valuable;
 
 pub type ActorLinkToSchedulingEnvironment<'a> = MutexGuard<'a, SchedulingEnvironment>;
@@ -18,13 +18,15 @@ pub trait ActorBasedLargeNeighborhoodSearch
     type Algorithm: AbLNSUtils;
     type Options;
 
-    // TODO: Avoid locking the scheduling environment on every iteration. Weights are cached
-    // on the workorder, and configuration changes should be reflected dynamically. See ISSUE #129.
+    // TODO: Avoid locking the scheduling environment on every iteration. Weights
+    // are cached on the workorder, and configuration changes should be
+    // reflected dynamically. See ISSUE #129.
     fn run_lns_iteration(&mut self) -> Result<()>
         where
             <<<Self as ActorBasedLargeNeighborhoodSearch>::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective: Valuable
     {
-        // TODO: Options should be part of the Algorithm or Actor with dependency injection
+        // TODO: Options should be part of the Algorithm or Actor with dependency
+        // injection
         self.update_based_on_system_solution().with_context(|| {
             format!(
                 "Could not update the Algorithm state based on SystemSolution\nLocation: {}:{}",
@@ -58,8 +60,7 @@ pub trait ActorBasedLargeNeighborhoodSearch
             }
             ObjectiveValueType::Worse(objective_value) => {
                 event!(target: "research", Level::DEBUG, objective_value = objective_value.as_value(), reason = "optimization loop found a worse solution");
-                self
-                    .algorithm_util_methods()
+                self.algorithm_util_methods()
                     .swap_to_old_solution(current_solution);
             }
             ObjectiveValueType::Force(_) => todo!(),
@@ -71,8 +72,8 @@ pub trait ActorBasedLargeNeighborhoodSearch
 
     fn make_atomic_pointer_swap(&mut self);
 
-    // TODO: State link should handle scheduling environment locks to avoid conflicts
-    // when options are updated dynamically
+    // TODO: State link should handle scheduling environment locks to avoid
+    // conflicts when options are updated dynamically
     fn calculate_objective_value(
         &mut self,
     ) -> Result<

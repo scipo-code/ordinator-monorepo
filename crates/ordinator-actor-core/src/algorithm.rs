@@ -19,9 +19,10 @@ use crate::traits::AbLNSUtils;
 
 // pub type SharedSolution = SharedSolution<
 
-// TODO: Consider making fields private and adding accessor methods to control solution management.
-// TODO: Split the algorithm into separate traits, each controlling access to specific functionality.
-// TODO: Add error handling to the specific `Algorithm` implementation.
+// TODO: Consider making fields private and adding accessor methods to control
+// solution management. TODO: Split the algorithm into separate traits, each
+// controlling access to specific functionality. TODO: Add error handling to the
+// specific `Algorithm` implementation.
 #[derive(Debug)]
 pub struct Algorithm<S, P, I, Ss>
 where
@@ -134,7 +135,8 @@ where
         self
     }
 
-    // TODO: Consider refactoring to avoid this level of indirection; explore moving options into Algorithm.
+    // TODO: Consider refactoring to avoid this level of indirection; explore moving
+    // options into Algorithm.
     pub fn parameters_and_solution(
         mut self,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,

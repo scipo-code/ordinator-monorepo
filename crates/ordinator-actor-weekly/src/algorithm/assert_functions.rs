@@ -40,24 +40,23 @@ where
         weekly_capacity: &WeeklyResources,
     ) -> Result<()>
     {
-        for (period, operational_resources) in weekly_loading.0.iter() {
-            for (operational_id, work) in operational_resources.iter() {
+        for (period, skill_loadings) in weekly_loading.0.iter() {
+            for (skill, loading) in skill_loadings.iter() {
                 let capacity = weekly_capacity
                     .0
                     .get(period)
                     .unwrap()
-                    .get(operational_id)
-                    .unwrap()
-                    .total_hours;
-                if work.total_hours > capacity {
+                    .get(skill)
+                    .copied()
+                    .unwrap_or(Work::from(0.0));
+                if *loading > capacity {
                     event!(
                         Level::ERROR,
-                        resource = ?period,
-                        period = ?operational_id,
+                        skill = ?skill,
+                        period = ?period,
                         capacity = ?capacity,
-                        loading = ? work,
+                        loading = ?loading,
                         "weekly_resources_exceeded"
-
                     );
                     bail!("Capacity exceeded")
                 }
@@ -109,11 +108,9 @@ where
                 .0
                 .get(resource.0)
                 .unwrap()
-                .values()
-                .fold(Work::from(0.0), |mut acc, or| {
-                    acc += or.skill_hours.get(&resource.1).unwrap_or(&Work::from(0.0));
-                    acc
-                });
+                .get(&resource.1)
+                .copied()
+                .unwrap_or(Work::from(0.0));
 
             ensure!(loadings == total_work);
         }

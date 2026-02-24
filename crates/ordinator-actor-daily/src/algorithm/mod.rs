@@ -12,15 +12,17 @@ use std::sync::Arc;
 use anyhow::Context;
 use anyhow::Result;
 use anyhow::ensure;
+use daily_parameters::DailyParameters;
+use daily_solution::DailySolution;
 use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::AbLNSUtils;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
-use ordinator_orchestrator_actor_traits::WeeklyInterface;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
+use ordinator_orchestrator_actor_traits::WeeklyInterface;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
 use ordinator_scheduling_environment::Percent;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
@@ -29,8 +31,6 @@ use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::DailyOptions;
 use rand::rng;
 use rand::seq::IndexedRandom;
-use daily_parameters::DailyParameters;
-use daily_solution::DailySolution;
 #[allow(unused_imports)]
 use tracing::Level;
 #[allow(unused_imports)]
@@ -93,8 +93,7 @@ impl<Ss: SystemSolutions + std::fmt::Debug> std::fmt::Debug for DailyAlgorithm<S
 
 impl<Ss> ActorBasedLargeNeighborhoodSearch for DailyAlgorithm<Ss>
 where
-    Algorithm<DailySolution, DailyParameters, (), Ss>:
-        AbLNSUtils<SolutionType = DailySolution>,
+    Algorithm<DailySolution, DailyParameters, (), Ss>: AbLNSUtils<SolutionType = DailySolution>,
     DailySolution: Solution,
     DailyParameters: Parameters,
     Ss: SystemSolutions<Daily = DailySolution>,
@@ -132,7 +131,8 @@ where
         let new_objective_value = Percent::new(assigned_woas.len() as u64, all_woas.len() as u64)
             .with_context(|| format!("{}", Location::caller()))?;
 
-        // TODO: Determine how much is actually scheduled by operational actors to improve optimization
+        // TODO: Determine how much is actually scheduled by operational actors to
+        // improve optimization
         if self.solution.objective_value < new_objective_value {
             Ok(ObjectiveValueType::Better(new_objective_value))
         } else {
@@ -184,6 +184,7 @@ where
             Location::caller(),
         );
 
+        dbg!("Daily schedule test");
         for work_order_activity in &self.solution.get_work_order_activities() {
             let number_of_people_for_operation = self
                 .parameters
@@ -350,7 +351,8 @@ where
         let work_order_parameters = self.parameters.daily_work_orders.clone();
         let all_operational_actors = self.loaded_system_solution.all_operational().clone();
 
-        // Track work orders that cannot be incorporated due to infeasibility or missing resources
+        // Track work orders that cannot be incorporated due to infeasibility or missing
+        // resources
         let mut non_incorporated_work_orders: HashSet<WorkOrderNumber> = HashSet::new();
         for (work_order_number, _) in incoming_activities {
             let activity_number = work_order_parameters
@@ -481,8 +483,7 @@ where
         &mut self.0
     }
 }
-impl<Ss> From<Algorithm<DailySolution, DailyParameters, (), Ss>>
-    for DailyAlgorithm<Ss>
+impl<Ss> From<Algorithm<DailySolution, DailyParameters, (), Ss>> for DailyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {

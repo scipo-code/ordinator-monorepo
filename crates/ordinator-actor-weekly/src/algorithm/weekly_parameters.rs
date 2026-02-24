@@ -83,7 +83,8 @@ impl Parameters for WeeklyParameters
                 Ok((
                     *won,
                     // TODO #000001: Move time environment configuration into SchedulingEnvironment
-                    // TODO #000002: Move work order parameters to temp_scheduling_environment_database
+                    // TODO #000002: Move work order parameters to
+                    // temp_scheduling_environment_database
                     WorkOrderParameter::builder()
                         // TODO: Accept list of work order numbers instead of current implementation
                         .with_scheduling_environment(
@@ -139,7 +140,8 @@ pub struct WeeklyClustering
     pub inner: HashMap<(WorkOrderNumber, WorkOrderNumber), ClusteringValue>,
 }
 
-/// WARNING: Consider adding a generic parameter to support multiple WeeklyParameter handling approaches
+/// WARNING: Consider adding a generic parameter to support multiple
+/// WeeklyParameter handling approaches
 #[derive(Debug, PartialEq, Clone, Serialize)]
 pub struct WorkOrderParameter
 {
@@ -217,8 +219,9 @@ impl WeeklyParameters
 
 impl WorkOrderParameterBuilder
 {
-    // This builder is crucial for business logic. Add functions for each field and clarify their meanings.
-    // Configs come from the higher-level Parameters implementation via SchedulingEnvironment.
+    // This builder is crucial for business logic. Add functions for each field and
+    // clarify their meanings. Configs come from the higher-level Parameters
+    // implementation via SchedulingEnvironment.
     pub fn with_scheduling_environment(
         mut self,
         work_order: &WorkOrder,
