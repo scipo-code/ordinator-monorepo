@@ -9,7 +9,7 @@ use super::availability::Availability;
 use super::resources::ActorCompositeId;
 use super::resources::Skill;
 use crate::time_environment::TimeInterval;
-use crate::worker_environment::worker::Worker;
+use crate::worker_environment::worker::Technician;
 
 // TODO: Move this to `SchedulingEnvironment::worker_environment`.
 // Consider separating workers by Asset for better organization.
@@ -46,8 +46,8 @@ impl OperationalConfigurationAll
     }
 }
 
-// TODO: Determine the high-level data structure design. All required data should
-// be available in the scheduling environment to avoid duplication.
+// TODO: Determine the high-level data structure design. All required data
+// should be available in the scheduling environment to avoid duplication.
 #[derive(Deserialize, Debug, Serialize, Clone)]
 pub struct OperationalConfiguration
 {
@@ -179,7 +179,7 @@ impl DailyConfigurationAll
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Crew
 {
-    workers: HashMap<WorkerNumber, Worker>,
+    workers: HashMap<WorkerNumber, Technician>,
 }
 
 #[derive(Hash, Eq, PartialEq, Clone, Debug)]
@@ -209,12 +209,12 @@ impl<'de> Deserialize<'de> for WorkerNumber
 
 impl Crew
 {
-    pub fn new(workers: Option<HashMap<WorkerNumber, Worker>>) -> Option<Self>
+    pub fn new(workers: Option<HashMap<WorkerNumber, Technician>>) -> Option<Self>
     {
         workers.map(|workers| Crew { workers })
     }
 
-    pub fn get_workers(&self) -> &HashMap<WorkerNumber, Worker>
+    pub fn get_workers(&self) -> &HashMap<WorkerNumber, Technician>
     {
         &self.workers
     }

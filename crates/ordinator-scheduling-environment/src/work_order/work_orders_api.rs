@@ -5,7 +5,8 @@ use crate::time_environment::period::Period;
 use crate::work_order::WorkOrderNumber;
 use crate::work_order::WorkOrders;
 
-/// Updates the `UnloadingPoint` for the entire `WorkOrder` across all operations.
+/// Updates the `UnloadingPoint` for the entire `WorkOrder` across all
+/// operations.
 ///
 /// TODO WARN [ ] 2025-07-14 `UnloadingPoint` is site-specific
 impl WorkOrders
@@ -33,7 +34,7 @@ impl WorkOrders
                 .out_of_scheduled_or_draft();
         }
 
-        work_order.work_order_dates.basic_start_date = period.start_datetime().date_naive();
+        work_order.work_order_dates.basic_start_date = period.start_date().date_naive();
         work_order.work_order_dates.basic_finish_date = period.finish_datetime().date_naive();
 
         work_order

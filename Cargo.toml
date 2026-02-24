@@ -10,10 +10,10 @@ members = [
     "crates/ordinator-api-server",
     "crates/ordinator-configuration",
     "crates/ordinator-contracts",
-    # "crates/ordinator-imperium",
     "crates/ordinator-orchestrator",
     "crates/ordinator-orchestrator-actor-traits",
     "crates/ordinator-scheduling-environment",
+    "crates/ordinator-scheduling-hypergraph",
     # TODO [ ]
     # Make `imperium` rely on `ordinator-api-server` and `ordinator-contracts`
     # "crates/ordinator-scheduling-environment-common",

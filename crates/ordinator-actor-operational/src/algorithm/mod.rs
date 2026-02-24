@@ -997,7 +997,7 @@ where
             ),
             // Note: WeeklyActor period depends on current time; ensure correct SystemClock
             (Some(WhereIsWorkOrder::Weekly(period)), _) => {
-                (*period.start_datetime(), *period.finish_datetime())
+                (*period.start_date(), *period.finish_datetime())
             }
             (Some(WhereIsWorkOrder::NotScheduled), _) => (
                 self.parameters.availability.start_datetime(),
