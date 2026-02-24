@@ -69,6 +69,23 @@ impl std::fmt::Debug for Period
 #[allow(dead_code)]
 impl Period
 {
+    /// Creates a 2-week period starting from the given date.
+    pub fn from_start_date(date: NaiveDate) -> Period
+    {
+        let start_date = date
+            .and_hms_opt(0, 0, 0)
+            .unwrap();
+        let start_datetime = Utc.from_utc_datetime(&start_date);
+        let end_datetime = Utc.from_utc_datetime(
+            &date
+                .checked_add_days(chrono::Days::new(13))
+                .unwrap()
+                .and_hms_opt(23, 59, 59)
+                .unwrap(),
+        );
+        Period::new(start_datetime, end_datetime, vec![])
+    }
+
     pub fn new(start_date: DateTime<Utc>, end_date: DateTime<Utc>, day_indices: Vec<u64>)
         -> Period
     {

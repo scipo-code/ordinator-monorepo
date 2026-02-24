@@ -643,6 +643,51 @@ pub struct TechnicianExclude
 
 impl WorkOrder
 {
+    /// Convenience constructor for testing. Creates a WorkOrder with minimal
+    /// defaults from a work order number, basic start date, and list of
+    /// operations.
+    pub fn new(
+        work_order_number: u64,
+        basic_start_date: NaiveDate,
+        operations: Vec<Operation>,
+    ) -> Result<Self>
+    {
+        let main_work_center = operations
+            .first()
+            .map(|op| op.skill())
+            .unwrap_or(Skill::MtnMech);
+
+        let mut ops = std::collections::BTreeMap::new();
+        for op in operations {
+            ops.insert(op.operations_number(), op);
+        }
+
+        Ok(WorkOrder {
+            work_order_number: WorkOrderNumber(work_order_number),
+            main_work_center,
+            operations: Operations::from(ops),
+            material_checked: false,
+            work_order_analytic: WorkOrderAnalytic::builder().build(),
+            work_order_dates: WorkOrderDates::builder()
+                .basic_start_date(basic_start_date)
+                .basic_finish_date(basic_start_date)
+                .earliest_allowed_start_date(basic_start_date)
+                .latest_allowed_finish_date(basic_start_date)
+                .duration(chrono::Duration::zero())
+                .build(),
+            work_order_info: WorkOrderInfo::builder()
+                .priority(Priority::Int(1))
+                .work_order_type(WorkOrderType::default())
+                .functional_location(FunctionalLocation::default())
+                .work_order_text(self::work_order_info::work_order_text::WorkOrderText::default())
+                .revision(self::work_order_info::revision::Revision::default())
+                .system_condition(self::work_order_info::system_condition::SystemCondition::default())
+                .work_order_info_detail(self::work_order_info::WorkOrderInfoDetail::default())
+                .build(),
+            fixed_by: FixedWorkOrder::BusinessLogic,
+        })
+    }
+
     pub fn builder(work_order_number: WorkOrderNumber) -> WorkOrderBuilder
     {
         WorkOrderBuilder {

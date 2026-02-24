@@ -21,6 +21,20 @@ pub struct Availability
 
 impl Availability
 {
+    /// Creates an Availability from NaiveDateTime values (treated as UTC) with
+    /// no asset restrictions.
+    pub fn from_naive(
+        start: chrono::NaiveDateTime,
+        end: chrono::NaiveDateTime,
+    ) -> Self
+    {
+        Self {
+            start_datetime: start.and_utc(),
+            finish_datetime: end.and_utc(),
+            assets: vec![],
+        }
+    }
+
     pub fn new(
         start_date: chrono::DateTime<Utc>,
         finish_date: chrono::DateTime<Utc>,

@@ -86,6 +86,35 @@ pub struct OperationsBuilder(Operations);
 
 impl Operation
 {
+    /// Convenience constructor for testing. Creates an Operation with minimal
+    /// defaults. Dates are offset by activity_number seconds so that
+    /// operations with consecutive activity numbers (e.g. 10, 20, 30) produce
+    /// `FinishStart` relations when spaced 10 apart.
+    pub fn new(activity_number: ActivityNumber, number_of_people: NumberOfPeople, skill: Skill) -> Self
+    {
+        let base = DateTime::<Utc>::default();
+        let start = base + chrono::Duration::seconds(activity_number as i64);
+        let finish = base + chrono::Duration::seconds(activity_number as i64 + 10);
+
+        Operation {
+            activity: activity_number,
+            skill,
+            unloading_point: UnloadingPoint::default(),
+            operation_info: OperationInfo::builder()
+                .number(number_of_people)
+                .work_remaining(0.0)
+                .work_actual(0.0)
+                .work(0.0)
+                .build(),
+            operation_analytic: OperationAnalytic::builder().build(),
+            operation_dates: OperationDates::builder()
+                .earliest_start_datetime(start)
+                .earliest_finish_datetime(finish)
+                .build(),
+            operation_description: String::new(),
+        }
+    }
+
     pub fn builder(operations_number: ActivityNumber, resource: Skill) -> OperationBuilder
     {
         OperationBuilder {

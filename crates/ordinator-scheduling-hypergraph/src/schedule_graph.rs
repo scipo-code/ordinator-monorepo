@@ -633,7 +633,7 @@ impl ScheduleGraph
         let none_checker = match node {
             Node::Technician(worker) => self.technician_indices.insert(worker, node_index),
             Node::WorkOrder(work_order) => self.work_order_indices.insert(work_order, node_index),
-            Node::Period(naive_date) => self.period_indices.insert(naive_date, node_index),
+            Node::Period(ref naive_date) => self.period_indices.insert(naive_date.clone(), node_index),
             Node::Skill(skills) => self.skill_indices.insert(skills, node_index),
             Node::Activity(ref a) => {
                 debug!(target: "developer", activity = ?a, "No node index for `Activities`");
@@ -731,9 +731,9 @@ mod tests
             1122334455,
             basic_start_date,
             vec![
-                Activity::new(10, 1, Skill::MtnMech),
-                Activity::new(20, 1, Skill::MtnMech),
-                Activity::new(30, 1, Skill::MtnMech),
+                Operation::new(10, 1, Skill::MtnMech),
+                Operation::new(20, 1, Skill::MtnMech),
+                Operation::new(30, 1, Skill::MtnMech),
             ],
         )
         .unwrap();
@@ -875,7 +875,7 @@ mod tests
             .add_period(Period::from_start_date(start.date()))
             .unwrap();
 
-        let availability = Availability::new(start, end);
+        let availability = Availability::from_naive(start, end);
 
         schedule_graph
             .add_technician(technician, availability)
@@ -926,7 +926,7 @@ mod tests
         let date = NaiveDate::from_ymd_opt(2025, 1, 1).unwrap();
         let technician_node_1 = Node::Technician(1234);
         let technician_node_index_1 = schedule_graph.add_node(technician_node_1.clone());
-        let work_order_node_1 = Node::WorkOrder(1122334455);
+        let work_order_node_1 = Node::WorkOrder(WorkOrderNumber(1122334455));
         let work_order_node_index_1 = schedule_graph.add_node(work_order_node_1.clone());
         let period_node_1 = Node::Period(Period::from_start_date(date));
         let period_node_index_1 = schedule_graph.add_node(period_node_1.clone());
@@ -938,19 +938,19 @@ mod tests
         // Using builder to make complex edges will become crucial for the
         // system to function correctly.
         let assignment_edge_index_0 = schedule_graph
-            .add_assignment_work_order(1234, 1122334455, Period::from_start_date(date))
+            .add_assignment_work_order(1234, WorkOrderNumber(1122334455), Period::from_start_date(date))
             .unwrap();
 
         let technician_node_2 = Node::Technician(1236);
         let technician_node_index_2 = schedule_graph.add_node(technician_node_2.clone());
-        let work_order_node_2 = Node::WorkOrder(1122334456);
+        let work_order_node_2 = Node::WorkOrder(WorkOrderNumber(1122334456));
         let work_order_node_index_2 = schedule_graph.add_node(work_order_node_2.clone());
 
         assert!(schedule_graph.nodes[technician_node_index_2] == technician_node_2);
         assert!(schedule_graph.nodes[work_order_node_index_2] == work_order_node_2);
         assert!(schedule_graph.nodes[period_node_index_1] == period_node_1);
         let assignment_edge_index_1 = schedule_graph
-            .add_assignment_work_order(1236, 1122334456, Period::from_start_date(date))
+            .add_assignment_work_order(1236, WorkOrderNumber(1122334456), Period::from_start_date(date))
             .unwrap();
 
         let assignment_edges = schedule_graph
@@ -990,11 +990,11 @@ mod tests
         let period_2 = Period::from_start_date(NaiveDate::from_ymd_opt(2025, 1, 27).unwrap());
         let period_3 = Period::from_start_date(NaiveDate::from_ymd_opt(2025, 2, 10).unwrap());
 
-        let _node_id = schedule_state.add_period(period_1).unwrap();
-        let _node_id = schedule_state.add_period(period_2).unwrap();
-        let _node_id = schedule_state.add_period(period_3).unwrap();
+        let _node_id = schedule_state.add_period(period_1.clone()).unwrap();
+        let _node_id = schedule_state.add_period(period_2.clone()).unwrap();
+        let _node_id = schedule_state.add_period(period_3.clone()).unwrap();
 
-        let node_id = schedule_state.add_period(period_3);
+        let node_id = schedule_state.add_period(period_3.clone());
 
         assert!(schedule_state.period_indices.contains_key(&period_1));
         assert!(schedule_state.period_indices.contains_key(&period_2));
@@ -1033,14 +1033,14 @@ mod tests
     {
         let mut schedule_graph = ScheduleGraph::new();
 
-        let node_0 = Node::WorkOrder(1111990000);
-        let node_1 = Node::WorkOrder(1111990001);
-        let node_2 = Node::WorkOrder(1111990002);
-        let node_3 = Node::WorkOrder(1111990003);
-        let node_4 = Node::WorkOrder(1111990004);
-        let node_5 = Node::WorkOrder(1111990005);
-        let node_6 = Node::WorkOrder(1111990006);
-        let node_7 = Node::WorkOrder(1111990007);
+        let node_0 = Node::WorkOrder(WorkOrderNumber(1111990000));
+        let node_1 = Node::WorkOrder(WorkOrderNumber(1111990001));
+        let node_2 = Node::WorkOrder(WorkOrderNumber(1111990002));
+        let node_3 = Node::WorkOrder(WorkOrderNumber(1111990003));
+        let node_4 = Node::WorkOrder(WorkOrderNumber(1111990004));
+        let node_5 = Node::WorkOrder(WorkOrderNumber(1111990005));
+        let node_6 = Node::WorkOrder(WorkOrderNumber(1111990006));
+        let node_7 = Node::WorkOrder(WorkOrderNumber(1111990007));
 
         let node_index_0 = schedule_graph.add_node(node_0);
         let node_index_1 = schedule_graph.add_node(node_1);
@@ -1099,10 +1099,10 @@ mod tests
 
         let period = Period::from_start_date(basic_start_date);
 
-        let period_node_index = schedule_graph.add_period(period).unwrap();
+        let period_node_index = schedule_graph.add_period(period.clone()).unwrap();
         let work_order_node_index = schedule_graph.add_work_order(&work_order).unwrap();
 
-        let exclusion_edge_index = schedule_graph.add_exclusion(&1111990000, &period).unwrap();
+        let exclusion_edge_index = schedule_graph.add_exclusion(&WorkOrderNumber(1111990000), &period).unwrap();
 
         assert_eq!(
             schedule_graph.hyperedges[1],
@@ -1174,8 +1174,8 @@ mod tests
             1122334455,
             basic_start_date_0,
             vec![
-                Activity::new(10, 2, Skill::MtnMech), // Activity 10, 2 hours, MtnMech skill
-                Activity::new(20, 3, Skill::MtnElec), // Activity 20, 3 hours, MtnElec skill
+                Operation::new(10, 2, Skill::MtnMech), // Activity 10, 2 hours, MtnMech skill
+                Operation::new(20, 3, Skill::MtnElec), // Activity 20, 3 hours, MtnElec skill
             ],
         )
         .unwrap();
@@ -1203,9 +1203,9 @@ mod tests
             .build();
 
         // Add technicians to graph
-        let availability_1 = Availability::new(availability_start_0, availability_end_0);
-        let availability_2 = Availability::new(availability_start_1, availability_end_1);
-        let availability_3 = Availability::new(availability_start_0, availability_end_0);
+        let availability_1 = Availability::from_naive(availability_start_0, availability_end_0);
+        let availability_2 = Availability::from_naive(availability_start_1, availability_end_1);
+        let availability_3 = Availability::from_naive(availability_start_0, availability_end_0);
 
         let _tech_edge_1 = schedule_graph
             .add_technician(technician_1, availability_1)
@@ -1220,7 +1220,7 @@ mod tests
         // Test add_assignment_activity with multiple technicians
         let assignment_edge_error = schedule_graph.add_assignment_activity(
             vec![1001, 1002],         // technician_ids
-            1122334455,               // work_order_number
+            WorkOrderNumber(1122334455),               // work_order_number
             10,                       // activity_number
             vec![basic_start_date_0], // days
             (
@@ -1237,7 +1237,7 @@ mod tests
         let assignment_edge = schedule_graph
             .add_assignment_activity(
                 vec![1001, 1003],         // technician_ids
-                1122334455,               // work_order_number
+                WorkOrderNumber(1122334455),               // work_order_number
                 10,                       // activity_number
                 vec![basic_start_date_0], // days
                 (
