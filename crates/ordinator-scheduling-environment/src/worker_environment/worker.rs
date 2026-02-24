@@ -6,6 +6,7 @@ use serde::Deserialize;
 use serde::Serialize;
 
 use super::availability::Availability;
+use crate::worker_environment::resources::Skill;
 
 #[derive(Serialize, Deserialize)]
 enum AssignedOrder
@@ -37,17 +38,31 @@ struct AssignedWork
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct Worker
+pub struct Technician
 {
     name: String,
     id_worker: i32,
     capacity: f64,
     trait_: String,
+    skills: Vec<Skill>,
     availabilities: Vec<Availability>,
     assigned_activities: Vec<AssignedWork>,
 }
 
-impl Debug for Worker
+impl Technician
+{
+    pub fn id(&self) -> usize
+    {
+        self.id_worker as usize
+    }
+
+    pub fn skills(&self) -> &[Skill]
+    {
+        &self.skills
+    }
+}
+
+impl Debug for Technician
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result
     {

@@ -129,7 +129,7 @@ impl Period
         self.period_string.clone()
     }
 
-    pub fn start_datetime(&self) -> &DateTime<Utc>
+    pub fn start_date(&self) -> &DateTime<Utc>
     {
         &self.start_date
     }
@@ -417,7 +417,7 @@ mod tests
         let period = Period::from_str("2024-W51-52").unwrap();
 
         let new_period = Period::new(
-            period.start_datetime().to_owned() + Duration::weeks(2),
+            period.start_date().to_owned() + Duration::weeks(2),
             period.finish_datetime().to_owned() + Duration::weeks(2),
             vec![],
         );

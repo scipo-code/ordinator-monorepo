@@ -1670,6 +1670,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "ordinator-scheduling-hypergraph"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "ordinator-scheduling-environment",
+ "serde",
+ "serde_json",
+ "tracing",
+]
+
+[[package]]
 name = "ordinator-system-tests"
 version = "0.0.1"
 

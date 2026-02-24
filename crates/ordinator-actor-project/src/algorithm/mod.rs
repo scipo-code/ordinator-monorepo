@@ -154,8 +154,8 @@ where
                 .and_then(|period| period.scheduled_task(work_order_number))
                 .map(|where_is_work_order| {
                     match where_is_work_order {
-                        WhereIsWorkOrder::Weekly(period) => period.start_datetime().date_naive(),
-                        WhereIsWorkOrder::Project(period) => period.start_datetime().date_naive(),
+                        WhereIsWorkOrder::Weekly(period) => period.start_date().date_naive(),
+                        WhereIsWorkOrder::Project(period) => period.start_date().date_naive(),
                         // ISSUE #000 TODO [ ] 2025-07-22 fix the project objective
                         WhereIsWorkOrder::NotScheduled => {
                             project_parameter.earliest_allowed_start_date

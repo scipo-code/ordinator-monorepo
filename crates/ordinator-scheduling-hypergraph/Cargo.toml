@@ -1,0 +1,15 @@
+[package]
+name = "ordinator-scheduling-hypergraph"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+ordinator-scheduling-environment.path = "../ordinator-scheduling-environment"
+
+chrono.workspace = true
+serde.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
+

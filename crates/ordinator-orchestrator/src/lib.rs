@@ -18,21 +18,36 @@ use chrono::DateTime;
 use chrono::Utc;
 use flume::Receiver;
 use flume::Sender;
-use ordinator_configuration::SystemConfigurations;
-use ordinator_configuration::throttling::Throttling;
-use ordinator_contracts::orchestrator::OrchestratorResponse;
+use ordinator_actor_daily::DailyApi;
+use ordinator_actor_daily::algorithm::daily_solution::DailySolution;
+pub use ordinator_actor_daily::messages::DailyRequestMessage;
+pub use ordinator_actor_daily::messages::DailyResponseMessage;
+pub use ordinator_actor_daily::messages::requests::DailyStatusMessage;
+pub use ordinator_actor_daily::messages::responses::DailyResponseStatus;
 use ordinator_actor_operational::OperationalApi;
 use ordinator_actor_operational::algorithm::operational_solution::OperationalSolution;
 pub use ordinator_actor_operational::messages::OperationalRequestMessage;
 pub use ordinator_actor_operational::messages::OperationalResponseMessage;
 pub use ordinator_actor_operational::messages::requests::OperationalStatusRequest;
+use ordinator_actor_project::ProjectApi;
+use ordinator_actor_project::algorithm::project_solution::ProjectSolution;
+pub use ordinator_actor_project::messages::ProjectRequestMessage;
+pub use ordinator_actor_project::messages::ProjectResponseMessage;
+pub use ordinator_actor_project::messages::requests::ProjectStatusMessage;
+use ordinator_actor_weekly::WeeklyApi;
+use ordinator_actor_weekly::algorithm::weekly_solution::WeeklySolution;
+pub use ordinator_actor_weekly::messages::WeeklyRequestMessage;
+pub use ordinator_actor_weekly::messages::WeeklyResponseMessage;
+use ordinator_configuration::SystemConfigurations;
+use ordinator_configuration::throttling::Throttling;
+use ordinator_contracts::orchestrator::OrchestratorResponse;
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::Communication;
-pub use ordinator_orchestrator_actor_traits::StateLink;
-pub use ordinator_orchestrator_actor_traits::WeeklyInterface;
-pub use ordinator_orchestrator_actor_traits::SystemSolutions;
 // TODO [ ] 2025-07-02 add the other `<Actor>Interface`s here
 pub use ordinator_orchestrator_actor_traits::ProjectInterface;
+pub use ordinator_orchestrator_actor_traits::StateLink;
+pub use ordinator_orchestrator_actor_traits::SystemSolutions;
+pub use ordinator_orchestrator_actor_traits::WeeklyInterface;
 // TODO END
 pub use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
@@ -43,21 +58,6 @@ pub use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 pub use ordinator_scheduling_environment::worker_environment::availability::Availability;
 pub use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 pub use ordinator_scheduling_environment::worker_environment::resources::Skill;
-use ordinator_actor_weekly::WeeklyApi;
-use ordinator_actor_weekly::algorithm::weekly_solution::WeeklySolution;
-pub use ordinator_actor_weekly::messages::WeeklyRequestMessage;
-pub use ordinator_actor_weekly::messages::WeeklyResponseMessage;
-use ordinator_actor_daily::DailyApi;
-use ordinator_actor_daily::algorithm::daily_solution::DailySolution;
-pub use ordinator_actor_daily::messages::DailyRequestMessage;
-pub use ordinator_actor_daily::messages::DailyResponseMessage;
-pub use ordinator_actor_daily::messages::requests::DailyStatusMessage;
-pub use ordinator_actor_daily::messages::responses::DailyResponseStatus;
-use ordinator_actor_project::ProjectApi;
-use ordinator_actor_project::algorithm::project_solution::ProjectSolution;
-pub use ordinator_actor_project::messages::ProjectRequestMessage;
-pub use ordinator_actor_project::messages::ProjectResponseMessage;
-pub use ordinator_actor_project::messages::requests::ProjectStatusMessage;
 // use ordinator_total_data_processing::excel_dumps::create_excel_dump;
 use serde::Deserialize;
 use serde::Serialize;
@@ -126,9 +126,7 @@ where
     ) -> Result<OrchestratorResponse>
     {
         match orchestrator_request {
-            OrchestratorRequest::AgentStatusRequest => {
-                Ok(OrchestratorResponse::Success)
-            }
+            OrchestratorRequest::AgentStatusRequest => Ok(OrchestratorResponse::Success),
             OrchestratorRequest::GetWorkOrderStatus(work_order_number) => {
                 let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
 
@@ -208,11 +206,7 @@ where
                 let project_days = OrchestratorResponse::Days(days);
                 Ok(project_days)
             }
-            OrchestratorRequest::CreateDailyAgent(
-                _asset,
-                _number_of_daily_periods,
-                _id_string,
-            ) => {
+            OrchestratorRequest::CreateDailyAgent(_asset, _number_of_daily_periods, _id_string) => {
                 // TODO: Implement daily agent creation
                 Ok(OrchestratorResponse::Todo)
             }
@@ -303,7 +297,6 @@ where
             }
         }
     }
-
 }
 
 impl ActorRegistry
@@ -422,7 +415,7 @@ where
                 &input_weekly.id,
                 vec![],
                 Availability::new(
-                    *periods.first().unwrap().start_datetime(),
+                    *periods.first().unwrap().start_date(),
                     *periods
                         .get(input_weekly.number_of_weekly_periods - 1)
                         .or_else(|| periods.last())
@@ -463,7 +456,7 @@ where
                     &input_daily.id,
                     vec![],
                     Availability::new(
-                        *periods.first().unwrap().start_datetime(),
+                        *periods.first().unwrap().start_date(),
                         *periods
                             .get((input_daily.number_of_daily_periods - 1) as usize)
                             .unwrap()

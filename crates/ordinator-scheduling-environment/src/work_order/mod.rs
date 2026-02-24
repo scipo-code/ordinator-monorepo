@@ -48,7 +48,8 @@ use crate::time_environment::day::Day;
 use crate::worker_environment::IdString;
 use crate::worker_environment::resources::ActorCompositeId;
 
-// TODO: Consider converting to a struct to allow custom behavior implementation.
+// TODO: Consider converting to a struct to allow custom behavior
+// implementation.
 pub type WorkOrderActivity = (WorkOrderNumber, ActivityNumber);
 pub type WorkOrderValue = u64;
 
@@ -81,7 +82,8 @@ impl std::fmt::Display for WorkOrderNumber
         write!(f, "{}", self.0)
     }
 }
-// All items in `SchedulingEnvironment` must implement `Serialize` for database storage.
+// All items in `SchedulingEnvironment` must implement `Serialize` for database
+// storage.
 type SubnetworkNumber = u64;
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WorkOrders
@@ -120,12 +122,13 @@ impl WorkOrders
                 .operations
                 .0
                 .get(&work_order_activity.1)?
-                .resource,
+                .skill,
         )
     }
 }
 
-// WARN: Configurations should only be used during initialization, not during runtime.
+// WARN: Configurations should only be used during initialization, not during
+// runtime.
 pub struct WorkOrdersBuilder
 {
     inner: Option<HashMap<WorkOrderNumber, WorkOrder>>,
@@ -216,8 +219,9 @@ impl WorkOrders
     }
 }
 
-// TODO: Create common locked functionality state and model `Scheduled` via TypeState pattern (2025-07-22).
-// TODO: Consider WorkOrder and Subnetwork interactions for cross-day scheduling.
+// TODO: Create common locked functionality state and model `Scheduled` via
+// TypeState pattern (2025-07-22). TODO: Consider WorkOrder and Subnetwork
+// interactions for cross-day scheduling.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct WorkOrder
 {
@@ -238,6 +242,11 @@ impl WorkOrder
     pub fn earliest_allowed_start_date(&self) -> NaiveDate
     {
         self.work_order_dates.earliest_allowed_start_date
+    }
+
+    pub fn basic_start(&self) -> NaiveDate
+    {
+        self.work_order_dates.basic_start_date
     }
 
     pub fn operation_work_remaining(&self, activity_number: u64) -> Result<Work>
@@ -267,6 +276,11 @@ impl WorkOrder
         self.operations.0.keys().cloned().collect()
     }
 
+    pub fn activities(&self) -> Vec<Operation>
+    {
+        self.operations.0.values().cloned().collect()
+    }
+
     pub fn number_of_people(&self, activity_number: u64) -> Result<u64>
     {
         Ok(self
@@ -285,7 +299,7 @@ impl WorkOrder
             .0
             .get(&activity_number)
             .context("Operation missing")?
-            .resource)
+            .skill)
     }
 
     pub fn operation(&self, activity_number: u64) -> &Operation
@@ -312,7 +326,8 @@ pub enum FixedWorkOrder
     BusinessLogic,
 }
 
-// FUTURE: Implement ManuallyInputtedInformation struct for tracking excluded periods.
+// FUTURE: Implement ManuallyInputtedInformation struct for tracking excluded
+// periods.
 
 pub struct WorkOrderBuilder
 {
@@ -438,7 +453,8 @@ pub enum ActivityRelation
     Postpone(TimeDelta),
 }
 
-// TODO: Extract `operating_time` from `scheduling_environment` as it belongs elsewhere.
+// TODO: Extract `operating_time` from `scheduling_environment` as it belongs
+// elsewhere.
 #[allow(dead_code)]
 #[derive(Eq, PartialEq, Serialize, Deserialize, Debug, Clone)]
 pub struct WorkOrderPolicies
@@ -562,7 +578,8 @@ pub struct ClusteringWeights
     pub equipment_tag: u64,
 }
 
-// TODO: Implement rules engine and hexagonal architecture for handling forced work order constraints.
+// TODO: Implement rules engine and hexagonal architecture for handling forced
+// work order constraints.
 #[derive(Debug)]
 pub enum ForcedWorkOrder
 {
@@ -621,7 +638,8 @@ pub struct TechnicianExclude
     intervals: HashSet<Option<(Day, Day)>>,
 }
 
-// FUTURE: Implement SchedulePlan with rule-based constraint system for optimizable decisions.
+// FUTURE: Implement SchedulePlan with rule-based constraint system for
+// optimizable decisions.
 
 impl WorkOrder
 {
@@ -653,7 +671,8 @@ impl WorkOrder
         self.work_order_analytic.system_status_codes.rel
     }
 
-    // TODO: Consolidate forced work order logic with centralized state via TypeState pattern.
+    // TODO: Consolidate forced work order logic with centralized state via
+    // TypeState pattern.
     pub fn forced_work_order(
         &self,
         periods: &[Period],
@@ -819,8 +838,9 @@ impl WorkOrder
             }
         }
 
-        // Factors that can force a `WorkOrder`: UnloadingPoint, AWSC, SCH, BasicStart, EASD, LAFD.
-        // TODO: Support ForcedWorkOrder::Technician with split operations (2025-07-22).
+        // Factors that can force a `WorkOrder`: UnloadingPoint, AWSC, SCH, BasicStart,
+        // EASD, LAFD. TODO: Support ForcedWorkOrder::Technician with split
+        // operations (2025-07-22).
         Ok(ForcedWorkOrder::FreeWorkOrder)
     }
 
@@ -829,7 +849,7 @@ impl WorkOrder
         self.operations
             .0
             .values()
-            .any(|opr| opr.resource.is_ven_variant())
+            .any(|opr| opr.skill.is_ven_variant())
     }
 
     // TODO: Enforce invariants on basic start date changes (2025-07-24).
@@ -923,7 +943,7 @@ impl WorkOrder
                     "{:#?}",
                     ele_opr
                 );
-                *acc.entry(ele_opr.resource).or_insert(Work::from(0.0)) +=
+                *acc.entry(ele_opr.skill).or_insert(Work::from(0.0)) +=
                     ele_opr.operation_info.work_remaining.round();
                 Ok(acc)
             })
@@ -931,8 +951,8 @@ impl WorkOrder
 
     /// Determine earliest allowed start date and period for the work order.
     ///
-    /// Returns the maximum of the material status and earliest start period of operations.
-    /// TODO: Handle VEN, SHUTDOWN, and SUBNETWORKS edge cases.
+    /// Returns the maximum of the material status and earliest start period of
+    /// operations. TODO: Handle VEN, SHUTDOWN, and SUBNETWORKS edge cases.
     // TODO: Extract parameters to config file.
     // TODO: Move logic to Builder.
     pub fn find_excluded_periods(
@@ -966,7 +986,7 @@ impl WorkOrder
     pub fn date_to_period<'a>(periods: &'a [Period], date_time: &NaiveDate) -> &'a Period
     {
         let period: Option<&Period> = periods.iter().find(|period| {
-            period.start_datetime().date_naive() <= *date_time
+            period.start_date().date_naive() <= *date_time
                 && period.finish_datetime().date_naive() >= *date_time
         });
 

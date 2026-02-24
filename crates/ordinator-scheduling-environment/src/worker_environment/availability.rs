@@ -46,7 +46,7 @@ impl Availability
     {
         let start_date = DateTime::parse_from_rfc3339(start_rfc3339)?.to_utc();
         let finish_date = DateTime::parse_from_rfc3339(finish_rfc3339)?.to_utc();
-        
+
         Self::new(start_date, finish_date, assets)
     }
 
@@ -65,12 +65,12 @@ impl Availability
         &self.assets
     }
 
-    pub(crate) fn start_date(&self) -> NaiveDate
+    pub fn start_date(&self) -> NaiveDate
     {
         self.start_datetime.date_naive()
     }
 
-    pub(crate) fn finish_date(&self) -> NaiveDate
+    pub fn finish_date(&self) -> NaiveDate
     {
         self.finish_datetime.date_naive()
     }
