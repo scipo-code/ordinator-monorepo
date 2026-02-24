@@ -1,1 +1,1 @@
-{"author":{"id":"b7dc790f4273cbf3947ba87d6e0a5d997c43091679ef774c7281f08c7ae059f8"},"ops":[{"type":8,"timestamp":1771928745,"nonce":"HC7lozyyPXYnSWLtCCzWH9/zcWM=","target":"e48559ef2abb25bbe1ea5905d0969839da75421e0363858117c554e574b332b8","new_metadata":{"github-id":"I_kwDOKdMTf87tZM99","github-url":"https://github.com/scipo-code/ordinator-monorepo/issues/190"}}]}
+{"author":{"id":"b7dc790f4273cbf3947ba87d6e0a5d997c43091679ef774c7281f08c7ae059f8"},"ops":[{"type":5,"timestamp":1771948121,"nonce":"vsXOdaHVcai0i5/MC6UbGwZ88F4=","added":["SCHEDULE"],"removed":null}]}
