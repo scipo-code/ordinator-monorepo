@@ -1,1 +1,1 @@
-{"author":{"id":"b7dc790f4273cbf3947ba87d6e0a5d997c43091679ef774c7281f08c7ae059f8"},"ops":[{"type":1,"timestamp":1771947455,"nonce":"EeI9KgzOGDO3guXyrTy9/CL1aYQ=","title":"Make a native `ordinator-cli` as a `curl` replacement.","message":"- [ ] Make cli based on `ordinator-api-server`","files":null}]}
+{"author":{"id":"b7dc790f4273cbf3947ba87d6e0a5d997c43091679ef774c7281f08c7ae059f8"},"ops":[{"type":5,"timestamp":1771948046,"nonce":"iK56HbNqylg0MMutlxKRNa5EioI=","added":["LATER"],"removed":null}]}
