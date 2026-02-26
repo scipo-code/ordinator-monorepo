@@ -15,24 +15,19 @@ use ordinator_scheduling_environment::work_order::operation::operation_info::Num
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_scheduling_environment::worker_environment::worker::Technician;
+use slotmap::SecondaryMap;
 use slotmap::SlotMap;
 use slotmap::new_key_type;
-use smallvec::SmallVec;
 use tracing::debug;
 
 // Type Alias to make reasoning about the indices easier
 
-new_key_type! { struct NodeIndex; }
-new_key_type! { struct EdgeIndex; }
-
-// pub type NodeIndex = Node;
-// pub type EdgeIndex = usize;
+new_key_type! { pub struct NodeIndex; }
+new_key_type! { pub struct EdgeIndex; }
 
 pub type TechnicianId = usize;
 pub type StartTime = NaiveTime;
 pub type FinishTime = NaiveTime;
-
-const HYPEREDGE_NODE_SEPERATOR: usize = usize::MAX; // Reserved sentinel value
 
 #[derive(Clone, Debug, PartialEq, PartialOrd, Ord, Eq)]
 pub enum ScheduleGraphErrors
@@ -124,7 +119,7 @@ impl Hyperedge
 }
 
 #[derive(Clone, Debug, PartialEq, PartialOrd, Ord, Eq)]
-struct AssignEdge
+pub struct AssignEdge
 {
     // JOB RELATED
     work_order: NodeIndex,
@@ -141,11 +136,10 @@ struct AssignEdge
 pub struct SchedulingHypergraph
 {
     /// Nodes of the problem
-    nodes: Vec<Node>,
-    nodes: SlotMap,
+    nodes: SlotMap<NodeIndex, Node>,
 
     /// Hyperedges to handle all the complex interactions
-    hyperedges: Vec<Hyperedge>,
+    hyperedges: SlotMap<EdgeIndex, Hyperedge>,
 
     /// Adjacency list
     /// To use this you access with a `NodeIndex` and the
@@ -153,7 +147,7 @@ pub struct SchedulingHypergraph
     /// this node is a part of. These `EdgeIndex`s can then
     /// be used to find the associated `HyperEdge` with
     /// `ScheduleGraph::hyperedges`.
-    incidence_list: Vec<Vec<EdgeIndex>>,
+    incidence_list: SecondaryMap<NodeIndex, Vec<EdgeIndex>>,
 
     /// Indices to look up nodes
     technician_indices: HashMap<TechnicianId, NodeIndex>,
@@ -169,9 +163,9 @@ impl SchedulingHypergraph
     pub fn new() -> Self
     {
         Self {
-            nodes: vec![],
-            hyperedges: vec![],
-            incidence_list: vec![],
+            nodes: SlotMap::with_key(),
+            hyperedges: SlotMap::with_key(),
+            incidence_list: SecondaryMap::new(),
             technician_indices: HashMap::new(),
             work_order_indices: HashMap::new(),
             period_indices: HashMap::new(),
@@ -180,17 +174,17 @@ impl SchedulingHypergraph
         }
     }
 
-    pub(crate) fn nodes(&self) -> &[Node]
+    pub(crate) fn nodes(&self) -> &SlotMap<NodeIndex, Node>
     {
         &self.nodes
     }
 
-    pub(crate) fn hyperedges(&self) -> &[Hyperedge]
+    pub(crate) fn hyperedges(&self) -> &SlotMap<EdgeIndex, Hyperedge>
     {
         &self.hyperedges
     }
 
-    pub(crate) fn incidence_list(&self) -> &[Vec<EdgeIndex>]
+    pub(crate) fn incidence_list(&self) -> &SecondaryMap<NodeIndex, Vec<EdgeIndex>>
     {
         &self.incidence_list
     }
@@ -259,7 +253,7 @@ impl SchedulingHypergraph
             day_node_index,
         ]));
 
-        let mut previous_activity_node = usize::MAX;
+        let mut previous_activity_node: Option<NodeIndex> = None;
         let activity_relations = work_order.activity_relations();
         for (activity_index, operation) in work_order.activities().iter().enumerate() {
             let activity_node_index = self.add_node(Node::Activity(ActivityNode {
@@ -280,20 +274,18 @@ impl SchedulingHypergraph
                 skill_node_index,
             ]));
 
-            if activity_index != 0 {
+            if let Some(prev) = previous_activity_node {
                 match activity_relations[activity_index - 1] {
-                    ActivityRelation::StartStart => self.add_edge(Hyperedge::StartStart(vec![
-                        previous_activity_node,
-                        activity_node_index,
-                    ])),
-                    ActivityRelation::FinishStart => self.add_edge(Hyperedge::FinishStart(vec![
-                        previous_activity_node,
-                        activity_node_index,
-                    ])),
+                    ActivityRelation::StartStart => {
+                        self.add_edge(Hyperedge::StartStart(vec![prev, activity_node_index]))
+                    }
+                    ActivityRelation::FinishStart => {
+                        self.add_edge(Hyperedge::FinishStart(vec![prev, activity_node_index]))
+                    }
                     ActivityRelation::Postpone(_time_delta) => todo!(),
                 };
-            };
-            previous_activity_node = activity_node_index;
+            }
+            previous_activity_node = Some(activity_node_index);
         }
 
         // TODO [x] - add relationships between activities here.
@@ -346,7 +338,7 @@ impl SchedulingHypergraph
         &mut self,
         technician: Technician,
         availability: Availability,
-    ) -> Result<NodeIndex, ScheduleGraphErrors>
+    ) -> Result<EdgeIndex, ScheduleGraphErrors>
     {
         // Check that: worker is not present; skill are present; days are present.
         if self.technician_indices.contains_key(&technician.id()) {
@@ -441,8 +433,8 @@ impl SchedulingHypergraph
 
         let edge = Hyperedge::Assign(None, assign_edge);
 
-        self.hyperedges.push(edge);
-        Ok(self.hyperedges.len() - 1)
+        let edge_index = self.hyperedges.insert(edge);
+        Ok(edge_index)
     }
 
     /// Format
@@ -470,24 +462,15 @@ impl SchedulingHypergraph
             );
         }
 
-        for node in &self.nodes {
-            if let Node::Period(period) = node {
-                if period.contains_date(days[0]) {
-                    period;
-                }
-            }
-        }
-
         let period = self
             .nodes
             .iter()
-            .enumerate()
-            .find_map(|e| {
-                if let Node::Period(period) = e.1 {
+            .find_map(|(idx, node)| {
+                if let Node::Period(period) = node {
                     if period.contains_date(days[0]) {
-                        return Some(e.0);
+                        Some(idx)
                     } else {
-                        return None;
+                        None
                     }
                 } else {
                     None
@@ -573,17 +556,13 @@ impl SchedulingHypergraph
             return Err(ScheduleGraphErrors::ActivityExceedNumberOfPeople);
         }
 
-        // let mut final_nodes_in_hyperedge = vec![activity_node_index];
-        // final_nodes_in_hyperedge.extend(technician_node_indices);
-        // final_nodes_in_hyperedge.extend(date_node_indices);
-
         // Does this actually even need to have the period?
         let assign = AssignEdge {
             work_order: work_order_node_index,
             activity: Some(vec![activity_node_index]),
             work_segments: None,
             technicians: technician_node_indices.into(),
-            period: period.clone(),
+            period: period,
             days: Some(date_node_indices),
         };
 
@@ -606,7 +585,7 @@ impl SchedulingHypergraph
     {
         if !self
             .nodes
-            .iter()
+            .values()
             .any(|e| e == &Node::Period(period_start_date.clone()))
         {
             return Err(ScheduleGraphErrors::PeriodMissing);
@@ -614,13 +593,12 @@ impl SchedulingHypergraph
 
         // You cannot make an assignment without a `Period`
         let mut edges = vec![];
-        for (edge_index, hyperedge) in self.hyperedges.iter().enumerate() {
-            if let Hyperedge::Assign(_, nodes) = hyperedge {
-                if let Node::Period(period) = &self.nodes[nodes.period] {
-                    if period == &period_start_date {
-                        edges.push(edge_index);
-                    }
-                }
+        for (edge_index, hyperedge) in self.hyperedges.iter() {
+            if let Hyperedge::Assign(_, assign) = hyperedge
+                && let Node::Period(period) = &self.nodes[assign.period]
+                && period == &period_start_date
+            {
+                edges.push(edge_index);
             }
         }
 
@@ -715,43 +693,42 @@ impl SchedulingHypergraph
     // TODO [ ] WeeklyView
     //
     // NOTE: At least now it feel like I am working on the correct thing.
-    //     pub fn extract_weekly_parameters(&self) -> HashMap<WeeklyParameters>
-    //     {
-    //         for (node_index, node) in self.nodes.iter().enumerate() {
-    //             if let Node::WorkOrder(work) = node {
-    //                 // TODO [ ] For this work_order find the
-    //                 // 1. assigned Period if Some
-    //                 // 2. excluded Period that are Some
-    //                 // 3. Operations, where you should extract the `work_load`
-    //                 //
-    //                 let all_hyperedges_for_node =
-    // &self.incidence_list[node_index];                 for hyperedge_index in
-    // all_hyperedges_for_node {                     let hyperedge =
-    // &self.hyperedges[*hyperedge_index];
+    pub fn extract_weekly_parameters(&self) -> HashMap<WeeklyParameters>
+    {
+        for (node_index, node) in self.nodes.iter() {
+            if let Node::WorkOrder(work) = node {
+                // TODO [ ] For this work_order find the
+                // 1. assigned Period if Some
+                // 2. excluded Period that are Some
+                // 3. Operations, where you should extract the `work_load`
+                //
+                let all_hyperedges_for_node = &self.incidence_list[node_index];
+                for hyperedge_index in all_hyperedges_for_node {
+                    let hyperedge = &self.hyperedges[*hyperedge_index];
 
-    //                     // WARN: Cricial business logic is found in here. Careful
-    // with the handling of                     // the `match` arms.
-    //                     match hyperedge {
-    //                         // INFO: These are relevant
-    //                         Hyperedge::Exclude(_) => todo!(),
-    //                         Hyperedge::BasicStart(_) => todo!(),
-    //                         Hyperedge::WorkOrderToOperations(nodes) => {
-    //                             // TODO [ ] I think that the `EdgeType` variants
-    // should be much more                             // specific.
-    //                             for (node_index, node) in
-    // nodes.iter().enumerate() {}                         }
-    //                         // INFO: These are not relevant
-    //                         Hyperedge::Assign(..) => (),
-    //                         Hyperedge::Available(_) => (),
-    //                         Hyperedge::Requires(_) => (),
-    //                         Hyperedge::StartStart(_) => (),
-    //                         Hyperedge::FinishStart(_) => (),
-    //                         Hyperedge::HasSkill(_) => (),
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
+                    // WARN: Cricial business logic is found in here. Carefulwith the handling of
+                    // // the `match` arms.
+                    match hyperedge {
+                        // INFO: These are relevant
+                        Hyperedge::Exclude(_) => todo!(),
+                        Hyperedge::BasicStart(_) => todo!(),
+                        Hyperedge::WorkOrderToOperations(nodes) => {
+                            // TODO [ ] I think that the `EdgeType` variants    should be much more
+                            // // specific.
+                            for (node_index, node) in nodes.iter().enumerate() {}
+                        }
+                        // INFO: These are not relevant
+                        Hyperedge::Assign(..) => (),
+                        Hyperedge::Available(_) => (),
+                        Hyperedge::Requires(_) => (),
+                        Hyperedge::StartStart(_) => (),
+                        Hyperedge::FinishStart(_) => (),
+                        Hyperedge::HasSkill(_) => (),
+                    }
+                }
+            }
+        }
+    }
 }
 // #[derive(Debug)]
 // pub struct WeeklyParameters
@@ -786,16 +763,14 @@ impl SchedulingHypergraph
 {
     fn add_node(&mut self, node: Node) -> NodeIndex
     {
-        // This is the next element as `len()` is one larger than the last index
-        let node_index = self.nodes.len();
-        let none_checker = match node {
+        let node_index = self.nodes.insert(node);
+        let node_ref = self.nodes[node_index].clone();
+        let none_checker = match node_ref {
             Node::Technician(worker) => self.technician_indices.insert(worker, node_index),
             Node::WorkOrder(work_order) => self.work_order_indices.insert(work_order, node_index),
-            Node::Period(ref naive_date) => {
-                self.period_indices.insert(naive_date.clone(), node_index)
-            }
+            Node::Period(naive_date) => self.period_indices.insert(naive_date, node_index),
             Node::Skill(skills) => self.skill_indices.insert(skills, node_index),
-            Node::Activity(ref a) => {
+            Node::Activity(a) => {
                 debug!(target: "developer", activity = ?a, "No node index for `Activities`");
                 None
             }
@@ -803,27 +778,19 @@ impl SchedulingHypergraph
         };
         assert!(none_checker.is_none());
 
-        self.incidence_list.push(vec![]);
+        self.incidence_list.insert(node_index, vec![]);
 
-        // node is added `Vec<Nodes>`
-        self.nodes.push(node);
         node_index
     }
 
     fn add_edge(&mut self, edge: Hyperedge) -> EdgeIndex
     {
-        let edge_index = self.hyperedges.len();
+        let node_indices = edge.nodes();
+        let edge_index = self.hyperedges.insert(edge);
 
-        // What is the best way of doing this? I think that we should
-        // work on this by making the... For each nodes that is a part
-        // of the edge we have to insert this...
-        //
-        // There was a lot of wisdom in simple Vec<NodeIndex>.
-        // WARN START HERE WARN
-        for node_index in edge.nodes() {
+        for node_index in node_indices {
             self.incidence_list[node_index].push(edge_index);
         }
-        self.hyperedges.push(edge);
         edge_index
     }
 }
@@ -852,7 +819,6 @@ mod tests
 
     use super::Node;
     use super::SchedulingHypergraph;
-    use crate::schedule_graph::AssignEdge;
     use crate::schedule_graph::Hyperedge;
     use crate::schedule_graph::Period;
     use crate::schedule_graph::ScheduleGraphErrors;
@@ -920,70 +886,82 @@ mod tests
             Node::WorkOrder(WorkOrderNumber(1122334455))
         );
 
-        // let neighbors = schedule_graph..neighbors(node_id).collect::<Vec<_>>();
+        // Collect activity node indices through the graph structure
+        let mut activity_node_indices: Vec<super::NodeIndex> = vec![];
+        for &edge_idx in &schedule_graph.incidence_list[work_order_node_id] {
+            if let Hyperedge::WorkOrderToOperations(nodes) = &schedule_graph.hyperedges[edge_idx] {
+                for &n in nodes {
+                    if matches!(&schedule_graph.nodes[n], Node::Activity(_)) {
+                        activity_node_indices.push(n);
+                    }
+                }
+            }
+        }
 
+        assert_eq!(activity_node_indices.len(), 3);
         assert_eq!(
-            schedule_graph.nodes[work_order_node_id + 1],
+            schedule_graph.nodes[activity_node_indices[0]],
             Node::Activity(crate::schedule_graph::ActivityNode {
                 activity_number: 10,
                 number_of_people: 1
             })
         );
         assert_eq!(
-            schedule_graph.nodes[work_order_node_id + 2],
+            schedule_graph.nodes[activity_node_indices[1]],
             Node::Activity(crate::schedule_graph::ActivityNode {
                 activity_number: 20,
                 number_of_people: 1
             })
         );
         assert_eq!(
-            schedule_graph.nodes[work_order_node_id + 3],
+            schedule_graph.nodes[activity_node_indices[2]],
             Node::Activity(crate::schedule_graph::ActivityNode {
                 activity_number: 30,
                 number_of_people: 1
             })
         );
 
-        let _edge_index = schedule_graph.incidence_list[work_order_node_id + 1]
-            .iter()
-            .find(|e| {
-                schedule_graph.hyperedges[**e]
-                    == Hyperedge::FinishStart(vec![work_order_node_id + 1, work_order_node_id + 2])
-            })
-            .unwrap();
-        let _edge_index = schedule_graph.incidence_list[work_order_node_id + 2]
-            .iter()
-            .find(|e| {
-                schedule_graph.hyperedges[**e]
-                    == Hyperedge::FinishStart(vec![work_order_node_id + 2, work_order_node_id + 3])
-            })
-            .unwrap();
+        // Verify FinishStart edge between activity 0 and 1
         assert!(
-            !schedule_graph.incidence_list[work_order_node_id + 3]
+            schedule_graph.incidence_list[activity_node_indices[0]]
                 .iter()
-                .any(|e| {
-                    schedule_graph.hyperedges[*e]
+                .any(|&e| {
+                    schedule_graph.hyperedges[e]
                         == Hyperedge::FinishStart(vec![
-                            work_order_node_id + 3,
-                            work_order_node_id + 4,
+                            activity_node_indices[0],
+                            activity_node_indices[1],
                         ])
+                })
+        );
+        // Verify FinishStart edge between activity 1 and 2
+        assert!(
+            schedule_graph.incidence_list[activity_node_indices[1]]
+                .iter()
+                .any(|&e| {
+                    schedule_graph.hyperedges[e]
+                        == Hyperedge::FinishStart(vec![
+                            activity_node_indices[1],
+                            activity_node_indices[2],
+                        ])
+                })
+        );
+        // Verify NO FinishStart edge where the last activity is the source (first
+        // element)
+        assert!(
+            !schedule_graph.incidence_list[activity_node_indices[2]]
+                .iter()
+                .any(|&e| {
+                    matches!(&schedule_graph.hyperedges[e],
+                        Hyperedge::FinishStart(nodes) if nodes[0] == activity_node_indices[2])
                 })
         );
 
         let basic_start_day_node_id = *schedule_graph.day_indices.get(&basic_start_date).unwrap();
 
-        dbg!(
-            &schedule_graph.incidence_list,
-            basic_start_day_node_id,
-            work_order_node_id,
-            &schedule_graph.incidence_list[work_order_node_id],
-            &schedule_graph.day_indices,
-        );
-
         let work_order_edge_ids = &schedule_graph.incidence_list[work_order_node_id];
 
-        for edge_id in work_order_edge_ids {
-            let hyper_edge = &schedule_graph.hyperedges[*edge_id];
+        for &edge_id in work_order_edge_ids {
+            let hyper_edge = &schedule_graph.hyperedges[edge_id];
             match hyper_edge {
                 Hyperedge::Assign(..) => todo!(),
                 Hyperedge::Available(_) => todo!(),
@@ -1001,9 +979,6 @@ mod tests
                 Hyperedge::HasSkill(_) => todo!(),
             }
         }
-
-        // assert!(day_node == *basic_start_day_node);
-        // assert_eq!(period_node_incidence, period_node_id);
     }
 
     #[test]
@@ -1026,7 +1001,7 @@ mod tests
             .add_skill(Skill::MtnMech)
             .build();
 
-        schedule_graph.add_node(Node::Skill(Skill::MtnMech));
+        let skill_node = schedule_graph.add_node(Node::Skill(Skill::MtnMech));
 
         schedule_graph
             .add_period(Period::from_start_date(start.date()))
@@ -1034,45 +1009,49 @@ mod tests
 
         let availability = Availability::from_naive(start, end);
 
-        schedule_graph
+        let availability_edge_idx = schedule_graph
             .add_technician(technician, availability)
             .unwrap();
 
-        assert_eq!(schedule_graph.nodes[0], Node::Skill(Skill::MtnMech));
+        // Verify skill node
+        assert_eq!(
+            schedule_graph.nodes[skill_node],
+            Node::Skill(Skill::MtnMech)
+        );
 
-        for index in 1..=14 {
-            let date = start.date();
-            assert_eq!(
-                schedule_graph.nodes[index],
-                Node::Day(date + Duration::days((index - 1) as i64))
-            );
+        // Verify day nodes via day_indices
+        for day_offset in 0..14 {
+            let date = start.date() + Duration::days(day_offset);
+            let day_node_idx = *schedule_graph.day_indices.get(&date).unwrap();
+            assert_eq!(schedule_graph.nodes[day_node_idx], Node::Day(date));
         }
 
+        // Verify period node
+        let period_node_idx = *schedule_graph
+            .period_indices
+            .get(&Period::from_start_date(start.date()))
+            .unwrap();
         assert_eq!(
-            schedule_graph.nodes[15],
+            schedule_graph.nodes[period_node_idx],
             Node::Period(Period::from_start_date(start.date()))
         );
 
-        // TODO [ ] - This should be made into a method for retriving the correct
-        // indices
-        assert_eq!(
-            schedule_graph.hyperedges[0].nodes(),
-            vec![16, 0, 1, 2, 3, 4, 5, 6, 7]
-        );
+        // Verify the availability edge contains the right nodes
+        let edge_nodes = schedule_graph.hyperedges[availability_edge_idx].nodes();
+        let tech_node = *schedule_graph.technician_indices.get(&1).unwrap();
+        assert!(edge_nodes.contains(&tech_node));
+        assert!(edge_nodes.contains(&skill_node));
+        // 1 technician + 1 skill + 7 days = 9
+        assert_eq!(edge_nodes.len(), 9);
 
-        assert_eq!(schedule_graph.incidence_list[16], vec![0]);
-        assert_eq!(schedule_graph.incidence_list[0], vec![0]);
-        assert_eq!(schedule_graph.incidence_list[1], vec![0]);
-        assert_eq!(schedule_graph.incidence_list[2], vec![0]);
-        assert_eq!(schedule_graph.incidence_list[3], vec![0]);
-        assert_eq!(schedule_graph.incidence_list[4], vec![0]);
-        assert_eq!(schedule_graph.incidence_list[5], vec![0]);
-        assert_eq!(schedule_graph.incidence_list[6], vec![0]);
-        assert_eq!(schedule_graph.incidence_list[7], vec![0]);
-
-        // Note: This test needs the schedule graph to have the required skills
-        // and days first schedule_graph.add_technician(technician,
-        // availability);
+        // Verify incidence list entries
+        assert!(schedule_graph.incidence_list[tech_node].contains(&availability_edge_idx));
+        assert!(schedule_graph.incidence_list[skill_node].contains(&availability_edge_idx));
+        for day_offset in 0..7 {
+            let date = start.date() + Duration::days(day_offset);
+            let day_node_idx = *schedule_graph.day_indices.get(&date).unwrap();
+            assert!(schedule_graph.incidence_list[day_node_idx].contains(&availability_edge_idx));
+        }
     }
 
     #[test]
@@ -1180,14 +1159,14 @@ mod tests
 
         let hash_set_days = schedule_state
             .nodes
-            .iter()
-            .filter(|&e| matches!(e, Node::Day(_)))
+            .values()
+            .filter(|e| matches!(e, Node::Day(_)))
             .collect::<HashSet<_>>();
 
         let vec_days = schedule_state
             .nodes
-            .iter()
-            .filter(|&e| matches!(e, Node::Day(_)))
+            .values()
+            .filter(|e| matches!(e, Node::Day(_)))
             .collect::<Vec<_>>();
 
         assert_eq!(hash_set_days.len(), vec_days.len())
@@ -1216,9 +1195,23 @@ mod tests
         let node_index_6 = schedule_graph.add_node(node_6);
         let node_index_7 = schedule_graph.add_node(node_7);
 
-        let edge_index_0 = schedule_graph.add_edge(Hyperedge::Available(vec![0, 2, 4, 6]));
-        let edge_index_1 = schedule_graph.add_edge(Hyperedge::Available(vec![1, 3, 5, 7]));
-        let edge_index_2 = schedule_graph.add_edge(Hyperedge::Available(vec![0, 3, 6]));
+        let edge_index_0 = schedule_graph.add_edge(Hyperedge::Available(vec![
+            node_index_0,
+            node_index_2,
+            node_index_4,
+            node_index_6,
+        ]));
+        let edge_index_1 = schedule_graph.add_edge(Hyperedge::Available(vec![
+            node_index_1,
+            node_index_3,
+            node_index_5,
+            node_index_7,
+        ]));
+        let edge_index_2 = schedule_graph.add_edge(Hyperedge::Available(vec![
+            node_index_0,
+            node_index_3,
+            node_index_6,
+        ]));
 
         assert_eq!(
             schedule_graph.incidence_list[node_index_0],
@@ -1271,38 +1264,22 @@ mod tests
             .add_exclusion(&WorkOrderNumber(1111990000), &period)
             .unwrap();
 
-        assert_eq!(
-            schedule_graph.hyperedges[1],
-            Hyperedge::Exclude(vec![
-                work_order_node_index,
-                period_node_index,
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                11,
-                12,
-                13,
-            ])
-        );
-
-        dbg!(
-            schedule_graph
-                .hyperedges
-                .get(schedule_graph.incidence_list[work_order_node_index][0])
-        );
-        dbg!(
-            schedule_graph
-                .hyperedges
-                .get(schedule_graph.incidence_list[work_order_node_index][1])
-        );
+        // Verify the exclusion edge contains the right nodes
+        let exclusion_edge = &schedule_graph.hyperedges[exclusion_edge_index];
+        if let Hyperedge::Exclude(nodes) = exclusion_edge {
+            assert!(nodes.contains(&work_order_node_index));
+            assert!(nodes.contains(&period_node_index));
+            // All 14 day nodes should be in the exclusion
+            for day_offset in 0..14 {
+                let date = basic_start_date + Duration::days(day_offset);
+                let day_idx = *schedule_graph.day_indices.get(&date).unwrap();
+                assert!(nodes.contains(&day_idx));
+            }
+            // 1 work_order + 1 period + 14 days
+            assert_eq!(nodes.len(), 16);
+        } else {
+            panic!("Expected Exclude hyperedge");
+        }
 
         assert!(
             schedule_graph.incidence_list[work_order_node_index].contains(&exclusion_edge_index)
