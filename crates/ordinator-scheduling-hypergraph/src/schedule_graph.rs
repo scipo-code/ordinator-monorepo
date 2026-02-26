@@ -15,12 +15,19 @@ use ordinator_scheduling_environment::work_order::operation::operation_info::Num
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_scheduling_environment::worker_environment::worker::Technician;
+use slotmap::SlotMap;
+use slotmap::new_key_type;
 use smallvec::SmallVec;
 use tracing::debug;
 
 // Type Alias to make reasoning about the indices easier
-pub type NodeIndex = usize;
-pub type EdgeIndex = usize;
+
+new_key_type! { struct NodeIndex; }
+new_key_type! { struct EdgeIndex; }
+
+// pub type NodeIndex = Node;
+// pub type EdgeIndex = usize;
+
 pub type TechnicianId = usize;
 pub type StartTime = NaiveTime;
 pub type FinishTime = NaiveTime;
@@ -86,6 +93,36 @@ pub enum Hyperedge
     HasSkill(Vec<NodeIndex>),
 }
 
+impl Hyperedge
+{
+    pub(crate) fn nodes(&self) -> Vec<NodeIndex>
+    {
+        match self {
+            Hyperedge::Assign(_, assign_edge) => {
+                let mut nodes = Vec::new();
+                if let Some(activities) = &assign_edge.activity {
+                    nodes.extend(activities);
+                }
+                if let Some(technicians) = &assign_edge.technicians {
+                    nodes.extend(technicians);
+                }
+                if let Some(days) = &assign_edge.days {
+                    nodes.extend(days);
+                }
+                nodes
+            }
+            Hyperedge::Available(v)
+            | Hyperedge::Exclude(v)
+            | Hyperedge::BasicStart(v)
+            | Hyperedge::WorkOrderToOperations(v)
+            | Hyperedge::Requires(v)
+            | Hyperedge::StartStart(v)
+            | Hyperedge::FinishStart(v)
+            | Hyperedge::HasSkill(v) => v.clone(),
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, PartialOrd, Ord, Eq)]
 struct AssignEdge
 {
@@ -105,6 +142,7 @@ pub struct SchedulingHypergraph
 {
     /// Nodes of the problem
     nodes: Vec<Node>,
+    nodes: SlotMap,
 
     /// Hyperedges to handle all the complex interactions
     hyperedges: Vec<Hyperedge>,
@@ -677,42 +715,43 @@ impl SchedulingHypergraph
     // TODO [ ] WeeklyView
     //
     // NOTE: At least now it feel like I am working on the correct thing.
-    pub fn extract_weekly_parameters(&self) -> HashMap<WeeklyParameters>
-    {
-        for (node_index, node) in self.nodes.iter().enumerate() {
-            if let Node::WorkOrder(work) = node {
-                // TODO [ ] For this work_order find the
-                // 1. assigned Period if Some
-                // 2. excluded Period that are Some
-                // 3. Operations, where you should extract the `work_load`
-                //
-                let all_hyperedges_for_node = &self.incidence_list[node_index];
-                for hyperedge_index in all_hyperedges_for_node {
-                    let hyperedge = &self.hyperedges[*hyperedge_index];
+    //     pub fn extract_weekly_parameters(&self) -> HashMap<WeeklyParameters>
+    //     {
+    //         for (node_index, node) in self.nodes.iter().enumerate() {
+    //             if let Node::WorkOrder(work) = node {
+    //                 // TODO [ ] For this work_order find the
+    //                 // 1. assigned Period if Some
+    //                 // 2. excluded Period that are Some
+    //                 // 3. Operations, where you should extract the `work_load`
+    //                 //
+    //                 let all_hyperedges_for_node =
+    // &self.incidence_list[node_index];                 for hyperedge_index in
+    // all_hyperedges_for_node {                     let hyperedge =
+    // &self.hyperedges[*hyperedge_index];
 
-                    // WARN: Cricial business logic is found in here. Careful with the handling of
-                    // the `match` arms.
-                    match hyperedge {
-                        // INFO: These are relevant
-                        Hyperedge::Exclude(_) => todo!(),
-                        Hyperedge::BasicStart(_) => todo!(),
-                        Hyperedge::WorkOrderToOperations(nodes) => {
-                            // TODO [ ] I think that the `EdgeType` variants should be much more
-                            // specific.
-                            for (node_index, node) in nodes.iter().enumerate() {}
-                        }
-                        // INFO: These are not relevant
-                        Hyperedge::Assign(..) => (),
-                        Hyperedge::Available(_) => (),
-                        Hyperedge::Requires(_) => (),
-                        Hyperedge::StartStart(_) => (),
-                        Hyperedge::FinishStart(_) => (),
-                        Hyperedge::HasSkill(_) => (),
-                    }
-                }
-            }
-        }
-    }
+    //                     // WARN: Cricial business logic is found in here. Careful
+    // with the handling of                     // the `match` arms.
+    //                     match hyperedge {
+    //                         // INFO: These are relevant
+    //                         Hyperedge::Exclude(_) => todo!(),
+    //                         Hyperedge::BasicStart(_) => todo!(),
+    //                         Hyperedge::WorkOrderToOperations(nodes) => {
+    //                             // TODO [ ] I think that the `EdgeType` variants
+    // should be much more                             // specific.
+    //                             for (node_index, node) in
+    // nodes.iter().enumerate() {}                         }
+    //                         // INFO: These are not relevant
+    //                         Hyperedge::Assign(..) => (),
+    //                         Hyperedge::Available(_) => (),
+    //                         Hyperedge::Requires(_) => (),
+    //                         Hyperedge::StartStart(_) => (),
+    //                         Hyperedge::FinishStart(_) => (),
+    //                         Hyperedge::HasSkill(_) => (),
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
 }
 // #[derive(Debug)]
 // pub struct WeeklyParameters
@@ -782,7 +821,7 @@ impl SchedulingHypergraph
         // There was a lot of wisdom in simple Vec<NodeIndex>.
         // WARN START HERE WARN
         for node_index in edge.nodes() {
-            self.incidence_list[*node_index].push(edge_index);
+            self.incidence_list[node_index].push(edge_index);
         }
         self.hyperedges.push(edge);
         edge_index
@@ -813,6 +852,7 @@ mod tests
 
     use super::Node;
     use super::SchedulingHypergraph;
+    use crate::schedule_graph::AssignEdge;
     use crate::schedule_graph::Hyperedge;
     use crate::schedule_graph::Period;
     use crate::schedule_graph::ScheduleGraphErrors;
@@ -1176,9 +1216,9 @@ mod tests
         let node_index_6 = schedule_graph.add_node(node_6);
         let node_index_7 = schedule_graph.add_node(node_7);
 
-        let edge_index_0 = schedule_graph.add_edge(Hyperedge::Assign(None, vec![0, 2, 4, 6]));
-        let edge_index_1 = schedule_graph.add_edge(Hyperedge::Assign(None, vec![1, 3, 5, 7]));
-        let edge_index_2 = schedule_graph.add_edge(Hyperedge::Assign(None, vec![0, 3, 6]));
+        let edge_index_0 = schedule_graph.add_edge(Hyperedge::Available(vec![0, 2, 4, 6]));
+        let edge_index_1 = schedule_graph.add_edge(Hyperedge::Available(vec![1, 3, 5, 7]));
+        let edge_index_2 = schedule_graph.add_edge(Hyperedge::Available(vec![0, 3, 6]));
 
         assert_eq!(
             schedule_graph.incidence_list[node_index_0],

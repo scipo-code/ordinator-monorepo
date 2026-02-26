@@ -10,6 +10,7 @@ chrono.workspace = true
 serde.workspace = true
 tracing.workspace = true
 smallvec.workspace = true
+slotmap = "1.1.1"
 
 [dev-dependencies]
 serde_json.workspace = true
