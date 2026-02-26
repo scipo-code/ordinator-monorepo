@@ -1,6 +1,9 @@
 use std::collections::BTreeMap;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::collections::hash_map::Entry;
+
+use crate::derive_instances::{ActivityView, TechnicianView, WeeklyView, WeeklyWorkOrderView};
 
 use chrono::Days;
 use chrono::Duration;
@@ -11,6 +14,7 @@ use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
+use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
@@ -62,6 +66,7 @@ pub(crate) struct ActivityNode
 {
     activity_number: ActivityNumber,
     number_of_people: NumberOfPeople,
+    work_remaining: Work,
 }
 
 // I really do not like this. I think that the idea
@@ -259,6 +264,7 @@ impl SchedulingHypergraph
             let activity_node_index = self.add_node(Node::Activity(ActivityNode {
                 activity_number: operation.operations_number(),
                 number_of_people: operation.number_of_people(),
+                work_remaining: *operation.work_remaining(),
             }));
             let skill_node_index = *self
                 .skill_indices
@@ -682,77 +688,192 @@ impl SchedulingHypergraph
 /// simply to create the `Parameters` for the `Algorithm`s.
 impl SchedulingHypergraph
 {
-    // It does not make sense to only extract work orders. There
-    // are some many constrints in the other nodes and the relations
-    // imposed by the hypergraphs.
-    //
-    // QUESTION [ ] which WorkOrders
-    // QUESTION [ ] which Technicians
-    // QUESTION [ ] which Periods
-    //
-    // TODO [ ] WeeklyView
-    //
-    // NOTE: At least now it feel like I am working on the correct thing.
-    pub fn extract_weekly_parameters(&self) -> HashMap<WeeklyParameters>
+    pub fn extract_weekly_view(&self) -> WeeklyView
     {
-        for (node_index, node) in self.nodes.iter() {
-            if let Node::WorkOrder(work) = node {
-                // TODO [ ] For this work_order find the
-                // 1. assigned Period if Some
-                // 2. excluded Period that are Some
-                // 3. Operations, where you should extract the `work_load`
-                //
-                let all_hyperedges_for_node = &self.incidence_list[node_index];
-                for hyperedge_index in all_hyperedges_for_node {
-                    let hyperedge = &self.hyperedges[*hyperedge_index];
+        let mut work_orders = HashMap::new();
 
-                    // WARN: Cricial business logic is found in here. Carefulwith the handling of
-                    // // the `match` arms.
-                    match hyperedge {
-                        // INFO: These are relevant
-                        Hyperedge::Exclude(_) => todo!(),
-                        Hyperedge::BasicStart(_) => todo!(),
-                        Hyperedge::WorkOrderToOperations(nodes) => {
-                            // TODO [ ] I think that the `EdgeType` variants    should be much more
-                            // // specific.
-                            for (node_index, node) in nodes.iter().enumerate() {}
+        for (&work_order_number, &wo_node_index) in &self.work_order_indices {
+            let mut basic_start_date = None;
+            let mut assigned_period = None;
+            let mut excluded_periods = HashSet::new();
+            let mut activity_node_indices = Vec::new();
+
+            for &edge_idx in &self.incidence_list[wo_node_index] {
+                match &self.hyperedges[edge_idx] {
+                    Hyperedge::BasicStart(nodes) => {
+                        for &ni in nodes {
+                            if let Node::Day(date) = &self.nodes[ni] {
+                                basic_start_date = Some(*date);
+                            }
                         }
-                        // INFO: These are not relevant
-                        Hyperedge::Assign(..) => (),
-                        Hyperedge::Available(_) => (),
-                        Hyperedge::Requires(_) => (),
-                        Hyperedge::StartStart(_) => (),
-                        Hyperedge::FinishStart(_) => (),
-                        Hyperedge::HasSkill(_) => (),
+                    }
+                    Hyperedge::Exclude(nodes) => {
+                        for &ni in nodes {
+                            if let Node::Period(period) = &self.nodes[ni] {
+                                excluded_periods.insert(period.clone());
+                            }
+                        }
+                    }
+                    Hyperedge::WorkOrderToOperations(nodes) => {
+                        for &ni in nodes {
+                            if matches!(&self.nodes[ni], Node::Activity(_)) {
+                                activity_node_indices.push(ni);
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+            }
+
+            // Assign edges store work_order as a field but don't include it
+            // in nodes(), so they are not in the incidence list. Scan all edges.
+            for (_, hyperedge) in self.hyperedges.iter() {
+                if let Hyperedge::Assign(_, assign_edge) = hyperedge {
+                    if assign_edge.work_order == wo_node_index {
+                        if let Node::Period(period) = &self.nodes[assign_edge.period] {
+                            assigned_period = Some(period.clone());
+                        }
                     }
                 }
             }
+
+            // Build activity views
+            let mut activities: Vec<(ActivityNumber, ActivityView)> = Vec::new();
+            for &act_ni in &activity_node_indices {
+                if let Node::Activity(activity) = &self.nodes[act_ni] {
+                    let mut required_skill = None;
+
+                    for &edge_idx in &self.incidence_list[act_ni] {
+                        if let Hyperedge::Requires(nodes) = &self.hyperedges[edge_idx] {
+                            for &ni in nodes {
+                                if let Node::Skill(skill) = &self.nodes[ni] {
+                                    required_skill = Some(*skill);
+                                }
+                            }
+                        }
+                    }
+
+                    activities.push((
+                        activity.activity_number,
+                        ActivityView {
+                            activity_number: activity.activity_number,
+                            number_of_people: activity.number_of_people,
+                            work_remaining: activity.work_remaining,
+                            required_skill: required_skill
+                                .expect("Activity must have a required skill"),
+                            relation_to_next: None,
+                        },
+                    ));
+                }
+            }
+
+            // Sort by activity_number
+            activities.sort_by_key(|(num, _)| *num);
+
+            // Determine relation_to_next from StartStart/FinishStart edges
+            for i in 0..activities.len().saturating_sub(1) {
+                let current_act_num = activities[i].0;
+                let next_act_num = activities[i + 1].0;
+
+                // Find the activity node index for the current activity
+                let current_ni = activity_node_indices
+                    .iter()
+                    .find(|&&ni| {
+                        matches!(&self.nodes[ni], Node::Activity(a) if a.activity_number == current_act_num)
+                    })
+                    .unwrap();
+
+                for &edge_idx in &self.incidence_list[*current_ni] {
+                    match &self.hyperedges[edge_idx] {
+                        Hyperedge::StartStart(nodes) if nodes.len() == 2 => {
+                            if nodes[0] == *current_ni {
+                                if let Node::Activity(target) = &self.nodes[nodes[1]] {
+                                    if target.activity_number == next_act_num {
+                                        activities[i].1.relation_to_next =
+                                            Some(ActivityRelation::StartStart);
+                                    }
+                                }
+                            }
+                        }
+                        Hyperedge::FinishStart(nodes) if nodes.len() == 2 => {
+                            if nodes[0] == *current_ni {
+                                if let Node::Activity(target) = &self.nodes[nodes[1]] {
+                                    if target.activity_number == next_act_num {
+                                        activities[i].1.relation_to_next =
+                                            Some(ActivityRelation::FinishStart);
+                                    }
+                                }
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            }
+
+            let activity_views = activities.into_iter().map(|(_, v)| v).collect();
+
+            work_orders.insert(
+                work_order_number,
+                WeeklyWorkOrderView {
+                    basic_start_date: basic_start_date
+                        .expect("Work order must have a basic start date"),
+                    assigned_period,
+                    excluded_periods,
+                    activities: activity_views,
+                },
+            );
+        }
+
+        // Collect periods sorted chronologically
+        let mut periods: Vec<Period> = self.period_indices.keys().cloned().collect();
+        periods.sort();
+
+        // Collect all skills
+        let skills: HashSet<Skill> = self.skill_indices.keys().copied().collect();
+
+        // Collect technicians
+        let mut technicians = HashMap::new();
+        for (&tech_id, &tech_ni) in &self.technician_indices {
+            let mut tech_skills = HashSet::new();
+            let mut available_dates = HashSet::new();
+
+            for &edge_idx in &self.incidence_list[tech_ni] {
+                match &self.hyperedges[edge_idx] {
+                    Hyperedge::HasSkill(nodes) => {
+                        for &ni in nodes {
+                            if let Node::Skill(skill) = &self.nodes[ni] {
+                                tech_skills.insert(*skill);
+                            }
+                        }
+                    }
+                    Hyperedge::Available(nodes) => {
+                        for &ni in nodes {
+                            if let Node::Day(date) = &self.nodes[ni] {
+                                available_dates.insert(*date);
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+            }
+
+            technicians.insert(
+                tech_id,
+                TechnicianView {
+                    skills: tech_skills,
+                    available_dates,
+                },
+            );
+        }
+
+        WeeklyView {
+            work_orders,
+            periods,
+            skills,
+            technicians,
         }
     }
 }
-// #[derive(Debug)]
-// pub struct WeeklyParameters
-// {
-//     pub weekly_work_order_parameters: HashMap<WorkOrderNumber,
-// WeeklyWorkOrderParameter>,     pub weekly_capacity: WeeklyResources,
-//     pub weekly_clustering: WeeklyClustering,
-//     pub period_locks: HashSet<Period>,
-
-//     // TODO #04 #00 #01: Create PeriodState enum that changes based on
-// SystemClock     pub weekly_periods: Vec<Period>,
-//     pub weekly_options: WeeklyOptions,
-// }
-
-// pub struct WeeklyWorkOrderParameter
-// {
-//     pub locked_in_period: WhereIsWorkOrder<Period>,
-//     pub excluded_periods: HashSet<Period>,
-//     pub latest_period: Period,
-
-//     pub weight: i64,
-//     // Weight derived from WeeklyOptions
-//     pub work_load: HashMap<Skill, Work>,
-// }
 
 /// Private methods.
 ///
@@ -810,9 +931,11 @@ mod tests
     use chrono::Duration;
     use chrono::NaiveDate;
     use chrono::NaiveTime;
+    use ordinator_scheduling_environment::work_order::ActivityRelation;
     use ordinator_scheduling_environment::work_order::WorkOrder;
     use ordinator_scheduling_environment::work_order::WorkOrderNumber;
     use ordinator_scheduling_environment::work_order::operation::Operation;
+    use ordinator_scheduling_environment::work_order::operation::Work;
     use ordinator_scheduling_environment::worker_environment::availability::Availability;
     use ordinator_scheduling_environment::worker_environment::resources::Skill;
     use ordinator_scheduling_environment::worker_environment::worker::Technician;
@@ -903,21 +1026,24 @@ mod tests
             schedule_graph.nodes[activity_node_indices[0]],
             Node::Activity(crate::schedule_graph::ActivityNode {
                 activity_number: 10,
-                number_of_people: 1
+                number_of_people: 1,
+                work_remaining: Work::default(),
             })
         );
         assert_eq!(
             schedule_graph.nodes[activity_node_indices[1]],
             Node::Activity(crate::schedule_graph::ActivityNode {
                 activity_number: 20,
-                number_of_people: 1
+                number_of_people: 1,
+                work_remaining: Work::default(),
             })
         );
         assert_eq!(
             schedule_graph.nodes[activity_node_indices[2]],
             Node::Activity(crate::schedule_graph::ActivityNode {
                 activity_number: 30,
-                number_of_people: 1
+                number_of_people: 1,
+                work_remaining: Work::default(),
             })
         );
 
@@ -1411,5 +1537,199 @@ mod tests
         // Verify the activity node is in the assignment
         let day_node_id = *schedule_graph.day_indices.get(&basic_start_date_0).unwrap();
         assert!(hyperedge.nodes().contains(&day_node_id));
+    }
+
+    #[test]
+    fn test_extract_weekly_view_basic()
+    {
+        let mut graph = SchedulingHypergraph::new();
+
+        let basic_start = NaiveDate::from_ymd_opt(2025, 1, 13).unwrap();
+        let period = Period::from_start_date(basic_start);
+
+        graph.add_skill(Skill::MtnMech);
+        graph.add_skill(Skill::MtnElec);
+        graph.add_period(period.clone()).unwrap();
+
+        let work_order = WorkOrder::new(
+            100,
+            basic_start,
+            vec![
+                Operation::new(10, 1, Skill::MtnMech),
+                Operation::new(20, 2, Skill::MtnElec),
+            ],
+        )
+        .unwrap();
+        graph.add_work_order(&work_order).unwrap();
+
+        let avail_start = basic_start.and_hms_opt(8, 0, 0).unwrap();
+        let avail_end = basic_start.and_hms_opt(17, 0, 0).unwrap();
+        let technician = Technician::builder(1)
+            .add_availability(avail_start, avail_end)
+            .unwrap()
+            .add_skill(Skill::MtnMech)
+            .build();
+        graph
+            .add_technician(technician, Availability::from_naive(avail_start, avail_end))
+            .unwrap();
+        graph
+            .add_assign_skill_to_worker(1, Skill::MtnMech)
+            .unwrap();
+
+        let view = graph.extract_weekly_view();
+
+        // Periods
+        assert_eq!(view.periods.len(), 1);
+        assert_eq!(view.periods[0], period);
+
+        // Skills
+        assert_eq!(view.skills.len(), 2);
+        assert!(view.skills.contains(&Skill::MtnMech));
+        assert!(view.skills.contains(&Skill::MtnElec));
+
+        // Work orders
+        assert_eq!(view.work_orders.len(), 1);
+        let wo_view = &view.work_orders[&WorkOrderNumber(100)];
+        assert_eq!(wo_view.basic_start_date, basic_start);
+        assert!(wo_view.assigned_period.is_none());
+        assert!(wo_view.excluded_periods.is_empty());
+
+        // Activities sorted by number
+        assert_eq!(wo_view.activities.len(), 2);
+        assert_eq!(wo_view.activities[0].activity_number, 10);
+        assert_eq!(wo_view.activities[0].number_of_people, 1);
+        assert_eq!(wo_view.activities[0].required_skill, Skill::MtnMech);
+        assert_eq!(wo_view.activities[0].work_remaining, Work::default());
+        assert_eq!(wo_view.activities[1].activity_number, 20);
+        assert_eq!(wo_view.activities[1].number_of_people, 2);
+        assert_eq!(wo_view.activities[1].required_skill, Skill::MtnElec);
+
+        // Technician
+        assert_eq!(view.technicians.len(), 1);
+        let tech_view = &view.technicians[&1];
+        assert!(tech_view.skills.contains(&Skill::MtnMech));
+        assert!(!tech_view.available_dates.is_empty());
+    }
+
+    #[test]
+    fn test_extract_weekly_view_exclusions()
+    {
+        let mut graph = SchedulingHypergraph::new();
+
+        let start_1 = NaiveDate::from_ymd_opt(2025, 1, 13).unwrap();
+        let start_2 = NaiveDate::from_ymd_opt(2025, 1, 27).unwrap();
+        let period_1 = Period::from_start_date(start_1);
+        let period_2 = Period::from_start_date(start_2);
+
+        graph.add_skill(Skill::MtnMech);
+        graph.add_period(period_1.clone()).unwrap();
+        graph.add_period(period_2.clone()).unwrap();
+
+        let work_order =
+            WorkOrder::new(200, start_1, vec![Operation::new(10, 1, Skill::MtnMech)]).unwrap();
+        graph.add_work_order(&work_order).unwrap();
+
+        graph
+            .add_exclusion(&WorkOrderNumber(200), &period_1)
+            .unwrap();
+        graph
+            .add_exclusion(&WorkOrderNumber(200), &period_2)
+            .unwrap();
+
+        let view = graph.extract_weekly_view();
+        let wo_view = &view.work_orders[&WorkOrderNumber(200)];
+
+        assert_eq!(wo_view.excluded_periods.len(), 2);
+        assert!(wo_view.excluded_periods.contains(&period_1));
+        assert!(wo_view.excluded_periods.contains(&period_2));
+    }
+
+    #[test]
+    fn test_extract_weekly_view_assignments()
+    {
+        let mut graph = SchedulingHypergraph::new();
+
+        let start = NaiveDate::from_ymd_opt(2025, 1, 13).unwrap();
+        let period = Period::from_start_date(start);
+
+        graph.add_skill(Skill::MtnMech);
+        graph.add_period(period.clone()).unwrap();
+
+        let work_order =
+            WorkOrder::new(300, start, vec![Operation::new(10, 1, Skill::MtnMech)]).unwrap();
+        graph.add_work_order(&work_order).unwrap();
+
+        let avail_start = start.and_hms_opt(8, 0, 0).unwrap();
+        let avail_end = start.and_hms_opt(17, 0, 0).unwrap();
+        let technician = Technician::builder(1)
+            .add_availability(avail_start, avail_end)
+            .unwrap()
+            .add_skill(Skill::MtnMech)
+            .build();
+        graph
+            .add_technician(technician, Availability::from_naive(avail_start, avail_end))
+            .unwrap();
+
+        graph
+            .add_assignment_work_order(1, WorkOrderNumber(300), period.clone())
+            .unwrap();
+
+        let view = graph.extract_weekly_view();
+        let wo_view = &view.work_orders[&WorkOrderNumber(300)];
+
+        assert_eq!(wo_view.assigned_period, Some(period));
+    }
+
+    #[test]
+    fn test_extract_weekly_view_activity_relations()
+    {
+        let mut graph = SchedulingHypergraph::new();
+
+        let start = NaiveDate::from_ymd_opt(2025, 1, 13).unwrap();
+        let period = Period::from_start_date(start);
+
+        graph.add_skill(Skill::MtnMech);
+        graph.add_period(period.clone()).unwrap();
+
+        // WorkOrder::new creates FinishStart relations between consecutive activities
+        let work_order = WorkOrder::new(
+            400,
+            start,
+            vec![
+                Operation::new(10, 1, Skill::MtnMech),
+                Operation::new(20, 1, Skill::MtnMech),
+                Operation::new(30, 1, Skill::MtnMech),
+            ],
+        )
+        .unwrap();
+        graph.add_work_order(&work_order).unwrap();
+
+        let view = graph.extract_weekly_view();
+        let wo_view = &view.work_orders[&WorkOrderNumber(400)];
+
+        assert_eq!(wo_view.activities.len(), 3);
+        assert_eq!(wo_view.activities[0].activity_number, 10);
+        assert_eq!(wo_view.activities[1].activity_number, 20);
+        assert_eq!(wo_view.activities[2].activity_number, 30);
+
+        // First two activities should have FinishStart relation_to_next
+        assert!(
+            matches!(
+                wo_view.activities[0].relation_to_next,
+                Some(ActivityRelation::FinishStart)
+            ),
+            "Expected FinishStart for activity 10, got {:?}",
+            wo_view.activities[0].relation_to_next
+        );
+        assert!(
+            matches!(
+                wo_view.activities[1].relation_to_next,
+                Some(ActivityRelation::FinishStart)
+            ),
+            "Expected FinishStart for activity 20, got {:?}",
+            wo_view.activities[1].relation_to_next
+        );
+        // Last activity should have no relation_to_next
+        assert!(wo_view.activities[2].relation_to_next.is_none());
     }
 }
