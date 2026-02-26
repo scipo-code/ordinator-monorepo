@@ -14,8 +14,13 @@ use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Deserialize;
 use serde::Serialize;
 
+use crate::algorithm::weekly_parameters::LowerLimitWork;
+use crate::algorithm::weekly_parameters::UpperLimitWork;
+
 #[derive(Default, Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
-pub struct WeeklyResources(pub HashMap<Period, HashMap<Skill, Work>>);
+pub struct WeeklyResources(
+    pub HashMap<Period, HashMap<Skill, (LowerLimitWork, Work, UpperLimitWork)>>,
+);
 
 impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for WeeklyResources
 {
@@ -54,9 +59,7 @@ impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for W
 
                 for resource in &operational_agent.1.operational_configuration.resources {
                     let hours = Work::from(
-                        operational_agent.1.hours_per_day
-                            * days_in_period
-                            * gradual_reduction(i),
+                        operational_agent.1.hours_per_day * days_in_period * gradual_reduction(i),
                     );
                     *skill_hours_map.entry(*resource).or_insert(Work::from(0.0)) += hours;
                 }
@@ -98,17 +101,9 @@ impl WeeklyResources
         Ok(())
     }
 
-    pub fn insert_skill_work(
-        &mut self,
-        period: Period,
-        skill: Skill,
-        work: Work,
-    )
+    pub fn insert_skill_work(&mut self, period: Period, skill: Skill, work: Work)
     {
-        self.0
-            .entry(period)
-            .or_default()
-            .insert(skill, work);
+        self.0.entry(period).or_default().insert(skill, work);
     }
 }
 

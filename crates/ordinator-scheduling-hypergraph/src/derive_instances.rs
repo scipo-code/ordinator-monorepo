@@ -1,4 +1,6 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::BTreeSet;
+use std::collections::HashMap;
+use std::collections::HashSet;
 
 use chrono::NaiveDate;
 use ordinator_scheduling_environment::time_environment::period::Period;
@@ -42,6 +44,6 @@ pub struct ActivityView
 #[derive(Debug)]
 pub struct TechnicianView
 {
-    pub skills: HashSet<Skill>,
+    pub skills: BTreeSet<Skill>,
     pub available_dates: HashSet<NaiveDate>,
 }

@@ -1,9 +1,8 @@
 use std::collections::BTreeMap;
+use std::collections::BTreeSet;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::collections::hash_map::Entry;
-
-use crate::derive_instances::{ActivityView, TechnicianView, WeeklyView, WeeklyWorkOrderView};
 
 use chrono::Days;
 use chrono::Duration;
@@ -23,6 +22,11 @@ use slotmap::SecondaryMap;
 use slotmap::SlotMap;
 use slotmap::new_key_type;
 use tracing::debug;
+
+use crate::derive_instances::ActivityView;
+use crate::derive_instances::TechnicianView;
+use crate::derive_instances::WeeklyView;
+use crate::derive_instances::WeeklyWorkOrderView;
 
 // Type Alias to make reasoning about the indices easier
 
@@ -676,7 +680,7 @@ impl SchedulingHypergraph
     }
 }
 
-/// Read methods.
+/// Extraction methods.
 ///
 /// The primary use cases are:
 /// 1. Deriving problem instances for the `Actor`s and their associated
@@ -686,38 +690,54 @@ impl SchedulingHypergraph
 ///
 /// The ultimate reason for the derivation of the problem instances is
 /// simply to create the `Parameters` for the `Algorithm`s.
+///
+/// DESIGN ESSAY:
+/// I am not sure which part of the abstraction should be in the
+/// Hypergraph and which should be in the algorithm parameters.
+/// The best approach here is probably to make the system work
+/// in a way such that the `weekly` word does not enter into the
+/// system.
+///
+/// The `self.hyperedges` and other self fields cannot be accessed outside
+/// of the hypergraph.
+///
+/// One idea is to use the `extract_work_order_view`, `extract_resources_view`,
+/// and `extract_time_view` I am not sure that this is the best idea either,
+/// to move forward I think that the best decision is to code each of the
+/// extractors for each of the schedules and then carefully review the
+/// patterns that exists. You cannot forget this task
 impl SchedulingHypergraph
 {
     pub fn extract_weekly_view(&self) -> WeeklyView
     {
         let mut work_orders = HashMap::new();
 
-        for (&work_order_number, &wo_node_index) in &self.work_order_indices {
+        for (&work_order_number, &work_order_node_index) in &self.work_order_indices {
             let mut basic_start_date = None;
             let mut assigned_period = None;
             let mut excluded_periods = HashSet::new();
             let mut activity_node_indices = Vec::new();
 
-            for &edge_idx in &self.incidence_list[wo_node_index] {
+            for &edge_idx in &self.incidence_list[work_order_node_index] {
                 match &self.hyperedges[edge_idx] {
                     Hyperedge::BasicStart(nodes) => {
-                        for &ni in nodes {
-                            if let Node::Day(date) = &self.nodes[ni] {
+                        for &node_index in nodes {
+                            if let Node::Day(date) = &self.nodes[node_index] {
                                 basic_start_date = Some(*date);
                             }
                         }
                     }
                     Hyperedge::Exclude(nodes) => {
-                        for &ni in nodes {
-                            if let Node::Period(period) = &self.nodes[ni] {
+                        for &node_index in nodes {
+                            if let Node::Period(period) = &self.nodes[node_index] {
                                 excluded_periods.insert(period.clone());
                             }
                         }
                     }
                     Hyperedge::WorkOrderToOperations(nodes) => {
-                        for &ni in nodes {
-                            if matches!(&self.nodes[ni], Node::Activity(_)) {
-                                activity_node_indices.push(ni);
+                        for &node_index in nodes {
+                            if matches!(&self.nodes[node_index], Node::Activity(_)) {
+                                activity_node_indices.push(node_index);
                             }
                         }
                     }
@@ -728,12 +748,11 @@ impl SchedulingHypergraph
             // Assign edges store work_order as a field but don't include it
             // in nodes(), so they are not in the incidence list. Scan all edges.
             for (_, hyperedge) in self.hyperedges.iter() {
-                if let Hyperedge::Assign(_, assign_edge) = hyperedge {
-                    if assign_edge.work_order == wo_node_index {
-                        if let Node::Period(period) = &self.nodes[assign_edge.period] {
-                            assigned_period = Some(period.clone());
-                        }
-                    }
+                if let Hyperedge::Assign(_, assign_edge) = hyperedge
+                    && assign_edge.work_order == work_order_node_index
+                    && let Node::Period(period) = &self.nodes[assign_edge.period]
+                {
+                    assigned_period = Some(period.clone());
                 }
             }
 
@@ -772,37 +791,35 @@ impl SchedulingHypergraph
 
             // Determine relation_to_next from StartStart/FinishStart edges
             for i in 0..activities.len().saturating_sub(1) {
-                let current_act_num = activities[i].0;
-                let next_act_num = activities[i + 1].0;
+                let current_activity_number = activities[i].0;
+                let next_activity_number = activities[i + 1].0;
 
                 // Find the activity node index for the current activity
-                let current_ni = activity_node_indices
+                let current_node_index = activity_node_indices
                     .iter()
                     .find(|&&ni| {
-                        matches!(&self.nodes[ni], Node::Activity(a) if a.activity_number == current_act_num)
+                        matches!(&self.nodes[ni], Node::Activity(a) if a.activity_number == current_activity_number)
                     })
                     .unwrap();
 
-                for &edge_idx in &self.incidence_list[*current_ni] {
-                    match &self.hyperedges[edge_idx] {
+                for &edge_index in &self.incidence_list[*current_node_index] {
+                    match &self.hyperedges[edge_index] {
                         Hyperedge::StartStart(nodes) if nodes.len() == 2 => {
-                            if nodes[0] == *current_ni {
-                                if let Node::Activity(target) = &self.nodes[nodes[1]] {
-                                    if target.activity_number == next_act_num {
-                                        activities[i].1.relation_to_next =
-                                            Some(ActivityRelation::StartStart);
-                                    }
-                                }
+                            if nodes[0] == *current_node_index
+                                && let Node::Activity(target) = &self.nodes[nodes[1]]
+                                && target.activity_number == next_activity_number
+                            {
+                                activities[i].1.relation_to_next =
+                                    Some(ActivityRelation::StartStart);
                             }
                         }
                         Hyperedge::FinishStart(nodes) if nodes.len() == 2 => {
-                            if nodes[0] == *current_ni {
-                                if let Node::Activity(target) = &self.nodes[nodes[1]] {
-                                    if target.activity_number == next_act_num {
-                                        activities[i].1.relation_to_next =
-                                            Some(ActivityRelation::FinishStart);
-                                    }
-                                }
+                            if nodes[0] == *current_node_index
+                                && let Node::Activity(target) = &self.nodes[nodes[1]]
+                                && target.activity_number == next_activity_number
+                            {
+                                activities[i].1.relation_to_next =
+                                    Some(ActivityRelation::FinishStart);
                             }
                         }
                         _ => {}
@@ -834,7 +851,7 @@ impl SchedulingHypergraph
         // Collect technicians
         let mut technicians = HashMap::new();
         for (&tech_id, &tech_ni) in &self.technician_indices {
-            let mut tech_skills = HashSet::new();
+            let mut tech_skills = BTreeSet::new();
             let mut available_dates = HashSet::new();
 
             for &edge_idx in &self.incidence_list[tech_ni] {
@@ -1572,9 +1589,7 @@ mod tests
         graph
             .add_technician(technician, Availability::from_naive(avail_start, avail_end))
             .unwrap();
-        graph
-            .add_assign_skill_to_worker(1, Skill::MtnMech)
-            .unwrap();
+        graph.add_assign_skill_to_worker(1, Skill::MtnMech).unwrap();
 
         let view = graph.extract_weekly_view();
 

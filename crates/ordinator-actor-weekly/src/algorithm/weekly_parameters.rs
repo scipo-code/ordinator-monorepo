@@ -27,6 +27,9 @@ use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 use serde::Serialize;
 use tracing::info;
 
+pub type LowerLimitWork = Work;
+pub type UpperLimitWork = Work;
+
 use super::WeeklyResources;
 
 #[derive(Debug)]
@@ -48,6 +51,9 @@ impl Parameters for WeeklyParameters
     type Key = WorkOrderNumber;
 
     // The asset change introduced some tradeoffs that need consideration
+    //
+    // This function is correct now, the issue is getting the options
+    // out of the Paramaters
     fn from_scheduling_hypergraph(
         id: &ActorCompositeId,
         scheduling_hypergraph: &MutexGuard<SchedulingHypergraph>,
@@ -56,38 +62,40 @@ impl Parameters for WeeklyParameters
         let asset = id.2.main_asset();
 
         // TODO [ ] - extract the work orders
-        //
-        let work_orders = &scheduling_hypergraph.extract_work_orders();
-        let work_orders = &scheduling_hypergraph.work_orders;
-        let weekly_periods = &scheduling_hypergraph.time_environment.periods;
-        let days = &scheduling_hypergraph.time_environment.days;
+        let weekly_view = &scheduling_hypergraph.extract_weekly_view();
+
+        // let work_orders = &scheduling_hypergraph.work_orders;
+        // let weekly_periods = &scheduling_hypergraph.time_environment.periods;
+        // let days = &scheduling_hypergraph.time_environment.days;
 
         // TODO: Move actor specifications retrieval to a separate module
-        let actor_specifications = scheduling_hypergraph
-            .worker_environment
-            .actor_specification
-            .get(id.asset())
-            .unwrap();
+        // let actor_specifications = scheduling_hypergraph
+        //     .worker_environment
+        //     .actor_specification
+        //     .get(id.asset())
+        //     .unwrap();
 
         let weekly_options = actor_specifications.weekly_options();
+
+        // TODO [ ] these are still required
         let work_order_configurations = &scheduling_hypergraph.work_order_policies;
         let material_to_period = &scheduling_hypergraph.material_repo.material_to_period;
 
         // Filter work orders for this asset that are released for scheduling
-        let filter = work_orders
-            .inner
-            .iter()
-            .filter(|(_, wo)| wo.functional_location().asset == *asset)
-            .filter(|(_, wo)| wo.released_for_scheduling());
+        // FIX this is no longer needed - each asset should have its own hypergraph
+        //
+        // // This is of no concern to the algorithm
+        // let filter = work_orders
+        //     .inner
+        //     .iter()
+        //     .filter(|(_, wo)| wo.functional_location().asset == *asset)
+        //     .filter(|(_, wo)| wo.released_for_scheduling());
 
         // ISSUE #000: Critical to fix correctly
         let weekly_work_order_parameters = filter
             .map(|(won, wo)| {
                 Ok((
                     *won,
-                    // TODO #000001: Move time environment configuration into SchedulingEnvironment
-                    // TODO #000002: Move work order parameters to
-                    // temp_scheduling_environment_database
                     WeeklyWorkOrderParameter::builder()
                         // TODO: Accept list of work order numbers instead of current implementation
                         .with_scheduling_environment(
@@ -108,15 +116,82 @@ impl Parameters for WeeklyParameters
             &scheduling_hypergraph.work_order_policies.clustering_weights,
         )?;
 
-        // TODO: Decouple SchedulingEnvironment from WeeklyResources
-        let weekly_capacity = WeeklyResources::from((scheduling_hypergraph, id));
+        // multiskill_group        = [[1, 6], [2, 8], [4, 20]]
+        // multiskill_group_total  = repeat([6 ; 4 ; 7], 1, length(data.days))
+        //
+        // @constraint(model, multi_skill_sum[ms in 1:3, day in data.days],
+        //                     sum(c[wc, day] for wc in multiskill_group[ms]) ==
+        // multiskill_group_total[ms, day])
+        //
+        //  @constraint(model, [k in operations, day in data.days],
+        //                      data.people_for_operation[k] * p[k, day] <=
+        // c[data.operation_to_workcenter[k], day])
+
+        let mut weekly_capacity: HashMap<
+            Period,
+            HashMap<Skill, (LowerLimitWork, Work, UpperLimitWork)>,
+        > = HashMap::new();
+        for period in &weekly_view.periods {
+            let mut capacity_work_lower_limit: HashMap<Skill, Work> = HashMap::new();
+            let mut capacity_work: HashMap<Skill, Work> = HashMap::new();
+            let mut capacity_work_upper_limit: HashMap<Skill, Work> = HashMap::new();
+
+            for technician in weekly_view.technicians.values() {
+                let days_in_period = technician
+                    .available_dates
+                    .iter()
+                    .filter(|date| period.contains_date(**date))
+                    .count();
+
+                if days_in_period == 0 {
+                    continue;
+                }
+
+                let work_contribution = Work::from(6.0 * days_in_period as f64);
+
+                if technician.skills.len() == 1 {
+                    let skill = *technician.skills.iter().next().unwrap();
+                    *capacity_work_lower_limit.entry(skill).or_default() += work_contribution;
+                    *capacity_work.entry(skill).or_default() += work_contribution;
+                    *capacity_work_upper_limit.entry(skill).or_default() += work_contribution;
+                } else {
+                    let first_skill = *technician.skills.iter().next().unwrap();
+                    *capacity_work.entry(first_skill).or_default() += work_contribution;
+                    for &skill in &technician.skills {
+                        *capacity_work_upper_limit.entry(skill).or_default() += work_contribution;
+                    }
+                }
+            }
+
+            let mut period_capacity = HashMap::new();
+            let all_skills: HashSet<Skill> = capacity_work_lower_limit
+                .keys()
+                .chain(capacity_work.keys())
+                .chain(capacity_work_upper_limit.keys())
+                .copied()
+                .collect();
+
+            for skill in all_skills {
+                let lower = capacity_work_lower_limit
+                    .remove(&skill)
+                    .unwrap_or(Work::from(0.0));
+                let work = capacity_work.remove(&skill).unwrap_or(Work::from(0.0));
+                let upper = capacity_work_upper_limit
+                    .remove(&skill)
+                    .unwrap_or(Work::from(0.0));
+                period_capacity.insert(skill, (lower, work, upper));
+            }
+
+            weekly_capacity.insert(period.clone(), period_capacity);
+        }
 
         Ok(Self {
             weekly_work_order_parameters,
-            weekly_capacity,
+            weekly_capacity: WeeklyResources(weekly_capacity),
             weekly_clustering,
+            // This is not a feature. You need to design a common---
             period_locks: HashSet::default(),
-            weekly_periods: weekly_periods.clone(),
+            weekly_periods: weekly_view.periods,
             weekly_options: weekly_options.clone(),
         })
     }
@@ -220,74 +295,6 @@ impl WeeklyParameters
 
 impl WorkOrderParameterBuilder
 {
-    // This builder is crucial for business logic. Add functions for each field and
-    // clarify their meanings. Configs come from the higher-level Parameters
-    // implementation via SchedulingEnvironment.
-    pub fn with_scheduling_environment(
-        mut self,
-        work_order: &WorkOrder,
-        periods: &[Period],
-        days: &[Day],
-        work_order_configurations: &WorkOrderPolicies,
-        // TODO: Move material_to_period out of the system
-        material_to_period: &MaterialToPeriod,
-    ) -> Result<Self>
-    {
-        // TODO: Use TypeState pattern to improve error handling
-        let forced_work_order = work_order.forced_work_order(periods, days, material_to_period)?;
-
-        info!(target: "developer", forced_work_order = ?forced_work_order);
-        match forced_work_order {
-            ForcedWorkOrder::Period(period) => {
-                self.locked_in_period = WhereIsWorkOrder::Weekly(period.0);
-                self.excluded_periods = period.1;
-            }
-            // Give project control via WhereIsWorkOrder::Project when forced to days
-            ForcedWorkOrder::Days(days) => {
-                match &days {
-                    ProjectForceType::OnlyStartDay(day) => {
-                        let period = periods
-                            .iter()
-                            .find(|per| per.contains_date(day.date))
-                            .context("day should always be contained in the period")?
-                            .clone();
-                        self.locked_in_period = WhereIsWorkOrder::Project(period);
-                    }
-                    ProjectForceType::IndividualActivities(_items, _hash_sets) => todo!(),
-                }
-                // Collect excluded periods where all days are excluded
-                let excluded_periods = periods
-                    .iter()
-                    .filter(|per| days.excluded_days(per))
-                    .cloned()
-                    .collect::<HashSet<Period>>();
-                // TODO: Evaluate if this data structure is optimal
-                self.excluded_periods = excluded_periods;
-            }
-            ForcedWorkOrder::Technician(_technician_include, _technician_exclude) => todo!(),
-            ForcedWorkOrder::FreeWorkOrder => {
-                self.locked_in_period = WhereIsWorkOrder::NotScheduled;
-                self.excluded_periods =
-                    work_order.find_excluded_periods(periods, material_to_period)
-            }
-        }
-
-        self.weight = Some(
-            work_order
-                .work_order_value(work_order_configurations)
-                .with_context(|| {
-                    format!("Could not calculate the work_order_value for: {work_order}")
-                })?,
-        );
-
-        self.work_load = work_order
-            .work_order_load()
-            .context("Could not determine the work order load")?;
-
-        self.latest_period = Some(work_order.latest_allowed_finish_period(periods).clone());
-        Ok(self)
-    }
-
     pub fn build(self) -> WeeklyWorkOrderParameter
     {
         if let WhereIsWorkOrder::Weekly(ref locked_in_period) = self.locked_in_period {

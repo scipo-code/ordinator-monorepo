@@ -25,6 +25,7 @@ use serde::Serialize;
 
 use crate::Asset;
 use crate::time_environment::TimeInterval;
+use crate::work_order::WorkOrderPolicies;
 
 pub type OperationalId = String;
 
@@ -383,6 +384,7 @@ pub struct WeeklyOptions
     pub urgency_weight: usize,
     pub resource_penalty_weight: usize,
     pub clustering_weight: usize,
+    pub work_order_policies: WorkOrderPolicies,
     // TODO: Move weight parameters to SchedulingEnvironment
 }
 
@@ -454,9 +456,7 @@ impl InputWeeklyBuilder
             number_of_weekly_periods: self
                 .number_of_weekly_periods
                 .expect("number_of_weekly_periods is required"),
-            weekly_options: self
-                .weekly_options
-                .expect("weekly_options is required"),
+            weekly_options: self.weekly_options.expect("weekly_options is required"),
         }
     }
 }
@@ -538,9 +538,7 @@ impl DailysBuilder
 {
     pub fn new() -> Self
     {
-        Self {
-            dailys: Vec::new(),
-        }
+        Self { dailys: Vec::new() }
     }
 
     pub fn daily<F>(mut self, f: F) -> Self
@@ -614,9 +612,7 @@ impl InputDailyBuilder
             number_of_daily_periods: self
                 .number_of_daily_periods
                 .expect("number_of_daily_periods is required"),
-            daily_options: self
-                .daily_options
-                .expect("daily_options is required"),
+            daily_options: self.daily_options.expect("daily_options is required"),
         }
     }
 }

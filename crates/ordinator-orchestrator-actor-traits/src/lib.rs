@@ -566,7 +566,7 @@ mod tests
 
             fn from_parameters(_parameters: &Self::Parameters) -> anyhow::Result<Self>
             {
-                todo!()
+                todo!();
             }
 
             fn update_objective(&mut self, _other_objective: Self::Objective) {}

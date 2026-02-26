@@ -681,7 +681,9 @@ impl WorkOrder
                 .functional_location(FunctionalLocation::default())
                 .work_order_text(self::work_order_info::work_order_text::WorkOrderText::default())
                 .revision(self::work_order_info::revision::Revision::default())
-                .system_condition(self::work_order_info::system_condition::SystemCondition::default())
+                .system_condition(
+                    self::work_order_info::system_condition::SystemCondition::default(),
+                )
                 .work_order_info_detail(self::work_order_info::WorkOrderInfoDetail::default())
                 .build(),
             fixed_by: FixedWorkOrder::BusinessLogic,

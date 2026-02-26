@@ -44,7 +44,8 @@ use self::time_environment::TimeEnvironment;
 use self::worker_environment::ActorEnvironment;
 
 // ESSAY: #20250814
-// All of these should be `dyn`. If you need Serialize and Deserialize, implement on concrete types.
+// All of these should be `dyn`. If you need Serialize and Deserialize,
+// implement on concrete types.
 /// Main entry point to the domain models and aggregate roots
 #[derive(Debug)]
 pub struct SchedulingEnvironment
@@ -53,9 +54,7 @@ pub struct SchedulingEnvironment
     pub worker_environment: ActorEnvironment<dyn ActorSpecification>,
     pub time_environment: TimeEnvironment,
 
-    pub work_order_policies: WorkOrderPolicies,
     pub material_repo: MaterialRepo,
-    pub assignments: SavedAssignment,
 }
 
 pub enum TimeType
@@ -65,7 +64,8 @@ pub enum TimeType
     SpecificTime(DateTime<Utc>),
 }
 
-// TODO: Consider state machine pattern for WorkOrder state transitions and actor assignment
+// TODO: Consider state machine pattern for WorkOrder state transitions and
+// actor assignment
 #[allow(dead_code)]
 pub struct SchedulingEnvironmentBuilder
 {
@@ -75,7 +75,6 @@ pub struct SchedulingEnvironmentBuilder
     work_order_policies: Option<WorkOrderPolicies>,
 
     material_repo: Option<MaterialRepo>,
-    assignments: Option<SavedAssignment>,
 }
 
 impl SchedulingEnvironment
@@ -86,9 +85,7 @@ impl SchedulingEnvironment
             work_orders: None,
             worker_environment: None,
             time_environment: None,
-            work_order_policies: None,
             material_repo: None,
-            assignments: None,
         }
     }
 }
@@ -118,8 +115,6 @@ impl SchedulingEnvironmentBuilder
             .work_orders
             .context("You should build the WorkOrders with the correct parameters injected.")?;
 
-        let mut assignments = HashMap::new();
-
         let time_environment = self
             .time_environment
             .context("Time environment should be present")?;
@@ -129,23 +124,6 @@ impl SchedulingEnvironmentBuilder
             .take()
             .context("ActorEnvironment should always be available.")?;
 
-        for work_order_number in work_orders.inner.keys() {
-            // ISSUE #002 - Create AssignmentRepo and derive ForcedWorkOrder
-            let assignment = assignments::AnyAssignment::Base(Assignment::new(
-                *work_order_number,
-                None,
-                None,
-                None,
-                HashSet::default(),
-            ));
-            assignments.insert(Uuid::new_v4(), assignment);
-        }
-        let saved_assignments = SavedAssignment::new(assignments);
-        // ISSUE #TODO - Create typestate builder for SchedulingEnvironment
-
-        let work_order_policies = self
-            .work_order_policies
-            .context("WorkOrderPolicies not added to SchedulingEnvironmentBuilder")?;
         let material_repo = self
             .material_repo
             .context("MaterialRepo not added to the SchedulingEnvironmentBuilder")?;
@@ -153,8 +131,6 @@ impl SchedulingEnvironmentBuilder
             work_orders,
             worker_environment,
             time_environment,
-            assignments: saved_assignments,
-            work_order_policies,
             material_repo,
         })))
     }

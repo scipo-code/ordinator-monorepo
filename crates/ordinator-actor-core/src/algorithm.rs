@@ -25,16 +25,18 @@ use crate::traits::AbLNSUtils;
 // controlling access to specific functionality. TODO: Add error handling to the
 // specific `Algorithm` implementation.
 #[derive(Debug)]
-pub struct Algorithm<S, P, I, Ss>
+pub struct Algorithm<S, P, I, O, Ss>
 where
     S: Solution,
     P: Parameters,
+    O: Options,
     Ss: SystemSolutions,
 {
     pub id: ActorCompositeId,
     pub solution_intermediate: I,
     pub solution: SolutionState<S>,
     pub parameters: P,
+    pub options: O,
     pub arc_swap_shared_solution: Arc<ArcSwap<Ss>>,
     pub loaded_system_solution: Guard<Arc<Ss>>,
 }
