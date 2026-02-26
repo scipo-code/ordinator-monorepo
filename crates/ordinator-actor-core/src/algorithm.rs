@@ -14,6 +14,7 @@ use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 
 use crate::traits::AbLNSUtils;
 
@@ -139,10 +140,10 @@ where
     // options into Algorithm.
     pub fn parameters_and_solution(
         mut self,
-        scheduling_environment: &MutexGuard<SchedulingEnvironment>,
+        scheduling_environment: &MutexGuard<SchedulingHypergraph>,
     ) -> Result<Self>
     {
-        let parameters = P::from_source(
+        let parameters = P::from_scheduling_hypergraph(
             self.id.as_ref().expect("Call `id()` build method first"),
             scheduling_environment,
         )?;

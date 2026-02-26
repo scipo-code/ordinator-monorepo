@@ -7,9 +7,9 @@ use std::ops::DerefMut;
 use std::sync::Arc;
 use std::sync::Mutex;
 
+use algorithm::DailyAlgorithm;
 use algorithm::daily_parameters::DailyParameters;
 use algorithm::daily_solution::DailySolution;
-use algorithm::DailyAlgorithm;
 use anyhow::Result;
 use arc_swap::ArcSwap;
 #[allow(unused_imports)]
@@ -18,17 +18,18 @@ use bus::BusReader;
 use flume::Sender;
 use messages::DailyRequestMessage;
 use messages::DailyResponseMessage;
+use ordinator_actor_core::Actor;
 use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
-use ordinator_actor_core::Actor;
 use ordinator_configuration::SystemConfigurations;
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 
 pub struct DailyActor<Ss: Debug>(
     Actor<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>,
@@ -44,8 +45,7 @@ where
     Actor<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>:
         CommandHandler<DailyRequestMessage, DailyResponseMessage>,
 {
-    type Target =
-        Actor<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>;
+    type Target = Actor<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>;
 
     fn deref(&self) -> &Self::Target
     {
@@ -82,7 +82,7 @@ where
 
     fn construct_actor(
         id: ActorCompositeId,
-        scheduling_environment_guard: Arc<Mutex<SchedulingEnvironment>>,
+        scheduling_environment_guard: Arc<Mutex<SchedulingHypergraph>>,
         shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,
         state_link_bus: BusReader<StateLink>,
@@ -92,17 +92,15 @@ where
         Ss: SystemSolutions<Daily = DailySolution> + Send + Sync + 'static,
     {
         Actor::<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>::builder()
-        .agent_id(id.clone())
-        .scheduling_environment(Arc::clone(&scheduling_environment_guard))
-        .algorithm(|ab| {
-            ab.id(id)
-                .parameters_and_solution(
-                    &scheduling_environment_guard.lock().unwrap(),
-                )?
-                .system_solution_arc_swap(shared_solution_arc_swap)
-        })?
-        .communication(error_channel, state_link_bus)
-        .configurations(system_configurations)
-        .build()
+            .agent_id(id.clone())
+            .scheduling_environment(Arc::clone(&scheduling_environment_guard))
+            .algorithm(|ab| {
+                ab.id(id)
+                    .parameters_and_solution(&scheduling_environment_guard.lock().unwrap())?
+                    .system_solution_arc_swap(shared_solution_arc_swap)
+            })?
+            .communication(error_channel, state_link_bus)
+            .configurations(system_configurations)
+            .build()
     }
 }

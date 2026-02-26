@@ -74,6 +74,7 @@ rand = "0.9"
 rgb = "*"
 serde = { version = "*", features = ["derive"] } 
 serde_json = "*"
+smallvec = "*"
 strum = "*"
 strum_macros = "*"
 tokio = { version ="*", features = [ "signal", "macros", "rt-multi-thread", "time"] }

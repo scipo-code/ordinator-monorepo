@@ -3,13 +3,13 @@ use std::path::PathBuf;
 
 use chrono::NaiveDate;
 use chrono::NaiveDateTime;
-use ordinator_scheduling_hypergraph::schedule_graph::ScheduleGraph;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::operation::Operation;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_scheduling_environment::worker_environment::worker::Technician;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 use serde::Deserialize;
 
 /// Intermediate struct for deserializing technician data from JSON
@@ -53,8 +53,8 @@ fn get_test_data_path(filename: &str) -> PathBuf
 fn test_large_scale_hypergraph()
 {
     // Read periods from JSON
-    let periods_json =
-        fs::read_to_string(get_test_data_path("periods.json")).expect("Failed to read periods.json");
+    let periods_json = fs::read_to_string(get_test_data_path("periods.json"))
+        .expect("Failed to read periods.json");
     let period_dates: Vec<NaiveDate> =
         serde_json::from_str(&periods_json).expect("Failed to parse periods.json");
 
@@ -75,7 +75,7 @@ fn test_large_scale_hypergraph()
     println!("Loaded {} technicians", technician_data.len());
 
     // Create the schedule graph
-    let mut schedule_graph = ScheduleGraph::new();
+    let mut schedule_graph = SchedulingHypergraph::new();
 
     // First, add all skills as nodes
     schedule_graph.add_skill(Skill::MtnMech);
@@ -100,8 +100,12 @@ fn test_large_scale_hypergraph()
                 .iter()
                 .map(|a| Operation::new(a.activity_number, a.number_of_people, a.resource))
                 .collect();
-            WorkOrder::new(wo_data.work_order_number, wo_data.basic_start_date, operations)
-                .expect("Failed to create WorkOrder")
+            WorkOrder::new(
+                wo_data.work_order_number,
+                wo_data.basic_start_date,
+                operations,
+            )
+            .expect("Failed to create WorkOrder")
         })
         .collect();
 

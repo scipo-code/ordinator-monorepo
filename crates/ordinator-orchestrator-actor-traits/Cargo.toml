@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 ordinator-scheduling-environment ={ path = "../ordinator-scheduling-environment"}
+ordinator-scheduling-hypergraph = { path = "../ordinator-scheduling-hypergraph" }
 ordinator-configuration = {path = "../ordinator-configuration"}
 
 anyhow.workspace = true

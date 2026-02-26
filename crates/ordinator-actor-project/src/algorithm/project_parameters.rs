@@ -42,7 +42,7 @@ impl Parameters for ProjectParameters
 {
     type Key = WorkOrderNumber;
 
-    fn from_source(
+    fn from_scheduling_hypergraph(
         id: &ActorCompositeId,
         scheduling_environment: &MutexGuard<SchedulingEnvironment>,
     ) -> Result<Self>
@@ -110,7 +110,8 @@ impl Parameters for ProjectParameters
     }
 }
 
-// TODO: Consider making `create_parameter` functions associated trait methods that accept generic types
+// TODO: Consider making `create_parameter` functions associated trait methods
+// that accept generic types
 pub fn create_project_parameter(
     work_order: &WorkOrder,
     start_days_for_activities: HashMap<Option<ActivityNumber>, AnyAssignment>,

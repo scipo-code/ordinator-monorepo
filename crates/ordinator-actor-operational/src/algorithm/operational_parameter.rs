@@ -20,9 +20,11 @@ use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 
-// Consider refactoring SchedulingEnvironment into a highly concurrent data structure
-// to reduce state duplication. For now, maintain current approach with separate fields.
+// Consider refactoring SchedulingEnvironment into a highly concurrent data
+// structure to reduce state duplication. For now, maintain current approach
+// with separate fields.
 pub struct OperationalParameters
 {
     pub work_order_parameters: HashMap<WorkOrderActivity, OperationalParameter>,
@@ -99,9 +101,9 @@ impl Parameters for OperationalParameters
 {
     type Key = WorkOrderActivity;
 
-    fn from_source(
+    fn from_scheduling_hypergraph(
         id: &ActorCompositeId,
-        scheduling_environment: &MutexGuard<SchedulingEnvironment>,
+        scheduling_environment: &MutexGuard<SchedulingHypergraph>,
     ) -> Result<Self>
     {
         let mut work_order_parameters = HashMap::default();

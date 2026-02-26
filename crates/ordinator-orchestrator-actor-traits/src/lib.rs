@@ -30,6 +30,7 @@ use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 use serde::Serialize;
 use thiserror::Error;
 use valuable::Valuable;
@@ -188,10 +189,10 @@ where
     U: DailyInterface + Solution,
     V: OperationalInterface + Solution,
 {
-    type Operational = V;
-    type Weekly = S;
     type Daily = U;
+    type Operational = V;
     type Project = T;
+    type Weekly = S;
 
     fn new() -> Self
     {
@@ -283,12 +284,13 @@ where
     type Key;
 
     /// Build parameters from a scheduling environment for a given actor
-    fn from_source(
+    fn from_scheduling_hypergraph(
         id: &ActorCompositeId,
-        scheduling_environment: &MutexGuard<SchedulingEnvironment>,
+        scheduling_environment: &MutexGuard<SchedulingHypergraph>,
     ) -> Result<Self>;
 
-    /// Create and insert a new parameter. Note: this method can become extremely complex in practice
+    /// Create and insert a new parameter. Note: this method can become
+    /// extremely complex in practice
     fn create_and_insert_new_parameter(
         &mut self,
         key: Self::Key,
@@ -392,7 +394,8 @@ pub trait CommandHandler<Req, Res>
     fn handle_request_message(&mut self, request_message: Req) -> Result<Res>;
 }
 
-// TODO: Create a common solution interface for all levels (Weekly, Project, Daily, Operational)
+// TODO: Create a common solution interface for all levels (Weekly, Project,
+// Daily, Operational)
 pub trait WeeklyInterface
 where
     Self: Clone + std::fmt::Debug + Eq + PartialEq,
@@ -536,7 +539,7 @@ where
 
     fn construct_actor(
         id: ActorCompositeId,
-        scheduling_environment: Arc<Mutex<SchedulingEnvironment>>,
+        scheduling_environment: Arc<Mutex<SchedulingHypergraph>>,
         system_solution_arc_swap: Arc<ArcSwap<Ss>>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,
         stake_link_bus: BusReader<StateLink>,

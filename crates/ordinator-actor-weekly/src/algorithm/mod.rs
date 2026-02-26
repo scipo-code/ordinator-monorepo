@@ -1073,11 +1073,11 @@ mod tests
 
     use rand::SeedableRng;
     use rand::rngs::StdRng;
-    use weekly_parameters::WorkOrderParameter;
+    use weekly_parameters::WeeklyWorkOrderParameter;
 
     use super::*;
 
-    impl WorkOrderParameter
+    impl WeeklyWorkOrderParameter
     {
         pub fn new(
             locked_in_period: WhereIsWorkOrder<Period>,

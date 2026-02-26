@@ -14,11 +14,11 @@ use ordinator_scheduling_environment::work_order::operation::operation_info::Num
 use ordinator_scheduling_environment::worker_environment::DailyOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 
 pub struct DailyParameters
 {
-    pub daily_work_orders:
-        HashMap<WorkOrderNumber, HashMap<ActivityNumber, DailyParameter>>,
+    pub daily_work_orders: HashMap<WorkOrderNumber, HashMap<ActivityNumber, DailyParameter>>,
     pub daily_periods: Vec<Period>,
     pub options: DailyOptions,
 }
@@ -46,15 +46,16 @@ impl Parameters for DailyParameters
 {
     type Key = WorkOrderActivity;
 
-    fn from_source(
+    fn from_scheduling_hypergraph(
         id: &ActorCompositeId,
-        scheduling_environment: &MutexGuard<SchedulingEnvironment>,
+        scheduling_environment: &MutexGuard<SchedulingHypergraph>,
     ) -> Result<Self>
     {
         let mut daily_parameters = HashMap::new();
 
-        // Consider refactoring SchedulingEnvironment to use Arc<WorkOrders> and ArcSwap<TimeEnvironment>
-        // for better performance with Functional programming patterns
+        // Consider refactoring SchedulingEnvironment to use Arc<WorkOrders> and
+        // ArcSwap<TimeEnvironment> for better performance with Functional
+        // programming patterns
         let input_daily = scheduling_environment
             .worker_environment
             .actor_specification
@@ -65,9 +66,7 @@ impl Parameters for DailyParameters
             .find(|e| e.id == *id.0)
             .with_context(|| format!("Missing an Daily entry for {id}"))?;
 
-        let options = input_daily
-            .daily_options
-            .clone();
+        let options = input_daily.daily_options.clone();
 
         let daily_periods = &scheduling_environment
             .time_environment

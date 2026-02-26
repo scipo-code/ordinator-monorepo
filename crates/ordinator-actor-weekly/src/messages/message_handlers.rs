@@ -18,14 +18,15 @@ use super::WeeklyResponseMessage;
 use super::WeeklySchedulingEnvironmentCommands;
 use super::WeeklyStatusMessage;
 use crate::algorithm::WeeklyAlgorithm;
-use crate::algorithm::weekly_parameters::WorkOrderParameter;
+use crate::algorithm::weekly_parameters::WeeklyWorkOrderParameter;
 use crate::algorithm::weekly_resources::WeeklyResources;
 use crate::algorithm::weekly_solution::WeeklySolution;
 use crate::messages::WeeklyRequestScheduling;
 use crate::messages::WeeklyResponseScheduling;
 
-// TODO: Refactor type system to resolve blanket implementation conflicts with Orphan Rule.
-// The LNS blanket implementation on inner types conflicts with actor-level implementations.
+// TODO: Refactor type system to resolve blanket implementation conflicts with
+// Orphan Rule. The LNS blanket implementation on inner types conflicts with
+// actor-level implementations.
 impl<Ss> CommandHandler<WeeklyRequestMessage, WeeklyResponseMessage>
     for Actor<WeeklyRequestMessage, WeeklyResponseMessage, WeeklyAlgorithm<Ss>>
 where
@@ -167,9 +168,7 @@ where
 
                 self.algorithm.calculate_objective_value()?;
                 event!(target: "research", Level::INFO, weekly_objective_value = ?self.algorithm.solution.objective_value());
-                Ok(WeeklyResponseMessage::Resources(
-                    resources_output.unwrap(),
-                ))
+                Ok(WeeklyResponseMessage::Resources(resources_output.unwrap()))
             }
             ordinator_actor_core::RequestMessage::Time(_periods_message) => {
                 // let mut scheduling_environment_guard =
@@ -204,9 +203,7 @@ where
                 // TODO: Move user status handling to Orchestrator. This handler should only read
                 // SchedulingEnvironment and update WeeklyParameters, delegating business logic
                 // elsewhere through DTO-based approaches.
-                WeeklySchedulingEnvironmentCommands::UserStatus(
-                    _weekly_user_status_codes,
-                ) => {
+                WeeklySchedulingEnvironmentCommands::UserStatus(_weekly_user_status_codes) => {
                     // let scheduling_environment_lock =
                     //     &mut self.scheduling_environment.lock().unwrap();
 
@@ -238,9 +235,10 @@ where
                     //         user_status_codes.awsc = awsc;
                     //     }
 
-                    // TODO: Encapsulate Algorithm to prevent direct mutation. Message handlers should not
-                    // access internal fields. Instead, implement InteractWithSchedulingEnvironment trait
-                    // for each Actor type to provide controlled access to state modifications.
+                    // TODO: Encapsulate Algorithm to prevent direct mutation. Message handlers
+                    // should not access internal fields. Instead, implement
+                    // InteractWithSchedulingEnvironment trait for each Actor
+                    // type to provide controlled access to state modifications.
                     //     let last_period =
                     //         self.algorithm.parameters.weekly_periods.
                     // last().cloned();
@@ -314,8 +312,8 @@ where
                     // FIX
                     // }
 
-                    // TODO: Remove work order update notification - Actors no longer handle this responsibility
-                    // let asset = self.actor_id.asset().clone();
+                    // TODO: Remove work order update notification - Actors no longer handle this
+                    // responsibility let asset = self.actor_id.asset().clone();
 
                     // self.notify_orchestrator
                     //     .notify_all_agents_of_work_order_change(
@@ -356,7 +354,7 @@ where
                         .material_repo
                         .material_to_period;
 
-                    let weekly_parameter = WorkOrderParameter::builder()
+                    let weekly_parameter = WeeklyWorkOrderParameter::builder()
                         .with_scheduling_environment(
                             work_order,
                             &scheduling_environment_guard.time_environment.periods,

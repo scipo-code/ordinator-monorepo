@@ -23,6 +23,7 @@ use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::WeeklyOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 use serde::Serialize;
 use tracing::info;
 
@@ -31,7 +32,7 @@ use super::WeeklyResources;
 #[derive(Debug)]
 pub struct WeeklyParameters
 {
-    pub weekly_work_order_parameters: HashMap<WorkOrderNumber, WorkOrderParameter>,
+    pub weekly_work_order_parameters: HashMap<WorkOrderNumber, WeeklyWorkOrderParameter>,
     pub weekly_capacity: WeeklyResources,
     pub weekly_clustering: WeeklyClustering,
     pub period_locks: HashSet<Period>,
@@ -47,28 +48,30 @@ impl Parameters for WeeklyParameters
     type Key = WorkOrderNumber;
 
     // The asset change introduced some tradeoffs that need consideration
-    fn from_source(
+    fn from_scheduling_hypergraph(
         id: &ActorCompositeId,
-        scheduling_environment: &MutexGuard<SchedulingEnvironment>,
+        scheduling_hypergraph: &MutexGuard<SchedulingHypergraph>,
     ) -> Result<Self>
     {
         let asset = id.2.main_asset();
 
-        let work_orders = &scheduling_environment.work_orders;
-
-        let weekly_periods = &scheduling_environment.time_environment.periods;
-        let days = &scheduling_environment.time_environment.days;
+        // TODO [ ] - extract the work orders
+        //
+        let work_orders = &scheduling_hypergraph.extract_work_orders();
+        let work_orders = &scheduling_hypergraph.work_orders;
+        let weekly_periods = &scheduling_hypergraph.time_environment.periods;
+        let days = &scheduling_hypergraph.time_environment.days;
 
         // TODO: Move actor specifications retrieval to a separate module
-        let actor_specifications = scheduling_environment
+        let actor_specifications = scheduling_hypergraph
             .worker_environment
             .actor_specification
             .get(id.asset())
             .unwrap();
 
         let weekly_options = actor_specifications.weekly_options();
-        let work_order_configurations = &scheduling_environment.work_order_policies;
-        let material_to_period = &scheduling_environment.material_repo.material_to_period;
+        let work_order_configurations = &scheduling_hypergraph.work_order_policies;
+        let material_to_period = &scheduling_hypergraph.material_repo.material_to_period;
 
         // Filter work orders for this asset that are released for scheduling
         let filter = work_orders
@@ -85,7 +88,7 @@ impl Parameters for WeeklyParameters
                     // TODO #000001: Move time environment configuration into SchedulingEnvironment
                     // TODO #000002: Move work order parameters to
                     // temp_scheduling_environment_database
-                    WorkOrderParameter::builder()
+                    WeeklyWorkOrderParameter::builder()
                         // TODO: Accept list of work order numbers instead of current implementation
                         .with_scheduling_environment(
                             wo,
@@ -97,18 +100,16 @@ impl Parameters for WeeklyParameters
                         .build(),
                 ))
             })
-            .collect::<Result<HashMap<WorkOrderNumber, WorkOrderParameter>>>()?;
+            .collect::<Result<HashMap<WorkOrderNumber, WeeklyWorkOrderParameter>>>()?;
 
         let weekly_clustering = WeeklyClustering::calculate_clustering_values(
             asset,
             work_orders,
-            &scheduling_environment
-                .work_order_policies
-                .clustering_weights,
+            &scheduling_hypergraph.work_order_policies.clustering_weights,
         )?;
 
         // TODO: Decouple SchedulingEnvironment from WeeklyResources
-        let weekly_capacity = WeeklyResources::from((scheduling_environment, id));
+        let weekly_capacity = WeeklyResources::from((scheduling_hypergraph, id));
 
         Ok(Self {
             weekly_work_order_parameters,
@@ -143,7 +144,7 @@ pub struct WeeklyClustering
 /// WARNING: Consider adding a generic parameter to support multiple
 /// WeeklyParameter handling approaches
 #[derive(Debug, PartialEq, Clone, Serialize)]
-pub struct WorkOrderParameter
+pub struct WeeklyWorkOrderParameter
 {
     pub locked_in_period: WhereIsWorkOrder<Period>,
     pub excluded_periods: HashSet<Period>,
@@ -287,13 +288,13 @@ impl WorkOrderParameterBuilder
         Ok(self)
     }
 
-    pub fn build(self) -> WorkOrderParameter
+    pub fn build(self) -> WeeklyWorkOrderParameter
     {
         if let WhereIsWorkOrder::Weekly(ref locked_in_period) = self.locked_in_period {
             assert!(!self.excluded_periods.contains(locked_in_period));
         }
 
-        WorkOrderParameter {
+        WeeklyWorkOrderParameter {
             locked_in_period: self.locked_in_period,
             excluded_periods: self.excluded_periods,
             latest_period: self
@@ -308,7 +309,7 @@ impl WorkOrderParameterBuilder
     }
 }
 
-impl WorkOrderParameter
+impl WeeklyWorkOrderParameter
 {
     pub fn builder() -> WorkOrderParameterBuilder
     {
@@ -387,7 +388,7 @@ pub fn create_weekly_parameters(
     _work_orders: &WorkOrders,
     _periods: &[Period],
     _asset: &Asset,
-) -> Result<HashMap<WorkOrderNumber, WorkOrderParameter>>
+) -> Result<HashMap<WorkOrderNumber, WeeklyWorkOrderParameter>>
 {
     todo!()
 }

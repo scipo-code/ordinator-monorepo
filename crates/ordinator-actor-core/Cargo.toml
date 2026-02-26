@@ -7,6 +7,7 @@ edition = "2024"
 ordinator-configuration = { path = "../ordinator-configuration" }
 ordinator-orchestrator-actor-traits = { path = "../ordinator-orchestrator-actor-traits" }
 ordinator-scheduling-environment = { path = "../ordinator-scheduling-environment" }
+ordinator-scheduling-hypergraph = { path = "../ordinator-scheduling-hypergraph" }
 
 anyhow.workspace = true
 arc-swap.workspace = true
