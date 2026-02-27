@@ -72,8 +72,6 @@ pub struct SchedulingEnvironmentBuilder
     work_orders: Option<WorkOrders>,
     worker_environment: Option<ActorEnvironment<dyn ActorSpecification>>,
     time_environment: Option<TimeEnvironment>,
-    work_order_policies: Option<WorkOrderPolicies>,
-
     material_repo: Option<MaterialRepo>,
 }
 
@@ -138,12 +136,6 @@ impl SchedulingEnvironmentBuilder
     pub fn time_environment(mut self, time_environment: TimeEnvironment) -> Self
     {
         self.time_environment = Some(time_environment);
-        self
-    }
-
-    pub fn work_order_policies(mut self, work_order_policies: WorkOrderPolicies) -> Self
-    {
-        self.work_order_policies = Some(work_order_policies);
         self
     }
 
@@ -275,18 +267,7 @@ impl SchedulingEnvironmentBuilder
         self
     }
 
-    pub fn work_order_policies_from_toml(
-        mut self,
-        path_to_work_order_policies: PathBuf,
-    ) -> Result<Self>
-    {
-        let contents = std::fs::read_to_string(path_to_work_order_policies).unwrap();
-        let work_order_policies: WorkOrderPolicies =
-            toml::from_str(&contents).expect("Could not read WorkOrderPolicies");
-
-        self.work_order_policies = Some(work_order_policies);
-        Ok(self)
-    }
+    // These have to be moved into the WeeklyActor
 
     pub fn material_repo_from_toml(mut self, path_to_material_to_period: PathBuf) -> Result<Self>
     {

@@ -715,6 +715,7 @@ pub struct WeeklyOptionsBuilder
     urgency_weight: Option<usize>,
     resource_penalty_weight: Option<usize>,
     clustering_weight: Option<usize>,
+    pub work_order_policies: Option<WorkOrderPolicies>,
 }
 
 impl WeeklyOptionsBuilder
@@ -726,6 +727,7 @@ impl WeeklyOptionsBuilder
             urgency_weight: None,
             resource_penalty_weight: None,
             clustering_weight: None,
+            work_order_policies: None,
         }
     }
 
@@ -753,6 +755,16 @@ impl WeeklyOptionsBuilder
         self
     }
 
+    pub fn work_order_policies(mut self, path_to_work_order_policies: PathBuf) -> Result<Self>
+    {
+        let contents = std::fs::read_to_string(path_to_work_order_policies).unwrap();
+        let work_order_policies: WorkOrderPolicies =
+            toml::from_str(&contents).expect("Could not read WorkOrderPolicies");
+
+        self.work_order_policies = Some(work_order_policies);
+        Ok(self)
+    }
+
     pub fn build(self) -> WeeklyOptions
     {
         WeeklyOptions {
@@ -766,6 +778,9 @@ impl WeeklyOptionsBuilder
             clustering_weight: self
                 .clustering_weight
                 .expect("clustering_weight is required"),
+            work_order_policies: self
+                .work_order_policies
+                .expect("This work order policies should be loaded"),
         }
     }
 }
