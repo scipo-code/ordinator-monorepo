@@ -8,27 +8,28 @@ use std::ops::DerefMut;
 use std::sync::Arc;
 use std::sync::Mutex;
 
+use algorithm::OperationalAlgorithm;
 use algorithm::operational_parameter::OperationalParameters;
 use algorithm::operational_solution::OperationalSolution;
-use algorithm::OperationalAlgorithm;
 use anyhow::Result;
 use arc_swap::ArcSwap;
 use bus::BusReader;
 use flume::Sender;
 use messages::OperationalRequestMessage;
 use messages::OperationalResponseMessage;
+use ordinator_actor_core::Actor;
 use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
-use ordinator_actor_core::Actor;
 use ordinator_configuration::SystemConfigurations;
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 
 pub struct OperationalActor<Ss: Debug>(
     Actor<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>,
@@ -77,7 +78,7 @@ where
 
     fn construct_actor(
         id: ActorCompositeId,
-        scheduling_environment_guard: Arc<Mutex<SchedulingEnvironment>>,
+        scheduling_environment_guard: Arc<Mutex<SchedulingHypergraph>>,
         shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,
         state_link_bus: BusReader<StateLink>,
