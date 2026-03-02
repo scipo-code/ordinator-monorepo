@@ -5,9 +5,9 @@ use anyhow::Result;
 use colored::Colorize;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::SolutionState;
-use ordinator_orchestrator_actor_traits::WeeklyInterface;
 use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
+use ordinator_orchestrator_actor_traits::WeeklyInterface;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::Percent;
 use ordinator_scheduling_environment::time_environment::period::Period;
@@ -88,8 +88,7 @@ impl WeeklyInterface for WeeklySolution
                     WhereIsWorkOrder::Project(period) => Some(period),
                     WhereIsWorkOrder::NotScheduled => None,
                 };
-                period_option
-                    .and_then(|per| daily_periods.contains(&per).then_some((won, per)))
+                period_option.and_then(|per| daily_periods.contains(&per).then_some((won, per)))
             })
             .collect()
     }
@@ -178,7 +177,10 @@ impl Default for WeeklyObjectiveValue
             percent_scheduled: (0, Percent::new(0, 100).unwrap()),
         }
     }
+}
 
+impl WeeklyObjectiveValue
+{
     pub fn aggregate_objectives(&mut self)
     {
         // Note: objective_value can be negative

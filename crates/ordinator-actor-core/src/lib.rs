@@ -27,6 +27,7 @@ use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 use serde::Deserialize;
 use serde::Serialize;
 use tracing::Level;
@@ -38,14 +39,22 @@ use self::traits::ActorBasedLargeNeighborhoodSearch;
 // TODO: Reuse trait bounds on the Agent and the Algorithm.
 pub struct Actor<ActorRequest, ActorResponse, Algorithm>
 where
-    // TODO: Consider implementing a blanket MessageHandler trait
-    // that Actor implementations provide through a custom interface.
+    // TODO: Consider implementing a blanket MessageHandler
+    // trait that Actor implementations provide through a
+    // custom interface.
     Self: CommandHandler<ActorRequest, ActorResponse>,
     Algorithm: ActorBasedLargeNeighborhoodSearch + Debug,
     ActorResponse: Debug,
 {
     pub actor_id: ActorCompositeId,
-    pub scheduling_environment: Arc<Mutex<SchedulingEnvironment>>,
+    // Should this be in here. No! The Actors and algorithms can have no understanding of the
+    // `SchedulingEnvironment` You have to build the SchedulingHypergraph from the
+    // SchedulingEnvironment... This will lead to another problem, what if the change in the
+    // Hypergraph requires the ERP system to change?
+    //
+    // I think that the SchedulingHypergraph should contain all constrints and then the
+    // system should tell the repositories in the SchedulingEnvironment how they should change.
+    pub scheduling_environment: Arc<Mutex<SchedulingHypergraph>>,
     pub algorithm: Algorithm,
     // TODO [ ] 2025-07-14 These senders and receivers are relevant for the `Algorithm`
     // and not shared with the `SchedulingEnvironment` changes and the `StateLink` and
@@ -65,7 +74,8 @@ where
     ActorRequest: Send + Sync + 'static,
     ActorResponse: Send + Sync + 'static + Debug,
 {
-    // Run the actor's main event loop, handling algorithm scheduling and orchestrator communication.
+    // Run the actor's main event loop, handling algorithm scheduling and
+    // orchestrator communication.
     pub fn run(&mut self)
     {
         info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
@@ -161,7 +171,7 @@ where
     ActorResponse: Send + Sync + 'static,
 {
     agent_id: Option<ActorCompositeId>,
-    scheduling_environment: Option<Arc<Mutex<SchedulingEnvironment>>>,
+    scheduling_environment: Option<Arc<Mutex<SchedulingHypergraph>>>,
     algorithm: Option<Algorithm>,
     receiver_from_orchestrator: Option<Receiver<ActorRequest>>,
     sender_to_orchestrator: Option<Sender<Result<ActorResponse>>>,
@@ -211,7 +221,7 @@ where
 
     pub fn scheduling_environment(
         mut self,
-        scheduling_environment: Arc<Mutex<SchedulingEnvironment>>,
+        scheduling_environment: Arc<Mutex<SchedulingHypergraph>>,
     ) -> Self
     {
         self.scheduling_environment = Some(scheduling_environment);
@@ -330,7 +340,8 @@ impl fmt::Debug for ScheduleIteration
 
 /// Represents the feasibility state of an algorithm's solution.
 ///
-/// This is the primary message type for communicating algorithm state to agents.
+/// This is the primary message type for communicating algorithm state to
+/// agents.
 #[derive(Debug, Serialize)]
 pub enum AlgorithmState<T>
 {
