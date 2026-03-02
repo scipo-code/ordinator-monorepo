@@ -8,9 +8,6 @@ edition = "2024"
 ordinator-orchestrator = { path = "../ordinator-orchestrator" }
 ordinator-contracts = { path = "../ordinator-contracts" }
 
-# actix-files.workspace = true
-# actix-rt.workspace = true 
-# actix-web.workspace = true 
 anyhow.workspace = true 
 axum = {version = "*", features = ["macros", "tokio"]}
 axum-extra = {version = "*", features = ["query"]}
@@ -35,5 +32,3 @@ utoipa-swagger-ui = {version = "*", features = ["axum"]}
 ordinator-scheduling-environment.path = "../ordinator-scheduling-environment"
 toml.workspace = true
 
-# [target.'cfg(not(target_env = "msvc"))'.dependencies]
-# tikv-jemallocator = {version = "0.6"}

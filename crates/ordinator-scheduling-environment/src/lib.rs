@@ -1,12 +1,9 @@
 #![feature(iter_map_windows)]
-pub mod assignments;
 pub mod materials;
 pub mod time_environment;
 pub mod work_order;
 pub mod worker_environment;
 
-use std::collections::HashMap;
-use std::collections::HashSet;
 use std::fmt::Display;
 use std::fmt::{self};
 use std::fs::File;
@@ -18,8 +15,6 @@ use std::sync::Mutex;
 
 use anyhow::Context;
 use anyhow::Result;
-use assignments::Assignment;
-use assignments::SavedAssignment;
 use chrono::DateTime;
 use chrono::NaiveDate;
 use chrono::Utc;
@@ -31,9 +26,7 @@ use strum_macros::EnumIter;
 use time_environment::TimeEnvironmentBuilder;
 use time_environment::create_time_environment;
 use time_environment::period::Period;
-use uuid::Uuid;
 use valuable::Valuable;
-use work_order::WorkOrderPolicies;
 use work_order::WorkOrders;
 use work_order::WorkOrdersBuilder;
 use worker_environment::ActorSpecification;
@@ -53,7 +46,6 @@ pub struct SchedulingEnvironment
     pub work_orders: WorkOrders,
     pub worker_environment: ActorEnvironment<dyn ActorSpecification>,
     pub time_environment: TimeEnvironment,
-
     pub material_repo: MaterialRepo,
 }
 
