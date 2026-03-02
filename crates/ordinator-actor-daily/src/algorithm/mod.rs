@@ -36,7 +36,7 @@ use tracing::Level;
 #[allow(unused_imports)]
 use tracing::event;
 
-pub struct DailyAlgorithm<Ss>(Algorithm<DailySolution, DailyParameters, (), Ss>)
+pub struct DailyAlgorithm<Ss>(Algorithm<DailySolution, DailyParameters, (), DailyOptions, Ss>)
 where
     Ss: SystemSolutions;
 
@@ -93,12 +93,12 @@ impl<Ss: SystemSolutions + std::fmt::Debug> std::fmt::Debug for DailyAlgorithm<S
 
 impl<Ss> ActorBasedLargeNeighborhoodSearch for DailyAlgorithm<Ss>
 where
-    Algorithm<DailySolution, DailyParameters, (), Ss>: AbLNSUtils<SolutionType = DailySolution>,
+    Algorithm<DailySolution, DailyParameters, (), DailyOptions, Ss>: AbLNSUtils<SolutionType = DailySolution>,
     DailySolution: Solution,
     DailyParameters: Parameters,
     Ss: SystemSolutions<Daily = DailySolution>,
 {
-    type Algorithm = Algorithm<DailySolution, DailyParameters, (), Ss>;
+    type Algorithm = Algorithm<DailySolution, DailyParameters, (), DailyOptions, Ss>;
     type Options = DailyOptions;
 
     fn make_atomic_pointer_swap(&mut self)
@@ -310,7 +310,7 @@ where
         let sampled_work_order_numbers = work_order_numbers
             .choose_multiple(
                 &mut rng,
-                self.parameters.options.number_of_unassigned_work_orders,
+                self.options.number_of_unassigned_work_orders,
             )
             .collect::<Vec<_>>()
             .clone();
@@ -466,7 +466,7 @@ impl<Ss> Deref for DailyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    type Target = Algorithm<DailySolution, DailyParameters, (), Ss>;
+    type Target = Algorithm<DailySolution, DailyParameters, (), DailyOptions, Ss>;
 
     fn deref(&self) -> &Self::Target
     {
@@ -483,11 +483,11 @@ where
         &mut self.0
     }
 }
-impl<Ss> From<Algorithm<DailySolution, DailyParameters, (), Ss>> for DailyAlgorithm<Ss>
+impl<Ss> From<Algorithm<DailySolution, DailyParameters, (), DailyOptions, Ss>> for DailyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    fn from(value: Algorithm<DailySolution, DailyParameters, (), Ss>) -> Self
+    fn from(value: Algorithm<DailySolution, DailyParameters, (), DailyOptions, Ss>) -> Self
     {
         DailyAlgorithm(value)
     }

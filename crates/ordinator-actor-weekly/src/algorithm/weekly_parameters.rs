@@ -20,7 +20,6 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrderPolicies;
 use ordinator_scheduling_environment::work_order::WorkOrders;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::WeeklyOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
@@ -42,7 +41,6 @@ pub struct WeeklyParameters
 
     // TODO #04 #00 #01: Create PeriodState enum that changes based on SystemClock
     pub weekly_periods: Vec<Period>,
-    pub weekly_options: WeeklyOptions,
 }
 
 // TODO: Consider implementing a builder pattern for Parameters
@@ -74,8 +72,6 @@ impl Parameters for WeeklyParameters
         //     .actor_specification
         //     .get(id.asset())
         //     .unwrap();
-
-        let weekly_options = actor_specifications.weekly_options();
 
         // TODO [ ] these are still required
         let work_order_configurations = &scheduling_hypergraph.work_order_policies;
@@ -192,7 +188,6 @@ impl Parameters for WeeklyParameters
             // This is not a feature. You need to design a common---
             period_locks: HashSet::default(),
             weekly_periods: weekly_view.periods,
-            weekly_options: weekly_options.clone(),
         })
     }
 

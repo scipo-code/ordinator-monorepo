@@ -8,6 +8,8 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::delegate::Delegate;
 use ordinator_orchestrator_actor_traits::marginal_fitness::MarginalFitness;
 
+use ordinator_scheduling_environment::worker_environment::OperationalOptions;
+
 use super::algorithm::operational_parameter::OperationalParameters;
 use crate::algorithm::operational_events::OperationalEvents;
 use crate::algorithm::operational_solution::OperationalSolution;
@@ -19,7 +21,7 @@ pub trait OperationalAssertions
     fn assert_marginal_fitness_is_correct(&self) -> Result<()>;
 }
 
-impl<Ss> OperationalAssertions for Algorithm<OperationalSolution, OperationalParameters, (), Ss>
+impl<Ss> OperationalAssertions for Algorithm<OperationalSolution, OperationalParameters, (), OperationalOptions, Ss>
 where
     Ss: SystemSolutions,
 {

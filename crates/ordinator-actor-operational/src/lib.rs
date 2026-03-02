@@ -26,6 +26,7 @@ use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
+use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 
@@ -87,7 +88,7 @@ where
         OperationalAlgorithm<Ss>: ActorBasedLargeNeighborhoodSearch
             + Send
             + Sync
-            + From<Algorithm<OperationalSolution, OperationalParameters, (), Ss>>,
+            + From<Algorithm<OperationalSolution, OperationalParameters, (), OperationalOptions, Ss>>,
     {
         Actor::<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>::builder()
         .agent_id(id.clone())

@@ -109,7 +109,6 @@ pub fn load_scheduling_environment(
 
     SchedulingEnvironment::builder()
         .add_actor_specification(Asset::Test, worker_builder)
-        .work_order_policies(work_order_policies)
         .material_repo(material_repo)
         .work_orders_builder(work_order_builder)
         .time_environment(time_environment)

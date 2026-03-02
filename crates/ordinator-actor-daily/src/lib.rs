@@ -28,6 +28,7 @@ use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_environment::worker_environment::DailyOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 
@@ -74,7 +75,7 @@ where
     DailyAlgorithm<Ss>: ActorBasedLargeNeighborhoodSearch
         + Send
         + Sync
-        + From<Algorithm<DailySolution, DailyParameters, (), Ss>>,
+        + From<Algorithm<DailySolution, DailyParameters, (), DailyOptions, Ss>>,
     Actor<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>:
         CommandHandler<DailyRequestMessage, DailyResponseMessage>,
 {

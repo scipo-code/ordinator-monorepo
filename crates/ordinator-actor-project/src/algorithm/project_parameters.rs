@@ -22,7 +22,6 @@ use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Operation;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
-use ordinator_scheduling_environment::worker_environment::ProjectOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use serde::Serialize;
@@ -35,7 +34,6 @@ pub struct ProjectParameters
     pub project_work_orders: HashMap<WorkOrderNumber, ProjectParameter>,
     pub project_days: Vec<Day>,
     pub project_capacity: ProjectResources,
-    pub project_options: ProjectOptions,
 }
 
 impl Parameters for ProjectParameters
@@ -96,7 +94,6 @@ impl Parameters for ProjectParameters
             project_work_orders,
             project_days,
             project_capacity,
-            project_options: actor_specification.project().project_options.clone(),
         })
     }
 

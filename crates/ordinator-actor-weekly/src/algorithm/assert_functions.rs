@@ -9,6 +9,7 @@ use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::worker_environment::WeeklyOptions;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use priority_queue::PriorityQueue;
 use strum::IntoEnumIterator;
@@ -31,7 +32,7 @@ pub trait WeeklyAssertions
 }
 
 impl<Ss> WeeklyAssertions
-    for Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>
+    for Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, u64>, WeeklyOptions, Ss>
 where
     Ss: SystemSolutions,
 {

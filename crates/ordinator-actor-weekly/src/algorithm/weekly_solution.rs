@@ -164,6 +164,20 @@ impl WeeklyObjectiveValue
             percent_scheduled: (0, Percent::new(0, 100).unwrap()),
         }
     }
+}
+
+impl Default for WeeklyObjectiveValue
+{
+    fn default() -> Self
+    {
+        Self {
+            objective_value: i64::MAX,
+            urgency: (0, 0),
+            resource_penalty: (0, 0),
+            clustering_value: (0, 0),
+            percent_scheduled: (0, Percent::new(0, 100).unwrap()),
+        }
+    }
 
     pub fn aggregate_objectives(&mut self)
     {
@@ -201,8 +215,7 @@ impl Solution for WeeklySolution
             .map(|won| (*won, WhereIsWorkOrder::NotScheduled))
             .collect();
 
-        // TODO: Consider whether weekly options should be passed through parameters or injected as dependencies
-        let weekly_objective_value = WeeklyObjectiveValue::new(&parameters.weekly_options);
+        let weekly_objective_value = WeeklyObjectiveValue::default();
         Ok(Self {
             objective_value: weekly_objective_value,
             weekly_scheduled_work_orders,

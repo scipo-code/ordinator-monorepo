@@ -19,6 +19,7 @@ use flume::Sender;
 use ordinator_configuration::SystemConfigurations;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
+use ordinator_orchestrator_actor_traits::Options;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::StateLink;
@@ -218,14 +219,15 @@ where
     }
 
     // Configure the algorithm for this actor.
-    pub fn algorithm<F, S, P, I, Ss>(mut self, configure: F) -> Result<Self>
+    pub fn algorithm<F, S, P, I, O, Ss>(mut self, configure: F) -> Result<Self>
     where
-        SpecificAlgorithm: From<algorithm::Algorithm<S, P, I, Ss>>,
+        SpecificAlgorithm: From<algorithm::Algorithm<S, P, I, O, Ss>>,
         S: Solution<Parameters = P> + Debug + Clone + SwapSolution<Ss>,
         Ss: SystemSolutions,
         P: Parameters,
+        O: Options,
         I: Default,
-        F: FnOnce(AlgorithmBuilder<S, P, I, Ss>) -> Result<AlgorithmBuilder<S, P, I, Ss>>,
+        F: FnOnce(AlgorithmBuilder<S, P, I, O, Ss>) -> Result<AlgorithmBuilder<S, P, I, O, Ss>>,
     {
         let algorithm_builder = algorithm::Algorithm::builder();
 

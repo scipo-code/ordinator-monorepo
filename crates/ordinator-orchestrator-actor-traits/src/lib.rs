@@ -300,6 +300,13 @@ where
     // TODO: Add methods for updating configurations.
 }
 
+pub trait Options: Debug + Clone {}
+
+impl Options for ordinator_scheduling_environment::worker_environment::WeeklyOptions {}
+impl Options for ordinator_scheduling_environment::worker_environment::ProjectOptions {}
+impl Options for ordinator_scheduling_environment::worker_environment::DailyOptions {}
+impl Options for ordinator_scheduling_environment::worker_environment::OperationalOptions {}
+
 pub trait Solution: Sized + Debug
 {
     type Objective: Debug + Valuable;

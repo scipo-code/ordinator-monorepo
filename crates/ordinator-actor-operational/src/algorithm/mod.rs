@@ -51,10 +51,10 @@ use tracing::event;
 use tracing::info;
 
 #[derive(Debug)]
-pub struct OperationalAlgorithm<Ss>(Algorithm<OperationalSolution, OperationalParameters, (), Ss>)
+pub struct OperationalAlgorithm<Ss>(Algorithm<OperationalSolution, OperationalParameters, (), OperationalOptions, Ss>)
 where
     Ss: SystemSolutions,
-    Algorithm<OperationalSolution, OperationalParameters, (), Ss>: AbLNSUtils;
+    Algorithm<OperationalSolution, OperationalParameters, (), OperationalOptions, Ss>: AbLNSUtils;
 
 pub trait OperationalTraitUtils
 {
@@ -214,7 +214,7 @@ impl<Ss> Deref for OperationalAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    type Target = Algorithm<OperationalSolution, OperationalParameters, (), Ss>;
+    type Target = Algorithm<OperationalSolution, OperationalParameters, (), OperationalOptions, Ss>;
 
     fn deref(&self) -> &Self::Target
     {
@@ -236,10 +236,10 @@ where
 impl<Ss> ActorBasedLargeNeighborhoodSearch for OperationalAlgorithm<Ss>
 where
     Ss: SystemSolutions<Operational = OperationalSolution>,
-    Algorithm<OperationalSolution, OperationalParameters, (), Ss>:
+    Algorithm<OperationalSolution, OperationalParameters, (), OperationalOptions, Ss>:
         AbLNSUtils<SolutionType = OperationalSolution>,
 {
-    type Algorithm = Algorithm<OperationalSolution, OperationalParameters, (), Ss>;
+    type Algorithm = Algorithm<OperationalSolution, OperationalParameters, (), OperationalOptions, Ss>;
     type Options = OperationalOptions;
 
     // NOTE 2025-06-28: Solutions should not be created in here. The `schedule` function
@@ -697,7 +697,7 @@ where
             self.solution.scheduled_work_order_activities[1..operational_solutions_len - 1]
                 .choose_multiple(
                     &mut rng,
-                    self.parameters.options.number_of_removed_activities,
+                    self.options.number_of_removed_activities,
                 )
                 .map(|operational_solution| operational_solution.0)
                 .collect();
@@ -1217,12 +1217,12 @@ fn equality_between_time_interval_and_assignments(all_events: &Vec<Assignment>)
         )
     }
 }
-impl<Ss> From<Algorithm<OperationalSolution, OperationalParameters, (), Ss>>
+impl<Ss> From<Algorithm<OperationalSolution, OperationalParameters, (), OperationalOptions, Ss>>
     for OperationalAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    fn from(value: Algorithm<OperationalSolution, OperationalParameters, (), Ss>) -> Self
+    fn from(value: Algorithm<OperationalSolution, OperationalParameters, (), OperationalOptions, Ss>) -> Self
     {
         OperationalAlgorithm(value)
     }

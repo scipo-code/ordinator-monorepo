@@ -17,7 +17,6 @@ use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
@@ -33,7 +32,6 @@ pub struct OperationalParameters
     pub off_shift_interval: TimeInterval,
     pub break_interval: TimeInterval,
     pub toolbox_interval: TimeInterval,
-    pub options: OperationalOptions,
 }
 
 impl Debug for OperationalParameters
@@ -172,12 +170,6 @@ impl Parameters for OperationalParameters
                 .operational_configuration
                 .toolbox_interval
                 .clone(),
-            options: OperationalOptions {
-                number_of_removed_activities: operational_configuration
-                    .1
-                    .operational_options
-                    .number_of_removed_activities,
-            },
         })
     }
 

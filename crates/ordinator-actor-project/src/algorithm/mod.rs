@@ -53,7 +53,7 @@ use self::project_solution::OperationSolution;
 // If using a single crate, call this directly
 #[derive(Debug)]
 pub struct ProjectAlgorithm<Ss>(
-    Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>,
+    Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>,
 )
 where
     ProjectSolution: Solution,
@@ -81,7 +81,7 @@ impl<Ss> ProjectAlgorithm<Ss>
 where
     ProjectSolution: Solution,
     ProjectParameters: Parameters,
-    Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
+    Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>:
         AbLNSUtils<SolutionType = ProjectSolution>,
     Ss: SystemSolutions<Project = ProjectSolution>,
 {
@@ -236,7 +236,7 @@ where
         forced_operations: Vec<WorkOrderNumber>,
     ) -> Result<()>
     where
-        Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
+        Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>:
             AbLNSUtils<SolutionType = ProjectSolution>,
         Ss: SystemSolutions<Project = ProjectSolution>,
     {
@@ -434,14 +434,14 @@ fn sub_one_day(current_day: &mut Option<Day>) -> Option<()>
 
 impl<Ss> ActorBasedLargeNeighborhoodSearch for ProjectAlgorithm<Ss>
 where
-    Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>:
+    Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>:
         AbLNSUtils<SolutionType = ProjectSolution>,
     ProjectSolution: Solution,
     ProjectParameters: Parameters,
     Ss: SystemSolutions<Project = ProjectSolution>,
 {
     type Algorithm =
-        Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>;
+        Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>;
     type Options = ProjectOptions;
 
     fn incorporate_system_solution(&mut self) -> Result<bool>
@@ -471,7 +471,7 @@ where
         ObjectiveValueType<<<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective>,
     >
     {
-        let options = &self.parameters.project_options;
+        let options = &self.options;
 
         let mut project_objective_value = ProjectObjectiveValue::new(options);
 
@@ -743,9 +743,7 @@ where
 
         let random_work_order_numbers = work_order_numbers.choose_multiple(
             &mut rng,
-            self.parameters
-                .project_options
-                .number_of_removed_work_orders,
+            self.options.number_of_removed_work_orders,
         );
 
         // Log work order count for debugging
@@ -805,7 +803,7 @@ where
     Ss: SystemSolutions,
 {
     type Target =
-        Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>;
+        Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>;
 
     fn deref(&self) -> &Self::Target
     {
@@ -933,7 +931,7 @@ enum OperationDifference
     DiffDay,
 }
 impl<Ss>
-    From<Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>>
+    From<Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>>
     for ProjectAlgorithm<Ss>
 where
     Ss: SystemSolutions,

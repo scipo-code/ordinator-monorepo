@@ -12,6 +12,7 @@ use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::worker_environment::ProjectOptions;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use priority_queue::PriorityQueue;
 use strum::IntoEnumIterator;
@@ -36,7 +37,7 @@ pub trait ProjectAssertions
 }
 
 impl<Ss> ProjectAssertions
-    for Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, Ss>
+    for Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>
 where
     Ss: SystemSolutions,
 {

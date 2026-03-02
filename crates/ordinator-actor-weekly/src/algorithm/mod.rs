@@ -51,13 +51,13 @@ use crate::messages::responses::WeeklyResponseScheduling;
 
 #[derive(Debug)]
 pub struct WeeklyAlgorithm<Ss>(
-    pub Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>,
+    pub Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>,
 )
 where
     WeeklySolution: Solution,
     WeeklyParameters: Parameters,
     Ss: SystemSolutions,
-    Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>:
+    Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>:
         AbLNSUtils;
 
 impl<Ss> Deref for WeeklyAlgorithm<Ss>
@@ -65,7 +65,7 @@ where
     Ss: SystemSolutions,
 {
     type Target =
-        Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>;
+        Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>;
 
     fn deref(&self) -> &Self::Target
     {
@@ -84,14 +84,14 @@ where
 
 impl<Ss> ActorBasedLargeNeighborhoodSearch for WeeklyAlgorithm<Ss>
 where
-    Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>:
+    Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>:
         AbLNSUtils<SolutionType = WeeklySolution>,
     WeeklySolution: Solution,
     WeeklyParameters: Parameters,
     Ss: SystemSolutions<Weekly = WeeklySolution>,
 {
     type Algorithm =
-        Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>;
+        Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>;
     type Options = WeeklyOptions;
 
     /// Incorporates the system solution by updating internal state and force
@@ -161,7 +161,7 @@ where
         ObjectiveValueType<<<Self::Algorithm as AbLNSUtils>::SolutionType as Solution>::Objective>,
     >
     {
-        let mut new_objective_value = WeeklyObjectiveValue::new(&self.parameters.weekly_options);
+        let mut new_objective_value = WeeklyObjectiveValue::new(&self.options);
 
         self.determine_urgency(&mut new_objective_value)
             .context("could not determine weekly urgency")?;
@@ -241,7 +241,7 @@ where
         let sampled_work_order_keys = filtered_keys
             .choose_multiple(
                 &mut rng,
-                self.parameters.weekly_options.number_of_removed_work_orders,
+                self.options.number_of_removed_work_orders,
             )
             .collect::<Vec<_>>()
             .clone();
@@ -1051,13 +1051,13 @@ where
     }
 }
 
-impl<Ss> From<Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>>
+impl<Ss> From<Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>>
     for WeeklyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
     fn from(
-        value: Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, Ss>,
+        value: Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>,
     ) -> Self
     {
         WeeklyAlgorithm(value)
@@ -1387,7 +1387,7 @@ mod tests
         //     material_to_period: todo!(),
         // };
 
-        // weekly_algorithm.parameters.weekly_options = weekly_options;
+        // weekly_algorithm.options = weekly_options;
 
         // weekly_algorithm.unschedule().expect(
         //     "It should always be possible to unschedule random work orders in the

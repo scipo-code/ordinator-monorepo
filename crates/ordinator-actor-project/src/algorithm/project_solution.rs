@@ -40,7 +40,8 @@ pub struct ProjectObjectiveValue
     pub percent_scheduled: (usize, Percent),
 }
 
-/// Represents a project objective value with multiple optimization criteria (assumes minimization)
+/// Represents a project objective value with multiple optimization criteria
+/// (assumes minimization)
 impl ProjectObjectiveValue
 {
     pub fn new(project_options: &ProjectOptions) -> Self
@@ -57,6 +58,19 @@ impl ProjectObjectiveValue
     {
         self.objective_value = self.urgency.0 as u64 * self.urgency.1
             + self.resource_penalty.0 as u64 * self.resource_penalty.1;
+    }
+}
+
+impl Default for ProjectObjectiveValue
+{
+    fn default() -> Self
+    {
+        Self {
+            objective_value: u64::MAX,
+            urgency: (0, u64::MAX),
+            resource_penalty: (0, u64::MAX),
+            percent_scheduled: (usize::MIN, Percent::new(0, 100).unwrap()),
+        }
     }
 }
 
@@ -120,7 +134,7 @@ impl Solution for ProjectSolution
             .collect();
 
         Ok(Self {
-            objective_value: ProjectObjectiveValue::new(&parameters.project_options),
+            objective_value: ProjectObjectiveValue::default(),
             project_work_orders: ProjectScheduledWorkOrders(project_scheduled_work_orders_inner),
             project_loadings: ProjectResources::new(project_loadings_inner),
         })

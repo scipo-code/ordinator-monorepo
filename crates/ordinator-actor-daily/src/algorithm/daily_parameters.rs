@@ -11,7 +11,6 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
-use ordinator_scheduling_environment::worker_environment::DailyOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
@@ -20,7 +19,6 @@ pub struct DailyParameters
 {
     pub daily_work_orders: HashMap<WorkOrderNumber, HashMap<ActivityNumber, DailyParameter>>,
     pub daily_periods: Vec<Period>,
-    pub options: DailyOptions,
 }
 
 // TODO: Add assertions on vector elements
@@ -66,8 +64,6 @@ impl Parameters for DailyParameters
             .find(|e| e.id == *id.0)
             .with_context(|| format!("Missing an Daily entry for {id}"))?;
 
-        let options = input_daily.daily_options.clone();
-
         let daily_periods = &scheduling_environment
             .time_environment
             .periods
@@ -99,7 +95,6 @@ impl Parameters for DailyParameters
         Ok(Self {
             daily_work_orders: daily_parameters,
             daily_periods: daily_periods.to_vec(),
-            options,
         })
     }
 

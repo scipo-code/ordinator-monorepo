@@ -27,6 +27,7 @@ use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
+use ordinator_scheduling_environment::worker_environment::ProjectOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use priority_queue::PriorityQueue;
 
@@ -77,6 +78,7 @@ where
                 ProjectSolution,
                 ProjectParameters,
                 PriorityQueue<WorkOrderNumber, u64>,
+                ProjectOptions,
                 Ss,
             >,
         >,

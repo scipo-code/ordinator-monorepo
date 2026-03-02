@@ -1,12 +1,3 @@
-// TODO ISSUE #000: Refactor `handle_state_link` method into a function that accepts
-// `handle_state_link(&mut Parameters, &SchedulingEnvironment)`
-
-// #[cfg(not(target_env = "msvc"))]
-// use tikv_jemallocator::Jemalloc;
-// #[cfg(not(target_env = "msvc"))]
-// #[global_allocator]
-// static GLOBAL: Jemalloc = Jemalloc;
-
 use anyhow::Context;
 use anyhow::Result;
 use anyhow::bail;
@@ -16,8 +7,6 @@ use ordinator_api_server::start_application;
 use ordinator_contracts::TotalSystemSolution;
 use ordinator_orchestrator::Asset;
 use ordinator_orchestrator::Orchestrator;
-// use std::fs::File;
-// use std::io::Read;
 use ordinator_orchestrator::logging::setup_logging;
 use tracing::info;
 
@@ -30,7 +19,8 @@ async fn main() -> Result<()>
     dotenvy::dotenv()
         .context("You need to provide an .env file. Look at the .env.example for guidance")?;
 
-    // TODO: Refactor to use `match dotenvy::var("DEPLOY_ENVIRONMENT")` pattern instead of hardcoded value
+    // TODO: Refactor to use `match dotenvy::var("DEPLOY_ENVIRONMENT")` pattern
+    // instead of hardcoded value
 
     let denmark_time = Copenhagen.with_ymd_and_hms(2025, 1, 13, 7, 00, 00).unwrap();
     let current_time = denmark_time.to_utc();
@@ -47,8 +37,8 @@ async fn main() -> Result<()>
             .scheduling_environment_from_database(&asset)?
             .build()?;
 
-    // WARN: Assets are manually added here. In production, assets should be added via the API.
-    // This is a temporary solution.
+    // WARN: Assets are manually added here. In production, assets should be added
+    // via the API. This is a temporary solution.
 
     orchestrator.asset_factory(&asset)?;
 
@@ -64,8 +54,8 @@ async fn main() -> Result<()>
     }
 }
 
-// WARN: Move this to the API module. This code provides good OpenAPI/Swagger UI configuration inspiration.
-// let openapi = OpenApiBuilder::from(openapi)
+// WARN: Move this to the API module. This code provides good OpenAPI/Swagger UI
+// configuration inspiration. let openapi = OpenApiBuilder::from(openapi)
 //     // ‣ info (title, version, description, license)
 //     .info(
 //         Info::new("My Service", "1.0.0")
@@ -126,8 +116,8 @@ async fn main() -> Result<()>
 //
 //
 // use axum::{
-// WARN: Move this to appropriate module. Provides good code organization reference.
-//     routing::{get, post},
+// WARN: Move this to appropriate module. Provides good code organization
+// reference.     routing::{get, post},
 //     Router,
 // };
 // use serde::{Deserialize, Serialize};
