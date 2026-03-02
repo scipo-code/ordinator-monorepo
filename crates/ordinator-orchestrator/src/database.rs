@@ -44,9 +44,6 @@ impl DataBaseConnection
 
         let database_path = &system_configurations.load().temp_database_path;
 
-        let path_to_work_order_policies = PathBuf::from(format!(
-            "temp_scheduling_environment_database/work_order_policies/work_order_policies_{asset_string}.toml",
-        ));
         let path_to_material_to_period = PathBuf::from(
             "temp_scheduling_environment_database/material_repo/material_to_period.toml",
         );
@@ -56,7 +53,6 @@ impl DataBaseConnection
                 .work_orders_from_json(path_to_work_orders)?
                 .time_environment_from_toml(path_to_time_environment, current_time)?
                 .worker_environment_from_toml(path_to_workers, asset)?
-                .work_order_policies_from_toml(path_to_work_order_policies)?
                 .material_repo_from_toml(path_to_material_to_period)?
                 .build()
         } else {
@@ -77,7 +73,6 @@ impl DataBaseConnection
                 .worker_environment_from_toml(path_to_workers, asset)?
                 .time_environment_from_toml(path_to_time_environment, current_time)?
                 .work_orders(work_orders)
-                .work_order_policies_from_toml(path_to_work_order_policies)?
                 .material_repo_from_toml(path_to_material_to_period)?
                 .build()
         }

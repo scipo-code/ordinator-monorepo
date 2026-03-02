@@ -28,7 +28,7 @@ async fn master_system_test_1600_work_orders_10_technicians() -> anyhow::Result<
             .logging(setup_logging()?)
             .system_clock(&environment)
             .system_configurations()
-            .scheduling_environment_manual(scheduling_environment)
+            .scheduling_environment_manual(scheduling_environment)?
             .build::<TotalSystemSolution>()?;
 
     orchestrator.asset_factory(&Asset::Test)?;

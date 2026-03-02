@@ -51,6 +51,7 @@ pub use ordinator_orchestrator_actor_traits::WeeklyInterface;
 // TODO END
 pub use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 pub use ordinator_scheduling_environment::time_environment::day::Day;
 pub use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrders;
@@ -73,6 +74,7 @@ use self::logging::LogHandles;
 pub struct Orchestrator<Ss>
 {
     pub scheduling_environment: Arc<std::sync::Mutex<SchedulingEnvironment>>,
+    pub scheduling_hypergraph: Arc<std::sync::Mutex<SchedulingHypergraph>>,
     pub system_solutions: std::sync::Mutex<HashMap<Asset, Arc<ArcSwap<Ss>>>>,
     pub actor_registries: std::sync::Mutex<HashMap<Asset, ActorRegistry>>,
     pub error_sender: Sender<anyhow::Error>,
@@ -385,6 +387,7 @@ where
             system_clock_handle: None,
             system_configurations: None,
             scheduling_environment: None,
+            scheduling_hypergraph: None,
             _marker: PhantomData::<StepLogging>,
         }
     }
@@ -589,6 +592,7 @@ pub struct OrchestratorBuilder<Step>
     system_clock_handle: Option<JoinHandle<()>>,
     system_configurations: Option<Arc<ArcSwap<SystemConfigurations>>>,
     scheduling_environment: Option<Arc<std::sync::Mutex<SchedulingEnvironment>>>,
+    scheduling_hypergraph: Option<Arc<std::sync::Mutex<SchedulingHypergraph>>>,
     _marker: PhantomData<Step>,
 }
 
@@ -603,6 +607,7 @@ impl OrchestratorBuilder<StepLogging>
             system_clock_handle: None,
             system_configurations: None,
             scheduling_environment: None,
+            scheduling_hypergraph: None,
             _marker: PhantomData,
         }
     }
@@ -652,6 +657,7 @@ impl OrchestratorBuilder<StepSystemClock>
 
             system_configurations: None,
             scheduling_environment: None,
+            scheduling_hypergraph: None,
             _marker: PhantomData,
         }
     }
@@ -669,6 +675,7 @@ impl OrchestratorBuilder<StepConfiguration>
             system_clock_handle: self.system_clock_handle,
             system_configurations: Some(configurations),
             scheduling_environment: None,
+            scheduling_hypergraph: None,
             _marker: PhantomData,
         }
     }
@@ -695,6 +702,7 @@ impl OrchestratorBuilder<StepConfiguration>
             system_clock_handle: self.system_clock_handle,
             system_configurations: Some(configurations),
             scheduling_environment: None,
+            scheduling_hypergraph: None,
             _marker: PhantomData,
         }
     }
@@ -710,6 +718,7 @@ impl OrchestratorBuilder<StepConfiguration>
             system_clock_handle: self.system_clock_handle,
             system_configurations: Some(configurations),
             scheduling_environment: None,
+            scheduling_hypergraph: None,
             _marker: PhantomData,
         }
     }
@@ -742,6 +751,12 @@ impl OrchestratorBuilder<StepSchedulingEnvironment>
         )
         .context("Could not build SchedulingEnvironment")?;
 
+        let scheduling_hypergraph = {
+            let env = scheduling_environment.lock().unwrap();
+            SchedulingHypergraph::from_scheduling_environment(&env)
+                .context("Could not build SchedulingHypergraph from SchedulingEnvironment")?
+        };
+
         Ok(OrchestratorBuilder::<StepBuild> {
             logging: self.logging,
             system_clock_tick_receiver: self.system_clock_tick_receiver,
@@ -749,6 +764,7 @@ impl OrchestratorBuilder<StepSchedulingEnvironment>
             system_clock_handle: self.system_clock_handle,
             system_configurations: Some(system_configurations),
             scheduling_environment: Some(scheduling_environment),
+            scheduling_hypergraph: Some(Arc::new(std::sync::Mutex::new(scheduling_hypergraph))),
             _marker: PhantomData,
         })
     }
@@ -756,17 +772,24 @@ impl OrchestratorBuilder<StepSchedulingEnvironment>
     pub fn scheduling_environment_manual(
         self,
         scheduling_environment: Arc<std::sync::Mutex<SchedulingEnvironment>>,
-    ) -> OrchestratorBuilder<StepBuild>
+    ) -> anyhow::Result<OrchestratorBuilder<StepBuild>>
     {
-        OrchestratorBuilder::<StepBuild> {
+        let scheduling_hypergraph = {
+            let env = scheduling_environment.lock().unwrap();
+            SchedulingHypergraph::from_scheduling_environment(&env)
+                .context("Could not build SchedulingHypergraph from SchedulingEnvironment")?
+        };
+
+        Ok(OrchestratorBuilder::<StepBuild> {
             logging: self.logging,
             system_clock_tick_receiver: self.system_clock_tick_receiver,
             system_clock_time_commands_sender: self.system_clock_time_commands_sender,
             system_clock_handle: self.system_clock_handle,
             system_configurations: self.system_configurations,
             scheduling_environment: Some(scheduling_environment),
+            scheduling_hypergraph: Some(Arc::new(std::sync::Mutex::new(scheduling_hypergraph))),
             _marker: PhantomData,
-        }
+        })
     }
 }
 
@@ -793,6 +816,7 @@ impl OrchestratorBuilder<StepBuild>
             std::sync::Mutex::new(bus::Bus::new(5));
         let orchestrator = Orchestrator::<Ss> {
             scheduling_environment: self.scheduling_environment.expect("Should be type safe"),
+            scheduling_hypergraph: self.scheduling_hypergraph.expect("Should be type safe"),
             system_solutions: std::sync::Mutex::new(HashMap::new()),
             actor_registries: std::sync::Mutex::new(HashMap::new()),
             state_link_bus,

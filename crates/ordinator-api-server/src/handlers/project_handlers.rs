@@ -173,11 +173,11 @@ where
         .forced_work_order(periods, days, materials_to_periods)
         .map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    scheduling_environment_lock
-        .assignments
-        .make_assignment_for_project(work_order_number, &work_order, day.clone())
-        .with_context(|| "Could not make a project assignment".to_string())
-        .map_err(|e| AppError::Anyhow(e.to_string()))?;
+    // TODO: Reimplement assignment through SchedulingHypergraph
+    let _ = (&work_order, &day);
+    return Err(AppError::Anyhow(
+        "Assignment through SchedulingEnvironment not yet reimplemented".to_string(),
+    ));
 
     orchestrator
         .state_link_bus

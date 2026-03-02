@@ -11,8 +11,8 @@ use ordinator_actor_operational::algorithm::operational_solution::OperationalSol
 use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::Asset;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 use ordinator_actor_weekly::WeeklyApi;
 use ordinator_actor_weekly::algorithm::weekly_solution::WeeklySolution;
 use ordinator_actor_daily::DailyApi;
@@ -24,7 +24,7 @@ use crate::Orchestrator;
 use crate::StartError;
 
 type ActorFactoryDependencies<Ss> = (
-    Arc<Mutex<SchedulingEnvironment>>,
+    Arc<Mutex<SchedulingHypergraph>>,
     Arc<ArcSwap<Ss>>,
     Arc<ArcSwap<SystemConfigurations>>,
 );
@@ -49,7 +49,7 @@ where
     ) -> Result<ActorFactoryDependencies<Ss>>
     {
         Ok((
-            Arc::clone(&self.scheduling_environment),
+            Arc::clone(&self.scheduling_hypergraph),
             // TODO: Determine proper location for system_solutions
             Arc::clone(
                 self.system_solutions

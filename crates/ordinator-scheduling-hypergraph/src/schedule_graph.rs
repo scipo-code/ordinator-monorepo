@@ -4,10 +4,12 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use std::collections::hash_map::Entry;
 
+use anyhow::Result;
 use chrono::Days;
 use chrono::Duration;
 use chrono::NaiveDate;
 use chrono::NaiveTime;
+use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrder;
@@ -181,6 +183,61 @@ impl SchedulingHypergraph
             skill_indices: HashMap::new(),
             day_indices: BTreeMap::new(),
         }
+    }
+
+    /// Build a [`SchedulingHypergraph`] from a [`SchedulingEnvironment`].
+    ///
+    /// Populates skills, periods, work orders, and technicians from the
+    /// environment data.
+    pub fn from_scheduling_environment(env: &SchedulingEnvironment) -> Result<Self>
+    {
+        let mut graph = Self::new();
+
+        // 1. Add all skills referenced by work order activities
+        for work_order in env.work_orders.inner.values() {
+            for activity in work_order.activities() {
+                graph.add_skill(activity.skill());
+            }
+        }
+
+        // 2. Add all periods from the time environment
+        for period in &env.time_environment.periods {
+            graph
+                .add_period(period.clone())
+                .map_err(|e| anyhow::anyhow!("Failed to add period: {e:?}"))?;
+        }
+
+        // 3. Add all work orders
+        for work_order in env.work_orders.inner.values() {
+            graph
+                .add_work_order(work_order)
+                .map_err(|e| anyhow::anyhow!("Failed to add work order: {e:?}"))?;
+        }
+
+        // 4. Add technicians from each asset's actor specifications
+        for (_asset, actor_spec) in &env.worker_environment.actor_specification {
+            for (index, (id_string, (availabilities, skills))) in
+                actor_spec.technician_availability().into_iter().enumerate()
+            {
+                let _ = id_string;
+                let mut builder = Technician::builder(index + 1);
+                for skill in &skills {
+                    builder = builder.add_skill(*skill);
+                }
+                let technician = builder.build();
+
+                // Add each availability as a separate technician entry
+                // The hypergraph only accepts one availability per add_technician call,
+                // and enforces uniqueness, so use the first availability.
+                if let Some(availability) = availabilities.into_iter().next() {
+                    graph
+                        .add_technician(technician, availability)
+                        .map_err(|e| anyhow::anyhow!("Failed to add technician: {e:?}"))?;
+                }
+            }
+        }
+
+        Ok(graph)
     }
 
     pub(crate) fn nodes(&self) -> &SlotMap<NodeIndex, Node>

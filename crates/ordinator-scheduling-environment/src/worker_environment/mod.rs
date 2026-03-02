@@ -398,7 +398,7 @@ pub struct ProjectOptions
     pub number_of_removed_work_orders: usize,
     pub urgency: usize,
     pub resource_penalty: usize,
-    pub work_order_policies: crate::work_order::WorkOrderPolicies,
+    pub work_order_policies: WorkOrderPolicies,
 }
 
 #[derive(Eq, Hash, PartialEq, Serialize, Deserialize, Debug, Clone)]
@@ -762,14 +762,10 @@ impl WeeklyOptionsBuilder
         self
     }
 
-    pub fn work_order_policies(mut self, path_to_work_order_policies: PathBuf) -> Result<Self>
+    pub fn work_order_policies(mut self, policies: WorkOrderPolicies) -> Self
     {
-        let contents = std::fs::read_to_string(path_to_work_order_policies).unwrap();
-        let work_order_policies: WorkOrderPolicies =
-            toml::from_str(&contents).expect("Could not read WorkOrderPolicies");
-
-        self.work_order_policies = Some(work_order_policies);
-        Ok(self)
+        self.work_order_policies = Some(policies);
+        self
     }
 
     pub fn build(self) -> WeeklyOptions
@@ -787,7 +783,7 @@ impl WeeklyOptionsBuilder
                 .expect("clustering_weight is required"),
             work_order_policies: self
                 .work_order_policies
-                .expect("This work order policies should be loaded"),
+                .unwrap_or_else(|| WorkOrderPolicies::builder().build()),
         }
     }
 }
@@ -797,7 +793,7 @@ pub struct ProjectOptionsBuilder
     number_of_removed_work_orders: Option<usize>,
     urgency: Option<usize>,
     resource_penalty: Option<usize>,
-    work_order_policies: Option<crate::work_order::WorkOrderPolicies>,
+    work_order_policies: Option<WorkOrderPolicies>,
 }
 
 impl ProjectOptionsBuilder
@@ -830,7 +826,7 @@ impl ProjectOptionsBuilder
         self
     }
 
-    pub fn work_order_policies(mut self, policies: crate::work_order::WorkOrderPolicies) -> Self
+    pub fn work_order_policies(mut self, policies: WorkOrderPolicies) -> Self
     {
         self.work_order_policies = Some(policies);
         self
@@ -846,7 +842,7 @@ impl ProjectOptionsBuilder
             resource_penalty: self.resource_penalty.expect("resource_penalty is required"),
             work_order_policies: self
                 .work_order_policies
-                .unwrap_or_else(|| crate::work_order::WorkOrderPolicies::builder().build()),
+                .unwrap_or_else(|| WorkOrderPolicies::builder().build()),
         }
     }
 }
@@ -931,15 +927,15 @@ impl OperationalOptionsBuilder
             number_of_removed_activities: self
                 .number_of_removed_activities
                 .expect("number_of_removed_activities is required"),
-            break_interval: self
-                .break_interval
-                .unwrap_or_else(|| crate::time_environment::TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap()),
-            off_shift_interval: self
-                .off_shift_interval
-                .unwrap_or_else(|| crate::time_environment::TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap()),
-            toolbox_interval: self
-                .toolbox_interval
-                .unwrap_or_else(|| crate::time_environment::TimeInterval::from_hms(7, 0, 0, 8, 0, 0).unwrap()),
+            break_interval: self.break_interval.unwrap_or_else(|| {
+                crate::time_environment::TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap()
+            }),
+            off_shift_interval: self.off_shift_interval.unwrap_or_else(|| {
+                crate::time_environment::TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap()
+            }),
+            toolbox_interval: self.toolbox_interval.unwrap_or_else(|| {
+                crate::time_environment::TimeInterval::from_hms(7, 0, 0, 8, 0, 0).unwrap()
+            }),
         }
     }
 }

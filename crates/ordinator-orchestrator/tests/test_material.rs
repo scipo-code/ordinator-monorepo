@@ -26,7 +26,7 @@ async fn test_material_1() -> anyhow::Result<()>
             .logging(setup_logging()?)
             .system_clock(&environment)
             .system_configurations_manual(50, 50, 50, 50)
-            .scheduling_environment_manual(scheduling_environment)
+            .scheduling_environment_manual(scheduling_environment)?
             .build::<TotalSystemSolution>()?;
 
     orchestrator.asset_factory(&Asset::Test)?;

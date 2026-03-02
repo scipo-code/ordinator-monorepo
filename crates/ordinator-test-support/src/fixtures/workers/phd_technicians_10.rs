@@ -1,5 +1,6 @@
 use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
+use ordinator_scheduling_environment::work_order::WorkOrderPolicies;
 use ordinator_scheduling_environment::worker_environment::ActorSpecificationBuilder;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
@@ -19,6 +20,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                         .urgency_weight(1_000)
                         .resource_penalty_weight(1_000_000)
                         .clustering_weight(1_000)
+                        .work_order_policies(WorkOrderPolicies::builder().build())
                 })
         })
         .project(|project| {
@@ -29,6 +31,7 @@ pub fn phd_workers_builder(actor_builder: ActorSpecificationBuilder) -> ActorSpe
                     f.number_of_removed_work_orders(35)
                         .urgency(10)
                         .resource_penalty(10_000_000)
+                        .work_order_policies(WorkOrderPolicies::builder().build())
                 })
         })
         .dailys(|daily| {

@@ -320,15 +320,11 @@ pub async fn assign_to_technicians(
         .forced_work_order(periods, days, material_to_period)
         .map_err(|e| AppError::Anyhow(e.to_string()))?;
 
-    scheduling_environment_lock
-        .assignments
-        .make_assignment_for_technician(
-            work_order_number,
-            &forced_work_order,
-            &activity_number,
-            &technician,
-        )
-        .map_err(|e| AppError::Anyhow(e.to_string()))?;
+    // TODO: Reimplement assignment through SchedulingHypergraph
+    let _ = (&forced_work_order, &activity_number, &technician);
+    return Err(AppError::Anyhow(
+        "Assignment through SchedulingEnvironment not yet reimplemented".to_string(),
+    ));
 
     orchestrator
         .state_link_bus

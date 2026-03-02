@@ -1619,6 +1619,7 @@ dependencies = [
  "ordinator-contracts",
  "ordinator-orchestrator-actor-traits",
  "ordinator-scheduling-environment",
+ "ordinator-scheduling-hypergraph",
  "ordinator-test-support",
  "ordinator-total-data-processing",
  "serde",
@@ -1679,6 +1680,7 @@ dependencies = [
 name = "ordinator-scheduling-hypergraph"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "chrono",
  "ordinator-scheduling-environment",
  "serde",
