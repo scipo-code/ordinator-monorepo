@@ -336,39 +336,59 @@ where
     {
         match msg {
             StateLink::WorkOrders(changed_work_orders) => {
-                for work_order_number in changed_work_orders {
-                    let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
-                    let work_order =
-                        scheduling_environment_guard
-                            .work_orders
-                            .inner
-                            .get(&work_order_number)
-                            .with_context(|| {
-                                format!(
-                                    "{work_order_number:?} is not present in SchedulingEnvironment",
-                                )
-                            })?;
-                    let work_order_configurations =
-                        &scheduling_environment_guard.work_order_policies;
-                    let material_to_period = &scheduling_environment_guard
-                        .material_repo
-                        .material_to_period;
+                let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
+                let weekly_view = scheduling_environment_guard.extract_weekly_view();
+                drop(scheduling_environment_guard);
 
-                    let weekly_parameter = WeeklyWorkOrderParameter::builder()
-                        .with_scheduling_environment(
-                            work_order,
-                            &scheduling_environment_guard.time_environment.periods,
-                            &scheduling_environment_guard.time_environment.days,
-                            work_order_configurations,
-                            material_to_period,
-                        )?
-                        .build();
-                    // Do not guess - use a debugger to understand state
-                    drop(scheduling_environment_guard);
-                    self.algorithm
-                        .parameters
-                        .weekly_work_order_parameters
-                        .insert(work_order_number, weekly_parameter);
+                for work_order_number in changed_work_orders {
+                    if let Some(wo_view) = weekly_view.work_orders.get(&work_order_number) {
+                        let locked_in_period = match &wo_view.assigned_period {
+                            Some(period) => {
+                                ordinator_orchestrator_actor_traits::WhereIsWorkOrder::Weekly(
+                                    period.clone(),
+                                )
+                            }
+                            None => ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled,
+                        };
+
+                        let latest_period = weekly_view
+                            .periods
+                            .iter()
+                            .rev()
+                            .find(|p| p.contains_date(wo_view.basic_start_date))
+                            .or(weekly_view.periods.last())
+                            .cloned()
+                            .expect("There should always be at least one period");
+
+                        let mut work_load = std::collections::HashMap::new();
+                        for activity in &wo_view.activities {
+                            *work_load.entry(activity.required_skill).or_default() +=
+                                activity.work_remaining;
+                        }
+
+                        let weight = work_load
+                            .values()
+                            .fold(
+                                ordinator_scheduling_environment::work_order::operation::Work::from(
+                                    0.0,
+                                ),
+                                |acc, w| acc + *w,
+                            )
+                            .to_f64() as i64;
+
+                        let weekly_parameter = WeeklyWorkOrderParameter {
+                            locked_in_period,
+                            excluded_periods: wo_view.excluded_periods.clone(),
+                            latest_period,
+                            weight: std::cmp::max(weight, 1),
+                            work_load,
+                        };
+
+                        self.algorithm
+                            .parameters
+                            .weekly_work_order_parameters
+                            .insert(work_order_number, weekly_parameter);
+                    }
                 }
 
                 Ok(WeeklyResponseMessage::StateLink)
@@ -376,7 +396,7 @@ where
             StateLink::WorkerEnvironment => {
                 let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
                 let weekly_resources =
-                    WeeklyResources::from((&scheduling_environment_guard, &self.actor_id));
+                    WeeklyResources::from_scheduling_hypergraph(&scheduling_environment_guard);
                 drop(scheduling_environment_guard);
 
                 self.algorithm

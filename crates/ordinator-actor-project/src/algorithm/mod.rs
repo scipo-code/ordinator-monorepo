@@ -941,6 +941,7 @@ where
             ProjectSolution,
             ProjectParameters,
             PriorityQueue<WorkOrderNumber, u64>,
+            ProjectOptions,
             Ss,
         >,
     ) -> Self

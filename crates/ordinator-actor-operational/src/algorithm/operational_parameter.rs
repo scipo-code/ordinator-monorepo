@@ -2,10 +2,8 @@ use std::collections::HashMap;
 // TODO: Implement custom Display implementation for better control over formatting
 // NOTE: Derive Debug for now; replace with custom implementation when needed
 // NOTE: Ensure output displays the currently loaded [`SystemSolution`], not previous versions
-use std::fmt::Debug;
 use std::sync::MutexGuard;
 
-use anyhow::Context;
 use anyhow::Result;
 use anyhow::ensure;
 use chrono::TimeDelta;
@@ -34,7 +32,7 @@ pub struct OperationalParameters
     pub toolbox_interval: TimeInterval,
 }
 
-impl Debug for OperationalParameters
+impl std::fmt::Debug for OperationalParameters
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
@@ -42,13 +40,12 @@ impl Debug for OperationalParameters
             return write!(
                 f,
                 "OperationalParameters{{activities: {}, availability: {:?}, \
-                 off_shift: {:?}, break: {:?}, toolbox: {:?}, options: {:?}}}",
+                 off_shift: {:?}, break: {:?}, toolbox: {:?}}}",
                 self.work_order_parameters.len(),
                 self.availability,
                 self.off_shift_interval,
                 self.break_interval,
                 self.toolbox_interval,
-                self.options,
             );
         }
 
@@ -89,8 +86,6 @@ impl Debug for OperationalParameters
             self.toolbox_interval,
         )?;
 
-        writeln!(f, "    options: {:#?},", self.options,)?;
-
         write!(f, "}}")
     }
 }
@@ -101,27 +96,24 @@ impl Parameters for OperationalParameters
 
     fn from_scheduling_hypergraph(
         id: &ActorCompositeId,
-        scheduling_environment: &MutexGuard<SchedulingHypergraph>,
+        scheduling_hypergraph: &MutexGuard<SchedulingHypergraph>,
     ) -> Result<Self>
     {
+        let weekly_view = scheduling_hypergraph.extract_weekly_view();
+
         let mut work_order_parameters = HashMap::default();
         let mut work_order_activity_relations = HashMap::default();
 
-        for (&work_order_number, work_order) in &scheduling_environment
-            .work_orders
-            .inner
-            .iter()
-            .filter(|(_, wo)| wo.released_for_scheduling())
-            .collect::<HashMap<_, _>>()
-        {
-            for activity_number in work_order.activity_numbers() {
-                let work_order_activity = (*work_order_number, activity_number);
+        for (&work_order_number, wo_view) in &weekly_view.work_orders {
+            let mut relations = Vec::new();
+            for activity in &wo_view.activities {
+                let work_order_activity = (work_order_number, activity.activity_number);
 
-                let work_remaining = work_order.operation_work_remaining(activity_number);
-                let preparation_time = work_order.operation_preparation(activity_number);
+                // Use work_remaining as both work and preparation (preparation
+                // not available from hypergraph)
                 let operational_parameter_option = OperationalParameter::new(
-                    work_remaining.context("Could not derive work_remaining")?,
-                    preparation_time.context("Could not derive preparation_time")?,
+                    activity.work_remaining,
+                    Work::from(0.0),
                 );
 
                 let operational_parameter = match operational_parameter_option {
@@ -134,42 +126,24 @@ impl Parameters for OperationalParameters
                 );
 
                 work_order_parameters.insert(work_order_activity, operational_parameter);
-            }
-            let activity_relations = work_order.activity_relations();
 
-            work_order_activity_relations.insert(*work_order_number, activity_relations);
+                if let Some(relation) = &activity.relation_to_next {
+                    relations.push(relation.clone());
+                }
+            }
+
+            work_order_activity_relations.insert(work_order_number, relations);
         }
 
-        let operational_configuration = &scheduling_environment
-            .worker_environment
-            .actor_specification
-            .get(id.asset())
-            .with_context(|| format!("{:#?}", id.asset()))?
-            .operational()
-            .iter()
-            .find(|oca| id.0 == *oca.0)
-            .with_context(|| format!("OperationalActor: {:#?} does not exist", id))?;
-
-        // TODO [ ] Start operational for each `Availability`
+        // Operational configuration (off_shift, break, toolbox intervals) is not
+        // available from the hypergraph. Use sensible defaults.
         Ok(Self {
             work_order_parameters,
             work_order_activity_relations,
             availability: id.2.clone(),
-            off_shift_interval: operational_configuration
-                .1
-                .operational_configuration
-                .off_shift_interval
-                .clone(),
-            break_interval: operational_configuration
-                .1
-                .operational_configuration
-                .break_interval
-                .clone(),
-            toolbox_interval: operational_configuration
-                .1
-                .operational_configuration
-                .toolbox_interval
-                .clone(),
+            off_shift_interval: TimeInterval::from_hms(0, 0, 0, 0, 0, 1)?,
+            break_interval: TimeInterval::from_hms(12, 0, 0, 12, 30, 0)?,
+            toolbox_interval: TimeInterval::from_hms(6, 0, 0, 6, 15, 0)?,
         })
     }
 

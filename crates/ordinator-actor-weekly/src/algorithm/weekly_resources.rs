@@ -5,65 +5,48 @@ use std::sync::MutexGuard;
 use anyhow::Context;
 use anyhow::Result;
 use ordinator_actor_core::algorithm::LoadOperation;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::OperationalId;
-use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::algorithm::weekly_parameters::LowerLimitWork;
-use crate::algorithm::weekly_parameters::UpperLimitWork;
-
 #[derive(Default, Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
-pub struct WeeklyResources(
-    pub HashMap<Period, HashMap<Skill, (LowerLimitWork, Work, UpperLimitWork)>>,
-);
+pub struct WeeklyResources(pub HashMap<Period, HashMap<Skill, Work>>);
 
-impl<'a> From<(&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)> for WeeklyResources
+impl WeeklyResources
 {
-    fn from(value: (&MutexGuard<'a, SchedulingEnvironment>, &ActorCompositeId)) -> Self
+    pub fn from_scheduling_hypergraph(
+        scheduling_hypergraph: &MutexGuard<SchedulingHypergraph>,
+    ) -> Self
     {
-        let gradual_reduction = |i: usize| -> f64 {
-            if i == 0 {
-                1.0
-            } else if i == 1 {
-                0.9
-            } else if i == 2 {
-                0.8
-            } else {
-                0.6
-            }
-        };
+        let weekly_view = scheduling_hypergraph.extract_weekly_view();
 
         let mut weekly_resources_inner = HashMap::<Period, HashMap<Skill, Work>>::new();
 
-        for (i, period) in value.0.time_environment.periods.iter().enumerate() {
+        for period in &weekly_view.periods {
             let mut skill_hours_map: HashMap<Skill, Work> = HashMap::new();
-            for operational_agent in value
-                .0
-                .worker_environment
-                .actor_specification
-                .get(value.1.asset())
-                .with_context(|| {
-                    format!("Missing Actor: {:?} in the SchedulingEnvironment", value.1)
-                })
-                .expect("Missing the required Actor")
-                .operational()
-            {
-                // TODO: Use period.count_overlapping_days(availability) instead of hardcoded 13
-                // days
-                let days_in_period = 13.0;
 
-                for resource in &operational_agent.1.operational_configuration.resources {
-                    let hours = Work::from(
-                        operational_agent.1.hours_per_day * days_in_period * gradual_reduction(i),
-                    );
-                    *skill_hours_map.entry(*resource).or_insert(Work::from(0.0)) += hours;
+            for technician in weekly_view.technicians.values() {
+                let days_in_period = technician
+                    .available_dates
+                    .iter()
+                    .filter(|date| period.contains_date(**date))
+                    .count();
+
+                if days_in_period == 0 {
+                    continue;
+                }
+
+                let work_contribution = Work::from(6.0 * days_in_period as f64);
+
+                for &skill in &technician.skills {
+                    *skill_hours_map.entry(skill).or_insert(Work::from(0.0)) += work_contribution;
                 }
             }
+
             weekly_resources_inner.insert(period.clone(), skill_hours_map);
         }
 

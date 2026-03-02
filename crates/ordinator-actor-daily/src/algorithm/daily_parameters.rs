@@ -45,56 +45,35 @@ impl Parameters for DailyParameters
     type Key = WorkOrderActivity;
 
     fn from_scheduling_hypergraph(
-        id: &ActorCompositeId,
-        scheduling_environment: &MutexGuard<SchedulingHypergraph>,
+        _id: &ActorCompositeId,
+        scheduling_hypergraph: &MutexGuard<SchedulingHypergraph>,
     ) -> Result<Self>
     {
+        let weekly_view = scheduling_hypergraph.extract_weekly_view();
+
         let mut daily_parameters = HashMap::new();
 
-        // Consider refactoring SchedulingEnvironment to use Arc<WorkOrders> and
-        // ArcSwap<TimeEnvironment> for better performance with Functional
-        // programming patterns
-        let input_daily = scheduling_environment
-            .worker_environment
-            .actor_specification
-            .get(id.asset())
-            .unwrap()
-            .daily()
-            .iter()
-            .find(|e| e.id == *id.0)
-            .with_context(|| format!("Missing an Daily entry for {id}"))?;
-
-        let daily_periods = &scheduling_environment
-            .time_environment
-            .periods
-            .get(0..input_daily.number_of_daily_periods as usize)
-            .with_context(||format!("There are not enough periods in the TimeEnvironment to initialize the Daily\nNumber of daily periods: {}", input_daily.number_of_daily_periods))?;
-
-        for (work_order_number, work_order) in scheduling_environment
-            .work_orders
-            .inner
-            .iter()
-            .filter(|(_, wo)| &wo.functional_location().asset == id.2.main_asset())
-        {
+        for (&work_order_number, wo_view) in &weekly_view.work_orders {
             let mut inner_map = HashMap::new();
-            for activity_number in work_order.activity_numbers() {
-                let resource = work_order.operation_resource(activity_number)?;
-                let number = work_order.number_of_people(activity_number)?;
-                let work = work_order.operation_work_remaining(activity_number)?;
-
-                let daily_parameter = DailyParameter::new(resource, number, work);
-
-                inner_map.insert(activity_number, daily_parameter);
+            for activity in &wo_view.activities {
+                let daily_parameter = DailyParameter::new(
+                    activity.required_skill,
+                    activity.number_of_people,
+                    activity.work_remaining,
+                );
+                inner_map.insert(activity.activity_number, daily_parameter);
             }
 
-            let _assert_option = daily_parameters.insert(*work_order_number, inner_map);
-
+            let _assert_option = daily_parameters.insert(work_order_number, inner_map);
             assert!(_assert_option.is_none());
         }
 
+        // Use all available periods from the hypergraph
+        let daily_periods = weekly_view.periods;
+
         Ok(Self {
             daily_work_orders: daily_parameters,
-            daily_periods: daily_periods.to_vec(),
+            daily_periods,
         })
     }
 

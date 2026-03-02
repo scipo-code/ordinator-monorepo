@@ -2,32 +2,18 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use std::sync::MutexGuard;
 
-use anyhow::Context;
 use anyhow::Result;
 use anyhow::bail;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
-use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
-use ordinator_scheduling_environment::materials::MaterialToPeriod;
-use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::period::Period;
-use ordinator_scheduling_environment::work_order::ClusteringWeights;
-use ordinator_scheduling_environment::work_order::ForcedWorkOrder;
-use ordinator_scheduling_environment::work_order::ProjectForceType;
-use ordinator_scheduling_environment::work_order::WorkOrder;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::work_order::WorkOrderPolicies;
-use ordinator_scheduling_environment::work_order::WorkOrders;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 use serde::Serialize;
-use tracing::info;
-
-pub type LowerLimitWork = Work;
-pub type UpperLimitWork = Work;
 
 use super::WeeklyResources;
 
@@ -43,94 +29,77 @@ pub struct WeeklyParameters
     pub weekly_periods: Vec<Period>,
 }
 
-// TODO: Consider implementing a builder pattern for Parameters
 impl Parameters for WeeklyParameters
 {
     type Key = WorkOrderNumber;
 
-    // The asset change introduced some tradeoffs that need consideration
-    //
-    // This function is correct now, the issue is getting the options
-    // out of the Paramaters
     fn from_scheduling_hypergraph(
-        id: &ActorCompositeId,
+        _id: &ActorCompositeId,
         scheduling_hypergraph: &MutexGuard<SchedulingHypergraph>,
     ) -> Result<Self>
     {
-        let asset = id.2.main_asset();
+        let weekly_view = scheduling_hypergraph.extract_weekly_view();
 
-        // TODO [ ] - extract the work orders
-        let weekly_view = &scheduling_hypergraph.extract_weekly_view();
+        // Build work order parameters from the hypergraph view
+        let weekly_work_order_parameters: HashMap<WorkOrderNumber, WeeklyWorkOrderParameter> =
+            weekly_view
+                .work_orders
+                .iter()
+                .map(|(&won, wo_view)| {
+                    let locked_in_period = match &wo_view.assigned_period {
+                        Some(period) => WhereIsWorkOrder::Weekly(period.clone()),
+                        None => WhereIsWorkOrder::NotScheduled,
+                    };
 
-        // let work_orders = &scheduling_hypergraph.work_orders;
-        // let weekly_periods = &scheduling_hypergraph.time_environment.periods;
-        // let days = &scheduling_hypergraph.time_environment.days;
+                    let excluded_periods = wo_view.excluded_periods.clone();
 
-        // TODO: Move actor specifications retrieval to a separate module
-        // let actor_specifications = scheduling_hypergraph
-        //     .worker_environment
-        //     .actor_specification
-        //     .get(id.asset())
-        //     .unwrap();
+                    // Latest period is derived from basic_start_date: find the last
+                    // period whose start date is on or after the work order's basic start
+                    let latest_period = weekly_view
+                        .periods
+                        .iter()
+                        .rev()
+                        .find(|p| p.contains_date(wo_view.basic_start_date))
+                        .or(weekly_view.periods.last())
+                        .cloned()
+                        .expect("There should always be at least one period");
 
-        // TODO [ ] these are still required
-        let work_order_configurations = &scheduling_hypergraph.work_order_policies;
-        let material_to_period = &scheduling_hypergraph.material_repo.material_to_period;
+                    // Work load: aggregate work_remaining by skill from activities
+                    let mut work_load: HashMap<Skill, Work> = HashMap::new();
+                    for activity in &wo_view.activities {
+                        *work_load.entry(activity.required_skill).or_default() +=
+                            activity.work_remaining;
+                    }
 
-        // Filter work orders for this asset that are released for scheduling
-        // FIX this is no longer needed - each asset should have its own hypergraph
-        //
-        // // This is of no concern to the algorithm
-        // let filter = work_orders
-        //     .inner
-        //     .iter()
-        //     .filter(|(_, wo)| wo.functional_location().asset == *asset)
-        //     .filter(|(_, wo)| wo.released_for_scheduling());
+                    // Weight derived from total work remaining
+                    let weight = work_load
+                        .values()
+                        .fold(Work::from(0.0), |acc, w| acc + *w)
+                        .to_f64() as i64;
 
-        // ISSUE #000: Critical to fix correctly
-        let weekly_work_order_parameters = filter
-            .map(|(won, wo)| {
-                Ok((
-                    *won,
-                    WeeklyWorkOrderParameter::builder()
-                        // TODO: Accept list of work order numbers instead of current implementation
-                        .with_scheduling_environment(
-                            wo,
-                            weekly_periods,
-                            days,
-                            work_order_configurations,
-                            material_to_period,
-                        )?
-                        .build(),
-                ))
-            })
-            .collect::<Result<HashMap<WorkOrderNumber, WeeklyWorkOrderParameter>>>()?;
+                    (
+                        won,
+                        WeeklyWorkOrderParameter {
+                            locked_in_period,
+                            excluded_periods,
+                            latest_period,
+                            weight: std::cmp::max(weight, 1),
+                            work_load,
+                        },
+                    )
+                })
+                .collect();
 
-        let weekly_clustering = WeeklyClustering::calculate_clustering_values(
-            asset,
-            work_orders,
-            &scheduling_hypergraph.work_order_policies.clustering_weights,
-        )?;
+        // Clustering: derive empty clustering since functional location data
+        // is not available from the hypergraph
+        let weekly_clustering = WeeklyClustering {
+            inner: HashMap::new(),
+        };
 
-        // multiskill_group        = [[1, 6], [2, 8], [4, 20]]
-        // multiskill_group_total  = repeat([6 ; 4 ; 7], 1, length(data.days))
-        //
-        // @constraint(model, multi_skill_sum[ms in 1:3, day in data.days],
-        //                     sum(c[wc, day] for wc in multiskill_group[ms]) ==
-        // multiskill_group_total[ms, day])
-        //
-        //  @constraint(model, [k in operations, day in data.days],
-        //                      data.people_for_operation[k] * p[k, day] <=
-        // c[data.operation_to_workcenter[k], day])
-
-        let mut weekly_capacity: HashMap<
-            Period,
-            HashMap<Skill, (LowerLimitWork, Work, UpperLimitWork)>,
-        > = HashMap::new();
+        // Build capacity from technician availability
+        let mut weekly_capacity: HashMap<Period, HashMap<Skill, Work>> = HashMap::new();
         for period in &weekly_view.periods {
-            let mut capacity_work_lower_limit: HashMap<Skill, Work> = HashMap::new();
             let mut capacity_work: HashMap<Skill, Work> = HashMap::new();
-            let mut capacity_work_upper_limit: HashMap<Skill, Work> = HashMap::new();
 
             for technician in weekly_view.technicians.values() {
                 let days_in_period = technician
@@ -145,54 +114,23 @@ impl Parameters for WeeklyParameters
 
                 let work_contribution = Work::from(6.0 * days_in_period as f64);
 
-                if technician.skills.len() == 1 {
-                    let skill = *technician.skills.iter().next().unwrap();
-                    *capacity_work_lower_limit.entry(skill).or_default() += work_contribution;
+                for &skill in &technician.skills {
                     *capacity_work.entry(skill).or_default() += work_contribution;
-                    *capacity_work_upper_limit.entry(skill).or_default() += work_contribution;
-                } else {
-                    let first_skill = *technician.skills.iter().next().unwrap();
-                    *capacity_work.entry(first_skill).or_default() += work_contribution;
-                    for &skill in &technician.skills {
-                        *capacity_work_upper_limit.entry(skill).or_default() += work_contribution;
-                    }
                 }
             }
 
-            let mut period_capacity = HashMap::new();
-            let all_skills: HashSet<Skill> = capacity_work_lower_limit
-                .keys()
-                .chain(capacity_work.keys())
-                .chain(capacity_work_upper_limit.keys())
-                .copied()
-                .collect();
-
-            for skill in all_skills {
-                let lower = capacity_work_lower_limit
-                    .remove(&skill)
-                    .unwrap_or(Work::from(0.0));
-                let work = capacity_work.remove(&skill).unwrap_or(Work::from(0.0));
-                let upper = capacity_work_upper_limit
-                    .remove(&skill)
-                    .unwrap_or(Work::from(0.0));
-                period_capacity.insert(skill, (lower, work, upper));
-            }
-
-            weekly_capacity.insert(period.clone(), period_capacity);
+            weekly_capacity.insert(period.clone(), capacity_work);
         }
 
         Ok(Self {
             weekly_work_order_parameters,
             weekly_capacity: WeeklyResources(weekly_capacity),
             weekly_clustering,
-            // This is not a feature. You need to design a common---
             period_locks: HashSet::default(),
             weekly_periods: weekly_view.periods,
         })
     }
 
-    // TODO: Create as Builder using functional approach
-    // ISSUE #000: create-individual-parameters-for-each-actor
     fn create_and_insert_new_parameter(
         &mut self,
         _key: Self::Key,
@@ -327,70 +265,10 @@ impl WeeklyWorkOrderParameter
 
 impl WeeklyClustering
 {
-    pub fn calculate_clustering_values(
-        asset: &Asset,
-        work_orders: &WorkOrders,
-        clustering_weights: &ClusteringWeights,
-    ) -> Result<Self>
+    pub fn new_empty() -> Self
     {
-        let mut clustering_similarity = HashMap::new();
-        let work_orders_data: Vec<_> = work_orders
-            .inner
-            .iter()
-            .filter(|(_, wo)| &wo.functional_location().asset == asset)
-            .map(|(number, work_order)| {
-                let fl = &work_order.functional_location();
-                (
-                    number,
-                    fl.asset.clone(),
-                    fl.sector(),
-                    fl.system(),
-                    fl.subsystem(),
-                    fl.equipment_tag(),
-                )
-            })
-            .collect();
-
-        // Calculate similarity for each pair of work orders
-        for i in 0..work_orders_data.len() {
-            for j in i..work_orders_data.len() {
-                let (wo_num1, asset1, sector1, system1, subsystem1, tag1) = &work_orders_data[i];
-                let (wo_num2, asset2, sector2, system2, subsystem2, tag2) = &work_orders_data[j];
-
-                let similarity = {
-                    let mut score = 0;
-                    if asset1 == asset2 {
-                        score += clustering_weights.asset;
-                    }
-                    if sector1 == sector2 && sector2.is_some() {
-                        score += clustering_weights.sector;
-                    }
-                    if system1 == system2 && system2.is_some() {
-                        score += clustering_weights.system;
-                    }
-                    if subsystem1 == subsystem2 && subsystem2.is_some() {
-                        score += clustering_weights.subsystem;
-                    }
-                    if tag1 == tag2 && tag2.is_some() {
-                        score += clustering_weights.equipment_tag;
-                    }
-                    score
-                };
-
-                clustering_similarity.insert((**wo_num1, **wo_num2), similarity as i64);
-            }
+        Self {
+            inner: HashMap::new(),
         }
-        Ok(WeeklyClustering {
-            inner: clustering_similarity,
-        })
     }
-}
-
-pub fn create_weekly_parameters(
-    _work_orders: &WorkOrders,
-    _periods: &[Period],
-    _asset: &Asset,
-) -> Result<HashMap<WorkOrderNumber, WeeklyWorkOrderParameter>>
-{
-    todo!()
 }

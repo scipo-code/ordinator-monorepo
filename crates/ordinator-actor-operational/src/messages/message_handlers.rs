@@ -1,12 +1,12 @@
 use std::fmt::Debug;
 
-use anyhow::Context;
 use anyhow::Result;
 use ordinator_actor_core::Actor;
 use ordinator_orchestrator_actor_traits::CommandHandler;
-use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::DailyInterface;
+use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
+use ordinator_scheduling_environment::work_order::operation::Work;
 use tracing::Level;
 use tracing::event;
 
@@ -33,35 +33,33 @@ where
         match state_link {
             StateLink::WorkOrders(changed_work_orders) => {
                 event!(target: "business_events", Level::ERROR, unhandled_work_orders = ?changed_work_orders);
-                let locked_scheduling_environment = self
-                    .scheduling_environment
-                    .lock()
-                    .expect("SchedulingEnvironment Mutex could not be acquired.");
+                let weekly_view = {
+                    let locked = self
+                        .scheduling_environment
+                        .lock()
+                        .expect("SchedulingHypergraph Mutex could not be acquired.");
+                    locked.extract_weekly_view()
+                };
 
                 for work_order_number in changed_work_orders {
-                    let work_order = locked_scheduling_environment
-                        .work_orders
-                        .inner
-                        .get(&work_order_number)
-                        .unwrap();
+                    if let Some(wo_view) = weekly_view.work_orders.get(&work_order_number) {
+                        for activity in &wo_view.activities {
+                            let operational_parameter = match OperationalParameter::new(
+                                activity.work_remaining,
+                                Work::from(0.0),
+                            ) {
+                                Some(operational_parameter) => operational_parameter,
+                                None => continue,
+                            };
 
-                    for activity_number in work_order.activity_numbers() {
-                        let operational_parameter = match OperationalParameter::new(
-                            work_order
-                                .operation_work_remaining(activity_number)
-                                .context("operation_work_remaining does not exist")?,
-                            work_order
-                                .operation_preparation(activity_number)
-                                .context("operation_preparation does not exist")?,
-                        ) {
-                            Some(operational_parameter) => operational_parameter,
-                            None => continue,
-                        };
-
-                        self.algorithm
-                            .parameters
-                            .work_order_parameters
-                            .insert((work_order_number, activity_number), operational_parameter);
+                            self.algorithm
+                                .parameters
+                                .work_order_parameters
+                                .insert(
+                                    (work_order_number, activity.activity_number),
+                                    operational_parameter,
+                                );
+                        }
                     }
                 }
 

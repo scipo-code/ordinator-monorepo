@@ -26,10 +26,10 @@ use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::Communication;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::worker_environment::WeeklyOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 use priority_queue::PriorityQueue;
 
 pub struct WeeklyActor<Ss: Debug>(
@@ -77,7 +77,7 @@ where
 
     fn construct_actor(
         id: ActorCompositeId,
-        scheduling_environment_guard: Arc<Mutex<SchedulingEnvironment>>,
+        scheduling_environment_guard: Arc<Mutex<SchedulingHypergraph>>,
         shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,
         state_link_bus: BusReader<StateLink>,

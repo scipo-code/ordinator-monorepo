@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::fmt::Debug;
 
 use anyhow::Context;
@@ -7,13 +6,11 @@ use ordinator_actor_core::Actor;
 use ordinator_orchestrator_actor_traits::CommandHandler;
 use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::assignments::AnyAssignment;
 
 use super::ProjectRequestMessage;
 use super::ProjectResponseMessage;
 use crate::algorithm::ProjectAlgorithm;
-use crate::algorithm::project_parameters::ProjectParameters;
-use crate::algorithm::project_parameters::create_project_parameter;
+use crate::algorithm::project_parameters::create_project_parameter_from_view;
 use crate::algorithm::project_resources::ProjectResources;
 use crate::algorithm::project_solution::ProjectSolution;
 
@@ -65,72 +62,46 @@ where
     {
         match state_link {
             StateLink::WorkOrders(modified_work_orders) => {
-                let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
+                let weekly_view = {
+                    let guard = self.scheduling_environment.lock().unwrap();
+                    guard.extract_weekly_view()
+                };
 
-                let work_orders = &scheduling_environment_guard.work_orders.inner.clone();
-                let work_order_configurations =
-                    &scheduling_environment_guard.work_order_policies.clone();
-
-                let assignments: Vec<_> = scheduling_environment_guard
-                    .assignments
-                    .assignment_for_project()
-                    .iter()
-                    .map(|e| (*e.0, e.1.clone()))
-                    .collect();
-
-                drop(scheduling_environment_guard);
                 for work_order_number in modified_work_orders {
-                    let work_order = work_orders.get(&work_order_number).with_context(|| {
-                        format!(
-                            "{:?} should always be present in {}",
-                            work_order_number,
-                            std::any::type_name::<ProjectParameters>()
-                        )
-                    })?;
+                    if let Some(wo_view) = weekly_view.work_orders.get(&work_order_number) {
+                        let project_parameter =
+                            create_project_parameter_from_view(work_order_number, wo_view);
 
-                    let start_days_for_activities: HashMap<Option<u64>, AnyAssignment> =
-                        assignments
-                            .iter()
-                            .filter(|e| e.1.work_order_number() == work_order_number)
-                            .map(|e| (e.1.activity_number(), e.1.clone()))
-                            .collect::<HashMap<_, _>>();
+                        // Only the algorithm can modify parameters; create an interface for this
+                        self.algorithm
+                            .parameters
+                            .project_work_orders
+                            .insert(work_order_number, project_parameter);
 
-                    // TODO: Make solution updates generic and wrap in Interface trait
-
-                    let project_parameter = create_project_parameter(
-                        work_order,
-                        start_days_for_activities,
-                        work_order_configurations,
-                    )?;
-
-                    // Only the algorithm can modify parameters; create an interface for this
-                    self.algorithm
-                        .parameters
-                        .project_work_orders
-                        .insert(work_order_number, project_parameter);
-
-                    // TODO: Ensure solution state remains consistent with parameter updates.
-                    // StateLink should only update parameters, not solution directly.
-                    // The Weekly actor does not touch solution, maintain this invariant.
-                    self.algorithm
-                        .unschedule_specific_work_order(work_order_number)
-                        .with_context(|| {
-                            format!(
-                                "could not unschedule project work order:\n{work_order_number:#?}"
-                            )
-                        })?;
+                        // TODO: Ensure solution state remains consistent with parameter updates.
+                        // StateLink should only update parameters, not solution directly.
+                        // The Weekly actor does not touch solution, maintain this invariant.
+                        self.algorithm
+                            .unschedule_specific_work_order(work_order_number)
+                            .with_context(|| {
+                                format!(
+                                    "could not unschedule project work order:\n{work_order_number:#?}"
+                                )
+                            })?;
+                    }
                 }
                 Ok(ProjectResponseMessage::FreeStringResponse(
                     "Updated StateLink::WorkOrders".to_string(),
                 ))
             }
             StateLink::WorkerEnvironment => {
-                let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
+                let scheduling_hypergraph_guard = self.scheduling_environment.lock().unwrap();
 
-                // Convert reference to ProjectResources without consuming the value
-                let project_resources =
-                    ProjectResources::from((&scheduling_environment_guard, &self.actor_id));
-                drop(scheduling_environment_guard);
+                let project_resources = ProjectResources::from_scheduling_hypergraph(
+                    &scheduling_hypergraph_guard,
+                    &self.algorithm.parameters.project_days,
+                );
+                drop(scheduling_hypergraph_guard);
 
                 self.algorithm
                     .parameters

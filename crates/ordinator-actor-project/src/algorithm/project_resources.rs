@@ -1,15 +1,15 @@
 use std::collections::HashMap;
+use std::sync::MutexGuard;
 
 use anyhow::Context;
 use anyhow::Result;
 use colored::Colorize;
-use ordinator_actor_core::traits::ActorLinkToSchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
 use ordinator_scheduling_environment::time_environment::period::Period;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -135,64 +135,36 @@ impl ProjectResources
     }
 }
 
-impl<'a> From<(&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)> for ProjectResources
+impl ProjectResources
 {
-    fn from(value: (&ActorLinkToSchedulingEnvironment<'a>, &ActorCompositeId)) -> Self
+    pub fn from_scheduling_hypergraph(
+        scheduling_hypergraph: &MutexGuard<SchedulingHypergraph>,
+        project_days: &[Day],
+    ) -> Self
     {
-        // TODO: Move hours_per_day to configuration
-        let _hours_per_day = 6.0;
+        let weekly_view = scheduling_hypergraph.extract_weekly_view();
 
-        let gradual_reduction = |i: usize| -> f64 {
-            match i {
-                0..=13 => 1.0,
-                14..=27 => 1.0,
-                _ => 1.0,
-            }
-        };
+        let hours_per_day = 6.0;
+        let num_days = project_days.len();
 
-        // FIXME: Support multi-skill resources; currently only handles single skill
+        // Build capacity: for each technician, contribute hours_per_day to each
+        // of their skills for each available date that falls within project_days
         let mut project_resources_inner = HashMap::<Skill, Days>::new();
-        for operational_configuration_all in value
-            .0
-            .worker_environment
-            .actor_specification
-            .get(value.1.asset())
-            .expect("Mising actor for the asset")
-            .operational()
-            .iter()
-        {
-            for (i, _) in value.0.time_environment.days.iter().enumerate() {
-                let resource_periods = project_resources_inner
-                    // FIXME: Logic error when comparing with WeeklyAgent
-                    .entry(
-                        operational_configuration_all
-                            .1
-                            .operational_configuration
-                            .resources
-                            .iter()
-                            // ISSUE #000 - add multi-skill to project.
-                            .next()
-                            .cloned()
-                            .unwrap(),
-                    )
-                    .or_insert_with(|| {
-                        Days::zero_from_existing(&Days {
-                            days: value
-                                .0
-                                .time_environment
-                                .days
-                                .clone()
-                                .into_iter()
-                                .map(|_| Work::from(0.0))
-                                .collect(),
-                        })
-                    });
 
-                resource_periods.days[i] += Work::from(
-                    operational_configuration_all.1.hours_per_day * gradual_reduction(i),
-                );
+        for technician in weekly_view.technicians.values() {
+            for &skill in &technician.skills {
+                let days_entry = project_resources_inner
+                    .entry(skill)
+                    .or_insert_with(|| Days::new(vec![Work::from(0.0); num_days]));
+
+                for (i, day) in project_days.iter().enumerate() {
+                    if technician.available_dates.contains(&day.date) {
+                        days_entry.days[i] += Work::from(hours_per_day);
+                    }
+                }
             }
         }
+
         ProjectResources::new(project_resources_inner)
     }
 }

@@ -1,6 +1,5 @@
 use std::fmt::Debug;
 
-use anyhow::Context;
 use anyhow::Result;
 use anyhow::bail;
 use ordinator_actor_core::Actor;
@@ -14,7 +13,6 @@ use super::DailyRequestMessage;
 use super::DailyResponseMessage;
 use crate::algorithm::DailyAlgorithm;
 use crate::algorithm::daily_parameters::DailyParameter;
-use crate::algorithm::daily_parameters::DailyParameters;
 use crate::algorithm::daily_solution::DailySolution;
 use crate::messages::responses::DailyResponseScheduling;
 use crate::messages::responses::DailyResponseStatus;
@@ -28,34 +26,24 @@ where
     {
         match state_link {
             StateLink::WorkOrders(changed_work_orders) => {
-                // TODO: Architectural concern - self holds both scheduling_environment and algorithm, which couples concerns
-                let work_orders = {
+                let weekly_view = {
                     let scheduling_environment_guard = self.scheduling_environment.lock().unwrap();
-
-                    scheduling_environment_guard.work_orders.inner.clone()
+                    scheduling_environment_guard.extract_weekly_view()
                 };
 
                 for work_order_number in changed_work_orders {
-                    let work_order = work_orders.get(&work_order_number).with_context(|| {
-                        format!(
-                            "{:?} should always be present in {}",
-                            work_order_number,
-                            std::any::type_name::<DailyParameters>()
-                        )
-                    })?;
-
-                    for activity_number in work_order.activity_numbers() {
-                        let resource = work_order.operation_resource(activity_number)?;
-                        let number = work_order.number_of_people(activity_number)?;
-                        let work_remaining =
-                            work_order.operation_work_remaining(activity_number)?;
-
-                        let daily_parameter =
-                            DailyParameter::new(resource, number, work_remaining);
-                        self.algorithm.parameters.insert_daily_parameter(
-                            &(work_order_number, activity_number),
-                            daily_parameter,
-                        )
+                    if let Some(wo_view) = weekly_view.work_orders.get(&work_order_number) {
+                        for activity in &wo_view.activities {
+                            let daily_parameter = DailyParameter::new(
+                                activity.required_skill,
+                                activity.number_of_people,
+                                activity.work_remaining,
+                            );
+                            self.algorithm.parameters.insert_daily_parameter(
+                                &(work_order_number, activity.activity_number),
+                                daily_parameter,
+                            )
+                        }
                     }
                 }
                 Ok(DailyResponseMessage::StateLink)
