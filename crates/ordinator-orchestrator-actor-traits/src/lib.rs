@@ -282,11 +282,13 @@ where
     Self: Sized,
 {
     type Key;
+    type Options: Options;
 
     /// Build parameters from a scheduling environment for a given actor
     fn from_scheduling_hypergraph(
         id: &ActorCompositeId,
-        scheduling_environment: &MutexGuard<SchedulingHypergraph>,
+        scheduling_hypergraph: &MutexGuard<SchedulingHypergraph>,
+        options: &Self::Options,
     ) -> Result<Self>;
 
     /// Create and insert a new parameter. Note: this method can become

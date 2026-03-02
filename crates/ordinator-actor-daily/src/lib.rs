@@ -95,8 +95,11 @@ where
             .agent_id(id.clone())
             .scheduling_environment(Arc::clone(&scheduling_environment_guard))
             .algorithm(|ab| {
+                let options = DailyOptions {
+                    number_of_unassigned_work_orders: 5,
+                };
                 ab.id(id)
-                    .parameters_and_solution(&scheduling_environment_guard.lock().unwrap())?
+                    .parameters_and_solution(&scheduling_environment_guard.lock().unwrap(), options)?
                     .system_solution_arc_swap(shared_solution_arc_swap)
             })?
             .communication(error_channel, state_link_bus)

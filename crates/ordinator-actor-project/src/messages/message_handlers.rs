@@ -66,11 +66,14 @@ where
                     let guard = self.scheduling_environment.lock().unwrap();
                     guard.extract_weekly_view()
                 };
+                let operating_time = ordinator_scheduling_environment::work_order::operation::Work::from(
+                    self.algorithm.options.work_order_policies.operating_time as f64,
+                );
 
                 for work_order_number in modified_work_orders {
                     if let Some(wo_view) = weekly_view.work_orders.get(&work_order_number) {
                         let project_parameter =
-                            create_project_parameter_from_view(work_order_number, wo_view);
+                            create_project_parameter_from_view(work_order_number, wo_view, operating_time);
 
                         // Only the algorithm can modify parameters; create an interface for this
                         self.algorithm

@@ -8,6 +8,7 @@ use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::period::Period;
+use ordinator_scheduling_environment::worker_environment::WeeklyOptions;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
@@ -32,10 +33,12 @@ pub struct WeeklyParameters
 impl Parameters for WeeklyParameters
 {
     type Key = WorkOrderNumber;
+    type Options = WeeklyOptions;
 
     fn from_scheduling_hypergraph(
         _id: &ActorCompositeId,
         scheduling_hypergraph: &MutexGuard<SchedulingHypergraph>,
+        _options: &Self::Options,
     ) -> Result<Self>
     {
         let weekly_view = scheduling_hypergraph.extract_weekly_view();

@@ -103,8 +103,15 @@ where
         .agent_id(id.clone())
         .scheduling_environment(Arc::clone(&scheduling_environment_guard))
         .algorithm(|ab| {
+            let options = WeeklyOptions {
+                number_of_removed_work_orders: 5,
+                urgency_weight: 1,
+                resource_penalty_weight: 1,
+                clustering_weight: 1,
+                work_order_policies: ordinator_scheduling_environment::work_order::WorkOrderPolicies::builder().build(),
+            };
             ab.id(id)
-                .parameters_and_solution(&scheduling_environment_guard.lock().unwrap())?
+                .parameters_and_solution(&scheduling_environment_guard.lock().unwrap(), options)?
                 .system_solution_arc_swap(shared_solution_arc_swap)
         })?
         .communication(error_channel, state_link_bus)

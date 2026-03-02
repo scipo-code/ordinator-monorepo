@@ -15,6 +15,7 @@ use ordinator_scheduling_environment::work_order::ActivityRelation;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::worker_environment::OperationalOptions;
 use ordinator_scheduling_environment::worker_environment::availability::Availability;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
@@ -93,10 +94,12 @@ impl std::fmt::Debug for OperationalParameters
 impl Parameters for OperationalParameters
 {
     type Key = WorkOrderActivity;
+    type Options = OperationalOptions;
 
     fn from_scheduling_hypergraph(
         id: &ActorCompositeId,
         scheduling_hypergraph: &MutexGuard<SchedulingHypergraph>,
+        options: &Self::Options,
     ) -> Result<Self>
     {
         let weekly_view = scheduling_hypergraph.extract_weekly_view();
@@ -135,15 +138,13 @@ impl Parameters for OperationalParameters
             work_order_activity_relations.insert(work_order_number, relations);
         }
 
-        // Operational configuration (off_shift, break, toolbox intervals) is not
-        // available from the hypergraph. Use sensible defaults.
         Ok(Self {
             work_order_parameters,
             work_order_activity_relations,
             availability: id.2.clone(),
-            off_shift_interval: TimeInterval::from_hms(0, 0, 0, 0, 0, 1)?,
-            break_interval: TimeInterval::from_hms(12, 0, 0, 12, 30, 0)?,
-            toolbox_interval: TimeInterval::from_hms(6, 0, 0, 6, 15, 0)?,
+            off_shift_interval: options.off_shift_interval.clone(),
+            break_interval: options.break_interval.clone(),
+            toolbox_interval: options.toolbox_interval.clone(),
         })
     }
 

@@ -110,7 +110,7 @@ where
 impl<S, P, I, O, Ss> AlgorithmBuilder<S, P, I, O, Ss>
 where
     S: SwapSolution<Ss> + Solution<Parameters = P> + Clone,
-    P: Parameters,
+    P: Parameters<Options = O>,
     I: Default,
     O: Options,
     Ss: SystemSolutions,
@@ -147,11 +147,13 @@ where
     pub fn parameters_and_solution(
         mut self,
         scheduling_environment: &MutexGuard<SchedulingHypergraph>,
+        options: O,
     ) -> Result<Self>
     {
         let parameters = P::from_scheduling_hypergraph(
             self.id.as_ref().expect("Call `id()` build method first"),
             scheduling_environment,
+            &options,
         )?;
 
         // S is the concrete type, Solution is the trait
@@ -165,6 +167,7 @@ where
         ));
 
         self.parameters = Some(parameters);
+        self.options = Some(options);
 
         Ok(self)
     }

@@ -234,7 +234,7 @@ where
         SpecificAlgorithm: From<algorithm::Algorithm<S, P, I, O, Ss>>,
         S: Solution<Parameters = P> + Debug + Clone + SwapSolution<Ss>,
         Ss: SystemSolutions,
-        P: Parameters,
+        P: Parameters<Options = O>,
         O: Options,
         I: Default,
         F: FnOnce(AlgorithmBuilder<S, P, I, O, Ss>) -> Result<AlgorithmBuilder<S, P, I, O, Ss>>,

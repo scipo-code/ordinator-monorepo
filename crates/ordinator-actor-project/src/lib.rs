@@ -101,8 +101,14 @@ where
             .scheduling_environment(Arc::clone(&scheduling_environment_guard))
             // TODO: Refactor algorithm builder to simplify initialization
             .algorithm(|ab| {
+                let options = ProjectOptions {
+                    number_of_removed_work_orders: 5,
+                    urgency: 1,
+                    resource_penalty: 1,
+                    work_order_policies: ordinator_scheduling_environment::work_order::WorkOrderPolicies::builder().build(),
+                };
                 ab.id(id)
-                    .parameters_and_solution(&scheduling_environment_guard.lock().unwrap())?
+                    .parameters_and_solution(&scheduling_environment_guard.lock().unwrap(), options)?
                     .system_solution_arc_swap(shared_solution_arc_swap)
             })?
             // TODO: Consolidate communication and state link creation

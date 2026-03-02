@@ -362,6 +362,9 @@ impl InputOperational
 
         let operational_options = OperationalOptions {
             number_of_removed_activities: 15,
+            break_interval: TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap(),
+            off_shift_interval: TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap(),
+            toolbox_interval: TimeInterval::from_hms(7, 0, 0, 8, 0, 0).unwrap(),
         };
 
         Self {
@@ -389,12 +392,13 @@ pub struct WeeklyOptions
 }
 
 // TODO: Move RNG configuration outside of ordinator-scheduling-environment
-#[derive(Eq, Hash, PartialEq, Serialize, Deserialize, Debug, Clone)]
+#[derive(Eq, PartialEq, Serialize, Deserialize, Debug, Clone)]
 pub struct ProjectOptions
 {
     pub number_of_removed_work_orders: usize,
     pub urgency: usize,
     pub resource_penalty: usize,
+    pub work_order_policies: crate::work_order::WorkOrderPolicies,
 }
 
 #[derive(Eq, Hash, PartialEq, Serialize, Deserialize, Debug, Clone)]
@@ -403,10 +407,13 @@ pub struct DailyOptions
     pub number_of_unassigned_work_orders: usize,
 }
 
-#[derive(Eq, Hash, PartialEq, Serialize, Deserialize, Debug, Clone)]
+#[derive(PartialEq, Serialize, Deserialize, Debug, Clone)]
 pub struct OperationalOptions
 {
     pub number_of_removed_activities: usize,
+    pub break_interval: crate::time_environment::TimeInterval,
+    pub off_shift_interval: crate::time_environment::TimeInterval,
+    pub toolbox_interval: crate::time_environment::TimeInterval,
 }
 
 pub struct InputWeeklyBuilder
@@ -790,6 +797,7 @@ pub struct ProjectOptionsBuilder
     number_of_removed_work_orders: Option<usize>,
     urgency: Option<usize>,
     resource_penalty: Option<usize>,
+    work_order_policies: Option<crate::work_order::WorkOrderPolicies>,
 }
 
 impl ProjectOptionsBuilder
@@ -800,6 +808,7 @@ impl ProjectOptionsBuilder
             number_of_removed_work_orders: None,
             urgency: None,
             resource_penalty: None,
+            work_order_policies: None,
         }
     }
 
@@ -821,6 +830,12 @@ impl ProjectOptionsBuilder
         self
     }
 
+    pub fn work_order_policies(mut self, policies: crate::work_order::WorkOrderPolicies) -> Self
+    {
+        self.work_order_policies = Some(policies);
+        self
+    }
+
     pub fn build(self) -> ProjectOptions
     {
         ProjectOptions {
@@ -829,6 +844,9 @@ impl ProjectOptionsBuilder
                 .expect("number_of_removed_work_orders is required"),
             urgency: self.urgency.expect("urgency is required"),
             resource_penalty: self.resource_penalty.expect("resource_penalty is required"),
+            work_order_policies: self
+                .work_order_policies
+                .unwrap_or_else(|| crate::work_order::WorkOrderPolicies::builder().build()),
         }
     }
 }
@@ -866,6 +884,9 @@ impl DailyOptionsBuilder
 pub struct OperationalOptionsBuilder
 {
     number_of_removed_activities: Option<usize>,
+    break_interval: Option<crate::time_environment::TimeInterval>,
+    off_shift_interval: Option<crate::time_environment::TimeInterval>,
+    toolbox_interval: Option<crate::time_environment::TimeInterval>,
 }
 
 impl OperationalOptionsBuilder
@@ -874,6 +895,9 @@ impl OperationalOptionsBuilder
     {
         Self {
             number_of_removed_activities: None,
+            break_interval: None,
+            off_shift_interval: None,
+            toolbox_interval: None,
         }
     }
 
@@ -883,12 +907,39 @@ impl OperationalOptionsBuilder
         self
     }
 
+    pub fn break_interval(mut self, interval: crate::time_environment::TimeInterval) -> Self
+    {
+        self.break_interval = Some(interval);
+        self
+    }
+
+    pub fn off_shift_interval(mut self, interval: crate::time_environment::TimeInterval) -> Self
+    {
+        self.off_shift_interval = Some(interval);
+        self
+    }
+
+    pub fn toolbox_interval(mut self, interval: crate::time_environment::TimeInterval) -> Self
+    {
+        self.toolbox_interval = Some(interval);
+        self
+    }
+
     pub fn build(self) -> OperationalOptions
     {
         OperationalOptions {
             number_of_removed_activities: self
                 .number_of_removed_activities
                 .expect("number_of_removed_activities is required"),
+            break_interval: self
+                .break_interval
+                .unwrap_or_else(|| crate::time_environment::TimeInterval::from_hms(11, 0, 0, 12, 0, 0).unwrap()),
+            off_shift_interval: self
+                .off_shift_interval
+                .unwrap_or_else(|| crate::time_environment::TimeInterval::from_hms(19, 0, 0, 7, 0, 0).unwrap()),
+            toolbox_interval: self
+                .toolbox_interval
+                .unwrap_or_else(|| crate::time_environment::TimeInterval::from_hms(7, 0, 0, 8, 0, 0).unwrap()),
         }
     }
 }

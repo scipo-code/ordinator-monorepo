@@ -94,9 +94,16 @@ where
         .agent_id(id.clone())
         .scheduling_environment(Arc::clone(&scheduling_environment_guard))
         .algorithm(|ab| {
+            let options = OperationalOptions {
+                number_of_removed_activities: 5,
+                break_interval: ordinator_scheduling_environment::time_environment::TimeInterval::from_hms(12, 0, 0, 12, 30, 0)?,
+                off_shift_interval: ordinator_scheduling_environment::time_environment::TimeInterval::from_hms(0, 0, 0, 0, 0, 1)?,
+                toolbox_interval: ordinator_scheduling_environment::time_environment::TimeInterval::from_hms(6, 0, 0, 6, 15, 0)?,
+            };
             ab.id(id)
                 .parameters_and_solution(
                     &scheduling_environment_guard.lock().unwrap(),
+                    options,
                 )?
                 .system_solution_arc_swap(shared_solution_arc_swap)
         })?

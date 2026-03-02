@@ -14,6 +14,7 @@ use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
+use ordinator_scheduling_environment::worker_environment::ProjectOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_scheduling_hypergraph::derive_instances::WeeklyWorkOrderView;
@@ -33,19 +34,23 @@ pub struct ProjectParameters
 impl Parameters for ProjectParameters
 {
     type Key = WorkOrderNumber;
+    type Options = ProjectOptions;
 
     fn from_scheduling_hypergraph(
         _id: &ActorCompositeId,
         scheduling_hypergraph: &MutexGuard<SchedulingHypergraph>,
+        options: &Self::Options,
     ) -> Result<Self>
     {
         let weekly_view = scheduling_hypergraph.extract_weekly_view();
+        let operating_time = Work::from(options.work_order_policies.operating_time as f64);
 
         let project_work_orders: HashMap<WorkOrderNumber, ProjectParameter> = weekly_view
             .work_orders
             .iter()
             .map(|(&won, wo_view)| {
-                let project_parameter = create_project_parameter_from_view(won, wo_view);
+                let project_parameter =
+                    create_project_parameter_from_view(won, wo_view, operating_time);
                 (won, project_parameter)
             })
             .collect();
@@ -90,13 +95,11 @@ impl Parameters for ProjectParameters
 pub fn create_project_parameter_from_view(
     work_order_number: WorkOrderNumber,
     wo_view: &WeeklyWorkOrderView,
+    operating_time: Work,
 ) -> ProjectParameter
 {
     let mut operation_parameters = BTreeMap::new();
     let mut relations = Vec::new();
-
-    // Default operating time (hours per day)
-    let operating_time = Work::from(6.0);
 
     for activity in &wo_view.activities {
         let operation_parameter = OperationParameter {
