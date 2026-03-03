@@ -498,11 +498,13 @@ where
                                 scheduled_work_orders_by_period[j]
                             )
                         })
-                        .context("clustering_value not available. Did you disable it to increase startup times? That is the most likely scenario")?;
+                        .context("clustering_value not available. Did you disable it to increase startup times? That is the most likely scenario")
+                        .cloned()
+                        .unwrap_or_default();
 
                     // Increment the clustering value in the objective
                     weekly_objective_value.clustering_value.1 +=
-                        *clustering_value_for_work_order_pair;
+                        clustering_value_for_work_order_pair;
                 }
             }
         }

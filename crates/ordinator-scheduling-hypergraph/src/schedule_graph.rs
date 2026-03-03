@@ -938,23 +938,14 @@ impl SchedulingHypergraph
             let mut available_dates = HashSet::new();
 
             for &edge_idx in &self.incidence_list[technician_node_index] {
-                dbg!(&self.hyperedges[edge_idx]);
-                match &self.hyperedges[edge_idx] {
-                    Hyperedge::HasSkill(nodes) => {
-                        for &ni in nodes {
-                            if let Node::Skill(skill) = &self.nodes[ni] {
-                                tech_skills.insert(*skill);
-                            }
+                if let Hyperedge::Available(nodes) = &self.hyperedges[edge_idx] {
+                    for &ni in nodes {
+                        if let Node::Day(date) = &self.nodes[ni] {
+                            available_dates.insert(*date);
+                        } else if let Node::Skill(skill) = &self.nodes[ni] {
+                            tech_skills.insert(*skill);
                         }
                     }
-                    Hyperedge::Available(nodes) => {
-                        for &ni in nodes {
-                            if let Node::Day(date) = &self.nodes[ni] {
-                                available_dates.insert(*date);
-                            }
-                        }
-                    }
-                    _ => {}
                 }
             }
 
@@ -1005,6 +996,15 @@ impl SchedulingHypergraph
         self.incidence_list.insert(node_index, vec![]);
 
         node_index
+    }
+
+    pub(crate) fn surrounding_nodes(&self, edge: EdgeIndex) -> Vec<&Node>
+    {
+        self.hyperedges[edge]
+            .nodes()
+            .iter()
+            .map(|&ni| &self.nodes[ni])
+            .collect()
     }
 
     fn add_edge(&mut self, edge: Hyperedge) -> EdgeIndex

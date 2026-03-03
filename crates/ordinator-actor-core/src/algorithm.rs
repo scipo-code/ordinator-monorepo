@@ -158,7 +158,7 @@ where
             &options,
         )?;
 
-        info!(target: "developer", parameters = %parameters.summary());
+        info!(target: "developer", parameters = %parameters.state());
         // S is the concrete type, Solution is the trait
         self.solution = Some(SolutionState::new(
             S::from_parameters(&parameters).with_context(|| {
