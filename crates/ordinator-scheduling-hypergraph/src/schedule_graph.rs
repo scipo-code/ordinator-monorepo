@@ -296,10 +296,16 @@ impl SchedulingHypergraph
             return Err(ScheduleGraphErrors::WorkOrderActivityMissingSkills);
         }
 
-        let day_node_index = *self
-            .day_indices
-            .get(&work_order.basic_start())
-            .ok_or(ScheduleGraphErrors::DayMissing(work_order.basic_start()))?;
+        // What should you do with this?
+        // TODO [ ] - you need logic here on how to handle assignments.
+        //
+        // NOTE: It is crucial to understand the difference between the
+        // business domain models and the scheduling hypergraph domain
+        // model. You have to separate these concepts clearly.
+        //
+        // NOTE: Start with the simple model
+        let day_node_index = self.day_indices.get(&work_order.basic_start()).cloned();
+        // .ok_or(ScheduleGraphErrors::DayMissing(work_order.basic_start()))?;
 
         // Crucial lesson! This cannot come first! You learned something great here!
         let work_order_node_index = match self
@@ -314,10 +320,14 @@ impl SchedulingHypergraph
             }
         };
 
-        let _basic_start_edge_index = self.add_edge(Hyperedge::BasicStart(vec![
-            work_order_node_index,
-            day_node_index,
-        ]));
+        // BasicStart node should be optional... Is there even a difference between the
+        // basic start and
+        let _basic_start_edge_index = day_node_index.map(|day_node_index| {
+            self.add_edge(Hyperedge::BasicStart(vec![
+                work_order_node_index,
+                day_node_index,
+            ]))
+        });
 
         let mut previous_activity_node: Option<NodeIndex> = None;
         let activity_relations = work_order.activity_relations();
