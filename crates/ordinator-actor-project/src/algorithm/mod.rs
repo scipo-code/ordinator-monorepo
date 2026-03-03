@@ -12,9 +12,9 @@ use std::ops::DerefMut;
 use std::panic::Location;
 use std::sync::Arc;
 
-use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
+use anyhow::ensure;
 use chrono::NaiveDate;
 use chrono::TimeDelta;
 use colored::Colorize;
@@ -25,26 +25,26 @@ use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
-use ordinator_orchestrator_actor_traits::WeeklyInterface;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
+use ordinator_orchestrator_actor_traits::WeeklyInterface;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
+use ordinator_scheduling_environment::Percent;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::day::Days;
+use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_scheduling_environment::worker_environment::ProjectOptions;
-use ordinator_scheduling_environment::Percent;
+use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use priority_queue::PriorityQueue;
-use rand::rng;
-use rand::seq::IndexedRandom;
 use project_solution::ProjectObjectiveValue;
 use project_solution::ProjectScheduledOperations;
 use project_solution::ProjectSolution;
+use rand::rng;
+use rand::seq::IndexedRandom;
+use tracing::Level;
 use tracing::event;
 use tracing::warn;
-use tracing::Level;
 
 use self::assert_functions::ProjectAssertions;
 use self::project_parameters::ProjectParameters;
@@ -53,7 +53,13 @@ use self::project_solution::OperationSolution;
 // If using a single crate, call this directly
 #[derive(Debug)]
 pub struct ProjectAlgorithm<Ss>(
-    Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>,
+    Algorithm<
+        ProjectSolution,
+        ProjectParameters,
+        PriorityQueue<WorkOrderNumber, u64>,
+        ProjectOptions,
+        Ss,
+    >,
 )
 where
     ProjectSolution: Solution,
@@ -81,8 +87,13 @@ impl<Ss> ProjectAlgorithm<Ss>
 where
     ProjectSolution: Solution,
     ProjectParameters: Parameters,
-    Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>:
-        AbLNSUtils<SolutionType = ProjectSolution>,
+    Algorithm<
+        ProjectSolution,
+        ProjectParameters,
+        PriorityQueue<WorkOrderNumber, u64>,
+        ProjectOptions,
+        Ss,
+    >: AbLNSUtils<SolutionType = ProjectSolution>,
     Ss: SystemSolutions<Project = ProjectSolution>,
 {
     pub fn capacity(&self, resource: &Skill, day: DayIndex) -> Result<&Work>
@@ -100,7 +111,8 @@ where
     {
         let mut objective_value_from_excess = 0;
         for (resources, days) in self.parameters.project_capacity.resources.iter() {
-            // Avoid using `Day` directly; it's a core domain model with upcoming extensions in `SchedulingEnvironement`
+            // Avoid using `Day` directly; it's a core domain model with upcoming extensions
+            // in `SchedulingEnvironement`
             let loadings = self
                 .solution
                 .project_loadings
@@ -149,7 +161,8 @@ where
                 .weekly()
                 .ok();
 
-            // Determine period start date from weekly actor, which handles tardiness calculation
+            // Determine period start date from weekly actor, which handles tardiness
+            // calculation
             let period_start_date: NaiveDate = weekly_period
                 .and_then(|period| period.scheduled_task(work_order_number))
                 .map(|where_is_work_order| {
@@ -236,8 +249,13 @@ where
         forced_operations: Vec<WorkOrderNumber>,
     ) -> Result<()>
     where
-        Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>:
-            AbLNSUtils<SolutionType = ProjectSolution>,
+        Algorithm<
+            ProjectSolution,
+            ProjectParameters,
+            PriorityQueue<WorkOrderNumber, u64>,
+            ProjectOptions,
+            Ss,
+        >: AbLNSUtils<SolutionType = ProjectSolution>,
         Ss: SystemSolutions<Project = ProjectSolution>,
     {
         for work_order_number in forced_operations {
@@ -434,14 +452,24 @@ fn sub_one_day(current_day: &mut Option<Day>) -> Option<()>
 
 impl<Ss> ActorBasedLargeNeighborhoodSearch for ProjectAlgorithm<Ss>
 where
-    Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>:
-        AbLNSUtils<SolutionType = ProjectSolution>,
+    Algorithm<
+        ProjectSolution,
+        ProjectParameters,
+        PriorityQueue<WorkOrderNumber, u64>,
+        ProjectOptions,
+        Ss,
+    >: AbLNSUtils<SolutionType = ProjectSolution>,
     ProjectSolution: Solution,
     ProjectParameters: Parameters,
     Ss: SystemSolutions<Project = ProjectSolution>,
 {
-    type Algorithm =
-        Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>;
+    type Algorithm = Algorithm<
+        ProjectSolution,
+        ProjectParameters,
+        PriorityQueue<WorkOrderNumber, u64>,
+        ProjectOptions,
+        Ss,
+    >;
     type Options = ProjectOptions;
 
     fn incorporate_system_solution(&mut self) -> Result<bool>
@@ -490,8 +518,7 @@ where
             aggregate_load = self.determine_loading()
         );
 
-        if project_objective_value.objective_value < self.solution.objective_value.objective_value
-        {
+        if project_objective_value.objective_value < self.solution.objective_value.objective_value {
             Ok(ObjectiveValueType::Better(project_objective_value))
         } else {
             Ok(ObjectiveValueType::Worse(project_objective_value))
@@ -548,13 +575,13 @@ where
             counter += 1;
 
             event!(
+                target: "debug",
                 Level::DEBUG,
                 main_loop_counter = counter,
                 start_day_index = start_day_index,
                 priority_queue_len = self.solution_intermediate.len(),
             );
 
-            event!(target: "developer", Level::WARN, start_day_index);
             let project_parameter = match loop_state {
                 LoopState::Unscheduled => {
                     start_day_index += 1;
@@ -570,7 +597,7 @@ where
                     current_work_order_number = match self.solution_intermediate.pop() {
                         Some((work_order_number, _)) => work_order_number,
                         None => {
-                            event!(target: "developer", Level::INFO, "main_loop break: FINISH ON LoopState::Scheduled");
+                            event!(target: "debug", Level::INFO, "main_loop break: FINISH ON LoopState::Scheduled");
                             break;
                         }
                     };
@@ -741,10 +768,8 @@ where
             .into_keys()
             .collect();
 
-        let random_work_order_numbers = work_order_numbers.choose_multiple(
-            &mut rng,
-            self.options.number_of_removed_work_orders,
-        );
+        let random_work_order_numbers = work_order_numbers
+            .choose_multiple(&mut rng, self.options.number_of_removed_work_orders);
 
         // Log work order count for debugging
         event!(target: "developer", Level::INFO, number_of_work_orders_in_project_solution = self.solution.project_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Project(_))).count());
@@ -802,8 +827,13 @@ impl<Ss> Deref for ProjectAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    type Target =
-        Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>;
+    type Target = Algorithm<
+        ProjectSolution,
+        ProjectParameters,
+        PriorityQueue<WorkOrderNumber, u64>,
+        ProjectOptions,
+        Ss,
+    >;
 
     fn deref(&self) -> &Self::Target
     {
@@ -931,8 +961,15 @@ enum OperationDifference
     DiffDay,
 }
 impl<Ss>
-    From<Algorithm<ProjectSolution, ProjectParameters, PriorityQueue<WorkOrderNumber, u64>, ProjectOptions, Ss>>
-    for ProjectAlgorithm<Ss>
+    From<
+        Algorithm<
+            ProjectSolution,
+            ProjectParameters,
+            PriorityQueue<WorkOrderNumber, u64>,
+            ProjectOptions,
+            Ss,
+        >,
+    > for ProjectAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {

@@ -36,9 +36,11 @@ use tracing::Level;
 #[allow(unused_imports)]
 use tracing::event;
 
-pub struct DailyAlgorithm<Ss>(Algorithm<DailySolution, DailyParameters, (), DailyOptions, Ss>)
+pub struct DailyAlgorithm<System>(
+    Algorithm<DailySolution, DailyParameters, (), DailyOptions, System>,
+)
 where
-    Ss: SystemSolutions;
+    System: SystemSolutions;
 
 impl<Ss> DailyAlgorithm<Ss>
 where
@@ -93,7 +95,8 @@ impl<Ss: SystemSolutions + std::fmt::Debug> std::fmt::Debug for DailyAlgorithm<S
 
 impl<Ss> ActorBasedLargeNeighborhoodSearch for DailyAlgorithm<Ss>
 where
-    Algorithm<DailySolution, DailyParameters, (), DailyOptions, Ss>: AbLNSUtils<SolutionType = DailySolution>,
+    Algorithm<DailySolution, DailyParameters, (), DailyOptions, Ss>:
+        AbLNSUtils<SolutionType = DailySolution>,
     DailySolution: Solution,
     DailyParameters: Parameters,
     Ss: SystemSolutions<Daily = DailySolution>,
@@ -308,10 +311,7 @@ where
         let work_order_numbers = self.solution.get_assigned_and_unassigned_work_orders();
 
         let sampled_work_order_numbers = work_order_numbers
-            .choose_multiple(
-                &mut rng,
-                self.options.number_of_unassigned_work_orders,
-            )
+            .choose_multiple(&mut rng, self.options.number_of_unassigned_work_orders)
             .collect::<Vec<_>>()
             .clone();
 
@@ -483,7 +483,8 @@ where
         &mut self.0
     }
 }
-impl<Ss> From<Algorithm<DailySolution, DailyParameters, (), DailyOptions, Ss>> for DailyAlgorithm<Ss>
+impl<Ss> From<Algorithm<DailySolution, DailyParameters, (), DailyOptions, Ss>>
+    for DailyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {

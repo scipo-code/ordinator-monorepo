@@ -15,6 +15,7 @@ use ordinator_orchestrator_actor_traits::SwapSolution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
+use tracing::info;
 
 use crate::traits::AbLNSUtils;
 
@@ -110,7 +111,7 @@ where
 impl<S, P, I, O, Ss> AlgorithmBuilder<S, P, I, O, Ss>
 where
     S: SwapSolution<Ss> + Solution<Parameters = P> + Clone,
-    P: Parameters<Options = O>,
+    P: Parameters<Options = O> + Debug,
     I: Default,
     O: Options,
     Ss: SystemSolutions,
@@ -156,6 +157,7 @@ where
             &options,
         )?;
 
+        info!(target: "developer", parameters = ?parameters);
         // S is the concrete type, Solution is the trait
         self.solution = Some(SolutionState::new(
             S::from_parameters(&parameters).with_context(|| {

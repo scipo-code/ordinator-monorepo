@@ -6,12 +6,12 @@ use anyhow::Result;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::period::Period;
-use ordinator_scheduling_environment::worker_environment::DailyOptions;
 use ordinator_scheduling_environment::work_order::WorkOrderActivity;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
 use ordinator_scheduling_environment::work_order::operation::operation_info::NumberOfPeople;
+use ordinator_scheduling_environment::worker_environment::DailyOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
@@ -27,17 +27,13 @@ impl std::fmt::Debug for DailyParameters
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
-        if f.alternate() {
-            write!(
-                f,
-                "Number of WorkOrderActivities: {}\n\
+        write!(
+            f,
+            "Number of WorkOrderActivities: {}\n\
                 Daily periods: {:#?}",
-                self.daily_work_orders.len(),
-                self.daily_periods,
-            )
-        } else {
-            panic!("Use the alternate version of the Debug formatter")
-        }
+            self.daily_work_orders.len(),
+            self.daily_periods,
+        )
     }
 }
 

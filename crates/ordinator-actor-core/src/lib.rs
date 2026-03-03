@@ -149,33 +149,30 @@ where
 
     /// Construct and spawn an actor with the given options, returning the
     /// communication channel to the orchestrator.
-    pub fn construct<S, P, I, O, Ss>(
+    pub fn construct<S, P, I, O, System>(
         id: ActorCompositeId,
-        scheduling_environment_guard: Arc<Mutex<SchedulingHypergraph>>,
-        shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
+        scheduling_hypergraph: Arc<Mutex<SchedulingHypergraph>>,
+        system_solutions: Arc<ArcSwap<System>>,
         system_configurations: Arc<ArcSwap<SystemConfigurations>>,
         state_link_bus: BusReader<StateLink>,
         error_channel: Sender<anyhow::Error>,
         options: O,
     ) -> Result<Communication<ActorRequest, ActorResponse>>
     where
-        Algorithm: From<algorithm::Algorithm<S, P, I, O, Ss>> + Send + 'static,
-        S: Solution<Parameters = P> + Debug + Clone + SwapSolution<Ss>,
-        Ss: SystemSolutions,
-        P: Parameters<Options = O>,
+        Algorithm: From<algorithm::Algorithm<S, P, I, O, System>> + Send + 'static,
+        S: Solution<Parameters = P> + Debug + Clone + SwapSolution<System>,
+        System: SystemSolutions,
+        P: Parameters<Options = O> + Debug,
         O: Options,
         I: Default,
     {
         Self::builder()
             .agent_id(id.clone())
-            .scheduling_environment(Arc::clone(&scheduling_environment_guard))
+            .scheduling_environment(Arc::clone(&scheduling_hypergraph))
             .algorithm(|ab| {
                 ab.id(id)
-                    .parameters_and_solution(
-                        &scheduling_environment_guard.lock().unwrap(),
-                        options,
-                    )?
-                    .system_solution_arc_swap(shared_solution_arc_swap)
+                    .parameters_and_solution(&scheduling_hypergraph.lock().unwrap(), options)?
+                    .system_solution_arc_swap(system_solutions)
             })?
             .communication(error_channel, state_link_bus)
             .configurations(system_configurations)
@@ -269,7 +266,7 @@ where
         SpecificAlgorithm: From<algorithm::Algorithm<S, P, I, O, Ss>>,
         S: Solution<Parameters = P> + Debug + Clone + SwapSolution<Ss>,
         Ss: SystemSolutions,
-        P: Parameters<Options = O>,
+        P: Parameters<Options = O> + Debug,
         O: Options,
         I: Default,
         F: FnOnce(AlgorithmBuilder<S, P, I, O, Ss>) -> Result<AlgorithmBuilder<S, P, I, O, Ss>>,
