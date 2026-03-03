@@ -67,6 +67,13 @@ pub(crate) enum Node
     Day(NaiveDate),
 }
 
+pub(crate) struct WorkOrderNode
+{
+    work_order_number: WorkOrderNumber,
+    earliest_allowed_starting_date: NaiveDate,
+    latest_allowed_finish_date: NaiveDate,
+}
+
 #[derive(Hash, Clone, Debug, PartialEq, PartialOrd, Ord, Eq)]
 pub(crate) struct ActivityNode
 {
@@ -899,8 +906,7 @@ impl SchedulingHypergraph
             work_orders.insert(
                 work_order_number,
                 WeeklyWorkOrderView {
-                    basic_start_date: basic_start_date
-                        .expect("Work order must have a basic start date"),
+                    basic_start_date,
                     assigned_period,
                     excluded_periods,
                     activities: activity_views,
@@ -1672,7 +1678,7 @@ mod tests
         // Work orders
         assert_eq!(view.work_orders.len(), 1);
         let wo_view = &view.work_orders[&WorkOrderNumber(100)];
-        assert_eq!(wo_view.basic_start_date, basic_start);
+        assert_eq!(wo_view.basic_start_date, Some(basic_start));
         assert!(wo_view.assigned_period.is_none());
         assert!(wo_view.excluded_periods.is_empty());
 

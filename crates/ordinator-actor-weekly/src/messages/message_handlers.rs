@@ -348,14 +348,16 @@ where
                                     period.clone(),
                                 )
                             }
-                            None => ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled,
+                            None => {
+                                ordinator_orchestrator_actor_traits::WhereIsWorkOrder::NotScheduled
+                            }
                         };
 
                         let latest_period = weekly_view
                             .periods
                             .iter()
                             .rev()
-                            .find(|p| p.contains_date(wo_view.basic_start_date))
+                            .find(|p| p.contains_date(wo_view.latest_allowed_finish_date))
                             .or(weekly_view.periods.last())
                             .cloned()
                             .expect("There should always be at least one period");
