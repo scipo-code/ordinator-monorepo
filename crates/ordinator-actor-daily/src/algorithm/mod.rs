@@ -15,6 +15,7 @@ use anyhow::ensure;
 use daily_parameters::DailyParameters;
 use daily_solution::DailySolution;
 use ordinator_actor_core::algorithm::Algorithm;
+use ordinator_orchestrator_actor_traits::Inspect;
 use ordinator_actor_core::traits::AbLNSUtils;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
@@ -483,6 +484,89 @@ where
         &mut self.0
     }
 }
+impl<Ss: SystemSolutions + std::fmt::Debug> Inspect for DailyAlgorithm<Ss>
+{
+    fn summary(&self) -> impl std::fmt::Display + '_
+    {
+        struct Summary<'a>
+        {
+            id: &'a str,
+            stagnation: u64,
+            version: u64,
+            objective: &'a dyn std::fmt::Debug,
+        }
+        impl std::fmt::Display for Summary<'_>
+        {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+            {
+                write!(
+                    f,
+                    "DailyAlgorithm {}: v{}, stagnation {}, objective {:?}",
+                    self.id, self.version, self.stagnation, self.objective
+                )
+            }
+        }
+        let (stagnation, version) = self.0.solution.stagnation_and_version();
+        Summary {
+            id: &self.0.id.0,
+            stagnation,
+            version,
+            objective: &self.0.solution.objective_value,
+        }
+    }
+
+    fn state(&self) -> impl std::fmt::Display + '_
+    {
+        struct State<'a, P: Inspect>
+        {
+            id: &'a str,
+            stagnation: u64,
+            version: u64,
+            objective: &'a dyn std::fmt::Debug,
+            delegated: usize,
+            total: usize,
+            parameters: &'a P,
+        }
+        impl<P: Inspect> std::fmt::Display for State<'_, P>
+        {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+            {
+                writeln!(f, "DailyAlgorithm {}:", self.id)?;
+                writeln!(
+                    f,
+                    "  version: {}, stagnation: {}",
+                    self.version, self.stagnation
+                )?;
+                writeln!(f, "  objective: {:?}", self.objective)?;
+                writeln!(
+                    f,
+                    "  assigned: {}/{}",
+                    self.delegated, self.total
+                )?;
+                write!(f, "  parameters: {}", self.parameters.summary())
+            }
+        }
+        let (stagnation, version) = self.0.solution.stagnation_and_version();
+        let delegated = self
+            .0
+            .solution
+            .operational_state_machine
+            .values()
+            .filter(|d| d.is_assign())
+            .count();
+        let total = self.0.solution.operational_state_machine.len();
+        State {
+            id: &self.0.id.0,
+            stagnation,
+            version,
+            objective: &self.0.solution.objective_value,
+            delegated,
+            total,
+            parameters: &self.0.parameters,
+        }
+    }
+}
+
 impl<Ss> From<Algorithm<DailySolution, DailyParameters, (), DailyOptions, Ss>>
     for DailyAlgorithm<Ss>
 where

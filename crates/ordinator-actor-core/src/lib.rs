@@ -43,7 +43,8 @@ where
     // trait that Actor implementations provide through a
     // custom interface.
     Self: CommandHandler<ActorRequest, ActorResponse>,
-    Algorithm: ActorBasedLargeNeighborhoodSearch + Debug,
+    Algorithm:
+        ActorBasedLargeNeighborhoodSearch + Debug + ordinator_orchestrator_actor_traits::Inspect,
     ActorResponse: Debug,
 {
     pub actor_id: ActorCompositeId,
@@ -70,7 +71,8 @@ where
 impl<ActorRequest, ActorResponse, Algorithm> Actor<ActorRequest, ActorResponse, Algorithm>
 where
     Self: CommandHandler<ActorRequest, ActorResponse>,
-    Algorithm: ActorBasedLargeNeighborhoodSearch + Debug,
+    Algorithm:
+        ActorBasedLargeNeighborhoodSearch + Debug + ordinator_orchestrator_actor_traits::Inspect,
     ActorRequest: Send + Sync + 'static,
     ActorResponse: Send + Sync + 'static + Debug,
 {
@@ -80,6 +82,7 @@ where
     {
         let mut schedule_iteration = ScheduleIteration::default();
 
+        info!(target: "developer", algorithm = %self.algorithm.state());
         if let Err(actor_error) = self.algorithm.schedule().with_context(|| {
             format!(
                 "{schedule_iteration:#?}\n\
@@ -95,6 +98,7 @@ where
                 .send(anyhow!(actor_error))
                 .expect("If this happens no amount of error handling will save the program")
         }
+        info!(target: "developer", algorithm = %self.algorithm.state());
 
         schedule_iteration.increment();
 
@@ -197,7 +201,7 @@ where
 
 pub struct ActorBuilder<ActorRequest, ActorResponse, Algorithm>
 where
-    Algorithm: ActorBasedLargeNeighborhoodSearch,
+    Algorithm: ActorBasedLargeNeighborhoodSearch + ordinator_orchestrator_actor_traits::Inspect,
     ActorRequest: Send + Sync + 'static,
     ActorResponse: Send + Sync + 'static,
 {
@@ -218,7 +222,11 @@ impl<ActorRequest, ActorResponse, SpecificAlgorithm>
 where
     Actor<ActorRequest, ActorResponse, SpecificAlgorithm>:
         CommandHandler<ActorRequest, ActorResponse>,
-    SpecificAlgorithm: ActorBasedLargeNeighborhoodSearch + Send + 'static + Debug,
+    SpecificAlgorithm: ActorBasedLargeNeighborhoodSearch
+        + Send
+        + 'static
+        + Debug
+        + ordinator_orchestrator_actor_traits::Inspect,
     ActorRequest: Send + Sync + 'static,
     ActorResponse: Send + Sync + 'static + Debug,
 {

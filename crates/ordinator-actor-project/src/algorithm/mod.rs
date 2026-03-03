@@ -23,6 +23,7 @@ use ordinator_actor_core::algorithm::LoadOperation;
 use ordinator_actor_core::traits::AbLNSUtils;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
+use ordinator_orchestrator_actor_traits::Inspect;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
@@ -960,6 +961,90 @@ enum OperationDifference
     SameDay,
     DiffDay,
 }
+impl<Ss: SystemSolutions + std::fmt::Debug> Inspect for ProjectAlgorithm<Ss>
+{
+    fn summary(&self) -> impl std::fmt::Display + '_
+    {
+        struct Summary<'a>
+        {
+            id: &'a str,
+            stagnation: u64,
+            version: u64,
+            objective: u64,
+        }
+        impl std::fmt::Display for Summary<'_>
+        {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+            {
+                write!(
+                    f,
+                    "ProjectAlgorithm {}: v{}, stagnation {}, objective {}",
+                    self.id, self.version, self.stagnation, self.objective
+                )
+            }
+        }
+        let (stagnation, version) = self.0.solution.stagnation_and_version();
+        Summary {
+            id: &self.0.id.0,
+            stagnation,
+            version,
+            objective: self.0.solution.objective_value.objective_value,
+        }
+    }
+
+    fn state(&self) -> impl std::fmt::Display + '_
+    {
+        struct State<'a, P: Inspect>
+        {
+            id: &'a str,
+            stagnation: u64,
+            version: u64,
+            objective: &'a dyn std::fmt::Debug,
+            scheduled: usize,
+            total: usize,
+            parameters: &'a P,
+        }
+        impl<P: Inspect> std::fmt::Display for State<'_, P>
+        {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+            {
+                writeln!(f, "ProjectAlgorithm {}:", self.id)?;
+                writeln!(
+                    f,
+                    "  version: {}, stagnation: {}",
+                    self.version, self.stagnation
+                )?;
+                writeln!(f, "  objective: {:?}", self.objective)?;
+                writeln!(
+                    f,
+                    "  scheduled: {}/{}",
+                    self.scheduled, self.total
+                )?;
+                write!(f, "  parameters: {}", self.parameters.summary())
+            }
+        }
+        let (stagnation, version) = self.0.solution.stagnation_and_version();
+        let scheduled = self
+            .0
+            .solution
+            .project_work_orders
+            .0
+            .values()
+            .filter(|w| w.is_project())
+            .count();
+        let total = self.0.solution.project_work_orders.0.len();
+        State {
+            id: &self.0.id.0,
+            stagnation,
+            version,
+            objective: &self.0.solution.objective_value,
+            scheduled,
+            total,
+            parameters: &self.0.parameters,
+        }
+    }
+}
+
 impl<Ss>
     From<
         Algorithm<

@@ -28,6 +28,7 @@ use ordinator_actor_core::algorithm::Algorithm;
 use ordinator_actor_core::traits::AbLNSUtils;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
+use ordinator_orchestrator_actor_traits::Inspect;
 use ordinator_orchestrator_actor_traits::OperationalInterface;
 use ordinator_orchestrator_actor_traits::Solution;
 use ordinator_orchestrator_actor_traits::WeeklyInterface;
@@ -1217,6 +1218,81 @@ fn equality_between_time_interval_and_assignments(all_events: &Vec<Assignment>)
         )
     }
 }
+impl<Ss: SystemSolutions + std::fmt::Debug> Inspect for OperationalAlgorithm<Ss>
+{
+    fn summary(&self) -> impl std::fmt::Display + '_
+    {
+        struct Summary<'a>
+        {
+            id: &'a str,
+            stagnation: u64,
+            version: u64,
+            objective: &'a dyn std::fmt::Debug,
+        }
+        impl std::fmt::Display for Summary<'_>
+        {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+            {
+                write!(
+                    f,
+                    "OperationalAlgorithm {}: v{}, stagnation {}, objective {:?}",
+                    self.id, self.version, self.stagnation, self.objective
+                )
+            }
+        }
+        let (stagnation, version) = self.0.solution.stagnation_and_version();
+        Summary {
+            id: &self.0.id.0,
+            stagnation,
+            version,
+            objective: &self.0.solution.objective_value,
+        }
+    }
+
+    fn state(&self) -> impl std::fmt::Display + '_
+    {
+        struct State<'a, P: Inspect>
+        {
+            id: &'a str,
+            stagnation: u64,
+            version: u64,
+            objective: &'a dyn std::fmt::Debug,
+            scheduled: usize,
+            non_productive: usize,
+            parameters: &'a P,
+        }
+        impl<P: Inspect> std::fmt::Display for State<'_, P>
+        {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+            {
+                writeln!(f, "OperationalAlgorithm {}:", self.id)?;
+                writeln!(
+                    f,
+                    "  version: {}, stagnation: {}",
+                    self.version, self.stagnation
+                )?;
+                writeln!(f, "  objective: {:?}", self.objective)?;
+                writeln!(
+                    f,
+                    "  scheduled activities: {}, non-productive: {}",
+                    self.scheduled, self.non_productive
+                )?;
+                write!(f, "  parameters: {}", self.parameters.summary())
+            }
+        }
+        let (stagnation, version) = self.0.solution.stagnation_and_version();
+        State {
+            id: &self.0.id.0,
+            stagnation,
+            version,
+            objective: &self.0.solution.objective_value,
+            scheduled: self.0.solution.scheduled_work_order_activities.len(),
+            non_productive: self.0.solution.non_productive.len(),
+            parameters: &self.0.parameters,
+        }
+    }
+}
+
 impl<Ss> From<Algorithm<OperationalSolution, OperationalParameters, (), OperationalOptions, Ss>>
     for OperationalAlgorithm<Ss>
 where

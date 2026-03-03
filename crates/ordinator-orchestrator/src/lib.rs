@@ -602,7 +602,7 @@ where
             operational_communications,
         );
 
-        info!(target: "developer", agent_registry = %agent_registry.summary());
+        info!(target: "developer", agent_registry = %agent_registry.state());
         self.actor_registries
             .lock()
             .unwrap()

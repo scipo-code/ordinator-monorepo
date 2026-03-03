@@ -354,11 +354,57 @@ impl Inspect for WeeklyParameters
                         .collect::<Vec<_>>()
                         .join(", ")
                 )?;
-                write!(
+                writeln!(
                     f,
                     "  clustering pairs: {}",
                     params.weekly_clustering.inner.len()
-                )
+                )?;
+
+                // Aggregate capacity totals
+                let grand_total: f64 = params
+                    .weekly_capacity
+                    .0
+                    .values()
+                    .flat_map(|skills| skills.values())
+                    .map(|w| w.to_f64())
+                    .sum();
+                writeln!(f, "  capacity: {:.0}h total", grand_total)?;
+
+                // Hours per period — sorted, 4 per line for readability
+                let mut periods_sorted: Vec<_> = params.weekly_capacity.0.iter().collect();
+                periods_sorted.sort_by_key(|(p, _)| (*p).clone());
+
+                writeln!(f, "  capacity by period:")?;
+                for (i, (period, skills)) in periods_sorted.iter().enumerate() {
+                    let hours: f64 = skills.values().map(|w| w.to_f64()).sum();
+                    if i % 4 == 0 {
+                        if i > 0 {
+                            writeln!(f)?;
+                        }
+                        write!(f, "    ")?;
+                    } else {
+                        write!(f, "  ")?;
+                    }
+                    write!(f, "{:<11}: {:>7.0}h", period, hours)?;
+                }
+                writeln!(f)?;
+
+                // Hours per skill — aggregated across all periods, sorted by name
+                let mut skill_totals: HashMap<Skill, f64> = HashMap::new();
+                for skills in params.weekly_capacity.0.values() {
+                    for (&skill, work) in skills {
+                        *skill_totals.entry(skill).or_default() += work.to_f64();
+                    }
+                }
+                let mut skills_sorted: Vec<_> = skill_totals.into_iter().collect();
+                skills_sorted.sort_by(|(a, _), (b, _)| a.to_string().cmp(&b.to_string()));
+
+                write!(f, "  capacity by skill:")?;
+                for (skill, hours) in &skills_sorted {
+                    write!(f, "\n    {:<12} {:>8.0}h", skill.to_string(), hours)?;
+                }
+
+                Ok(())
             }
         }
         State(self)

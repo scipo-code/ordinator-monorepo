@@ -4,6 +4,7 @@ pub mod weekly_resources;
 pub mod weekly_solution;
 
 use std::collections::HashMap;
+use std::fmt;
 use std::fmt::Debug;
 use std::ops::Deref;
 use std::ops::DerefMut;
@@ -18,6 +19,7 @@ use ordinator_actor_core::algorithm::LoadOperation;
 use ordinator_actor_core::traits::AbLNSUtils;
 use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
 use ordinator_actor_core::traits::ObjectiveValueType;
+use ordinator_orchestrator_actor_traits::Inspect;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::ProjectInterface;
 use ordinator_orchestrator_actor_traits::Solution;
@@ -34,6 +36,7 @@ use rand::distr::weighted::Weight;
 use rand::seq::IndexedRandom;
 use strum::IntoEnumIterator;
 use tracing::instrument;
+use tracing::warn;
 use weekly_parameters::WeeklyClustering;
 use weekly_parameters::WeeklyParameters;
 use weekly_resources::WeeklyResources;
@@ -51,21 +54,37 @@ use crate::messages::responses::WeeklyResponseScheduling;
 
 #[derive(Debug)]
 pub struct WeeklyAlgorithm<Ss>(
-    pub Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>,
+    pub  Algorithm<
+        WeeklySolution,
+        WeeklyParameters,
+        PriorityQueue<WorkOrderNumber, i64>,
+        WeeklyOptions,
+        Ss,
+    >,
 )
 where
     WeeklySolution: Solution,
     WeeklyParameters: Parameters,
     Ss: SystemSolutions,
-    Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>:
-        AbLNSUtils;
+    Algorithm<
+        WeeklySolution,
+        WeeklyParameters,
+        PriorityQueue<WorkOrderNumber, i64>,
+        WeeklyOptions,
+        Ss,
+    >: AbLNSUtils;
 
 impl<Ss> Deref for WeeklyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
-    type Target =
-        Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>;
+    type Target = Algorithm<
+        WeeklySolution,
+        WeeklyParameters,
+        PriorityQueue<WorkOrderNumber, i64>,
+        WeeklyOptions,
+        Ss,
+    >;
 
     fn deref(&self) -> &Self::Target
     {
@@ -84,14 +103,24 @@ where
 
 impl<Ss> ActorBasedLargeNeighborhoodSearch for WeeklyAlgorithm<Ss>
 where
-    Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>:
-        AbLNSUtils<SolutionType = WeeklySolution>,
+    Algorithm<
+        WeeklySolution,
+        WeeklyParameters,
+        PriorityQueue<WorkOrderNumber, i64>,
+        WeeklyOptions,
+        Ss,
+    >: AbLNSUtils<SolutionType = WeeklySolution>,
     WeeklySolution: Solution,
     WeeklyParameters: Parameters,
     Ss: SystemSolutions<Weekly = WeeklySolution>,
 {
-    type Algorithm =
-        Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>;
+    type Algorithm = Algorithm<
+        WeeklySolution,
+        WeeklyParameters,
+        PriorityQueue<WorkOrderNumber, i64>,
+        WeeklyOptions,
+        Ss,
+    >;
     type Options = WeeklyOptions;
 
     /// Incorporates the system solution by updating internal state and force
@@ -239,10 +268,7 @@ where
         filtered_keys.sort();
 
         let sampled_work_order_keys = filtered_keys
-            .choose_multiple(
-                &mut rng,
-                self.options.number_of_removed_work_orders,
-            )
+            .choose_multiple(&mut rng, self.options.number_of_removed_work_orders)
             .collect::<Vec<_>>()
             .clone();
 
@@ -653,32 +679,22 @@ where
             .map(|e| (*e.0, e.1.round()))
             .collect();
 
+        warn!(target: "stdout", work_order_number = %work_order_number, period = %period, parameters = %self.parameters.state());
         if weekly_parameter.excluded_periods.contains(period) {
             return Ok(Some(work_order_number));
         }
 
+        warn!(target: "stdout", work_order_number = %work_order_number, period = %period);
         if self.parameters.period_locks.contains(period) {
             return Ok(Some(work_order_number));
         }
-
-        // let resource_use_option = self
-        //     .determine_best_permutation(work_load.clone(), period,
-        // ScheduleWorkOrder::Normal)     .with_context(|| {
-        //         format!(
-        //             "{:?}\nfor period\n{:#?}\ncould not be {:?}",
-        //             work_order_number,
-        //             period,
-        //             ScheduleWorkOrder::Normal
-        //         )
-        //     })?;
+        warn!(target: "stdout", work_order_number = %work_order_number, period = %period);
 
         // If no `WeeklyResources` could be determined for the `schedule` decision make
         // an early return.
         //
         // TODO [ ] - replace with multi-skill calculation. You do not need
         // STARTHERE
-        // high complexity here.
-
         let previous_period = self
             .solution
             .set_work_order_to_weekly(work_order_number, period.clone());
@@ -1051,13 +1067,106 @@ where
     }
 }
 
-impl<Ss> From<Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>>
-    for WeeklyAlgorithm<Ss>
+impl<Ss: SystemSolutions + fmt::Debug> Inspect for WeeklyAlgorithm<Ss>
+{
+    fn summary(&self) -> impl fmt::Display + '_
+    {
+        struct Summary<'a>
+        {
+            id: &'a str,
+            stagnation: u64,
+            version: u64,
+            objective: i64,
+        }
+        impl fmt::Display for Summary<'_>
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                write!(
+                    f,
+                    "WeeklyAlgorithm {}: v{}, stagnation {}, objective {}",
+                    self.id, self.version, self.stagnation, self.objective
+                )
+            }
+        }
+        let (stagnation, version) = self.0.solution.stagnation_and_version();
+        Summary {
+            id: &self.0.id.0,
+            stagnation,
+            version,
+            objective: self.0.solution.objective_value().objective_value,
+        }
+    }
+
+    fn state(&self) -> impl fmt::Display + '_
+    {
+        struct State<'a, P: Inspect>
+        {
+            id: &'a str,
+            stagnation: u64,
+            version: u64,
+            objective: &'a dyn fmt::Debug,
+            scheduled: usize,
+            total: usize,
+            parameters: &'a P,
+        }
+        impl<P: Inspect> fmt::Display for State<'_, P>
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                writeln!(f, "WeeklyAlgorithm {}:", self.id)?;
+                writeln!(
+                    f,
+                    "  version: {}, stagnation: {}",
+                    self.version, self.stagnation
+                )?;
+                writeln!(f, "  objective: {:?}", self.objective)?;
+                writeln!(f, "  scheduled: {}/{}", self.scheduled, self.total)?;
+                write!(f, "  parameters: {}", self.parameters.summary())
+            }
+        }
+        let (stagnation, version) = self.0.solution.stagnation_and_version();
+        let scheduled = self
+            .0
+            .solution
+            .weekly_scheduled_work_orders
+            .values()
+            .filter(|w| !w.not_scheduled())
+            .count();
+        let total = self.0.solution.weekly_scheduled_work_orders.len();
+        State {
+            id: &self.0.id.0,
+            stagnation,
+            version,
+            objective: self.0.solution.objective_value(),
+            scheduled,
+            total,
+            parameters: &self.0.parameters,
+        }
+    }
+}
+
+impl<Ss>
+    From<
+        Algorithm<
+            WeeklySolution,
+            WeeklyParameters,
+            PriorityQueue<WorkOrderNumber, i64>,
+            WeeklyOptions,
+            Ss,
+        >,
+    > for WeeklyAlgorithm<Ss>
 where
     Ss: SystemSolutions,
 {
     fn from(
-        value: Algorithm<WeeklySolution, WeeklyParameters, PriorityQueue<WorkOrderNumber, i64>, WeeklyOptions, Ss>,
+        value: Algorithm<
+            WeeklySolution,
+            WeeklyParameters,
+            PriorityQueue<WorkOrderNumber, i64>,
+            WeeklyOptions,
+            Ss,
+        >,
     ) -> Self
     {
         WeeklyAlgorithm(value)
