@@ -3,6 +3,7 @@ pub mod marginal_fitness;
 use std::collections::BTreeMap;
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::fmt;
 use std::ops::Deref;
 use std::ops::DerefMut;
 use std::sync::MutexGuard;
@@ -272,7 +273,32 @@ where
     }
 }
 
-pub trait Parameters
+pub struct DebugAsDisplay<'a, T: fmt::Debug + ?Sized>(pub &'a T);
+
+impl<T: fmt::Debug + ?Sized> fmt::Display for DebugAsDisplay<'_, T>
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+    {
+        write!(f, "{:#?}", self.0)
+    }
+}
+
+pub trait Inspect: fmt::Debug
+{
+    /// One-line summary of the type
+    fn summary(&self) -> impl fmt::Display + '_;
+
+    /// Key properties: objective, loading, iteration count, etc.
+    fn state(&self) -> impl fmt::Display + '_;
+
+    /// Full dump of all data (potentially thousands of lines)
+    fn dump(&self) -> impl fmt::Display + '_
+    {
+        DebugAsDisplay(self)
+    }
+}
+
+pub trait Parameters: Inspect
 where
     Self: Sized,
 {

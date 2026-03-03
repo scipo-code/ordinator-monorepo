@@ -1,9 +1,11 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::fmt;
 use std::sync::MutexGuard;
 
 use anyhow::Result;
 use anyhow::bail;
+use ordinator_orchestrator_actor_traits::Inspect;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::SchedulingEnvironment;
@@ -273,5 +275,92 @@ impl WeeklyClustering
         Self {
             inner: HashMap::new(),
         }
+    }
+}
+
+impl Inspect for WeeklyParameters
+{
+    fn summary(&self) -> impl fmt::Display + '_
+    {
+        struct Summary<'a>(&'a WeeklyParameters);
+        impl fmt::Display for Summary<'_>
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                let total = self.0.weekly_work_order_parameters.len();
+                let locked = self
+                    .0
+                    .weekly_work_order_parameters
+                    .values()
+                    .filter(|p| !p.locked_in_period.not_scheduled())
+                    .count();
+                write!(
+                    f,
+                    "WeeklyParameters: {} work orders ({} locked), {} periods",
+                    total,
+                    locked,
+                    self.0.weekly_periods.len()
+                )
+            }
+        }
+        Summary(self)
+    }
+
+    fn state(&self) -> impl fmt::Display + '_
+    {
+        struct State<'a>(&'a WeeklyParameters);
+        impl fmt::Display for State<'_>
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                let params = self.0;
+                let total = params.weekly_work_order_parameters.len();
+                let locked = params
+                    .weekly_work_order_parameters
+                    .values()
+                    .filter(|p| !p.locked_in_period.not_scheduled())
+                    .count();
+                let unscheduled = total - locked;
+                let total_weight: i64 = params
+                    .weekly_work_order_parameters
+                    .values()
+                    .map(|p| p.weight)
+                    .sum();
+
+                writeln!(f, "WeeklyParameters:")?;
+                writeln!(
+                    f,
+                    "  work orders: {} (locked: {}, unscheduled: {})",
+                    total, locked, unscheduled
+                )?;
+                writeln!(f, "  total weight: {}", total_weight)?;
+                writeln!(
+                    f,
+                    "  periods: {}",
+                    params
+                        .weekly_periods
+                        .iter()
+                        .map(|p| p.to_string())
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                )?;
+                writeln!(
+                    f,
+                    "  period locks: {}",
+                    params
+                        .period_locks
+                        .iter()
+                        .map(|p| p.to_string())
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                )?;
+                write!(
+                    f,
+                    "  clustering pairs: {}",
+                    params.weekly_clustering.inner.len()
+                )
+            }
+        }
+        State(self)
     }
 }

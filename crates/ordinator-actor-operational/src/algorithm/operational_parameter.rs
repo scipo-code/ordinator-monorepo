@@ -2,12 +2,14 @@ use std::collections::HashMap;
 // TODO: Implement custom Display implementation for better control over formatting
 // NOTE: Derive Debug for now; replace with custom implementation when needed
 // NOTE: Ensure output displays the currently loaded [`SystemSolution`], not previous versions
+use std::fmt;
 use std::sync::MutexGuard;
 
 use anyhow::Result;
 use anyhow::ensure;
 use chrono::TimeDelta;
 use colored::Colorize;
+use ordinator_orchestrator_actor_traits::Inspect;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::TimeInterval;
@@ -199,5 +201,72 @@ impl OperationalParameter
             // delegated,
             // marginal_fitness,
         })
+    }
+}
+
+impl Inspect for OperationalParameters
+{
+    fn summary(&self) -> impl fmt::Display + '_
+    {
+        struct Summary<'a>(&'a OperationalParameters);
+        impl fmt::Display for Summary<'_>
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                write!(
+                    f,
+                    "OperationalParameters: {} activities, off_shift {}-{}, break {}-{}",
+                    self.0.work_order_parameters.len(),
+                    self.0.off_shift_interval.start,
+                    self.0.off_shift_interval.end,
+                    self.0.break_interval.start,
+                    self.0.break_interval.end,
+                )
+            }
+        }
+        Summary(self)
+    }
+
+    fn state(&self) -> impl fmt::Display + '_
+    {
+        struct State<'a>(&'a OperationalParameters);
+        impl fmt::Display for State<'_>
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                let params = self.0;
+                let total_work = params
+                    .work_order_parameters
+                    .values()
+                    .fold(Work::from(0.0), |acc, p| acc + p.work);
+                let relations_count: usize = params
+                    .work_order_activity_relations
+                    .values()
+                    .map(|r| r.len())
+                    .sum();
+
+                writeln!(f, "OperationalParameters:")?;
+                writeln!(f, "  activities: {}", params.work_order_parameters.len())?;
+                writeln!(f, "  total work: {}", total_work)?;
+                writeln!(f, "  relations: {}", relations_count)?;
+                writeln!(
+                    f,
+                    "  off shift: {} - {}",
+                    params.off_shift_interval.start, params.off_shift_interval.end
+                )?;
+                writeln!(
+                    f,
+                    "  break: {} - {}",
+                    params.break_interval.start, params.break_interval.end
+                )?;
+                writeln!(
+                    f,
+                    "  toolbox: {} - {}",
+                    params.toolbox_interval.start, params.toolbox_interval.end
+                )?;
+                write!(f, "  availability: {:?}", params.availability)
+            }
+        }
+        State(self)
     }
 }

@@ -6,6 +6,7 @@ use std::sync::MutexGuard;
 
 use anyhow::Result;
 use chrono::NaiveDate;
+use ordinator_orchestrator_actor_traits::Inspect;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::day::Day;
@@ -181,5 +182,83 @@ impl Display for OperationParameter
             self.work_remaining,
             self.resource
         )
+    }
+}
+
+impl Inspect for ProjectParameters
+{
+    fn summary(&self) -> impl fmt::Display + '_
+    {
+        struct Summary<'a>(&'a ProjectParameters);
+        impl fmt::Display for Summary<'_>
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                let total_operations: usize = self
+                    .0
+                    .project_work_orders
+                    .values()
+                    .map(|p| p.project_operation_parameters.len())
+                    .sum();
+                write!(
+                    f,
+                    "ProjectParameters: {} work orders, {} operations, {} days",
+                    self.0.project_work_orders.len(),
+                    total_operations,
+                    self.0.project_days.len()
+                )
+            }
+        }
+        Summary(self)
+    }
+
+    fn state(&self) -> impl fmt::Display + '_
+    {
+        struct State<'a>(&'a ProjectParameters);
+        impl fmt::Display for State<'_>
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                let params = self.0;
+                let total_operations: usize = params
+                    .project_work_orders
+                    .values()
+                    .map(|p| p.project_operation_parameters.len())
+                    .sum();
+                let total_weight: u64 =
+                    params.project_work_orders.values().map(|p| p.weight).sum();
+                let total_relations: usize = params
+                    .project_work_orders
+                    .values()
+                    .map(|p| p.relations.len())
+                    .sum();
+
+                writeln!(f, "ProjectParameters:")?;
+                writeln!(
+                    f,
+                    "  work orders: {}, operations: {}",
+                    params.project_work_orders.len(),
+                    total_operations
+                )?;
+                writeln!(f, "  total weight: {}", total_weight)?;
+
+                if let (Some(first), Some(last)) =
+                    (params.project_days.first(), params.project_days.last())
+                {
+                    writeln!(
+                        f,
+                        "  days: {} ({} .. {})",
+                        params.project_days.len(),
+                        first,
+                        last
+                    )?;
+                } else {
+                    writeln!(f, "  days: 0")?;
+                }
+
+                write!(f, "  relations: {}", total_relations)
+            }
+        }
+        State(self)
     }
 }

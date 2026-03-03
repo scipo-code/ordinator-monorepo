@@ -998,7 +998,7 @@ impl SchedulingHypergraph
             Node::Period(naive_date) => self.period_indices.insert(naive_date, node_index),
             Node::Skill(skills) => self.skill_indices.insert(skills, node_index),
             Node::Activity(a) => {
-                debug!(target: "developer", activity = ?a, "No node index for `Activities`");
+                debug!(target: "debug", activity = ?a, "No node HashMap-read-index for `Activities`");
                 None
             }
             Node::Day(naive_date) => self.day_indices.insert(naive_date, node_index),

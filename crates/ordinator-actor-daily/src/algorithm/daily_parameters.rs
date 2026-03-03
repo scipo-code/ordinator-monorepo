@@ -1,8 +1,11 @@
 use std::collections::HashMap;
+use std::collections::HashSet;
+use std::fmt;
 use std::sync::MutexGuard;
 
 use anyhow::Context;
 use anyhow::Result;
+use ordinator_orchestrator_actor_traits::Inspect;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::period::Period;
@@ -134,5 +137,75 @@ impl DailyParameter
             number_of_people: number,
             work_remaining,
         }
+    }
+}
+
+impl Inspect for DailyParameters
+{
+    fn summary(&self) -> impl fmt::Display + '_
+    {
+        struct Summary<'a>(&'a DailyParameters);
+        impl fmt::Display for Summary<'_>
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                let total_activities: usize =
+                    self.0.daily_work_orders.values().map(|inner| inner.len()).sum();
+                write!(
+                    f,
+                    "DailyParameters: {} work orders, {} activities, {} periods",
+                    self.0.daily_work_orders.len(),
+                    total_activities,
+                    self.0.daily_periods.len()
+                )
+            }
+        }
+        Summary(self)
+    }
+
+    fn state(&self) -> impl fmt::Display + '_
+    {
+        struct State<'a>(&'a DailyParameters);
+        impl fmt::Display for State<'_>
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                let params = self.0;
+                let total_activities: usize =
+                    params.daily_work_orders.values().map(|inner| inner.len()).sum();
+                let total_work = params
+                    .daily_work_orders
+                    .values()
+                    .flat_map(|inner| inner.values())
+                    .fold(Work::from(0.0), |acc, p| acc + p.work_remaining);
+                let unique_skills: HashSet<Skill> = params
+                    .daily_work_orders
+                    .values()
+                    .flat_map(|inner| inner.values())
+                    .map(|p| p.resource)
+                    .collect();
+
+                writeln!(f, "DailyParameters:")?;
+                writeln!(
+                    f,
+                    "  work orders: {}, activities: {}",
+                    params.daily_work_orders.len(),
+                    total_activities
+                )?;
+                writeln!(f, "  total work remaining: {}", total_work)?;
+                writeln!(f, "  unique skills: {}", unique_skills.len())?;
+                write!(
+                    f,
+                    "  periods: {}",
+                    params
+                        .daily_periods
+                        .iter()
+                        .map(|p| p.to_string())
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                )
+            }
+        }
+        State(self)
     }
 }

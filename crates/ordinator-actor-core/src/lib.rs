@@ -78,7 +78,6 @@ where
     // orchestrator communication.
     pub fn run(&mut self)
     {
-        info!(target: "developer", "CHECK THAT EVERY ALGORITHM IS HERE");
         let mut schedule_iteration = ScheduleIteration::default();
 
         if let Err(actor_error) = self.algorithm.schedule().with_context(|| {

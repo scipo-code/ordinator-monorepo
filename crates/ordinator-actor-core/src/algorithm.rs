@@ -7,6 +7,7 @@ use anyhow::Context;
 use anyhow::Result;
 use arc_swap::ArcSwap;
 use arc_swap::Guard;
+use ordinator_orchestrator_actor_traits::Inspect;
 use ordinator_orchestrator_actor_traits::Options;
 use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::Solution;
@@ -111,7 +112,7 @@ where
 impl<S, P, I, O, Ss> AlgorithmBuilder<S, P, I, O, Ss>
 where
     S: SwapSolution<Ss> + Solution<Parameters = P> + Clone,
-    P: Parameters<Options = O> + Debug,
+    P: Parameters<Options = O> + Inspect,
     I: Default,
     O: Options,
     Ss: SystemSolutions,
@@ -157,7 +158,7 @@ where
             &options,
         )?;
 
-        info!(target: "developer", parameters = ?parameters);
+        info!(target: "developer", parameters = %parameters.summary());
         // S is the concrete type, Solution is the trait
         self.solution = Some(SolutionState::new(
             S::from_parameters(&parameters).with_context(|| {

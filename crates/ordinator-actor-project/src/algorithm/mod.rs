@@ -618,7 +618,7 @@ where
                     current_work_order_number = match self.solution_intermediate.pop() {
                         Some((work_order_number, _)) => work_order_number,
                         None => {
-                            event!(target: "developer", Level::INFO, "main_loop break: FINISH ON LoopState::Scheduled");
+                            event!(target: "debug", Level::INFO, "main_loop break: FINISH ON LoopState::Scheduled");
                             break;
                         }
                     };
@@ -772,7 +772,7 @@ where
             .choose_multiple(&mut rng, self.options.number_of_removed_work_orders);
 
         // Log work order count for debugging
-        event!(target: "developer", Level::INFO, number_of_work_orders_in_project_solution = self.solution.project_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Project(_))).count());
+        event!(target: "debug", Level::INFO, number_of_work_orders_in_project_solution = self.solution.project_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Project(_))).count());
         for work_order_number in random_work_order_numbers {
             self.unschedule_specific_work_order(*work_order_number)
                 .with_context(|| {
@@ -784,7 +784,7 @@ where
                     )
                 })?;
         }
-        event!(target: "developer", Level::INFO, number_of_work_orders_in_project_solution = self.solution.project_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Project(_))).count());
+        event!(target: "debug", Level::INFO, number_of_work_orders_in_project_solution = self.solution.project_work_orders.0.values().filter(|e| matches!(e, WhereIsWorkOrder::Project(_))).count());
         Ok(())
     }
 

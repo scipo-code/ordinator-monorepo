@@ -11,7 +11,6 @@ where **function**, **design decisions**, and **developer** information can be f
 - [crates/ordinator-actor-project](crates/ordinator-actors/ordinator-actor-project)
 - [crates/ordinator-actor-daily](crates/ordinator-actors/ordinator-actor-daily)
 - [crates/ordinator-actor-operational](crates/ordinator-actors/ordinator-actor-operational)
-
 - [crates/ordinator-api-server](crates/ordinator-api-server)
 - [crates/ordinator-orchestrator](crates/ordinator-orchestrator)
 - [crates/ordinator-total-data-processing](crates/ordinator-total-data-processing)
