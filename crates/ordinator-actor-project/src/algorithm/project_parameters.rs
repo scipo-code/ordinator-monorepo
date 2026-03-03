@@ -130,6 +130,7 @@ pub fn create_project_parameter_from_view(
         project_operation_parameters: operation_parameters,
         weight,
         relations,
+        // FIX TODO [ ]: This is wrong - you should handle this separately in
         earliest_allowed_start_date: wo_view.basic_start_date,
     }
 }

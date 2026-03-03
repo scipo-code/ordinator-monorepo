@@ -60,13 +60,14 @@ pub enum ScheduleGraphErrors
 pub(crate) enum Node
 {
     Technician(TechnicianId),
-    WorkOrder(WorkOrderNumber),
+    WorkOrder(WorkOrderNode),
     Activity(ActivityNode),
     Period(Period),
     Skill(Skill),
     Day(NaiveDate),
 }
 
+#[derive(Hash, Clone, Debug, PartialEq, PartialOrd, Ord, Eq)]
 pub(crate) struct WorkOrderNode
 {
     work_order_number: WorkOrderNumber,
@@ -319,9 +320,12 @@ impl SchedulingHypergraph
             .work_order_indices
             .entry(work_order.work_order_number())
         {
-            Entry::Vacant(_new_work_order) => {
-                self.add_node(Node::WorkOrder(work_order.work_order_number()))
-            }
+            Entry::Vacant(_new_work_order) => self.add_node(Node::WorkOrder(WorkOrderNode {
+                work_order_number: work_order.work_order_number(),
+                // TODO: Derive these from WorkOrderPolicies during conversion
+                earliest_allowed_starting_date: work_order.basic_start(),
+                latest_allowed_finish_date: work_order.basic_start(),
+            })),
             Entry::Occupied(_already_inserted_work_order) => {
                 return Err(ScheduleGraphErrors::WorkOrderDuplicate);
             }
@@ -902,7 +906,12 @@ impl SchedulingHypergraph
             }
 
             let activity_views = activities.into_iter().map(|(_, v)| v).collect();
-
+            let latest_allowed_finish_date =
+                if let Node::WorkOrder(work_order) = &self.nodes[work_order_node_index] {
+                    work_order.latest_allowed_finish_date
+                } else {
+                    panic!("work_order_nodex_index was not part of the graph")
+                };
             work_orders.insert(
                 work_order_number,
                 WeeklyWorkOrderView {
@@ -910,6 +919,7 @@ impl SchedulingHypergraph
                     assigned_period,
                     excluded_periods,
                     activities: activity_views,
+                    latest_allowed_finish_date,
                 },
             );
         }
@@ -978,7 +988,10 @@ impl SchedulingHypergraph
         let node_ref = self.nodes[node_index].clone();
         let none_checker = match node_ref {
             Node::Technician(worker) => self.technician_indices.insert(worker, node_index),
-            Node::WorkOrder(work_order) => self.work_order_indices.insert(work_order, node_index),
+            Node::WorkOrder(work_order) => {
+                self.work_order_indices
+                    .insert(work_order.work_order_number, node_index)
+            }
             Node::Period(naive_date) => self.period_indices.insert(naive_date, node_index),
             Node::Skill(skills) => self.skill_indices.insert(skills, node_index),
             Node::Activity(a) => {
@@ -1032,6 +1045,7 @@ mod tests
 
     use super::Node;
     use super::SchedulingHypergraph;
+    use super::WorkOrderNode;
     use crate::schedule_graph::Hyperedge;
     use crate::schedule_graph::Period;
     use crate::schedule_graph::ScheduleGraphErrors;
@@ -1043,14 +1057,23 @@ mod tests
 
         let date = NaiveDate::from_ymd_opt(2025, 1, 1).unwrap();
         let index_worker = schedule_graph.add_node(Node::Technician(1234));
-        let index_workorder = schedule_graph.add_node(Node::WorkOrder(WorkOrderNumber(1122334455)));
+        let index_workorder = schedule_graph.add_node(Node::WorkOrder(WorkOrderNode {
+            work_order_number: WorkOrderNumber(1122334455),
+            earliest_allowed_starting_date: date,
+            latest_allowed_finish_date: date,
+        }));
         let index_period = schedule_graph
             .add_period(Period::from_start_date(date))
             .unwrap();
 
         assert!(schedule_graph.nodes[index_worker] == Node::Technician(1234));
         assert!(
-            schedule_graph.nodes[index_workorder] == Node::WorkOrder(WorkOrderNumber(1122334455))
+            schedule_graph.nodes[index_workorder]
+                == Node::WorkOrder(WorkOrderNode {
+                    work_order_number: WorkOrderNumber(1122334455),
+                    earliest_allowed_starting_date: date,
+                    latest_allowed_finish_date: date,
+                })
         );
         assert!(schedule_graph.nodes[index_period] == Node::Period(Period::from_start_date(date)));
 
@@ -1096,7 +1119,11 @@ mod tests
 
         assert_eq!(
             schedule_graph.nodes[work_order_node_id],
-            Node::WorkOrder(WorkOrderNumber(1122334455))
+            Node::WorkOrder(WorkOrderNode {
+                work_order_number: WorkOrderNumber(1122334455),
+                earliest_allowed_starting_date: basic_start_date,
+                latest_allowed_finish_date: basic_start_date,
+            })
         );
 
         // Collect activity node indices through the graph structure
@@ -1278,7 +1305,11 @@ mod tests
         let date = NaiveDate::from_ymd_opt(2025, 1, 1).unwrap();
         let technician_node_1 = Node::Technician(1234);
         let technician_node_index_1 = schedule_graph.add_node(technician_node_1.clone());
-        let work_order_node_1 = Node::WorkOrder(WorkOrderNumber(1122334455));
+        let work_order_node_1 = Node::WorkOrder(WorkOrderNode {
+            work_order_number: WorkOrderNumber(1122334455),
+            earliest_allowed_starting_date: date,
+            latest_allowed_finish_date: date,
+        });
         let work_order_node_index_1 = schedule_graph.add_node(work_order_node_1.clone());
         let period_node_1 = Node::Period(Period::from_start_date(date));
         let period_node_index_1 = schedule_graph.add_node(period_node_1.clone());
@@ -1299,7 +1330,11 @@ mod tests
 
         let technician_node_2 = Node::Technician(1236);
         let technician_node_index_2 = schedule_graph.add_node(technician_node_2.clone());
-        let work_order_node_2 = Node::WorkOrder(WorkOrderNumber(1122334456));
+        let work_order_node_2 = Node::WorkOrder(WorkOrderNode {
+            work_order_number: WorkOrderNumber(1122334456),
+            earliest_allowed_starting_date: date,
+            latest_allowed_finish_date: date,
+        });
         let work_order_node_index_2 = schedule_graph.add_node(work_order_node_2.clone());
 
         assert!(schedule_graph.nodes[technician_node_index_2] == technician_node_2);
@@ -1393,14 +1428,15 @@ mod tests
     {
         let mut schedule_graph = SchedulingHypergraph::new();
 
-        let node_0 = Node::WorkOrder(WorkOrderNumber(1111990000));
-        let node_1 = Node::WorkOrder(WorkOrderNumber(1111990001));
-        let node_2 = Node::WorkOrder(WorkOrderNumber(1111990002));
-        let node_3 = Node::WorkOrder(WorkOrderNumber(1111990003));
-        let node_4 = Node::WorkOrder(WorkOrderNumber(1111990004));
-        let node_5 = Node::WorkOrder(WorkOrderNumber(1111990005));
-        let node_6 = Node::WorkOrder(WorkOrderNumber(1111990006));
-        let node_7 = Node::WorkOrder(WorkOrderNumber(1111990007));
+        let d = NaiveDate::from_ymd_opt(2025, 1, 1).unwrap();
+        let node_0 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990000), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
+        let node_1 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990001), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
+        let node_2 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990002), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
+        let node_3 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990003), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
+        let node_4 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990004), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
+        let node_5 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990005), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
+        let node_6 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990006), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
+        let node_7 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990007), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
 
         let node_index_0 = schedule_graph.add_node(node_0);
         let node_index_1 = schedule_graph.add_node(node_1);
