@@ -27,6 +27,7 @@ pub struct WeeklyWorkOrderView
 {
     pub basic_start_date: Option<NaiveDate>,
     pub latest_allowed_finish_date: NaiveDate,
+    pub earliest_allowed_starting_date: NaiveDate,
     pub assigned_period: Option<Period>,
     pub excluded_periods: HashSet<Period>,
     pub activities: Vec<ActivityView>,

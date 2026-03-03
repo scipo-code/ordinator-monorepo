@@ -1611,6 +1611,7 @@ dependencies = [
  "dotenvy",
  "file-rotate",
  "flume",
+ "ordinator-actor-core",
  "ordinator-actor-daily",
  "ordinator-actor-operational",
  "ordinator-actor-project",

@@ -131,7 +131,7 @@ pub fn create_project_parameter_from_view(
         weight,
         relations,
         // FIX TODO [ ]: This is wrong - you should handle this separately in
-        earliest_allowed_start_date: wo_view.basic_start_date,
+        earliest_allowed_start_date: wo_view.earliest_allowed_starting_date,
     }
 }
 

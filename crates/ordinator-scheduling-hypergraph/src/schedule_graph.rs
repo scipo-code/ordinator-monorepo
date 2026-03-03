@@ -906,9 +906,12 @@ impl SchedulingHypergraph
             }
 
             let activity_views = activities.into_iter().map(|(_, v)| v).collect();
-            let latest_allowed_finish_date =
+            let schedule_interval =
                 if let Node::WorkOrder(work_order) = &self.nodes[work_order_node_index] {
-                    work_order.latest_allowed_finish_date
+                    (
+                        work_order.earliest_allowed_starting_date,
+                        work_order.latest_allowed_finish_date,
+                    )
                 } else {
                     panic!("work_order_nodex_index was not part of the graph")
                 };
@@ -919,7 +922,8 @@ impl SchedulingHypergraph
                     assigned_period,
                     excluded_periods,
                     activities: activity_views,
-                    latest_allowed_finish_date,
+                    earliest_allowed_starting_date: schedule_interval.0,
+                    latest_allowed_finish_date: schedule_interval.1,
                 },
             );
         }
@@ -988,10 +992,9 @@ impl SchedulingHypergraph
         let node_ref = self.nodes[node_index].clone();
         let none_checker = match node_ref {
             Node::Technician(worker) => self.technician_indices.insert(worker, node_index),
-            Node::WorkOrder(work_order) => {
-                self.work_order_indices
-                    .insert(work_order.work_order_number, node_index)
-            }
+            Node::WorkOrder(work_order) => self
+                .work_order_indices
+                .insert(work_order.work_order_number, node_index),
             Node::Period(naive_date) => self.period_indices.insert(naive_date, node_index),
             Node::Skill(skills) => self.skill_indices.insert(skills, node_index),
             Node::Activity(a) => {
@@ -1429,14 +1432,46 @@ mod tests
         let mut schedule_graph = SchedulingHypergraph::new();
 
         let d = NaiveDate::from_ymd_opt(2025, 1, 1).unwrap();
-        let node_0 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990000), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
-        let node_1 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990001), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
-        let node_2 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990002), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
-        let node_3 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990003), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
-        let node_4 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990004), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
-        let node_5 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990005), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
-        let node_6 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990006), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
-        let node_7 = Node::WorkOrder(WorkOrderNode { work_order_number: WorkOrderNumber(1111990007), earliest_allowed_starting_date: d, latest_allowed_finish_date: d });
+        let node_0 = Node::WorkOrder(WorkOrderNode {
+            work_order_number: WorkOrderNumber(1111990000),
+            earliest_allowed_starting_date: d,
+            latest_allowed_finish_date: d,
+        });
+        let node_1 = Node::WorkOrder(WorkOrderNode {
+            work_order_number: WorkOrderNumber(1111990001),
+            earliest_allowed_starting_date: d,
+            latest_allowed_finish_date: d,
+        });
+        let node_2 = Node::WorkOrder(WorkOrderNode {
+            work_order_number: WorkOrderNumber(1111990002),
+            earliest_allowed_starting_date: d,
+            latest_allowed_finish_date: d,
+        });
+        let node_3 = Node::WorkOrder(WorkOrderNode {
+            work_order_number: WorkOrderNumber(1111990003),
+            earliest_allowed_starting_date: d,
+            latest_allowed_finish_date: d,
+        });
+        let node_4 = Node::WorkOrder(WorkOrderNode {
+            work_order_number: WorkOrderNumber(1111990004),
+            earliest_allowed_starting_date: d,
+            latest_allowed_finish_date: d,
+        });
+        let node_5 = Node::WorkOrder(WorkOrderNode {
+            work_order_number: WorkOrderNumber(1111990005),
+            earliest_allowed_starting_date: d,
+            latest_allowed_finish_date: d,
+        });
+        let node_6 = Node::WorkOrder(WorkOrderNode {
+            work_order_number: WorkOrderNumber(1111990006),
+            earliest_allowed_starting_date: d,
+            latest_allowed_finish_date: d,
+        });
+        let node_7 = Node::WorkOrder(WorkOrderNode {
+            work_order_number: WorkOrderNumber(1111990007),
+            earliest_allowed_starting_date: d,
+            latest_allowed_finish_date: d,
+        });
 
         let node_index_0 = schedule_graph.add_node(node_0);
         let node_index_1 = schedule_graph.add_node(node_1);

@@ -5,32 +5,14 @@ pub mod messages;
 use std::fmt::Debug;
 use std::ops::Deref;
 use std::ops::DerefMut;
-use std::sync::Arc;
-use std::sync::Mutex;
 
 use algorithm::WeeklyAlgorithm;
-use algorithm::weekly_parameters::WeeklyParameters;
 use algorithm::weekly_solution::WeeklySolution;
-use anyhow::Result;
-use arc_swap::ArcSwap;
-use bus::BusReader;
-use flume::Sender;
 use messages::WeeklyRequestMessage;
 use messages::WeeklyResponseMessage;
 use ordinator_actor_core::Actor;
-use ordinator_actor_core::algorithm::Algorithm;
-use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
-use ordinator_configuration::SystemConfigurations;
-use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::CommandHandler;
-use ordinator_orchestrator_actor_traits::Communication;
-use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::work_order::WorkOrderNumber;
-use ordinator_scheduling_environment::worker_environment::WeeklyOptions;
-use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
-use priority_queue::PriorityQueue;
 
 pub struct WeeklyActor<Ss: Debug>(
     Actor<WeeklyRequestMessage, WeeklyResponseMessage, WeeklyAlgorithm<Ss>>,
@@ -66,59 +48,6 @@ where
     }
 }
 
-pub struct WeeklyApi {}
-impl<Ss> ActorFactory<Ss> for WeeklyApi
-where
-    Ss: SystemSolutions<Weekly = WeeklySolution> + Send + Sync + 'static + Debug,
-    Actor<WeeklyRequestMessage, WeeklyResponseMessage, WeeklyAlgorithm<Ss>>:
-        CommandHandler<WeeklyRequestMessage, WeeklyResponseMessage>,
-{
-    type Communication = Communication<WeeklyRequestMessage, WeeklyResponseMessage>;
-
-    fn construct_actor(
-        id: ActorCompositeId,
-        scheduling_environment_guard: Arc<Mutex<SchedulingHypergraph>>,
-        shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
-        system_configurations: Arc<ArcSwap<SystemConfigurations>>,
-        state_link_bus: BusReader<StateLink>,
-        error_channel: Sender<anyhow::Error>,
-    ) -> Result<<Self as ActorFactory<Ss>>::Communication>
-    where
-        Ss: SystemSolutions<Weekly = WeeklySolution> + Send + Sync + 'static,
-        WeeklyAlgorithm<Ss>: ActorBasedLargeNeighborhoodSearch
-            + Send
-            + Sync
-            + From<
-                Algorithm<
-                    WeeklySolution,
-                    WeeklyParameters,
-                    PriorityQueue<WorkOrderNumber, i64>,
-                    WeeklyOptions,
-                    Ss,
-                >,
-            >,
-    {
-        Actor::<WeeklyRequestMessage, WeeklyResponseMessage, WeeklyAlgorithm<Ss>>::builder(
-        )
-        .agent_id(id.clone())
-        .scheduling_environment(Arc::clone(&scheduling_environment_guard))
-        .algorithm(|ab| {
-            let options = WeeklyOptions {
-                number_of_removed_work_orders: 5,
-                urgency_weight: 1,
-                resource_penalty_weight: 1,
-                clustering_weight: 1,
-                work_order_policies: ordinator_scheduling_environment::work_order::WorkOrderPolicies::builder().build(),
-            };
-            ab.id(id)
-                .parameters_and_solution(&scheduling_environment_guard.lock().unwrap(), options)?
-                .system_solution_arc_swap(shared_solution_arc_swap)
-        })?
-        .communication(error_channel, state_link_bus)
-        .configurations(system_configurations)
-        .build()
-    }
-}
 
 #[cfg(test)]
 mod tests

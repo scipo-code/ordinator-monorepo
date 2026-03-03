@@ -5,30 +5,14 @@ pub mod messages;
 use std::fmt::Debug;
 use std::ops::Deref;
 use std::ops::DerefMut;
-use std::sync::Arc;
-use std::sync::Mutex;
 
 use algorithm::OperationalAlgorithm;
-use algorithm::operational_parameter::OperationalParameters;
 use algorithm::operational_solution::OperationalSolution;
-use anyhow::Result;
-use arc_swap::ArcSwap;
-use bus::BusReader;
-use flume::Sender;
 use messages::OperationalRequestMessage;
 use messages::OperationalResponseMessage;
 use ordinator_actor_core::Actor;
-use ordinator_actor_core::algorithm::Algorithm;
-use ordinator_actor_core::traits::ActorBasedLargeNeighborhoodSearch;
-use ordinator_configuration::SystemConfigurations;
-use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::CommandHandler;
-use ordinator_orchestrator_actor_traits::Communication;
-use ordinator_orchestrator_actor_traits::StateLink;
 use ordinator_orchestrator_actor_traits::SystemSolutions;
-use ordinator_scheduling_environment::worker_environment::OperationalOptions;
-use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 
 pub struct OperationalActor<Ss: Debug>(
     Actor<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>,
@@ -65,50 +49,3 @@ where
     }
 }
 
-pub struct OperationalApi {}
-
-impl<Ss> ActorFactory<Ss> for OperationalApi
-where
-    Ss: SystemSolutions<Operational = OperationalSolution> + Send + Sync + 'static + Debug,
-    Actor<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>:
-        CommandHandler<OperationalRequestMessage, OperationalResponseMessage>,
-{
-    type Communication = Communication<OperationalRequestMessage, OperationalResponseMessage>;
-
-    fn construct_actor(
-        id: ActorCompositeId,
-        scheduling_environment_guard: Arc<Mutex<SchedulingHypergraph>>,
-        shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
-        system_configurations: Arc<ArcSwap<SystemConfigurations>>,
-        state_link_bus: BusReader<StateLink>,
-        error_channel: Sender<anyhow::Error>,
-    ) -> Result<Self::Communication>
-    where
-        Ss: SystemSolutions<Operational = OperationalSolution> + Send + Sync + 'static,
-        OperationalAlgorithm<Ss>: ActorBasedLargeNeighborhoodSearch
-            + Send
-            + Sync
-            + From<Algorithm<OperationalSolution, OperationalParameters, (), OperationalOptions, Ss>>,
-    {
-        Actor::<OperationalRequestMessage, OperationalResponseMessage, OperationalAlgorithm<Ss>>::builder()
-        .agent_id(id.clone())
-        .scheduling_environment(Arc::clone(&scheduling_environment_guard))
-        .algorithm(|ab| {
-            let options = OperationalOptions {
-                number_of_removed_activities: 5,
-                break_interval: ordinator_scheduling_environment::time_environment::TimeInterval::from_hms(12, 0, 0, 12, 30, 0)?,
-                off_shift_interval: ordinator_scheduling_environment::time_environment::TimeInterval::from_hms(0, 0, 0, 0, 0, 1)?,
-                toolbox_interval: ordinator_scheduling_environment::time_environment::TimeInterval::from_hms(6, 0, 0, 6, 15, 0)?,
-            };
-            ab.id(id)
-                .parameters_and_solution(
-                    &scheduling_environment_guard.lock().unwrap(),
-                    options,
-                )?
-                .system_solution_arc_swap(shared_solution_arc_swap)
-        })?
-        .communication(error_channel, state_link_bus)
-        .configurations(system_configurations)
-        .build()
-    }
-}

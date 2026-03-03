@@ -5,22 +5,17 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use std::ops::Deref;
 use std::ops::DerefMut;
-use std::sync::Arc;
-use std::sync::Mutex;
 use std::sync::MutexGuard;
 
 use anyhow::Context;
 use anyhow::Result;
 use anyhow::anyhow;
-use arc_swap::ArcSwap;
-use bus::BusReader;
 use chrono::NaiveDate;
 use colored::Colorize;
 use delegate::Delegate;
 use flume::Receiver;
 use flume::Sender;
 use marginal_fitness::MarginalFitness;
-use ordinator_configuration::SystemConfigurations;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::day::Day;
 use ordinator_scheduling_environment::time_environment::period::Period;
@@ -538,22 +533,6 @@ pub enum StateLink
 pub enum ActorSpecific
 {
     Weekly(Vec<WorkOrderNumber>),
-}
-
-pub trait ActorFactory<Ss>
-where
-    Ss: SystemSolutions + Sync + Send,
-{
-    type Communication;
-
-    fn construct_actor(
-        id: ActorCompositeId,
-        scheduling_environment: Arc<Mutex<SchedulingHypergraph>>,
-        system_solution_arc_swap: Arc<ArcSwap<Ss>>,
-        system_configurations: Arc<ArcSwap<SystemConfigurations>>,
-        stake_link_bus: BusReader<StateLink>,
-        error_channel: Sender<anyhow::Error>,
-    ) -> Result<Self::Communication>;
 }
 
 #[cfg(test)]

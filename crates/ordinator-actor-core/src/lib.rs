@@ -147,6 +147,41 @@ where
         }
     }
 
+    /// Construct and spawn an actor with the given options, returning the
+    /// communication channel to the orchestrator.
+    pub fn construct<S, P, I, O, Ss>(
+        id: ActorCompositeId,
+        scheduling_environment_guard: Arc<Mutex<SchedulingHypergraph>>,
+        shared_solution_arc_swap: Arc<ArcSwap<Ss>>,
+        system_configurations: Arc<ArcSwap<SystemConfigurations>>,
+        state_link_bus: BusReader<StateLink>,
+        error_channel: Sender<anyhow::Error>,
+        options: O,
+    ) -> Result<Communication<ActorRequest, ActorResponse>>
+    where
+        Algorithm: From<algorithm::Algorithm<S, P, I, O, Ss>> + Send + 'static,
+        S: Solution<Parameters = P> + Debug + Clone + SwapSolution<Ss>,
+        Ss: SystemSolutions,
+        P: Parameters<Options = O>,
+        O: Options,
+        I: Default,
+    {
+        Self::builder()
+            .agent_id(id.clone())
+            .scheduling_environment(Arc::clone(&scheduling_environment_guard))
+            .algorithm(|ab| {
+                ab.id(id)
+                    .parameters_and_solution(
+                        &scheduling_environment_guard.lock().unwrap(),
+                        options,
+                    )?
+                    .system_solution_arc_swap(shared_solution_arc_swap)
+            })?
+            .communication(error_channel, state_link_bus)
+            .configurations(system_configurations)
+            .build()
+    }
+
     // Create a new ActorBuilder for constructing Actor instances.
     pub fn builder() -> ActorBuilder<ActorRequest, ActorResponse, Algorithm>
     {

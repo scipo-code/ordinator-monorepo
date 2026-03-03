@@ -8,9 +8,9 @@ use ordinator_orchestrator_actor_traits::Parameters;
 use ordinator_orchestrator_actor_traits::WhereIsWorkOrder;
 use ordinator_scheduling_environment::SchedulingEnvironment;
 use ordinator_scheduling_environment::time_environment::period::Period;
-use ordinator_scheduling_environment::worker_environment::WeeklyOptions;
 use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::operation::Work;
+use ordinator_scheduling_environment::worker_environment::WeeklyOptions;
 use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
@@ -62,7 +62,7 @@ impl Parameters for WeeklyParameters
                         .periods
                         .iter()
                         .rev()
-                        .find(|p| p.contains_date(wo_view.basic_start_date))
+                        .find(|p| p.contains_date(wo_view.latest_allowed_finish_date))
                         .or(weekly_view.periods.last())
                         .cloned()
                         .expect("There should always be at least one period");

@@ -18,30 +18,30 @@ use chrono::DateTime;
 use chrono::Utc;
 use flume::Receiver;
 use flume::Sender;
-use ordinator_actor_daily::DailyApi;
+use ordinator_actor_core::Actor;
+use ordinator_actor_daily::algorithm::DailyAlgorithm;
 use ordinator_actor_daily::algorithm::daily_solution::DailySolution;
 pub use ordinator_actor_daily::messages::DailyRequestMessage;
 pub use ordinator_actor_daily::messages::DailyResponseMessage;
 pub use ordinator_actor_daily::messages::requests::DailyStatusMessage;
 pub use ordinator_actor_daily::messages::responses::DailyResponseStatus;
-use ordinator_actor_operational::OperationalApi;
+use ordinator_actor_operational::algorithm::OperationalAlgorithm;
 use ordinator_actor_operational::algorithm::operational_solution::OperationalSolution;
 pub use ordinator_actor_operational::messages::OperationalRequestMessage;
 pub use ordinator_actor_operational::messages::OperationalResponseMessage;
 pub use ordinator_actor_operational::messages::requests::OperationalStatusRequest;
-use ordinator_actor_project::ProjectApi;
+use ordinator_actor_project::algorithm::ProjectAlgorithm;
 use ordinator_actor_project::algorithm::project_solution::ProjectSolution;
 pub use ordinator_actor_project::messages::ProjectRequestMessage;
 pub use ordinator_actor_project::messages::ProjectResponseMessage;
 pub use ordinator_actor_project::messages::requests::ProjectStatusMessage;
-use ordinator_actor_weekly::WeeklyApi;
+use ordinator_actor_weekly::algorithm::WeeklyAlgorithm;
 use ordinator_actor_weekly::algorithm::weekly_solution::WeeklySolution;
 pub use ordinator_actor_weekly::messages::WeeklyRequestMessage;
 pub use ordinator_actor_weekly::messages::WeeklyResponseMessage;
 use ordinator_configuration::SystemConfigurations;
 use ordinator_configuration::throttling::Throttling;
 use ordinator_contracts::orchestrator::OrchestratorResponse;
-use ordinator_orchestrator_actor_traits::ActorFactory;
 use ordinator_orchestrator_actor_traits::Communication;
 // TODO [ ] 2025-07-02 add the other `<Actor>Interface`s here
 pub use ordinator_orchestrator_actor_traits::ProjectInterface;
@@ -499,35 +499,64 @@ where
             (weekly_id, project_id, daily_ids, operationals)
         };
 
-        let weekly_communication = WeeklyApi::construct_actor(
-            weekly_id.clone(),
-            dependencies.0.clone(),
-            dependencies.1.clone(),
-            dependencies.2.clone(),
-            self.state_link_bus.lock().unwrap().add_rx(),
-            self.error_sender.clone(),
-        )
-        .with_context(|| format!("Could not construct StartegicActor {weekly_id}"))?;
+        let weekly_communication =
+            Actor::<WeeklyRequestMessage, WeeklyResponseMessage, WeeklyAlgorithm<Ss>>::construct(
+                weekly_id.clone(),
+                dependencies.0.clone(),
+                dependencies.1.clone(),
+                dependencies.2.clone(),
+                self.state_link_bus.lock().unwrap().add_rx(),
+                self.error_sender.clone(),
+                ordinator_scheduling_environment::worker_environment::WeeklyOptions {
+                    number_of_removed_work_orders: 5,
+                    urgency_weight: 1,
+                    resource_penalty_weight: 1,
+                    clustering_weight: 1,
+                    work_order_policies:
+                        ordinator_scheduling_environment::work_order::WorkOrderPolicies::builder()
+                            .build(),
+                },
+            )
+            .with_context(|| format!("Could not construct StartegicActor {weekly_id}"))?;
 
-        let project_communication = ProjectApi::construct_actor(
+        let project_communication = Actor::<
+            ProjectRequestMessage,
+            ProjectResponseMessage,
+            ProjectAlgorithm<Ss>,
+        >::construct(
             project_id.clone(),
             dependencies.0.clone(),
             dependencies.1.clone(),
             dependencies.2.clone(),
             self.state_link_bus.lock().unwrap().add_rx(),
             self.error_sender.clone(),
+            ordinator_scheduling_environment::worker_environment::ProjectOptions {
+                number_of_removed_work_orders: 5,
+                urgency: 1,
+                resource_penalty: 1,
+                work_order_policies:
+                    ordinator_scheduling_environment::work_order::WorkOrderPolicies::builder()
+                        .build(),
+            },
         )
         .with_context(|| format!("{project_id} could not be constructed"))?;
 
         let mut daily_communications = HashMap::default();
         for daily_id in dailys {
-            let daily_communication = DailyApi::construct_actor(
+            let daily_communication = Actor::<
+                DailyRequestMessage,
+                DailyResponseMessage,
+                DailyAlgorithm<Ss>,
+            >::construct(
                 daily_id.clone(),
                 dependencies.0.clone(),
                 dependencies.1.clone(),
                 dependencies.2.clone(),
                 self.state_link_bus.lock().unwrap().add_rx(),
                 self.error_sender.clone(),
+                ordinator_scheduling_environment::worker_environment::DailyOptions {
+                    number_of_unassigned_work_orders: 5,
+                },
             )?;
 
             daily_communications.insert(daily_id.clone(), daily_communication);
@@ -535,13 +564,35 @@ where
 
         let mut operational_communications = HashMap::default();
         for operational_id in operationals {
-            let operational_communication = OperationalApi::construct_actor(
+            let operational_options =
+                ordinator_scheduling_environment::worker_environment::OperationalOptions {
+                    number_of_removed_activities: 5,
+                    break_interval:
+                        ordinator_scheduling_environment::time_environment::TimeInterval::from_hms(
+                            12, 0, 0, 12, 30, 0,
+                        )?,
+                    off_shift_interval:
+                        ordinator_scheduling_environment::time_environment::TimeInterval::from_hms(
+                            0, 0, 0, 0, 0, 1,
+                        )?,
+                    toolbox_interval:
+                        ordinator_scheduling_environment::time_environment::TimeInterval::from_hms(
+                            6, 0, 0, 6, 15, 0,
+                        )?,
+                };
+
+            let operational_communication = Actor::<
+                OperationalRequestMessage,
+                OperationalResponseMessage,
+                OperationalAlgorithm<Ss>,
+            >::construct(
                 operational_id.clone(),
                 dependencies.0.clone(),
                 dependencies.1.clone(),
                 dependencies.2.clone(),
                 self.state_link_bus.lock().unwrap().add_rx(),
                 self.error_sender.clone(),
+                operational_options,
             )?;
 
             operational_communications.insert(operational_id.clone(), operational_communication);
