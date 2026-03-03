@@ -679,16 +679,15 @@ where
             .map(|e| (*e.0, e.1.round()))
             .collect();
 
-        warn!(target: "stdout", work_order_number = %work_order_number, period = %period, parameters = %self.parameters.state());
+        // warn!(target: "stdout", work_order_number = %work_order_number, period =
+        // %period, parameters = %self.parameters.state());
         if weekly_parameter.excluded_periods.contains(period) {
             return Ok(Some(work_order_number));
         }
 
-        warn!(target: "stdout", work_order_number = %work_order_number, period = %period);
         if self.parameters.period_locks.contains(period) {
             return Ok(Some(work_order_number));
         }
-        warn!(target: "stdout", work_order_number = %work_order_number, period = %period);
 
         // If no `WeeklyResources` could be determined for the `schedule` decision make
         // an early return.

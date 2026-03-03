@@ -561,6 +561,162 @@ pub enum ActorSpecific
     Weekly(Vec<WorkOrderNumber>),
 }
 
+impl Inspect for SchedulingHypergraph
+{
+    fn summary(&self) -> impl fmt::Display + '_
+    {
+        struct Summary
+        {
+            nodes: usize,
+            edges: usize,
+        }
+        impl fmt::Display for Summary
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                write!(
+                    f,
+                    "SchedulingHypergraph: {} nodes, {} hyperedges",
+                    self.nodes, self.edges
+                )
+            }
+        }
+        Summary {
+            nodes: self.node_count(),
+            edges: self.hyperedge_count(),
+        }
+    }
+
+    fn state(&self) -> impl fmt::Display + '_
+    {
+        struct TechnicianDetail
+        {
+            id: usize,
+            skills: Vec<String>,
+            available_from: Option<NaiveDate>,
+            available_to: Option<NaiveDate>,
+            available_days: usize,
+        }
+
+        struct State
+        {
+            nodes: usize,
+            edges: usize,
+            work_orders: usize,
+            assigned: usize,
+            periods: usize,
+            skills: usize,
+            total_work_remaining: f64,
+            skills_detail: Vec<(String, usize)>,
+            technicians: Vec<TechnicianDetail>,
+        }
+        impl fmt::Display for State
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                writeln!(f, "SchedulingHypergraph:")?;
+                writeln!(f, "  nodes: {}, hyperedges: {}", self.nodes, self.edges)?;
+                writeln!(
+                    f,
+                    "  work orders: {} (assigned: {}, unassigned: {})",
+                    self.work_orders,
+                    self.assigned,
+                    self.work_orders - self.assigned
+                )?;
+                writeln!(f, "  periods: {}", self.periods)?;
+                writeln!(
+                    f,
+                    "  total work remaining: {:.0}h",
+                    self.total_work_remaining
+                )?;
+                write!(f, "  skills ({}):", self.skills)?;
+                for (skill, count) in &self.skills_detail {
+                    write!(f, "\n    {:<12} {} work orders", skill, count)?;
+                }
+                writeln!(f)?;
+                write!(f, "  technicians ({}):", self.technicians.len())?;
+                for tech in &self.technicians {
+                    let availability = match (tech.available_from, tech.available_to) {
+                        (Some(from), Some(to)) => format!("{} to {} ({} days)", from, to, tech.available_days),
+                        _ => "no availability".to_string(),
+                    };
+                    write!(
+                        f,
+                        "\n    tech {:>3}: {:<30} skills: {}",
+                        tech.id,
+                        availability,
+                        tech.skills.join(", ")
+                    )?;
+                }
+                Ok(())
+            }
+        }
+
+        let view = self.extract_weekly_view();
+
+        let assigned = view
+            .work_orders
+            .values()
+            .filter(|wo| wo.assigned_period.is_some())
+            .count();
+
+        let total_work_remaining: f64 = view
+            .work_orders
+            .values()
+            .flat_map(|wo| &wo.activities)
+            .map(|a| a.work_remaining.to_f64())
+            .sum();
+
+        // Count work orders per skill
+        let mut skill_wo_counts: HashMap<Skill, usize> = HashMap::new();
+        for wo in view.work_orders.values() {
+            let mut wo_skills: HashSet<Skill> = HashSet::new();
+            for activity in &wo.activities {
+                wo_skills.insert(activity.required_skill);
+            }
+            for skill in wo_skills {
+                *skill_wo_counts.entry(skill).or_default() += 1;
+            }
+        }
+        let mut skills_detail: Vec<(String, usize)> = skill_wo_counts
+            .into_iter()
+            .map(|(s, c)| (s.to_string(), c))
+            .collect();
+        skills_detail.sort_by(|(a, _), (b, _)| a.cmp(b));
+
+        // Build technician details
+        let mut technicians: Vec<TechnicianDetail> = view
+            .technicians
+            .iter()
+            .map(|(&id, tv)| {
+                let available_from = tv.available_dates.iter().min().copied();
+                let available_to = tv.available_dates.iter().max().copied();
+                let skills: Vec<String> = tv.skills.iter().map(|s| s.to_string()).collect();
+                TechnicianDetail {
+                    id,
+                    skills,
+                    available_from,
+                    available_to,
+                    available_days: tv.available_dates.len(),
+                }
+            })
+            .collect();
+        technicians.sort_by_key(|t| t.id);
+
+        State {
+            nodes: self.node_count(),
+            edges: self.hyperedge_count(),
+            work_orders: view.work_orders.len(),
+            assigned,
+            periods: view.periods.len(),
+            skills: view.skills.len(),
+            total_work_remaining,
+            skills_detail,
+            technicians,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests
 {

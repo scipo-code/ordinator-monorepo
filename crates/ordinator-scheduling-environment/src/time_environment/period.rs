@@ -215,7 +215,7 @@ impl Display for Period
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result
     {
         let print_string = self.period_string.clone();
-        write!(f, "{print_string}")
+        write!(f, "{print_string:<12}")
     }
 }
 

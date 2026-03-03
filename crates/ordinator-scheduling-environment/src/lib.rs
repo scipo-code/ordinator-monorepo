@@ -36,6 +36,8 @@ use worker_environment::TimeInput;
 use self::time_environment::TimeEnvironment;
 use self::worker_environment::ActorEnvironment;
 
+use tracing::info;
+
 // ESSAY: #20250814
 // All of these should be `dyn`. If you need Serialize and Deserialize,
 // implement on concrete types.
@@ -256,6 +258,7 @@ impl SchedulingEnvironmentBuilder
             updated_environment.add_actor_specification(asset, Box::new(actor_spec));
 
         self.worker_environment = Some(updated_environment.build());
+        info!(target: "developer", worker_environment = ?self.worker_environment);
         self
     }
 

@@ -24,6 +24,7 @@ use slotmap::SecondaryMap;
 use slotmap::SlotMap;
 use slotmap::new_key_type;
 use tracing::debug;
+use tracing::info;
 
 use crate::derive_instances::ActivityView;
 use crate::derive_instances::TechnicianView;
@@ -234,6 +235,7 @@ impl SchedulingHypergraph
                 }
                 let technician = builder.build();
 
+                dbg!(&technician);
                 // Add each availability as a separate technician entry
                 // The hypergraph only accepts one availability per add_technician call,
                 // and enforces uniqueness, so use the first availability.
@@ -442,11 +444,6 @@ impl SchedulingHypergraph
             skills.push(skill);
         }
 
-        // You have to check and create all the availabilities and then
-        // you need to
-        //
-        // You could wrap this in a SQL database, but this is what is needed to
-        // scale correctly.
         let mut single_availability = vec![];
 
         let length_of_availabilities_in_seconds =
@@ -463,7 +460,6 @@ impl SchedulingHypergraph
 
         let technician_id = self.add_node(Node::Technician(technician.id()));
 
-        //
         let mut edges = vec![technician_id];
         edges.extend(skills);
         edges.extend(single_availability);
@@ -937,11 +933,12 @@ impl SchedulingHypergraph
 
         // Collect technicians
         let mut technicians = HashMap::new();
-        for (&tech_id, &tech_ni) in &self.technician_indices {
+        for (&tech_id, &technician_node_index) in &self.technician_indices {
             let mut tech_skills = BTreeSet::new();
             let mut available_dates = HashSet::new();
 
-            for &edge_idx in &self.incidence_list[tech_ni] {
+            for &edge_idx in &self.incidence_list[technician_node_index] {
+                dbg!(&self.hyperedges[edge_idx]);
                 match &self.hyperedges[edge_idx] {
                     Hyperedge::HasSkill(nodes) => {
                         for &ni in nodes {

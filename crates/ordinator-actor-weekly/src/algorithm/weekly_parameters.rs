@@ -17,6 +17,7 @@ use ordinator_scheduling_environment::worker_environment::resources::ActorCompos
 use ordinator_scheduling_environment::worker_environment::resources::Skill;
 use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 use serde::Serialize;
+use tracing::info;
 
 use super::WeeklyResources;
 
@@ -370,9 +371,9 @@ impl Inspect for WeeklyParameters
                     .sum();
                 writeln!(f, "  capacity: {:.0}h total", grand_total)?;
 
-                // Hours per period — sorted, 4 per line for readability
+                // Hours per period — sorted chronologically, 4 per line
                 let mut periods_sorted: Vec<_> = params.weekly_capacity.0.iter().collect();
-                periods_sorted.sort_by_key(|(p, _)| (*p).clone());
+                periods_sorted.sort_by_key(|(p, _)| *p.start_date());
 
                 writeln!(f, "  capacity by period:")?;
                 for (i, (period, skills)) in periods_sorted.iter().enumerate() {
@@ -383,9 +384,9 @@ impl Inspect for WeeklyParameters
                         }
                         write!(f, "    ")?;
                     } else {
-                        write!(f, "  ")?;
+                        write!(f, " ")?;
                     }
-                    write!(f, "{:<11}: {:>7.0}h", period, hours)?;
+                    write!(f, "{:<18}: {:>7.0}h", period, hours)?;
                 }
                 writeln!(f)?;
 

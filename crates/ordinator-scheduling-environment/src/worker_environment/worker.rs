@@ -119,7 +119,7 @@ impl Debug for Technician
             .field("name", &self.name)
             .field("id", &self.id_worker)
             .field("capacity", &self.capacity)
-            .field("trait_", &self.trait_)
+            .field("skills", &self.skills)
             .field("availabilities", &self.availabilities.len())
             .field("assigned_activities", &self.assigned_activities.len())
             .finish()

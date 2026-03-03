@@ -806,6 +806,7 @@ impl OrchestratorBuilder<StepSchedulingEnvironment>
                 .context("Could not build SchedulingHypergraph from SchedulingEnvironment")?
         };
 
+        info!(target: "developer", scheduling_hypergraph = %scheduling_hypergraph.state());
         Ok(OrchestratorBuilder::<StepBuild> {
             logging: self.logging,
             system_clock_tick_receiver: self.system_clock_tick_receiver,
@@ -829,6 +830,7 @@ impl OrchestratorBuilder<StepSchedulingEnvironment>
                 .context("Could not build SchedulingHypergraph from SchedulingEnvironment")?
         };
 
+        info!(target: "developer", scheduling_hypergraph = %scheduling_hypergraph.state());
         Ok(OrchestratorBuilder::<StepBuild> {
             logging: self.logging,
             system_clock_tick_receiver: self.system_clock_tick_receiver,
