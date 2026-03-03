@@ -51,7 +51,6 @@ pub use ordinator_orchestrator_actor_traits::WeeklyInterface;
 // TODO END
 pub use ordinator_scheduling_environment::Asset;
 use ordinator_scheduling_environment::SchedulingEnvironment;
-use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 pub use ordinator_scheduling_environment::time_environment::day::Day;
 pub use ordinator_scheduling_environment::work_order::WorkOrderNumber;
 use ordinator_scheduling_environment::work_order::WorkOrders;
@@ -59,6 +58,7 @@ pub use ordinator_scheduling_environment::work_order::operation::ActivityNumber;
 pub use ordinator_scheduling_environment::worker_environment::availability::Availability;
 pub use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 pub use ordinator_scheduling_environment::worker_environment::resources::Skill;
+use ordinator_scheduling_hypergraph::schedule_graph::SchedulingHypergraph;
 // use ordinator_total_data_processing::excel_dumps::create_excel_dump;
 use serde::Deserialize;
 use serde::Serialize;
@@ -429,7 +429,6 @@ where
             );
 
             let input_project = &actor_specifications.project();
-            debug!(target: "developer", days = ?days);
             let project_id = ActorCompositeId::new(
                 &actor_specifications.project().id,
                 vec![],
@@ -543,21 +542,18 @@ where
 
         let mut daily_communications = HashMap::default();
         for daily_id in dailys {
-            let daily_communication = Actor::<
-                DailyRequestMessage,
-                DailyResponseMessage,
-                DailyAlgorithm<Ss>,
-            >::construct(
-                daily_id.clone(),
-                dependencies.0.clone(),
-                dependencies.1.clone(),
-                dependencies.2.clone(),
-                self.state_link_bus.lock().unwrap().add_rx(),
-                self.error_sender.clone(),
-                ordinator_scheduling_environment::worker_environment::DailyOptions {
-                    number_of_unassigned_work_orders: 5,
-                },
-            )?;
+            let daily_communication =
+                Actor::<DailyRequestMessage, DailyResponseMessage, DailyAlgorithm<Ss>>::construct(
+                    daily_id.clone(),
+                    dependencies.0.clone(),
+                    dependencies.1.clone(),
+                    dependencies.2.clone(),
+                    self.state_link_bus.lock().unwrap().add_rx(),
+                    self.error_sender.clone(),
+                    ordinator_scheduling_environment::worker_environment::DailyOptions {
+                        number_of_unassigned_work_orders: 5,
+                    },
+                )?;
 
             daily_communications.insert(daily_id.clone(), daily_communication);
         }
