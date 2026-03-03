@@ -6,13 +6,11 @@ directory.
 The core rust code consists of several crates. Each crate has an associated README.md
 where **function**, **design decisions**, and **developer** information can be found.
 
-
-- [crates/ordinator-actors](crates/ordinator-actors/)
-    - [crates/ordinator-actors](crates/ordinator-actors/ordinator-actor-core)
-    - [crates/ordinator-actors](crates/ordinator-actors/ordinator-actor-weekly)
-    - [crates/ordinator-actors](crates/ordinator-actors/ordinator-actor-project)
-    - [crates/ordinator-actors](crates/ordinator-actors/ordinator-actor-daily)
-    - [crates/ordinator-actors](crates/ordinator-actors/ordinator-actor-operational)
+- [crates/ordinator-actor-core](crates/ordinator-actors/ordinator-actor-core)
+- [crates/ordinator-actor-weekly](crates/ordinator-actors/ordinator-actor-weekly)
+- [crates/ordinator-actor-project](crates/ordinator-actors/ordinator-actor-project)
+- [crates/ordinator-actor-daily](crates/ordinator-actors/ordinator-actor-daily)
+- [crates/ordinator-actor-operational](crates/ordinator-actors/ordinator-actor-operational)
 
 - [crates/ordinator-api-server](crates/ordinator-api-server)
 - [crates/ordinator-orchestrator](crates/ordinator-orchestrator)

@@ -43,7 +43,7 @@ pub type FinishTime = NaiveTime;
 pub enum ScheduleGraphErrors
 {
     ActivityMissing,
-    DayMissing,
+    DayMissing(NaiveDate),
     PeriodDuplicate,
     PeriodMissing,
     SkillMissing,
@@ -299,7 +299,7 @@ impl SchedulingHypergraph
         let day_node_index = *self
             .day_indices
             .get(&work_order.basic_start())
-            .ok_or(ScheduleGraphErrors::DayMissing)?;
+            .ok_or(ScheduleGraphErrors::DayMissing(work_order.basic_start()))?;
 
         // Crucial lesson! This cannot come first! You learned something great here!
         let work_order_node_index = match self
@@ -435,7 +435,7 @@ impl SchedulingHypergraph
             let day_node = self
                 .day_indices
                 .get(&date)
-                .ok_or(ScheduleGraphErrors::DayMissing)?;
+                .ok_or(ScheduleGraphErrors::DayMissing(date))?;
 
             single_availability.push(*day_node);
         }
@@ -525,7 +525,7 @@ impl SchedulingHypergraph
                 *self
                     .day_indices
                     .get(naive_date)
-                    .ok_or(ScheduleGraphErrors::DayMissing)?,
+                    .ok_or(ScheduleGraphErrors::DayMissing(*naive_date))?,
             );
         }
 
@@ -629,7 +629,7 @@ impl SchedulingHypergraph
             activity: Some(vec![activity_node_index]),
             work_segments: None,
             technicians: technician_node_indices.into(),
-            period: period,
+            period,
             days: Some(date_node_indices),
         };
 
@@ -1068,7 +1068,7 @@ mod tests
 
         assert_eq!(
             schedule_graph.add_work_order(&work_order),
-            Err(ScheduleGraphErrors::DayMissing)
+            Err(ScheduleGraphErrors::DayMissing(basic_start_date))
         );
 
         let _period_node_id = schedule_graph
