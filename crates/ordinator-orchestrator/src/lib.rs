@@ -43,6 +43,7 @@ use ordinator_configuration::SystemConfigurations;
 use ordinator_configuration::throttling::Throttling;
 use ordinator_contracts::orchestrator::OrchestratorResponse;
 use ordinator_orchestrator_actor_traits::Communication;
+use ordinator_orchestrator_actor_traits::Inspect;
 // TODO [ ] 2025-07-02 add the other `<Actor>Interface`s here
 pub use ordinator_orchestrator_actor_traits::ProjectInterface;
 pub use ordinator_orchestrator_actor_traits::StateLink;
@@ -601,6 +602,7 @@ where
             operational_communications,
         );
 
+        info!(target: "developer", agent_registry = %agent_registry.summary());
         self.actor_registries
             .lock()
             .unwrap()

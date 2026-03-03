@@ -1,15 +1,17 @@
 use std::collections::HashMap;
+use std::fmt;
 
-use ordinator_actor_operational::messages::OperationalRequestMessage;
-use ordinator_actor_operational::messages::OperationalResponseMessage;
-use ordinator_orchestrator_actor_traits::Communication;
-use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
-use ordinator_actor_weekly::messages::WeeklyRequestMessage;
-use ordinator_actor_weekly::messages::WeeklyResponseMessage;
 use ordinator_actor_daily::messages::DailyRequestMessage;
 use ordinator_actor_daily::messages::DailyResponseMessage;
+use ordinator_actor_operational::messages::OperationalRequestMessage;
+use ordinator_actor_operational::messages::OperationalResponseMessage;
 use ordinator_actor_project::messages::ProjectRequestMessage;
 use ordinator_actor_project::messages::ProjectResponseMessage;
+use ordinator_actor_weekly::messages::WeeklyRequestMessage;
+use ordinator_actor_weekly::messages::WeeklyResponseMessage;
+use ordinator_orchestrator_actor_traits::Communication;
+use ordinator_orchestrator_actor_traits::Inspect;
+use ordinator_scheduling_environment::worker_environment::resources::ActorCompositeId;
 
 pub struct ActorRegistry
 {
@@ -19,6 +21,85 @@ pub struct ActorRegistry
         HashMap<ActorCompositeId, Communication<DailyRequestMessage, DailyResponseMessage>>,
     pub operational_agent_senders:
         HashMap<ActorCompositeId, Communication<OperationalRequestMessage, OperationalResponseMessage>>,
+}
+
+impl fmt::Debug for ActorRegistry
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+    {
+        f.debug_struct("ActorRegistry")
+            .field("weekly", &"connected")
+            .field("project", &"connected")
+            .field(
+                "daily",
+                &self.daily_agent_senders.keys().collect::<Vec<_>>(),
+            )
+            .field(
+                "operational",
+                &self
+                    .operational_agent_senders
+                    .keys()
+                    .collect::<Vec<_>>(),
+            )
+            .finish()
+    }
+}
+
+impl Inspect for ActorRegistry
+{
+    fn summary(&self) -> impl fmt::Display + '_
+    {
+        struct Summary<'a>(&'a ActorRegistry);
+        impl fmt::Display for Summary<'_>
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                write!(
+                    f,
+                    "ActorRegistry: 1 weekly, 1 project, {} daily, {} operational",
+                    self.0.daily_agent_senders.len(),
+                    self.0.operational_agent_senders.len()
+                )
+            }
+        }
+        Summary(self)
+    }
+
+    fn state(&self) -> impl fmt::Display + '_
+    {
+        struct State<'a>(&'a ActorRegistry);
+        impl fmt::Display for State<'_>
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+            {
+                let reg = self.0;
+                writeln!(f, "ActorRegistry:")?;
+                writeln!(f, "  weekly: connected")?;
+                writeln!(f, "  project: connected")?;
+                writeln!(
+                    f,
+                    "  daily ({}): {}",
+                    reg.daily_agent_senders.len(),
+                    reg.daily_agent_senders
+                        .keys()
+                        .map(|id| id.0.as_str())
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                )?;
+                write!(
+                    f,
+                    "  operational ({}): {}",
+                    reg.operational_agent_senders.len(),
+                    reg.operational_agent_senders
+                        .keys()
+                        .map(|id| id.0.as_str())
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                )
+            }
+        }
+        State(self)
+    }
 }
 
 impl ActorRegistry
